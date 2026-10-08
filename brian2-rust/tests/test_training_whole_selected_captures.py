@@ -67,6 +67,8 @@ def reference(data,mode,delay,weights,window,initial=None,anchors=None,coefficie
     stages=bundle.provenance['event_callback_stage_groups'].get(syn.pre.name)
     path=stages[1] if stages else syn.pre.name
     scalar=bundle.provenance['event_callback_modes'][path]['mode']=='scalar'
+    paths=stages[1:] if stages else [path]
+    assert scalar or len(paths)==(2 if mode=='vectorised' else 1)
     routes=bundle.provenance['delay_queues'][path]['new']
     before=[];margins=[];hard=[];spikes=[]
     for tick in range(4):
@@ -76,7 +78,9 @@ def reference(data,mode,delay,weights,window,initial=None,anchors=None,coefficie
         if anchors is not None:
             old_margin=anchors['margins'][tick]
             event=anchors['hard'][tick]+p['surrogate']['scale']/(1+p['surrogate']['slope']*abs(old_margin))**2*(margin-old_margin)
-        spikes.append(event.copy());old=z.copy();arrival=tick-delay
+        spikes.append(event.copy())
+        for row in bundle.provenance['event_callback_snapshots'].get(path,[]):z[row['cache']]=z[row['source']]
+        old=z.copy();arrival=tick-delay
         selected=[row['edge'] for row in routes if arrival==0 or arrival==2 and row['edge']==1]
         incoming=old[v][np.asarray(syn.j[:],dtype=int)] if accumulator_input else np.asarray(weights[gain]) if coefficient else old[h]
         if scalar:
@@ -102,7 +106,13 @@ def reference(data,mode,delay,weights,window,initial=None,anchors=None,coefficie
                     value=.7*incoming[chosen]
                 else:value=.7*incoming[edge]
                 z[h[edge]]=old[h[edge]]+gate*(value-old[h[edge]])
-                if mode=='vectorised':z[v[0]]+=gate*weights[gain][edge]*value
+            if mode=='vectorised':
+                tail=paths[1]
+                for row in bundle.provenance['event_callback_snapshots'].get(tail,[]):z[row['cache']]=z[row['source']]
+                scatter_old=z.copy()
+                for row in bundle.provenance['delay_queues'][tail]['new']:
+                    edge=row['edge'];gate=scatter_old[row['states'][0]] if delay else float(edge in selected)
+                    z[v[0]]+=gate*weights[gain][edge]*scatter_old[h[edge]]
         for queue in bundle.provenance['delay_queues'].values():
             for row in queue['new']:
                 cells=row['states']

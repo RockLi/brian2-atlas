@@ -66,7 +66,7 @@ def prepare_effect_event(syn,path,code,variables):
                             if mode!='vectorised' or statement.inplace and indices[statement.var]!='_idx')
         part_guards={name:flag for name,flag in part_conditions.items() if name in guarded_writes}
         part_accum=tuple(dict.fromkeys(statement.var for statement in statements
-                         if statement.var in variables and statement.inplace and indices[statement.var]!='_idx'))
+                         if statement.var in variables and statement.inplace and indices[statement.var]!='_idx')) if mode=='vectorised' else ()
         code_part=source([*scalar,*statements])
         replay_fields={};replay_code=[];replay_noise={};replay_guards={}
         if replay:

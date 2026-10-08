@@ -236,6 +236,9 @@ class Effects:
         self.selected_vector_keys=set()
         self.vector_record_guard=None
         self.whole_selection_keys=set()
+        self.selected_call_presence=None
+        self.selected_write_scope=False
+        self.selected_operand_copies=set()
 
     def materialize(self,value):
         if isinstance(value,ArrayCell) and value.columns is not None:value=value.columns[value.column]
@@ -270,6 +273,7 @@ class Effects:
                 ordinal,selected_count=self.selected_vector_output
                 nonempty=ast.Compare(left=copy.deepcopy(selected_count),ops=[ast.Gt()],comparators=[ast.Constant(0)])
                 if fixed_vectors:
+                    if self.selected_call_presence is not None:nonempty=copy.deepcopy(self.selected_call_presence)
                     valid=ast.BoolOp(op=ast.Or(),values=[ast.Compare(left=copy.deepcopy(selected_count),ops=[ast.Eq()],comparators=[ast.Constant(1)]),
                         ast.Compare(left=copy.deepcopy(selected_count),ops=[ast.Eq()],comparators=[ast.Constant(count)])])
                     check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(test=valid,body=ast.Constant(1.),orelse=ast.Constant(0.)))
@@ -290,6 +294,11 @@ class Effects:
                 self.vector_record_guard=(ast.BoolOp(op=ast.And(),values=[
                     ast.Compare(left=copy.deepcopy(selected_count),ops=[ast.Gt()],comparators=[ast.Constant(0)]),
                     ast.Compare(left=copy.deepcopy(ordinal),ops=[ast.Eq()],comparators=[ast.Constant(j)])]),check)
+            if self.selected_write_scope and self.selected_vector_output is not None:
+                ordinal,selected_count=self.selected_vector_output
+                self.vector_record_guard=(ast.BoolOp(op=ast.And(),values=[
+                    ast.Compare(left=copy.deepcopy(selected_count),ops=[ast.Gt()],comparators=[ast.Constant(0)]),
+                    ast.Compare(left=copy.deepcopy(ordinal),ops=[ast.Eq()],comparators=[ast.Constant(j)])]),ast.Constant(1.))
             try:expressions.append(self.expression(part,scope))
             finally:self.vector_record_guard=previous
         dtype=self.dtype(expressions[column]);parts=tuple(ArrayCell(self.materialize(v),dtype=dtype,zero_dim=True) for v in expressions)
@@ -400,6 +409,8 @@ class Effects:
             if node.id not in environment:raise ValueError('unknown effect name: '+node.id)
             if type(environment[node.id]) in self.callable_types:raise ValueError('effect callable used as a value')
             value=environment[node.id]
+            if environment is self.environment and node.id in self.selected_operand_copies:
+                return copy.deepcopy(value)
             if node.id in self.indexed_reads:
                 if not isinstance(value,ArrayCell) or value.zero_dim:
                     raise ValueError('NumPy conditional indexing requires a vector value: '+node.id)
@@ -583,7 +594,7 @@ class Effects:
                     if dynamic_shape is not None:
                         check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(test=dynamic_shape,body=ast.Constant(1.),orelse=ast.Constant(0.)))
                         previous=self.vector_record_guard
-                        self.vector_record_guard=(ast.Compare(left=copy.deepcopy(count),ops=[ast.Gt()],comparators=[ast.Constant(0)]),ast.Constant(1.),True)
+                        self.vector_record_guard=(copy.deepcopy(self.selected_call_presence) if self.selected_call_presence is not None else ast.Compare(left=copy.deepcopy(count),ops=[ast.Gt()],comparators=[ast.Constant(0)]),ast.Constant(1.),True)
                         try:self.record(check)
                         finally:self.vector_record_guard=previous
                 if left.length is not None and isinstance(value,ArrayCell) and value.length is not None and left.length!=value.length:
@@ -626,12 +637,21 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                                    copied_array_states=(), reload_arrays_each_statement=False,array_callables=(),
                                    write_guards=None,indexed_guard_reads=(),scalar_write_guards=False,parameter_types=None,
                                    predicate_outputs=None,scalar_eager=False,eager_guard=None,empty_vector=False,
-                                   unconditional_states=(),retained_array_states=(),unconditional_parameters=(),whole_eager=False,array_aliases=None,capture_vectors=None,selected_output=None,copied_array_sources=None,selected_vectors=None,selected_accumulators=(),separate_whole_eager=False):
+                                   unconditional_states=(),retained_array_states=(),unconditional_parameters=(),whole_eager=False,array_aliases=None,capture_vectors=None,selected_output=None,copied_array_sources=None,selected_vectors=None,selected_accumulators=(),separate_whole_eager=False,selected_call_presence=None,selected_guards=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=()):
     """Compose state-effect callbacks into the existing native action ABI."""
     from .training_equations import StateSlot, RefractoryActive, _compile_training_ast
     states=dict(states);parameters=dict(parameters);types={} if state_types is None else dict(state_types)
     copied_array_sources={} if copied_array_sources is None else dict(copied_array_sources)
     selected_accumulators=set(selected_accumulators)
+    selected_guards={} if selected_guards is None else dict(selected_guards)
+    copied_array_aliases={} if copied_array_aliases is None else dict(copied_array_aliases)
+    if not set(retained_copied_outputs)<=set(copied_array_states) or any(name not in copied_array_states or source not in copied_array_states for name,source in copied_array_aliases.items()):
+        raise ValueError('caller aliases and retained outputs require copied arrays')
+    if (selected_guards and selected_output is None or
+            any(name not in copied_array_states or gate not in states or types.get(states[gate])!='boolean' for name,gate in selected_guards.items())):
+        raise ValueError('selected guards require detached Boolean batch masks')
+    if selected_call_presence is not None and (selected_output is None or not isinstance(selected_call_presence,ast.expr)):
+        raise ValueError('selected call presence requires a batch condition expression')
     if selected_accumulators and (not reload_arrays_each_statement or not selected_accumulators<=set(copied_array_states)):
         raise ValueError('live accumulation requires copied per-statement state operands')
     if (not set(copied_array_sources)<=set(copied_array_states) or
@@ -697,6 +717,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
     engine.validate_empty_arrays=scalar_eager
     engine.selected_vector_inputs=(set(array_states)|set(array_parameters))-(set(unconditional_states)|set(unconditional_parameters))
     engine.selected_vector_output=selected_output
+    engine.selected_call_presence=selected_call_presence
     physical=None
     if physical_slots is not None:
         physical=dict(physical_slots)
@@ -736,6 +757,8 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             raise ValueError('capture vectors require whole physical or readonly parameter columns')
         engine.capture_vectors[name]=(tuple(engine.environment[source] for source in group),group.index(name))
     selected_vectors={} if selected_vectors is None else dict(selected_vectors)
+    if not set(selected_row_operands)<=set(selected_vectors) or selected_row_operands and not selected_guards:
+        raise ValueError('row operands require masked compact batch vectors')
     if selected_vectors and selected_output is None:raise ValueError('whole selected operands require arrival shape metadata')
     for name,expressions in selected_vectors.items():
         if name not in set(copied_array_states)|set(temporary_parameters) or type(expressions) is not tuple or not expressions or not all(isinstance(v,ast.expr) for v in expressions):
@@ -744,6 +767,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         parts=tuple(ArrayCell(copy.deepcopy(value),dtype=root.dtype,zero_dim=True) for value in expressions)
         engine.environment[name]=ArrayCell(engine.materialize(parts[0]),dtype=root.dtype,length=len(parts),columns=parts,selection_shape=True)
         engine.whole_selection_keys.update(ast.dump(value,include_attributes=False) for value in expressions)
+    for name,source in copied_array_aliases.items():engine.environment[name]=engine.environment[source]
     guarded_prefix=[];assignment_types={};projected_keys=set();selected_output_lengths=set()
     def output_value(name,value):
         if selected_output is None or name not in copied_array_states or not isinstance(value,ArrayCell) or value.columns is None:
@@ -765,6 +789,13 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             if value.selection_shape:
                 check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(
                     test=ast.Compare(left=copy.deepcopy(count),ops=[ast.LtE()],comparators=[ast.Constant(size)]),body=ast.Constant(1.),orelse=ast.Constant(0.)))
+            elif selected_call_presence is not None:
+                check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(
+                    test=ast.Compare(left=copy.deepcopy(count),ops=[ast.Eq()],comparators=[ast.Constant(size)]),body=ast.Constant(1.),orelse=ast.Constant(0.)))
+                previous=engine.vector_record_guard
+                engine.vector_record_guard=(copy.deepcopy(selected_call_presence),ast.Constant(1.),True)
+                try:engine.record(check)
+                finally:engine.vector_record_guard=previous
         result=ast.Call(func=ast.Name(id='_b2_where',ctx=ast.Load()),args=[check,result,copy.deepcopy(result)],keywords=[])
         projected_keys.add(ast.dump(result,include_attributes=False))
         return result
@@ -773,7 +804,28 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         gate=write_guards.get(target)
         first=len(engine.executed)
         if gate is None:
-            engine.statement(statement,engine.environment,physical=True)
+            if selected_guards and isinstance(statement,ast.AugAssign) and target in copied_array_states:
+                # Evaluate all RHS callbacks once against the compact masked
+                # batch. The subsequent local/LHS operation belongs to this
+                # selected row, including a live repeated-target accumulator.
+                temporary='_b2_selected_write_rhs'
+                while temporary in engine.environment:temporary+='_'
+                # Boolean advanced indexing makes each callback argument an
+                # independent array. Its in-place mutations cannot change the
+                # caller's local array, or the LHS slice already read by +=.
+                # Keep the returned mutated argument and physical captures.
+                selected_locals=copy.deepcopy({name:engine.environment[name] for name in copied_array_states})
+                previous_copies=engine.selected_operand_copies
+                engine.selected_operand_copies=set(copied_array_states)|set(temporary_parameters)
+                try:right=engine.expression(statement.value,engine.environment)
+                finally:engine.selected_operand_copies=previous_copies
+                engine.environment.update(selected_locals)
+                engine.environment[temporary]=right
+                staged=copy.deepcopy(statement);staged.value=ast.Name(id=temporary,ctx=ast.Load())
+                previous=engine.selected_write_scope;engine.selected_write_scope=True
+                try:engine.statement(staged,engine.environment,physical=True)
+                finally:engine.selected_write_scope=previous;del engine.environment[temporary]
+            else:engine.statement(statement,engine.environment,physical=True)
             value=engine.environment.get(target)
             if selected_output is None and target in copied_array_states and isinstance(value,ArrayCell) and value.columns is not None and len(value.columns)>1:
                 raise ValueError('whole capture return requires selection-aware array writeback')
@@ -905,6 +957,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         effect_slots=engine.effect_writes
         written={states[name] for name in explicit}|effect_slots
     if not written:raise ValueError('state effect action must write persistent state')
+    written|={states[name] for name in retained_copied_outputs}
     bindings={**scalar_parameters,**{'_b2_effect_context_'+str(slot):StateSlot(slot,types.get(slot,'float')) for slot in states.values()}}
     class Inputs(ast.NodeTransformer):
         def visit_Name(self,node):
@@ -915,6 +968,15 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         return _compile_training_ast(expression,parameters=bindings,states=['v'],allow_select=True,typed=bool(types) or selected_output is not None,deduplicate=True,
                                      predicate_surrogate=predicate)
     vector_names=set(array_states)|set(array_parameters)|set(array_callables)
+    row_parts={ast.dump(part,include_attributes=False):name for name in selected_row_operands for part in selected_vectors[name]}
+    row_part_types={type(part) for name in selected_row_operands for part in selected_vectors[name]}
+    def row_expression(expression):
+        if not row_parts:return expression
+        class RowOperands(ast.NodeTransformer):
+            def visit(self,node):
+                name=row_parts.get(ast.dump(node,include_attributes=False)) if type(node) in row_part_types else None
+                return ast.copy_location(ast.Name(id=name,ctx=ast.Load()),node) if name is not None else super().visit(node)
+        return RowOperands().visit(copy.deepcopy(expression))
     eager_expressions=guarded_prefix if write_guards else engine.executed
     prefix=[compile_value(ast.IfExp(test=ast.Name(id=eager_guard,ctx=ast.Load()),body=expression,orelse=ast.Constant(0.))
                           if eager_guard is not None and any(isinstance(node,ast.Name) and node.id in vector_names for node in ast.walk(expression))
@@ -988,9 +1050,9 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             # using the same input snapshot and presence gate. Selected actions
             # need only their selected eager work and returned row expression.
             # Duplicating whole roots here can overflow the fixed program ABI.
-            prefix=[compile_value(ast.IfExp(test=ast.Name(id=eager_guard,ctx=ast.Load()),body=expression,orelse=ast.Constant(0.))
+            prefix=[compile_value(ast.IfExp(test=ast.Name(id=eager_guard,ctx=ast.Load()),body=row_expression(expression),orelse=ast.Constant(0.))
                 if eager_guard is not None and any(isinstance(node,ast.Name) and node.id in vector_names for node in ast.walk(expression))
-                else expression) for expression in eager_expressions if dependencies(expression)&selected_names]
+                else row_expression(expression)) for expression in eager_expressions if dependencies(expression)&selected_names]
     for slot in ([] if empty_vector else targets):
         if physical is not None and slot in effect_slots:
             value=engine.materialize(cells[physical[slot]])
@@ -1007,6 +1069,11 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         else:
             if dependencies(value)&full_names and not (selected_output is not None and dependencies(value)&full_names<=singleton_names):
                 raise ValueError('reset output cannot broadcast a whole capture into an event selection')
+            name=next((name for name,gate in selected_guards.items() if states[name]==slot),None)
+            expression=row_expression(expression)
+            if name is not None:
+                expression=ast.IfExp(test=ast.Name(id=selected_guards[name],ctx=ast.Load()),body=expression,
+                                     orelse=ast.Name(id=name,ctx=ast.Load()))
             programs.append(joined(expression,predicate_outputs.get(slot)))
     scalar_programs=[]
     if scalar_eager:

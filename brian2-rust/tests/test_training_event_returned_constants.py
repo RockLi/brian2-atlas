@@ -53,23 +53,39 @@ def reference(data,mode,kind,weights,window,initial=None,anchors=None):
             if ref is not None:z[cell]=weights[ref[0]][ref[1]]
     layout=bundle.provenance['neuron_state_layout'][g.name];v=layout['v'];u=layout['u'];fields=bundle.provenance['dynamic_state_layout'][syn.name];h=fields['h'];gain=fields.get('gain')
     bank=next(row['bank'] for row in bundle.provenance['bindings'] if row['object']==syn.name and row['variables']==['gain'])
-    path=bundle.provenance['event_callback_stage_groups'][syn.pre.name][1];routes=bundle.provenance['delay_queues'][path]['new']
+    paths=bundle.provenance['event_callback_stage_groups'][syn.pre.name][1:]
+    separate_copy=mode=='vectorised' and kind=='written_copy'
+    assert len(paths)==(3 if separate_copy else 2 if mode=='vectorised' else 1)
+    routes=bundle.provenance['delay_queues'][paths[0]]['new']
     before=[];margins=[];hard=[];spikes=[]
     for tick in range(4):
         if anchors is not None and window and tick and tick%window==0:z=anchors['before'][tick].copy()
         before.append(z.copy());z[v]+=.2*z[u];margin=z[v]-.5;event=(margin>0).astype(float);margins.append(margin.copy());hard.append(event.copy())
         if anchors is not None:
             old=anchors['margins'][tick];event=anchors['hard'][tick]+p['surrogate']['scale']/(1+p['surrogate']['slope']*abs(old))**2*(margin-old)
-        spikes.append(event.copy());old=z.copy();coefficient=old[gain] if gain is not None else np.array(weights[bank]);active=tick in (1,3)
+        spikes.append(event.copy())
+        for row in bundle.provenance['event_callback_snapshots'].get(paths[0],[]):z[row['cache']]=z[row['source']]
+        old=z.copy();coefficient=old[gain] if gain is not None else np.array(weights[bank]);active=tick in (1,3)
         # Brian rewrites tmp=tmp+.1 as tmp+=.1 in this generated block.
         # Both saved and tmp consequently retain the physical capture alias.
         changed=(coefficient+.1)*.8 if kind=='rebind' else coefficient*.8 if gain is not None else coefficient.copy()
-        returned=(.8*(coefficient[::-1]+.1) if kind=='copy' else changed[::-1] if kind=='rebind' else .8*coefficient[::-1])
+        returned=(coefficient[::-1] if separate_copy else .8*(coefficient[::-1]+.1) if kind=='copy' else changed[::-1] if kind=='rebind' else .8*coefficient[::-1])
         if active and gain is not None:z[gain]=changed
         for ordinal,row in enumerate(routes):
             edge=row['edge'];gate=old[row['states'][0]];value=returned[ordinal if active else 0]
             z[h[edge]]=old[h[edge]]+gate*(value-old[h[edge]])
-            if mode=='vectorised':z[u[0]]+=gate*changed[edge]*value
+        if separate_copy:
+            for row in bundle.provenance['event_callback_snapshots'].get(paths[1],[]):z[row['cache']]=z[row['source']]
+            old=z.copy()
+            for row in bundle.provenance['delay_queues'][paths[1]]['new']:
+                edge=row['edge'];gate=old[row['states'][0]]
+                z[h[edge]]+=gate*(.8*old[h[edge]]-old[h[edge]])
+        if mode=='vectorised':
+            for row in bundle.provenance['event_callback_snapshots'].get(paths[-1],[]):z[row['cache']]=z[row['source']]
+            old=z.copy();coefficient=old[gain] if gain is not None else np.array(weights[bank])
+            for row in bundle.provenance['delay_queues'][paths[-1]]['new']:
+                edge=row['edge'];gate=old[row['states'][0]]
+                z[u[0]]+=gate*coefficient[edge]*old[h[edge]]
         for layout in bundle.provenance['delay_queues'].values():
             for row in layout['new']:
                 cells=row['states']

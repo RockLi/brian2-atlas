@@ -1174,19 +1174,63 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
     batch_capture_programs={}
     batch_capture_checks={}
     batch_arrival_rows={}
+    batch_filtered_rows={}
+    batch_array_locals={}
+    batch_random_fields={}
+    batch_compacted_random={}
+    batch_caller_locals={}
 
     def build_synaptic(syn,edge,code,*,trigger=None,streams=(),owner=None,pathway=None,
                        noise_domain=None,event_noise=None):
         info=syn_info[syn.name];pre=int(info['source'][edge]);post=int(info['target'][edge])
         original_pathway=event_path_origins.get(pathway,pathway)
+        caller_batch=batch_caller_locals.get(original_pathway)
+        caller_spec=event_effect_modes.get(pathway,{})
+        caller_row=None
+        def caller_destination(name):
+            if caller_row is None or name not in caller_spec.get('local_outputs',{}):return None
+            if name in caller_spec.get('local_physical_outputs',()):return address(syn,name,edge)
+            return caller_row[caller_spec['local_outputs'][name]]
+        if caller_batch is not None and pathway not in batch_presence_stages:
+            key=('pending',event_noise['pending']) if event_noise and 'pending' in event_noise else ('new',edge)
+            caller_row=caller_batch['rows'][key]
+            if caller_spec.get('publish_caller_locals'):
+                winners={address(syn,name,edge):caller_row[caller_batch['trace']['final'][name]] for name in caller_batch['writes']}
+                destinations=list(winners);sources=list(winners.values())
+                action=dict(owner=endpoint_owner(info['target_group'],post),reads=[*sources,*destinations],writes=destinations,
+                            program_set=program_set([[dict(op='integer_state' if source in integer_states else 'state',index=k)] for k,source in enumerate(sources)]),threshold=None,trigger=trigger,mask=edge_mask(info,edge))
+                if trigger is not None and trigger.get('state'):action['reads'].append(trigger['index'])
+                actions.append(action);return action
+        local_batch=batch_array_locals.get(original_pathway)
+        local_row=None
+        if local_batch is not None:
+            key=('pending',event_noise['pending']) if event_noise and 'pending' in event_noise else ('new',edge)
+            local_row=local_batch['rows'][key]
+            if event_effect_modes.get(pathway,{}).get('publish_array_locals'):
+                winners={}
+                for name in local_batch['writes']:
+                    origin,cache=local_row[name];winners[origin]=cache
+                destinations=list(winners);sources=list(winners.values())
+                reads=[*sources,*destinations]
+                programs=[[dict(op='integer_state' if source in integer_states else 'state',index=j)] for j,source in enumerate(sources)]
+                action=dict(owner=endpoint_owner(info['target_group'],post),reads=reads,writes=destinations,
+                            program_set=program_set(programs),threshold=None,trigger=trigger,mask=edge_mask(info,edge))
+                if trigger is not None and trigger.get('state'):reads.append(trigger['index'])
+                actions.append(action);return action
         if pathway in batch_presence_stages:
             cell=batch_presence_stages[pathway]
             rows=batch_arrival_rows[pathway]
             key=('pending',event_noise['pending']) if event_noise and 'pending' in event_noise else ('new',edge)
             row=next(item['cell'] for item in rows if item['key']==key)
-            action=dict(owner=endpoint_owner(info['target_group'],post),reads=[cell,row],writes=[cell,row],
-                        program_set=program_set([[dict(op='constant',value=1.)],[dict(op='constant',value=1.)]]),threshold=None,
+            random_batch=batch_random_fields.get(pathway)
+            random_cells=[] if random_batch is None else list(random_batch['rows'][key].values())
+            random_programs=[] if random_batch is None else [[dict(op='uniform_noise' if draw['kind']=='rand' else 'noise',stream=draw['stream'])] for draw in random_batch['draws']]
+            action=dict(owner=endpoint_owner(info['target_group'],post),reads=[cell,row,*random_cells],writes=[cell,row,*random_cells],
+                        program_set=program_set([[dict(op='constant',value=1.)],[dict(op='constant',value=1.)],*random_programs]),threshold=None,
                         trigger=trigger,detach_trigger=True,mask=edge_mask(info,edge))
+            if random_batch is not None:
+                action.update(noise_domain=scheduled_noise_domains[pathway],noise_entity=edge,
+                              noise_streams=len(random_batch['draws']),event_noise=dict(event_noise))
             if trigger is not None and trigger.get('state'):action['reads'].append(trigger['index'])
             actions.append(action);return actions[-1]
         tree=ast.parse(code,mode='exec');used_names={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}
@@ -1202,7 +1246,17 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             # must not observe each other's local assignments immediately.
             if name not in names:
                 names[name]=len(reads);reads.append(index)
+                if local_row is not None and name in local_row:
+                    require(descriptor is None,'function',syn,'batch local arrays require fixed addresses')
+                    reads[-1]=local_row[name][1]
                 if descriptor is not None:indexed[names[name]]=descriptor
+        if caller_row is not None:
+            for name,token in caller_spec.get('local_inputs',{}).items():
+                bind(name,address(syn,name,edge) if name in caller_spec.get('accum',()) else caller_row[token])
+        random_batch=batch_random_fields.get(original_pathway)
+        if random_batch is not None:
+            key=('pending',event_noise['pending']) if event_noise and 'pending' in event_noise else ('new',edge)
+            for name,cell in random_batch['rows'][key].items():bind(name,cell)
         for name,indices in info['runtime'].items():
             descriptor=index_descriptor(syn,name,edge)
             bind(name,indices[0 if len(indices)==1 else edge],descriptor)
@@ -1268,6 +1322,8 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             parameters[name]=(int(values[index]) if _state_dtype(syn.variables[name])=='integer' else bool(values[index]) if _state_dtype(syn.variables[name])=='boolean' else float(values[index])) if bank is None else typed_parameter(bank,index,_state_dtype(syn.variables[name]))
         for name in sorted(info['constant_links']):
             parameters[name]=constant_parameter(syn,name,edge)
+        if caller_row is not None:
+            for name in names:parameters.pop(name,None)
         replay_noise=event_effect_modes.get(pathway,{}).get('replay_noise',{})
         for alias,draw in replay_noise.items():
             parameters[alias]=(PoissonNoise if draw['kind']=='poisson' else NormalNoise if draw['kind']=='randn' else UniformNoise)(draw['stream'])
@@ -1415,9 +1471,11 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                  for target,gate in guards.items()}
                     created=({node.id for node in ast.walk(tree) if isinstance(node,ast.Name) and isinstance(node.ctx,ast.Store)}-set(names))&set(spec['indexed_locals'])
                     if capture_fields and spec['mode']!='scalar':
-                        require(pathway in batch_capture_gates and not guard_names and not spec.get('replay_fields')
+                        require(pathway in batch_capture_gates and not spec.get('replay_fields')
                                 and not draws and not replay_noise and not any(type(value) is PoissonNoise for value in parameters.values()),
-                                'function',syn,'batch captures require independent unguarded non-replayed statements')
+                                'function',syn,'batch captures require independent non-replayed statements')
+                        require(not guard_names or len(tree.body)==1 and len(set(guard_names.values()))==1,
+                                'function',syn,'masked batch captures require one statement selection')
                         # Whole capture writes precede the selected actions.
                         # Accumulators read their live physical destination;
                         # callback operands and capture expressions use the
@@ -1433,8 +1491,45 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                             names[name]=len(reads);reads.append(row['cell']);row_names.append(name)
                         def row_sum(selected):
                             expression=ast.Constant(0.)
-                            for name in selected:expression=ast.BinOp(left=expression,op=ast.Add(),right=ast.Name(id=name,ctx=ast.Load()))
+                            for name in selected:
+                                value=ast.Call(func=ast.Name(id='_b2_float',ctx=ast.Load()),args=[copy.deepcopy(name)],keywords=[]) if isinstance(name,ast.expr) else ast.Name(id=name,ctx=ast.Load())
+                                expression=ast.BinOp(left=expression,op=ast.Add(),right=value)
                             return expression
+                        selected_rows=row_names
+                        selected_ordinals=None;selected_count=None
+                        call_presence=None
+                        if guard_names:
+                            target=next(iter(guard_names));condition=syn.variables[target].conditional_write
+                            if pathway not in batch_filtered_rows:
+                                controls=[]
+                                check_budget((2*len(rows)+1)*64)
+                                require(len(initial)+2*len(rows)+1<=1_000_000,'budget',syn,'filtered callback state budget exceeded')
+                                for row in rows:
+                                    cell=address(syn,condition_indices[condition.name],row['edge'],table=condition_storage[id(resolved_conditions[condition.name])])
+                                    require(isinstance(cell,int),'function',syn,'masked callback operands require fixed refractory addresses')
+                                    effective=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(True);binary_states.append(effective)
+                                    prefix=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(True)
+                                    controls.append(dict(presence=row['cell'],mask=cell,effective=effective,prefix=prefix))
+                                count=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(True)
+                                batch_filtered_rows[pathway]=dict(rows=controls,count=count)
+                            filtered=batch_filtered_rows[pathway]
+                            selected_rows=[]
+                            selected_ordinals=[]
+                            for i,row in enumerate(filtered['rows']):
+                                name='_b2_event_mask_'+str(i)
+                                require(name not in names and name not in parameters,'function',syn,'reserved selected event mask name')
+                                names[name]=len(reads);reads.append(row['effective']);selected_rows.append(ast.Name(id=name,ctx=ast.Load()))
+                                name='_b2_event_filtered_prefix_'+str(i)
+                                require(name not in names and name not in parameters,'function',syn,'reserved event prefix name')
+                                names[name]=len(reads);reads.append(row['prefix']);selected_ordinals.append(ast.Name(id=name,ctx=ast.Load()))
+                            name='_b2_event_filtered_count'
+                            require(name not in names and name not in parameters,'function',syn,'reserved event count name')
+                            names[name]=len(reads);reads.append(filtered['count']);selected_count=ast.Name(id=name,ctx=ast.Load())
+                            name='_b2_event_callback_presence'
+                            require(name not in names and name not in parameters,'function',syn,'reserved callback presence name')
+                            names[name]=len(reads);reads.append(batch_capture_gates[pathway])
+                            call_presence=ast.Name(id=name,ctx=ast.Load())
+                        row_operands=set()
                         def selected_vector_factory(vector_names,vector_reads,vector_parameters,vector_types,size):
                             require(original_pathway not in info['path_runtime'],'function',syn,
                                     'whole selected operands require fixed delay routing')
@@ -1444,8 +1539,11 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 if isinstance(call,ast.Call) and isinstance(call.func,ast.Name)
                                 and type(parameters.get(call.func.id)) is StateEffectFunction
                                 for argument in call.args for item in ast.walk(argument) if isinstance(item,ast.Name)}
+                            actual_callback_operands=set(callback_operands)
+                            if guard_names:
+                                callback_operands.update(item.id for item in ast.walk(tree) if isinstance(item,ast.Name) and isinstance(item.ctx,ast.Load))
                             for operand in sorted((array_names|parameter_arrays)&callback_operands):
-                                if operand not in syn.variables:continue
+                                if operand not in syn.variables and (random_batch is None or operand not in random_batch['rows'][key]) and operand not in caller_spec.get('local_inputs',{}):continue
                                 lane_values=[]
                                 for lane,row in enumerate(rows):
                                     source='_b2_event_operand_'+operand+'_'+str(lane)
@@ -1459,14 +1557,19 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                             values=np.asarray(variable.get_value()).reshape(-1)
                                             index=address(syn,operand,row['edge'],table=list(range(len(values))))
                                             require(isinstance(index,int),'function',syn,'whole selected coefficients require fixed indices')
-                                            vector_parameters[source]=values[index].item()
+                                            entry=info['params'].get(operand)
+                                            vector_parameters[source]=typed_parameter(entry[1],index,_state_dtype(variable)) if entry is not None and entry[1] is not None else values[index].item()
                                     else:
-                                        cell=address(syn,operand,row['edge'])
+                                        cell=(caller_batch['rows'][row['key']][caller_spec['local_inputs'][operand]] if caller_batch is not None and operand in caller_spec.get('local_inputs',{})
+                                              else random_batch['rows'][row['key']][operand] if random_batch is not None and operand in random_batch['rows'][row['key']]
+                                              else address(syn,operand,row['edge']))
                                         require(isinstance(cell,int),'function',syn,'whole selected operands require fixed physical addresses')
+                                        if local_batch is not None and operand in local_batch['rows'][row['key']]:
+                                            cell=local_batch['rows'][row['key']][operand][1]
                                         vector_names[source]=len(vector_reads);vector_reads.append(cell)
                                         vector_types[vector_names[source]]='integer' if cell in integer_states else 'boolean' if cell in binary_states else 'float'
                                     lane_values.append(ast.Name(id=source,ctx=ast.Load()))
-                                columns=[];count=row_sum(row_names)
+                                columns=[];count=copy.deepcopy(selected_count) if selected_count is not None else row_sum(selected_rows)
                                 for column in range(size):
                                     # A single selected row broadcasts; otherwise
                                     # compact the actual arrival lanes by ordinal.
@@ -1474,19 +1577,46 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                     value=ast.Name(id=operand,ctx=ast.Load())
                                     for lane in reversed(range(len(rows))):
                                         condition=ast.BoolOp(op=ast.And(),values=[
-                                            ast.Name(id=row_names[lane],ctx=ast.Load()),
-                                            ast.Compare(left=row_sum(row_names[:lane]),ops=[ast.Eq()],comparators=[copy.deepcopy(wanted)])])
+                                            copy.deepcopy(selected_rows[lane]) if isinstance(selected_rows[lane],ast.expr) else ast.Name(id=selected_rows[lane],ctx=ast.Load()),
+                                            ast.Compare(left=copy.deepcopy(selected_ordinals[lane]) if selected_ordinals is not None else row_sum(selected_rows[:lane]),ops=[ast.Eq()],comparators=[copy.deepcopy(wanted)])])
                                         value=ast.IfExp(test=condition,body=copy.deepcopy(lane_values[lane]),orelse=value)
                                     columns.append(ast.Call(func=ast.Name(id='_b2_where',ctx=ast.Load()),args=[ast.Constant(1.),value,copy.deepcopy(value)],keywords=[]))
+                                if random_batch is not None:
+                                    from .training_equations import StateSlot,_compile_training_ast
+                                    compact=[]
+                                    for expression in columns:
+                                        inputs=sorted({node.id for node in ast.walk(expression) if isinstance(node,ast.Name)}&vector_names.keys())
+                                        context=[vector_reads[vector_names[name]] for name in inputs]
+                                        bindings={**vector_parameters,**{name:StateSlot(slot,vector_types.get(vector_names[name],'float')) for slot,name in enumerate(inputs)}}
+                                        program=_compile_training_ast(expression,parameters=bindings,states=['v'],typed=True,allow_select=True,deduplicate=True)
+                                        check_budget(64);target=len(initial)
+                                        require(target<1_000_000,'budget',syn,'compacted random state budget exceeded')
+                                        dtype=_state_dtype(syn.variables[operand]) if operand in syn.variables else 'float'
+                                        initial.append(0.);initial_parameters.append(None);detached.append(dtype!='float')
+                                        if dtype=='integer':integer_states.add(target)
+                                        if dtype=='boolean':binary_states.append(target)
+                                        batch_compacted_random.setdefault(pathway,[]).append((target,context,program))
+                                        source='_b2_compacted_random_'+str(target)
+                                        vector_names[source]=len(vector_reads);vector_reads.append(target);vector_types[vector_names[source]]=dtype
+                                        compact.append(ast.Name(id=source,ctx=ast.Load()))
+                                    columns=compact
                                 result[operand]=tuple(columns)
+                                if guard_names and operand not in actual_callback_operands:row_operands.add(operand)
                             require(len(vector_reads)<=64,'budget',syn,'whole selected operands exceed 64 context slots')
                             return result
+                        local_aliases={};canonical_locals={}
+                        if caller_row is not None:
+                            for name in sorted(array_names):
+                                cell=reads[names[name]];source=canonical_locals.setdefault(cell,name)
+                                if source!=name:local_aliases[name]=source
                         transform,names,event_capture_slots=compile_batch_event_captures(ast.unparse(tree),names,reads,parameters,capture_fields,
                             state_types={slot:'integer' if index in integer_states else 'boolean' if index in binary_states else 'float' for slot,index in enumerate(reads)},
                             array_names=array_names,parameter_arrays=parameter_arrays,
                             parameter_types={name:_state_dtype(syn.variables[name]) for name in parameter_arrays},reload=spec['mode']=='vectorised',typed_parameter=typed_parameter,
-                            selected_output=(row_sum(row_names[:selected_row]),row_sum(row_names)),selected_vector_factory=selected_vector_factory,
-                            selected_accumulators=set(spec['accum'])&array_names if spec['mode']=='vectorised' else ())
+                            selected_output=(copy.deepcopy(selected_ordinals[selected_row]) if selected_ordinals is not None else row_sum(selected_rows[:selected_row]),copy.deepcopy(selected_count) if selected_count is not None else row_sum(selected_rows)),selected_vector_factory=selected_vector_factory,
+                            selected_accumulators=set(spec['accum'])&array_names if spec['mode']=='vectorised' else (),
+                            selected_guards=guard_names,selected_call_presence=call_presence,selected_row_operands=row_operands,
+                            copied_array_aliases=local_aliases,retained_copied_outputs=caller_spec.get('retained_local_outputs',()))
                         require(not any(length>1 for length in transform['selected_output_lengths']) or original_pathway not in info['path_runtime'],
                                 'function',syn,'multi-column event returns require fixed delay routing')
                         if transform['unconditional_checks'] and pathway not in batch_capture_checks:
@@ -1540,11 +1670,15 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             winners={}
             capture_names=[name for name,slot in names.items() if slot in event_capture_slots]
             locals_.update(capture_names)
+            locals_.update(caller_spec.get('retained_local_outputs',()))
             order=([*capture_names,*event_effect_modes[pathway]['writes']] if pathway in event_effect_modes else sorted(locals_&names.keys()))
             available=set(transform['writes'])
             for name in order:
-                if name in names and name in locals_ and names[name] in available:winners[reads[names[name]]]=names[name]
-            outputs=[(slot,program) for slot,program in zip(transform['writes'],transform['programs']) if winners[reads[slot]]==slot]
+                if name in names and name in locals_ and names[name] in available:
+                    destination=caller_destination(name);target=reads[names[name]] if destination is None else destination
+                    winners[target]=names[name]
+            output_targets={slot:caller_destination(name) for name,slot in names.items() if caller_destination(name) is not None}
+            outputs=[(slot,program) for slot,program in zip(transform['writes'],transform['programs']) if winners[output_targets.get(slot,reads[slot])]==slot]
         transform['writes']=[slot for slot,_ in outputs];transform['programs']=[program for _,program in outputs]
         transform['programs']=resolve_parameters(transform['programs'],edge,reads,indexed)
         transform['context_size']=len(reads)
@@ -1555,6 +1689,11 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                       noise_domain=(noise_domain if noise_domain is not None else scheduled_noise_domains.get(original_pathway,info['domain'])) if explicit_streams or replay_noise else info['domain'],
                                       noise_entity=edge,noise_streams=max(event_effect_modes.get(pathway,{}).get('stream_offset',0)+len(streams)+len(explicit_streams) if explicit_streams or streams else 0,
                                           max((draw['stream']+1 for draw in replay_noise.values()),default=0)),mask=mask)
+        if caller_row is not None:
+            for k,slot in enumerate(transform['writes']):
+                target=output_targets.get(slot,action['writes'][k]);action['writes'][k]=target
+                if target not in action['reads']:action['reads'].append(target)
+            require(len(action['reads'])<=64,'budget',syn,'caller local destinations exceed 64 context slots')
         if pathway is not None and action['noise_streams']:
             require(event_noise is not None,'noise',syn,'event draws require a persistent emission identity')
             action['event_noise']=dict(event_noise)
@@ -1575,7 +1714,13 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
     def snapshot_event_batch(start,end,pathway):
         selected=[action for action in actions[start:end] if id(action) in event_effect_actions]
         if not selected:return 0
-        origins=sorted({action['reads'][slot] for action in selected for slot in event_snapshot_all_reads.get(id(action),event_effect_actions[id(action)])}|{cell for reads,_ in [*batch_capture_programs.get(pathway,{}).values(),*batch_capture_checks.get(pathway,[])] for cell in reads})
+        compacted=batch_compacted_random.get(pathway,[])
+        computed={target for target,_,_ in compacted}
+        origins=sorted(({action['reads'][slot] for action in selected for slot in event_snapshot_all_reads.get(id(action),event_effect_actions[id(action)])}|{cell for reads,_ in [*batch_capture_programs.get(pathway,{}).values(),*batch_capture_checks.get(pathway,[]),*[(reads,program) for _,reads,program in compacted]] for cell in reads})-computed)
+        filtered=batch_filtered_rows.get(pathway)
+        if filtered is not None:
+            controls={filtered['count']}|{row[key] for row in filtered['rows'] for key in ('effective','prefix')}
+            origins=sorted((set(origins)|{row[key] for row in filtered['rows'] for key in ('presence','mask')})-controls)
         check_budget(len(origins)*64)
         require(len(initial)+len(origins)<=1_000_000,'budget',network,'event snapshot state budget exceeded')
         cached={origin:len(initial)+j for j,origin in enumerate(origins)}
@@ -1596,13 +1741,37 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             copies.append(copy_action)
         for action in selected:
             reads=list(action['reads'])
-            for slot in event_effect_actions[id(action)]:reads[slot]=cached[reads[slot]]
+            for slot in event_effect_actions[id(action)]:reads[slot]=cached.get(reads[slot],reads[slot])
             gate=action['trigger'];trailing=reads.pop() if gate is not None and gate.get('state') else None
             for target in action['writes']:
                 if target not in reads:reads.append(target)
             if trailing is not None:reads.append(trailing)
             require(len(reads)<=64,'budget',network,'event copied context exceeds 64 slots')
             action['reads']=reads
+        if filtered is not None:
+            for row in filtered['rows']:
+                program=[dict(op='state',index=0),dict(op='boolean_cast',arg=0),
+                         dict(op='state',index=1),dict(op='boolean_cast',arg=2),dict(op='eager_boolean_and',left=1,right=3)]
+                action=dict(owner=0,reads=[cached[row['presence']],cached[row['mask']],row['effective']],writes=[row['effective']],program_set=program_set([program]),threshold=None,trigger=None)
+                if actions.clock:action['clock']=actions.clock
+                copies.append(action)
+            programs=[]
+            for count in [*range(len(filtered['rows'])),len(filtered['rows'])]:
+                program=[dict(op='constant',value=0.)]
+                for j in range(count):
+                    program.append(dict(op='state',index=j));program.append(dict(op='add',left=len(program)-2,right=len(program)-1))
+                programs.append(program)
+            targets=[*[row['prefix'] for row in filtered['rows']],filtered['count']]
+            action=dict(owner=0,reads=[*[row['effective'] for row in filtered['rows']],*targets],writes=targets,
+                        program_set=program_set(programs),threshold=None,trigger=None)
+            if actions.clock:action['clock']=actions.clock
+            copies.append(action)
+        for target,reads,program in compacted:
+            context=[cached.get(cell,cell) for cell in reads]
+            resolved=resolve_parameters([program],0,context,{})
+            action=dict(owner=0,reads=[*context,target],writes=[target],program_set=program_set(resolved),threshold=None,trigger=None)
+            if actions.clock:action['clock']=actions.clock
+            copies.append(action)
         # Keep preparatory copies outside the delay path's rebuild range. Delay
         # updates preserve them as ordinary clocked model actions.
         # Check every eager root against the common input snapshot before any
@@ -1615,7 +1784,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             whole_actions.append((target,(reads,program)))
         whole_actions.extend(batch_capture_programs.get(pathway,{}).items())
         for target,(reads,program) in whole_actions:
-            capture_reads=[cached[cell] for cell in reads]
+            capture_reads=[cached.get(cell,cell) for cell in reads]
             resolved=resolve_parameters([program],0,capture_reads,{})
             gate=batch_capture_gates[pathway]
             if target not in capture_reads:capture_reads.append(target)
@@ -2397,12 +2566,62 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                             except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
                             if descriptor.captured_arrays:captured_batch=True;captured_functions.add(name)
                 if captured_batch:
+                    caller_trace=None
+                    grouped_caller=False
+                    materialise_locals=any(part.get('indexed_locals') for part in stage_specs)
+                    plan_locals=materialise_locals or effect_spec['mode']=='array'
+                    if plan_locals:
+                        template=dict(stage_specs[0],code=effect_spec['code'],writes=effect_spec['writes'],accum=effect_spec['accum'],
+                                      replay_fields={},replay_noise={},replay_guards={},stream_offset=0,
+                                      guarded_writes=tuple(dict.fromkeys(name for part in stage_specs for name in part['guarded_writes'])))
+                        stage_specs=[template]
                     require(len(stage_specs)==1,'function',obj,'batch capture replay stages require persistent temporaries')
-                    if effect_spec['mode']=='vectorised':
+                    from .training_batch_random import cached_batch_draws
+                    try:rewritten,random_draws=cached_batch_draws(stage_specs[0]['code'],info['path_variables'][obj.name])
+                    except ValueError as error:raise TrainingConversionError('noise',obj,str(error)) from error
+                    if random_draws:stage_specs=[dict(stage_specs[0],code=rewritten)]
+                    if plan_locals:
+                        from .training_batch_locals import batch_local_lifetimes,whole_capture_local_groups
+                        caller_functions={name:lower_state_effect_function(info['path_variables'][obj.name][name]) for name in captured_functions}
+                        try:caller_trace=batch_local_lifetimes(stage_specs[0]['code'],info['path_variables'][obj.name],caller_functions,
+                                mode=effect_spec['mode'],synthetic_types={draw['name']:'float' for draw in random_draws})
+                        except (ValueError,TypeError,RecursionError) as error:raise TrainingConversionError('function',obj,str(error)) from error
+                        if any(token['whole_capture'] for token in caller_trace['tokens']):
+                            grouped=([stage_specs[0]['code']] if effect_spec['mode']=='array'
+                                     else whole_capture_local_groups(caller_trace,syn.variables))
+                            require(grouped is not None,'function',obj,
+                                    'whole-vector caller temporaries spanning indexed writes require persistent whole-vector storage')
+                            if grouped is not None:
+                                template=stage_specs[0];parts=[]
+                                for part_code in grouped:
+                                    target=ast.parse(part_code).body[-1]
+                                    target=target.targets[0].id if isinstance(target,ast.Assign) else target.target.id
+                                    parts.append(dict(template,code=part_code,writes=(target,),
+                                        accum=tuple(name for name in template['accum'] if name==target),
+                                        guarded_writes=tuple(name for name in template['guarded_writes'] if name==target)))
+                                stage_specs=parts;caller_trace=None;grouped_caller=True
+                                if effect_spec['mode']=='array' and len(parts)>1:
+                                    stage_specs.append(dict(template,code='',writes=(),accum=(),guarded_writes=(),publish_array_locals=True))
+                            if effect_spec['mode']=='array':stage_specs=[dict(template,code=grouped[0])]
+                        elif not materialise_locals:caller_trace=None
+                    if caller_trace is not None:
+                        require(obj.name not in info['path_runtime'],'function',obj,'caller local arrays require fixed delay routing')
+                        template=stage_specs[0];parts=[]
+                        for stage in caller_trace['stages']:
+                            writes=tuple(stage['outputs'])
+                            parts.append(dict(template,code=stage['code'],writes=writes,local_inputs=stage['inputs'],local_outputs=stage['outputs'],
+                                local_physical_outputs=tuple(name for name in writes if name in syn.variables) if effect_spec['mode']=='vectorised' else (),
+                                retained_local_outputs=tuple(name for name in writes if name!=stage['target']),
+                                accum=tuple(name for name in template['accum'] if name==stage['target']),
+                                guarded_writes=tuple(name for name in template['guarded_writes'] if name==stage['target'])))
+                        stage_specs=parts
+                        if effect_spec['mode']=='array':
+                            stage_specs.append(dict(template,code='',writes=(),accum=(),guarded_writes=(),publish_caller_locals=True))
+                    if caller_trace is None and not grouped_caller and effect_spec['mode'] in ('vectorised','array'):
                         body=ast.parse(stage_specs[0]['code']).body
                         call_rows=[i for i,statement in enumerate(body) if any(isinstance(node,ast.Call) and isinstance(node.func,ast.Name)
                                   and node.func.id in captured_functions for node in ast.walk(statement))]
-                        if len(call_rows)>1 or call_rows and call_rows[0]>0:
+                        if call_rows and len(body)>1:
                             # NumPy's vectorised generator reloads and writes each
                             # persistent statement before the next Python call.
                             # Raw capture roots must observe those physical writes.
@@ -2417,6 +2636,8 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                           guarded_writes=tuple(name for name in stage_specs[0]['guarded_writes'] if name==target))
                                 split.append(part)
                             stage_specs=split
+                            if effect_spec['mode']=='array':
+                                stage_specs.append(dict(stage_specs[0],code='',writes=(),accum=(),guarded_writes=(),publish_array_locals=True))
                     gate=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(True);binary_states.append(gate)
                     actions.append(dict(owner=0,reads=[gate],writes=[gate],program_set=program_set([[dict(op='constant',value=0.)]]),threshold=None,trigger=None))
                     batch_presence_stages[obj.name]=gate
@@ -2429,11 +2650,90 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         rows.append(dict(key=key,cell=cell,edge=edge))
                         actions.append(dict(owner=0,reads=[cell],writes=[cell],program_set=program_set([[dict(op='constant',value=0.)]]),threshold=None,trigger=None))
                     batch_arrival_rows[obj.name]=rows
+                    if random_draws:
+                        random_rows={}
+                        for row in rows:
+                            random_rows[row['key']]={}
+                            for draw in random_draws:
+                                check_budget(64);cell=len(initial)
+                                require(cell<1_000_000,'budget',obj,'batch random state budget exceeded')
+                                initial.append(0.);initial_parameters.append(None);detached.append(True)
+                                random_rows[row['key']][draw['name']]=cell
+                        batch_random_fields[obj.name]=dict(draws=random_draws,rows=random_rows)
+                    if caller_trace is not None:
+                        from .training_equations import _compile_training_ast
+                        local_rows={};copies_by_stage={};seeded=set()
+                        for row in rows:
+                            local_rows[row['key']]=[]
+                            for token in caller_trace['tokens']:
+                                check_budget(64);cell=len(initial)
+                                require(cell<1_000_000,'budget',obj,'caller local state budget exceeded')
+                                initial.append(0.);initial_parameters.append(None);detached.append(token['dtype']!='float')
+                                if token['dtype']=='integer':integer_states.add(cell)
+                                if token['dtype']=='boolean':binary_states.append(cell)
+                                local_rows[row['key']].append(cell)
+                        for number,stage in enumerate(caller_trace['stages'],1):
+                            seed_tokens=set(stage['inputs'].values())
+                            if number==1 and effect_spec['mode']=='array':seed_tokens.update(caller_trace['initial'].values())
+                            for token in sorted(seed_tokens):
+                                caller_source=caller_trace['tokens'][token]['source']
+                                if caller_source is None or token in seeded:continue
+                                seeded.add(token)
+                                for row in rows:
+                                    cell=local_rows[row['key']][token];variable=syn.variables.get(caller_source)
+                                    if caller_source in {draw['name'] for draw in random_draws}:origin=random_rows[row['key']][caller_source]
+                                    elif variable is not None and id(variable) in storage:origin=address(syn,caller_source,row['edge'])
+                                    else:origin=None
+                                    if origin is not None:
+                                        require(isinstance(origin,int),'function',obj,'caller local reads require fixed addresses')
+                                        context=[origin,cell];program=[dict(op='integer_state' if origin in integer_states else 'state',index=0)]
+                                    else:
+                                        require(variable is not None,'function',obj,f'caller local source {caller_source} is unavailable')
+                                        if caller_source in ('t','t_pre','t_post'):
+                                            owner_clock=syn.clock if caller_source=='t' else syn.source.clock if caller_source=='t_pre' else syn.target.clock
+                                            value=ClockTime(clock_dts.index(float(owner_clock.dt_)))
+                                        elif id(variable) in constant_banks:value=constant_parameter(syn,caller_source,row['edge'])
+                                        elif caller_source in info['params']:
+                                            values,bank=info['params'][caller_source];index=0 if len(values)==1 else row['edge']
+                                            value=typed_parameter(bank,index,_state_dtype(variable)) if bank is not None else values[index].item()
+                                        else:value=np.asarray(variable.get_value()).reshape(-1)[0].item()
+                                        context=[cell];program=_compile_training_ast(ast.Name(id='caller_source',ctx=ast.Load()),parameters={'caller_source':value},states=['v'],typed=True,allow_select=True)
+                                    resolved=resolve_parameters([program],row['edge'],context,{})
+                                    action=dict(owner=0,reads=context,writes=[cell],program_set=program_set(resolved),threshold=None,trigger=None)
+                                    if actions.clock:action['clock']=actions.clock
+                                    copies_by_stage.setdefault(number,[]).append(action)
+                        batch_caller_locals[obj.name]=dict(trace=caller_trace,rows=local_rows,copies=copies_by_stage,writes=effect_spec['writes'])
+                    if caller_trace is None and effect_spec['mode']=='array' and len(stage_specs)>1:
+                        require(obj.name not in info['path_runtime'],'function',obj,'batch local arrays require fixed delay routing')
+                        identifiers={node.id for node in ast.walk(ast.parse(code)) if isinstance(node,ast.Name)}
+                        local_names=sorted(name for name in identifiers if name in syn.variables and id(syn.variables[name]) in storage
+                                           and not syn.variables[name].scalar)
+                        require(set(effect_spec['writes'])<=set(local_names),'function',obj,
+                                'interleaved batch capture writeback requires non-scalar persistent arrays')
+                        local_rows={};copies=[]
+                        for row in rows:
+                            local_rows[row['key']]={}
+                            for name in local_names:
+                                origin=address(syn,name,row['edge'])
+                                require(isinstance(origin,int),'function',obj,'batch local arrays require fixed addresses')
+                                check_budget(64);cache=len(initial)
+                                require(cache<1_000_000,'budget',obj,'batch local array state budget exceeded')
+                                initial.append(0.);initial_parameters.append(None);detached.append(detached[origin])
+                                if origin in integer_states:integer_states.add(cache)
+                                if origin in binary_states:binary_states.append(cache)
+                                local_rows[row['key']][name]=(origin,cache)
+                                action=dict(owner=0,reads=[origin,cache],writes=[cache],program_set=program_set([[dict(op='integer_state' if origin in integer_states else 'state',index=0)]]),threshold=None,trigger=None)
+                                if actions.clock:action['clock']=actions.clock
+                                copies.append(action)
+                        batch_array_locals[obj.name]=dict(rows=local_rows,writes=effect_spec['writes'],copies=copies)
                     for k in range(1,len(stage_specs)+1):batch_capture_gates[obj.name+'::numpy-stage:'+str(k)]=gate
                     stage_specs=[None,*stage_specs]
                 if len(stage_specs)>1:
                     event_stage_groups[obj.name]=[obj.name,*[obj.name+'::numpy-stage:'+str(k) for k in range(1,len(stage_specs))]]
                 for stage_number,stage_spec in enumerate(stage_specs):
+                    if obj.name in batch_caller_locals:actions.extend(batch_caller_locals[obj.name]['copies'].get(stage_number,()))
+                    if stage_number==1 and obj.name in batch_array_locals:
+                        actions.extend(batch_array_locals[obj.name]['copies'])
                     pathway=obj.name if stage_number==0 else obj.name+'::numpy-stage:'+str(stage_number)
                     event_path_origins[pathway]=obj.name
                     stage_code=code if stage_spec is None else stage_spec['code']
@@ -2611,6 +2911,13 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         event_gradient='one-hard-event-gate-per-composed-path-with-surrogate-vjp',timestamp_gradient='stop-gradient',
         event_callback_modes={name:dict(mode=spec['mode'],write_order=list(spec['writes']),accum=list(spec['accum'])) for name,spec in event_effect_modes.items()},
         event_callback_snapshots=event_effect_snapshots,event_callback_stage_groups=event_stage_groups,
+        event_callback_array_locals={path:dict(rows=[dict(key=list(key),fields={name:dict(source=source,local=local) for name,(source,local) in fields.items()})
+                                                      for key,fields in spec['rows'].items()],write_order=list(spec['writes']))
+                                    for path,spec in batch_array_locals.items()},
+        event_callback_random_fields={path:dict(draws=spec['draws'],rows=[dict(key=list(key),fields=fields) for key,fields in spec['rows'].items()])
+                                     for path,spec in batch_random_fields.items()},
+        event_callback_caller_locals={path:dict(trace=spec['trace'],rows=[dict(key=list(key),fields=fields) for key,fields in spec['rows'].items()])
+                                     for path,spec in batch_caller_locals.items()},
         phased_event_gradient='surrogate-through-operational-NumPy-stage-order-and-row-gates' if event_stage_groups else None)
     provenance.pop('snapshot_sha256',None)
     bundle.initial_state=list(initial)

@@ -1,0 +1,192 @@
+{
+  "schema": "atlas-concurrent-training-increment-v2",
+  "created_utc": "20261008T145057Z",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "frozen_directory": "/atlas-storage/0001/frozen-increments/20261008T145057Z",
+  "archive": "/atlas-storage/0002/brian2-atlas-migration-20261008/snapshots/supplements/20261008T145057Z/training-increment.tar",
+  "archive_sha256": "abe39a9a1cccdda17ea81532719020f3cfaf12a1458ac0052996deca69227064",
+  "files": [
+    {
+      "source": "brian2-rust/python/brian2_rust/training_batch_locals.py",
+      "sha256": "99df5d5e07d4eebafcb9f7f30b9eab249fd2fa4bb479895e9b87a023096f7d6f",
+      "bytes": 7690,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "99df5d5e07d4eebafcb9f7f30b9eab249fd2fa4bb479895e9b87a023096f7d6f"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_batch_random.py",
+      "sha256": "a185be8aad360cca2282ad2c3decdb9ccb0a73252606af8f90145dd83b05bbaf",
+      "bytes": 1524,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "a185be8aad360cca2282ad2c3decdb9ccb0a73252606af8f90145dd83b05bbaf"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian_dynamic.py",
+      "sha256": "9053c8c8a280a46eecb160dceb2998b41edf884f9293d883918dad086971aa7c",
+      "bytes": 230123,
+      "atlas_before_sha256": "3667a5ebf0bb103d16339377652a57106c7f510f99774177840f72610a4a2f1d",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "9053c8c8a280a46eecb160dceb2998b41edf884f9293d883918dad086971aa7c"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian_events.py",
+      "sha256": "c68494c43885cece94636db63e0d2c1ba515da7b23b64a53be99517eb6e4e917",
+      "bytes": 7788,
+      "atlas_before_sha256": "8e5ae334e819131fd646d45eec630595e592d137b393d061ca90c7a6dc2dfb91",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "c68494c43885cece94636db63e0d2c1ba515da7b23b64a53be99517eb6e4e917"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_effects.py",
+      "sha256": "eade2174a518e9660e78e75990acaf0e38776c6d40662fc8fc9137e254011d49",
+      "bytes": 82967,
+      "atlas_before_sha256": "746bcb48fe36448f656863eb831631105ebaa98bd802a0784e6f3d5d4ff61645",
+      "classification": "training-increment",
+      "integration": "trailing whitespace normalized; AST identical",
+      "target_sha256": "6b6361c2f8ece9441cdbaa48bc63a411f1d8fcd874d85b767caed76ea4e896f5"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_event_captures.py",
+      "sha256": "e0286692b4d0ca29dc08b1be72608c0fc650760e20f6549ed649cc0409707564",
+      "bytes": 11638,
+      "atlas_before_sha256": "c26ce2523a0cdf0402fab760f0821e7b36bc37a6cab86d530c4acfa67b4443c3",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "e0286692b4d0ca29dc08b1be72608c0fc650760e20f6549ed649cc0409707564"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_capture_noise.py",
+      "sha256": "f63809a1c28a7105d41e05e42be5a7610869953c3a233838c5efb2f0505b9b81",
+      "bytes": 9697,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "f63809a1c28a7105d41e05e42be5a7610869953c3a233838c5efb2f0505b9b81"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_capture_temporaries.py",
+      "sha256": "5a8a9385496cc0770499ba6bf6ce9f5748a2be8eec83ef163b3e509fce908d4b",
+      "bytes": 12334,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "5a8a9385496cc0770499ba6bf6ce9f5748a2be8eec83ef163b3e509fce908d4b"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_local_lifetimes.py",
+      "sha256": "e132c51a1bc5cd8a5f95a347da8470e84dbc9f8958c6e1430d53a6dc33e5cfc7",
+      "bytes": 2260,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "e132c51a1bc5cd8a5f95a347da8470e84dbc9f8958c6e1430d53a6dc33e5cfc7"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_random_compile.py",
+      "sha256": "c8ac77c665dbf1704fc53e1583bd8bdd4977b9cdf0a004a9ce19c4faf65b4568",
+      "bytes": 903,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "c8ac77c665dbf1704fc53e1583bd8bdd4977b9cdf0a004a9ce19c4faf65b4568"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_capture_callbacks.py",
+      "sha256": "e60c2c8d8c20c7a498359896416445234e6412d8f6eb26e11a5755998bea7163",
+      "bytes": 943,
+      "atlas_before_sha256": "838802c9952d763a43ec69d0906653d8905f4a1cad1006e75bbc9298d3235ad1",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "e60c2c8d8c20c7a498359896416445234e6412d8f6eb26e11a5755998bea7163"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_returned_constants.py",
+      "sha256": "19ac0edcbbafe55adfa24c2faa6df8cbbfe9201cb6d6161f36fcfd1c735f6f93",
+      "bytes": 8966,
+      "atlas_before_sha256": "7ac6fbe8ef67aae26347b3f02d1791bad4993bde8c98396b64ecd3975c9d6bbc",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "19ac0edcbbafe55adfa24c2faa6df8cbbfe9201cb6d6161f36fcfd1c735f6f93"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_guarded_scalar_captures.py",
+      "sha256": "1c2720a200da6138b337d39d55adbf6c772b3f67fdbcf4591386b7c8c98c110d",
+      "bytes": 12137,
+      "atlas_before_sha256": "1c2720a200da6138b337d39d55adbf6c772b3f67fdbcf4591386b7c8c98c110d",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "1c2720a200da6138b337d39d55adbf6c772b3f67fdbcf4591386b7c8c98c110d"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_masked_batch_captures.py",
+      "sha256": "1d4399c8bb590b571da48126eb4a0930b8904a7ef82c2abd2e8272d058b24978",
+      "bytes": 12230,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "1d4399c8bb590b571da48126eb4a0930b8904a7ef82c2abd2e8272d058b24978"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_masked_multistatement_captures.py",
+      "sha256": "c1b28d2c81e8ef48126e99b0e12cabc2434357efab566263ae54f8d1b7e93f3b",
+      "bytes": 10977,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "c1b28d2c81e8ef48126e99b0e12cabc2434357efab566263ae54f8d1b7e93f3b"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_masked_operand_copies.py",
+      "sha256": "05c1d8b68ccf837c03581165d413e7f6687ae12aad7078d1d6f639372f713a35",
+      "bytes": 5888,
+      "atlas_before_sha256": null,
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "05c1d8b68ccf837c03581165d413e7f6687ae12aad7078d1d6f639372f713a35"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_multishape_captures.py",
+      "sha256": "d738f415a617d9d84aece6074ed6534168fea3eb6c06f44df5f4c6239fa8b6b4",
+      "bytes": 7707,
+      "atlas_before_sha256": "38ac4eb638b2ef09352ee2d4bf49aa6cc72a464f65f8f6a55158d21bdd988c49",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "d738f415a617d9d84aece6074ed6534168fea3eb6c06f44df5f4c6239fa8b6b4"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_whole_selected_captures.py",
+      "sha256": "2d306761bb461fc8d5d0583c489fe53dbbfbd08bd6451182ac2fe80675751a66",
+      "bytes": 15454,
+      "atlas_before_sha256": "5552d393927db5bb8d5d5f3094b7947c4361717be385749a1082a044fe3d5c03",
+      "classification": "training-increment",
+      "integration": "identical source",
+      "target_sha256": "2d306761bb461fc8d5d0583c489fe53dbbfbd08bd6451182ac2fe80675751a66"
+    }
+  ],
+  "scope": "New immutable batch following the first 8-file supplement; previous capture and manifests remain unchanged. Another final audit is required.",
+  "parent": "fc26a5f2bf948702e29366056714db49e2a84e29",
+  "validation": {
+    "isolated": {
+      "passed": 1059,
+      "skipped_actual_cuda_hardware_required": 524,
+      "failed": 0,
+      "duration_seconds": 4341,
+      "json_sha256": "6abfec35c81cfe60adff4ef8695f7d0e04fe8ba4646d69b02228de274ddf2df5",
+      "junit_sha256": "1a8f5542e31d0a40d0ada376f017e3003b728a9afe8a1c5d2b2e8d8aba9952e0"
+    },
+    "canonical": {
+      "passed": 43,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Compiler/lifetime plus representative CPU, Metal and local MPI integration, including actual random VJP cases",
+      "json_sha256": "a953392d3e91262657d4888cbe623f7053c6384d6535d5415e14c7e5662de80b",
+      "junit_sha256": "8919c69efb1ff560e20918b6ce130fb484bb3320468138d29008f40334b2c13f"
+    }
+  }
+}

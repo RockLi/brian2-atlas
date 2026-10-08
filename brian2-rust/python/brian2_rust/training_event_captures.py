@@ -96,7 +96,7 @@ def compile_scalar_event_captures(code,names,reads,parameters,fields,*,
 
 
 def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_types,
-                                 array_names,parameter_arrays,parameter_types,reload,typed_parameter,selected_output=None,selected_vector_factory=None,selected_accumulators=()):
+                                 array_names,parameter_arrays,parameter_types,reload,typed_parameter,selected_output=None,selected_vector_factory=None,selected_accumulators=(),selected_guards=None,selected_call_presence=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=()):
     """Separate independent whole-column writes from selected-row copies."""
     names=dict(names);parameters=dict(parameters);state_types=dict(state_types)
     bindings,lengths,arrays,readonly,capture_types,vectors=_columns(fields,names,reads,parameters,state_types,typed_parameter,'batch')
@@ -108,6 +108,10 @@ def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_type
     copied_sources={name:canonical[reads[slot]] for name,slot in names.items()
                     if name in array_names and name not in explicit and reads[slot] in canonical}
     normal=None;whole={};checks=[];selected_vectors=None
+    if selected_guards:
+        if selected_vector_factory is None or len(set(selected_guards.values()))!=1:
+            raise ValueError('masked batch captures require one compact callback selection')
+        selected_vectors=selected_vector_factory(names,reads,parameters,state_types,max(lengths.values()))
     for column,mapping in enumerate(bindings):
         bound=dict(parameters)
         for name,descriptor in parameters.items():
@@ -121,7 +125,11 @@ def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_type
                 copied_array_states=array_names,array_parameters=set(parameter_arrays)|readonly,temporary_parameters=parameter_arrays,
                 parameter_types=parameter_types,state_types=state_types,eager_limit=128,
                 reload_arrays_each_statement=reload,unconditional_states=arrays,retained_array_states=arrays,
-                unconditional_parameters=readonly,whole_eager=whole_eager,array_aliases=aliases,capture_vectors=vectors,selected_output=selected_output,copied_array_sources=copied_sources,selected_vectors=selected_vectors,selected_accumulators=selected_accumulators,separate_whole_eager=True)
+                unconditional_parameters=readonly,whole_eager=whole_eager,array_aliases=aliases,capture_vectors=vectors,selected_output=selected_output,copied_array_sources=copied_sources,selected_vectors=selected_vectors,selected_accumulators=selected_accumulators,separate_whole_eager=True,
+                selected_guards=selected_guards,selected_call_presence=selected_call_presence,
+                selected_row_operands=selected_row_operands,
+                copied_array_aliases=copied_array_aliases,retained_copied_outputs=retained_copied_outputs,
+                eager_guard=next(iter(selected_guards.values())) if selected_guards else None)
         try:
             transform=compile_column()
             if transform.get('selected_whole_mixed',False) and selected_vector_factory is not None and selected_vectors is None:

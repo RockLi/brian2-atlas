@@ -70,8 +70,8 @@ def reference(data,mode,weights,window,initial=None,anchors=None):
     layout=bundle.provenance['neuron_state_layout'][g.name];v=layout['v'];u=layout['u']
     h=bundle.provenance['dynamic_state_layout'][syn.name]['h']
     gain=next(row['bank'] for row in bundle.provenance['bindings'] if row['object']==syn.name and row['variables']==['gain'])
-    path=bundle.provenance['event_callback_stage_groups'][syn.pre.name][1]
-    routes=bundle.provenance['delay_queues'][path]['new']
+    paths=bundle.provenance['event_callback_stage_groups'][syn.pre.name][1:]
+    assert len(paths)==(2 if mode=='vectorised' else 1)
     before=[];margins=[];hard=[];spikes=[]
     for tick in range(4):
         if anchors is not None and window and tick and tick%window==0:z=anchors['before'][tick].copy()
@@ -80,14 +80,18 @@ def reference(data,mode,weights,window,initial=None,anchors=None):
         if anchors is not None:
             old=anchors['margins'][tick]
             event=anchors['hard'][tick]+p['surrogate']['scale']/(1+p['surrogate']['slope']*abs(old))**2*(margin-old)
-        spikes.append(event.copy());old=z.copy();selected=1 if tick==1 else 0 if tick==3 else None
-        if selected is not None:
-            incoming=old[h[selected]];z[u[:2]]+=incoming;z[v]+=incoming
-        for row in routes:
-            edge=row['edge'];gate=old[row['states'][0]]
-            value=.7*old[h[edge if selected is None else selected]]
-            z[h[edge]]=old[h[edge]]+gate*(value-old[h[edge]])
-            if mode=='vectorised':z[v[0]]+=gate*weights[gain][edge]*value
+        spikes.append(event.copy());selected=1 if tick==1 else 0 if tick==3 else None
+        for stage,path in enumerate(paths):
+            for row in bundle.provenance['event_callback_snapshots'].get(path,[]):z[row['cache']]=z[row['source']]
+            old=z.copy();routes=bundle.provenance['delay_queues'][path]['new']
+            if stage==0 and selected is not None:
+                incoming=old[h[selected]];z[u[:2]]+=incoming;z[v]+=incoming
+            for row in routes:
+                edge=row['edge'];gate=old[row['states'][0]]
+                if stage==0:
+                    value=.7*old[h[edge if selected is None else selected]]
+                    z[h[edge]]=old[h[edge]]+gate*(value-old[h[edge]])
+                else:z[v[0]]+=gate*weights[gain][edge]*old[h[edge]]
         for queue in bundle.provenance['delay_queues'].values():
             for row in queue['new']:
                 cells=row['states']

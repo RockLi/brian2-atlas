@@ -37,3 +37,21 @@ def invalid_guarded_capture(array):
         temporary=1./0.
         return x+temporary
     return f
+
+
+def scale_selected_by_capture(array):
+    def f(x):
+        captured=array
+        captured*=.9
+        x*=captured
+        return x
+    return f
+
+
+def add_constant_selected(array):
+    def f(x):
+        captured=array
+        captured+=.003
+        x*=.7
+        return x
+    return f
