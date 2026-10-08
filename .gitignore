@@ -54,3 +54,7 @@ output/
 
 # Atlas distribution metadata
 /brian2_atlas.egg-info/
+
+# Captured project build/cache exclusions
+/.cache/
+/.playwright-cli/

@@ -103,3 +103,5 @@ and paper submission are separate steps.
 ## Optional dependencies
 
 The `examples` extra retains the original joblib, noise, OpenCV, progressbar2 and SBI dependencies; the `cloud` extra installs the Modal SDK. From a checkout, install these as needed with `python -m pip install ".[examples]"` or `python -m pip install ".[cloud]"`. Core installation does not install either group. `uv.lock` retains the captured dependency versions with the Atlas distribution identity; use `uv sync --locked` and select extras explicitly when using uv. A resolved optional dependency is not a claim that its integration was exercised on every supported Python/platform combination.
+
+User simulation, training and MPI checkpoint commands are collected in the [source example guide](brian2-rust/examples/README.md). Run their bounded regression suite with `python dev/atlas/run_backend.py --suite examples`.

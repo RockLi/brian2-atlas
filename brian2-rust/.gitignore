@@ -3,3 +3,8 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Captured project build/cache exclusions
+/target-mpi-training/
+/target-native-training/
+/.cache/

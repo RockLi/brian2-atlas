@@ -1,0 +1,17 @@
+#!/bin/zsh
+# Make Brian2's GCC-style -fopenmp flag usable with Apple Clang and Homebrew libomp.
+set -eu
+
+libomp_prefix=${B2_LIBOMP_PREFIX:-/opt/homebrew/opt/libomp}
+translated=()
+for argument in "$@"; do
+    if [[ "$argument" == "-fopenmp" ]]; then
+        translated+=("-Xpreprocessor" "-fopenmp")
+    else
+        translated+=("$argument")
+    fi
+done
+
+exec /usr/bin/clang++ "${translated[@]}" \
+    -I"$libomp_prefix/include" -L"$libomp_prefix/lib" \
+    -Wl,-rpath,"$libomp_prefix/lib" -lomp

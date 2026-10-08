@@ -14,7 +14,7 @@ CPU = ('test_artifact.py', 'test_b2ir_v1.py', 'test_binary_topology.py', 'test_c
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--suite', choices=('core', 'cpu', 'all'), default='core')
+    parser.add_argument('--suite', choices=('core', 'cpu', 'examples', 'all'), default='core')
     parser.add_argument('--test', action='append', help='Test filename, optionally followed by ::nodeid')
     parser.add_argument('--runner', type=Path, help='Use this existing runner instead of building one')
     parser.add_argument('--output', type=Path)
@@ -22,7 +22,7 @@ def main():
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     backend = root / 'brian2-rust'
-    output = (args.output or root / 'build/atlas-checks/cpu').resolve()
+    output = (args.output or root / 'build/atlas-checks' / args.suite).resolve()
     output.mkdir(parents=True, exist_ok=True)
     os.environ['RUSTUP_TOOLCHAIN'] = '1.98.1'
     if args.runner:
@@ -64,6 +64,9 @@ def main():
         selections = args.test
     elif args.suite == 'cpu':
         selections = list(CPU)
+    elif args.suite == 'examples':
+        selections = ['test_brunel.py', 'test_multi_area_analysis.py', 'test_diehl_cook_example.py',
+                      'test_multiprocessing_examples.py', 'test_optional_examples.py']
     elif args.suite == 'core':
         selections = ['test_' + name + '.py' for name in CORE]
     else:
