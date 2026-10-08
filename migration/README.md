@@ -8,3 +8,5 @@ Stage records describe file origins, transformations and validation. Tests for l
 The fixed upstream baseline passed the selected NumPy frontend regression: 277 passed, 7 skipped, 7 deselected. See `upstream-baseline.json` for the exact suite scope and report identity. Native backend validation remains separate.
 
 The indirect-index port passed 194 tests (1 skipped, 3 deselected) across the code generation, synapse and monitor gate. Two additional maintained regressions execute nested references through real NumPy and compiled Cython code objects. See `p1b-indirect-indices.json`; `frontend-source-commits.json` records legacy history separately from captured working-tree contents.
+
+Five independent upstream-example compatibility changes are recorded in `example-compatibility.json`: NumPy 2 profiling/array membership, Matplotlib artist input, importable Gaussian connection generation, and mathematical docstrings. All five files parse; all three connection generators were executed at 32 neurons. Full scientific runs and performance sweeps were not repeated. Backend-dependent example ports remain in progress.
