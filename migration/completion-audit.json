@@ -2,7 +2,7 @@
   "schema": "atlas-migration-completion-audit-v1",
   "audited_utc": "2026-10-08T16:47:01.007108+00:00",
   "code_commit": "243b9e47b83a48d1f38381b04ad8315df168a4b4",
-  "status": "All local scope/validation/documentation requirements verified; final documentation commits and remote heads pending",
+  "status": "passed for the user-approved migration cutoff",
   "requirements": [
     {
       "requirement": "0 independent T7 storage",
@@ -105,7 +105,7 @@
       "evidence": {
         "report": "Atlas:migration/FINAL_REPORT.md",
         "public_package_release": "not performed; explicitly outside scope",
-        "remote_final_push": "Pending final documentation/index commit; verified separately before goal completion"
+        "remote_final_push": "Both documentation/index checkpoints pushed, clean and default branches verified; receipt itself is metadata only."
       }
     }
   ],
@@ -125,5 +125,24 @@
   "paper_reproduction_final_integrity": {
     "status": "passed",
     "sha256": "bd0d37bdde65731df1a4e430bfb86d9250f5f5b93dcb8cb9855ab1d2cb0be7d7"
-  }
+  },
+  "remote_checkpoints_verified": [
+    {
+      "repository": "brian2-atlas",
+      "branch": "dev",
+      "head": "fbd0bc4d237b8c130e1bfd05ce22c27ba27c4841",
+      "remote_default": "dev",
+      "clean": true,
+      "remote_head_and_branch_match": true
+    },
+    {
+      "repository": "brian2-atlas-preprint",
+      "branch": "main",
+      "head": "69427e68a24d265f6b76f3dca344c43d6e45f78f",
+      "remote_default": "main",
+      "clean": true,
+      "remote_head_and_branch_match": true
+    }
+  ],
+  "final_remote_receipt_sha256": "d67409ed763bd22a3d609466ff100b419cc5b22dde7cfe6f5307bdd7eb8ebcb5"
 }
