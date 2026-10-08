@@ -99,3 +99,7 @@ source hashes and adaptation notes. Historical paper results remain tied to the
 source versions that produced them. New paper reproduction will pin an Atlas
 commit in the preprint repository. Public package publication, a formal release
 and paper submission are separate steps.
+
+## Optional dependencies
+
+The `examples` extra retains the original joblib, noise, OpenCV, progressbar2 and SBI dependencies; the `cloud` extra installs the Modal SDK. From a checkout, install these as needed with `python -m pip install ".[examples]"` or `python -m pip install ".[cloud]"`. Core installation does not install either group. `uv.lock` retains the captured dependency versions with the Atlas distribution identity; use `uv sync --locked` and select extras explicitly when using uv. A resolved optional dependency is not a claim that its integration was exercised on every supported Python/platform combination.

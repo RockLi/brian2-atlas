@@ -34,6 +34,14 @@ license = 'CECILL-2.1'
 license-files = ["LICENSE", "AUTHORS", "CONTRIBUTORS"]
 
 [project.optional-dependencies]
+cloud = ['modal>=1.5.5']
+examples = [
+    'joblib>=1.4',
+    'noise>=1.2.2',
+    'opencv-python-headless>=4.10',
+    'progressbar2>=4.5',
+    'sbi>=0.25',
+]
 test = ['pytest>=8', 'pytest-xdist>=1.22.3', 'pytest-cov>=2.0', 'pytest-timeout']
 docs = ['sphinx>=7,<9', 'ipython>=5', 'sphinx-tabs']
 
