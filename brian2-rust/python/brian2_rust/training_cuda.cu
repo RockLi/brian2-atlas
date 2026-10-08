@@ -230,10 +230,10 @@ extern "C" uint64_t b2_train_vjp_activity_v1(void){return 1;}
 extern "C" uint64_t b2_train_static_vjp_activity_v1(void){return 1;}
 extern "C" uint64_t b2_train_static_timed_input_v1(void){return 1;}
 extern "C" uint64_t b2_train_static_poisson_v1(void){return 1;}
-uint64_t b2_train_scalar_context_v1(void){return 1;}
-uint64_t b2_train_bitwise_v1(void){return 1;}
-uint64_t b2_train_sequence_v1(void){return 1;}
-uint64_t b2_train_boolean_eager_v1(void){return 1;}
+extern "C" uint64_t b2_train_scalar_context_v1(void){return 1;}
+extern "C" uint64_t b2_train_bitwise_v1(void){return 1;}
+extern "C" uint64_t b2_train_sequence_v1(void){return 1;}
+extern "C" uint64_t b2_train_boolean_eager_v1(void){return 1;}
 
 extern "C" uint64_t b2_train_poisson_shared_v1(void){return 1;}
 
