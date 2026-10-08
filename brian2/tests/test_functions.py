@@ -349,6 +349,68 @@ def test_simple_user_defined_function():
     assert_allclose(np.sin(test_array), mon.func_.flatten())
 
 
+@pytest.mark.codegen_independent
+@pytest.mark.parametrize("infer_units", [False, True])
+def test_boolean_user_function_numpy(infer_units):
+    @check_units(x=volt, y=volt, result=bool)
+    def above(x, y):
+        return x > y
+
+    kwargs = {} if infer_units else {"arg_units": [volt, volt], "return_unit": bool}
+    function = Function(above, return_type="boolean", **kwargs)
+    assert function._returns_bool
+    function.implementations.add_numpy_implementation(above, discard_units=False)
+    wrapper = function.implementations["numpy"].get_code(None)
+    assert_equal(wrapper(np.array([0.3, 0.8]), np.array([0.5, 0.5])), [False, True])
+    assert wrapper(0.8, 0.5)
+
+    group = NeuronGroup(
+        2, "v : volt", threshold="above(v, 0.5*volt)",
+        namespace={"above": function}, codeobj_class=NumpyCodeObject,
+    )
+    group.v = [0.3, 0.8] * volt
+    spikes = SpikeMonitor(group, codeobj_class=NumpyCodeObject)
+    Network(group, spikes).run(defaultclock.dt)
+    assert_equal(spikes.i[:], [1])
+
+
+@pytest.mark.codegen_independent
+def test_boolean_user_function_numpy_rejects_numeric_result():
+    def numeric(x, y):
+        return x + y
+
+    function = Function(numeric, arg_units=[1, 1], return_unit=bool,
+                        return_type="boolean")
+    function.implementations.add_numpy_implementation(numeric, discard_units=False)
+    with pytest.raises(TypeError, match="expected to return a boolean"):
+        function.implementations["numpy"].get_code(None)(np.array([1.0]), np.array([2.0]))
+
+
+@pytest.mark.codegen_independent
+def test_user_function_numpy_callable_return_unit():
+    def multiply(x, y):
+        return x * y
+
+    dimensions = []
+
+    def product_unit(x, y):
+        dimensions.append((x, y))
+        return x * y
+
+    function = Function(multiply, arg_units=[None, None],
+                        return_unit=product_unit)
+    function.implementations.add_numpy_implementation(multiply, discard_units=False)
+    result = function.implementations["numpy"].get_code(None)(2 * amp, 3 * volt)
+    assert_equal(result, 6)
+    assert dimensions == [(get_dimensions(amp), get_dimensions(volt))]
+
+    incorrect = Function(multiply, arg_units=[None, None],
+                         return_unit=lambda x, y: x)
+    incorrect.implementations.add_numpy_implementation(multiply, discard_units=False)
+    with pytest.raises(DimensionMismatchError):
+        incorrect.implementations["numpy"].get_code(None)(2 * amp, 3 * volt)
+
+
 def test_manual_user_defined_function():
     if prefs.codegen.target != "numpy":
         pytest.skip("numpy-only test")

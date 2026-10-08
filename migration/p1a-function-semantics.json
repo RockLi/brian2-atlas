@@ -1,0 +1,54 @@
+{
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "original_upstream_base": "cf0b25cce13b620aac740873e88ba91061a70275",
+  "target_base": "27b5431168cf9959f0c27894cd4d92cdc6ad5c31",
+  "stage": "P1a: function semantics",
+  "files": [
+    {
+      "source": "brian2/core/functions.py",
+      "sha256": "71dbe5b154fea7cc072b5f39fd926544f1c55b0012d1eedbbaf14c129b1dd06d",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/equations/unitcheck.py",
+      "sha256": "24eaf3d7cc2495d0e7c93b26254104a00452ffeeb3d86ce13e359ce680ea4ab5",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/input/binomial.py",
+      "sha256": "32b5792b3e10e762afd6ad5e7fb52d7daaa0edcf11ebb47aaf6785153893e6fd",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/tests/test_functions.py",
+      "sha256": "4a63c92c34d4d8b882ece7c29d65a20b1aab55c9c2d66ecf816b674d17a46451",
+      "git_state": "tracked"
+    }
+  ],
+  "method": "Extract project delta from original upstream base and apply to current upstream; no upstream tree replacement.",
+  "validation": {
+    "target": "numpy",
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "files": [
+      "brian2/tests/test_functions.py",
+      "brian2/tests/test_units.py",
+      "brian2/tests/test_statements.py",
+      "brian2/tests/test_codestrings.py"
+    ],
+    "exit_code": 0,
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "6",
+        "tests": "116",
+        "time": "449.359",
+        "timestamp": "2026-10-08T15:52:06.401577+08:00",
+        "hostname": "Rocks-MacBook-Air.local"
+      }
+    ],
+    "junit_sha256": "0e9019413b6ef596f5fa227ea297caf2d389e262aaba7cb42fcbf68f16ac59af"
+  },
+  "remaining": "Automatic function binding integration with native training is verified when training is ported."
+}
