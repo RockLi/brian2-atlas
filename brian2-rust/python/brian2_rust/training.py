@@ -129,8 +129,8 @@ class NativeLIFTrainer:
                 raise ValueError('target-owned MPI BPTT requires 2..256 CPU or GPU projection ranks')
         self.plan=copy.deepcopy(plan)
         self._topology_contract=self._topology_identity()
-        self.runner=Path(runner or os.environ.get('B2_TRAIN_RUNNER',
-                         Path(__file__).resolve().parents[2]/'target/release/b2-train')).resolve()
+        from ._runtime import executable_path
+        self.runner = executable_path("b2-train", runner).resolve()
         if not self.runner.is_file():
             raise FileNotFoundError('Build the isolated b2-train binary and pass runner= or B2_TRAIN_RUNNER')
         self.state=None

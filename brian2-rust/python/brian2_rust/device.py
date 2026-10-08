@@ -52,7 +52,10 @@ from .encoded_array import packed_export
 from .topology import ClippedNormal, Uniform
 from .resource_limits import candidate_pair_budget, explicit_synapse_budget
 
-ROOT = Path(__file__).resolve().parents[2]
+from ._runtime import (runtime_root, source_root, executable_path, cargo_target,
+                       cache_root, create_run_directory)
+
+ROOT = runtime_root()
 
 
 def _read_checkpoint(path):
@@ -1314,20 +1317,24 @@ class RustStandaloneDevice(Device):
             if not runner.is_file():
                 raise FileNotFoundError(f"Rust runner does not exist: {runner}")
             return runner
-        # Cargo rebuilds only when inputs have changed. Respect a configured
-        # Cargo cache while keeping the default cache inside this checkout.
+        if source_root() is None:
+            runner = executable_path("b2-runner")
+            if not runner.is_file():
+                raise FileNotFoundError(f"Atlas installation is missing its native runner: {runner}")
+            return runner
+        # Source installations rebuild with Cargo; wheels use their bundled binary.
         env = os.environ.copy()
-        env.setdefault("CARGO_HOME", str(ROOT.parent / ".cache" / "rust-cargo"))
+        env.setdefault("CARGO_HOME", str(cache_root() / "cargo"))
         self._pinned_rustc()
         cargo_version = self._invoke(["cargo", "--version"], cwd=ROOT,
                                      env=env).stdout.splitlines()[0]
         require(cargo_version.startswith("cargo 1.98.1 "),
                 f"Rust runner build requires cargo 1.98.1; got {cargo_version}")
-        command = ["cargo", "build", "--release", "--locked", "--manifest-path", str(ROOT / "Cargo.toml"), "--target-dir", str(ROOT / "target")]
+        command = ["cargo", "build", "--release", "--locked", "--manifest-path", str(ROOT / "Cargo.toml"), "--target-dir", str(cargo_target())]
         # rustup selects this checkout's pinned rust-toolchain.toml from cwd,
         # including when the caller runs a Brian2 script outside the checkout.
         self._invoke(command, env=env, cwd=ROOT)
-        return ROOT / "target" / "release" / ("b2-runner.exe" if os.name == "nt" else "b2-runner")
+        return cargo_target() / "release" / ("b2-runner.exe" if os.name == "nt" else "b2-runner")
 
     @staticmethod
     def _configured_run_directory(base, run_count):
@@ -2121,8 +2128,7 @@ class RustStandaloneDevice(Device):
         previous_run_directory = self.last_run_directory
         configured = self.build_options.get("directory")
         if configured is None:
-            (ROOT / "output").mkdir(exist_ok=True)
-            directory = Path(tempfile.mkdtemp(prefix="device-", dir=ROOT / "output"))
+            directory = create_run_directory()
         else:
             base = Path(configured).expanduser().resolve()
             directory = self._configured_run_directory(base, self._run_count)

@@ -1,11 +1,10 @@
 # Atlas native backend
 
-This directory retains the `brian2_rust` Python module and the locked Rust
-reference engine. The CPU integration includes B2IR validation, the Brian Device,
-model-specialized AOT compilation, monitors, continuation and topology readers.
-Shared plan helpers are included where CPU imports require them. GPU/WASM, MPI,
-training, user-facing packaging and their complete runtime assets are separate
-migration stages; this development commit is not a formal release.
+The `brian2_rust` module provides native CPU/AOT simulation, GPU/browser backends,
+distributed MPI simulation and native training. Both native executables and their
+runtime resources are included in Atlas platform wheels. This is a development
+version; see the [root installation guide](../README.md) and the stage manifests
+for the verified scope.
 
 From the repository root, with Rust/rustup and a C/C++ build toolchain installed:
 
@@ -24,13 +23,13 @@ For the 20,000-term compiler stress case on a loaded host, set
 
 Source hashes, adaptations, named failure resolutions and actual validation
 scope are recorded in [the CPU port manifest](../migration/p2-cpu-port.json).
-Installed wheel/sdist qualification is still a later migration stage.
+Source, wheel and sdist installation gates are recorded in the packaging manifest.
 
 ## GPU and browser backends
 
 The CUDA and Apple Metal simulation runtimes and browser WASM/WebGPU code are now included. Build browser assets with `python brian2-rust/tools/build_wasm.py`; the Rust WASM target and wasm-bindgen 0.2.100 are required. Serve the resulting `brian2-rust/output/wasm` directory over localhost to use the browser examples.
 
-Actual migration checks covered an NVIDIA L4, Apple Metal, and Chrome with a non-fallback Apple WebGPU adapter. The tested scope and source hashes are in `migration/p3-gpu-wasm-port.json`. GPU regression execution is opt-in and requires the matching device/toolchain; a skipped hardware case does not count as passed. Native training, distributed runtime integration and packaged installation follow in separate stages.
+Actual migration checks covered an NVIDIA L4, Apple Metal, and Chrome with a non-fallback Apple WebGPU adapter. The tested scope and source hashes are in `migration/p3-gpu-wasm-port.json`. GPU regression execution is opt-in and requires the matching device/toolchain; a skipped hardware case does not count as passed. Training and MPI are included; installation builds both native executables.
 
 ## MPI simulation
 
@@ -38,6 +37,6 @@ Distributed planning, generated MPI projects, partitioning, collective transport
 
 ## Native training
 
-`NativeLIFTrainer`, Brian network conversion, dynamic clocks, state/checkpoint continuation and native CPU/Metal/CUDA/MPI training are included. Build the training executable with `cargo +1.98.1 build --release --locked --bin b2-train --manifest-path brian2-rust/Cargo.toml`. Source-mode tests can select it with `B2_TRAIN_RUNNER`; installation packaging follows separately.
+`NativeLIFTrainer`, Brian network conversion, dynamic clocks, state/checkpoint continuation and native CPU/Metal/CUDA/MPI training are included. Build the training executable with `cargo +1.98.1 build --release --locked --bin b2-train --manifest-path brian2-rust/Cargo.toml`. Source-mode tests can select it with `B2_TRAIN_RUNNER`; installed users obtain the bundled executable automatically.
 
 The migration verified CPU/Metal numerical and checkpoint behavior, captured callback-training increments, selected CUDA VJP cases, and CUDA clock/checkpoint continuation including same-host MPI. Exact coverage, source hashes, retained timeout evidence and unexecuted CUDA variants are recorded in `migration/p5-native-training-port.json`.

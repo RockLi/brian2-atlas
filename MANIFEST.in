@@ -36,3 +36,13 @@ include brian2/tests/*.pyx
 include brian2/tests/*.pxd
 include brian2/tests/rallpack_data/*.0
 include brian2/tests/rallpack_data/*.x
+
+# Atlas source builds include both locked native engines and runtime resources.
+include _atlas_build.py
+include brian2-rust/Cargo.toml brian2-rust/Cargo.lock brian2-rust/rust-toolchain.toml
+recursive-include brian2-rust/src *.rs
+recursive-include brian2-rust/python/brian2_rust *.py *.c *.cu *.h *.m *.metal *.rs *.cpp *.toml
+prune brian2-rust/target
+prune brian2-rust/output
+
+include brian2-rust/tools/install_user.sh

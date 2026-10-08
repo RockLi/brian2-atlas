@@ -11,9 +11,8 @@ from .protocol import canonical_bytes, CURRENT_SCHEMA
 
 
 def runner_identity(runner):
-    path=(Path(runner) if runner is not None else
-          Path(os.environ.get('B2_RUNNER',
-               str(Path(__file__).resolve().parents[2]/'target/release/b2-runner')))).resolve()
+    from ._runtime import executable_path
+    path = executable_path("b2-runner", runner).resolve()
     with path.open('rb') as stream:
         return str(path),hashlib.file_digest(stream,'sha256').hexdigest()
 

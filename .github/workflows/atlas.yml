@@ -34,6 +34,8 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: ${{ matrix.python }}
+      - name: Install the pinned Rust compiler
+        run: rustup toolchain install 1.98.1 --profile minimal
       - name: Install source and frontend test dependencies
         run: python -m pip install -e '.[test]' scipy matplotlib
       - name: Validate the NumPy frontend
@@ -61,9 +63,53 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: ${{ matrix.python }}
-      - name: Install source and CPU test dependencies
-        run: python -m pip install -e '.[test]' scipy pyarrow
       - name: Install the pinned Rust compiler
         run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Install source and CPU test dependencies
+        run: python -m pip install -e '.[test]' scipy pyarrow
       - name: Build and validate the CPU backend
         run: python dev/atlas/run_backend.py --suite cpu --timeout 1200
+
+  distribution:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.12'
+          - os: macos-latest
+            python: '3.14'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_TARGET_DIR: ${{ github.workspace }}/build/distribution-cargo
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the pinned Rust compiler and Python builder
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          python -m pip install build
+      - name: Build source archive and a wheel from that archive
+        run: |
+          python -m build --sdist --outdir dist
+          python -m pip wheel --no-deps --wheel-dir wheelhouse dist/*.tar.gz
+      - name: Install and exercise the wheel outside the source tree
+        shell: bash
+        run: |
+          python -m venv build/installed
+          build/installed/bin/python -m pip install wheelhouse/*.whl
+          export TMPDIR="$RUNNER_TEMP/atlas-runtime"
+          export XDG_CACHE_HOME="$RUNNER_TEMP/atlas-cache"
+          mkdir -p "$TMPDIR" "$XDG_CACHE_HOME"
+          unset PYTHONPATH B2_RUNNER B2_TRAIN_RUNNER RUSTUP_TOOLCHAIN
+          build/installed/bin/python dev/atlas/check_installed.py --report build/installed-validation.json

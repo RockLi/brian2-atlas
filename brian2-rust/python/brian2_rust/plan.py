@@ -293,10 +293,8 @@ def _derive_execution_plan(model):
 def validate_model(model, *, runner=None):
     """Verify wire identity and independent Rust semantics, without simulation."""
     current = migrate_model(model)
-    executable = Path(runner) if runner is not None else Path(
-        os.environ.get("B2_RUNNER",
-                       str(Path(__file__).resolve().parents[2] /
-                           "target/release/b2-runner")))
+    from ._runtime import executable_path
+    executable = executable_path("b2-runner", runner)
     if not executable.is_file():
         raise FileNotFoundError(f"build the Rust B2IR validator before planning: {executable}")
     with tempfile.TemporaryDirectory(prefix="b2-plan-validate-") as directory:

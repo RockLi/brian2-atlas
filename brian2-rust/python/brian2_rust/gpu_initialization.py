@@ -39,9 +39,8 @@ def prepare_model(model, *, runner=None, max_bytes=512*1024**2):
                   if inst.get('topology', {'kind':'explicit'})['kind']!='explicit']
     if not procedural:
         return model
-    executable = (Path(runner) if runner is not None else
-                  Path(os.environ.get('B2_RUNNER',
-                       str(Path(__file__).resolve().parents[2]/'target/release/b2-runner'))))
+    from ._runtime import executable_path
+    executable = executable_path("b2-runner", runner)
     started=time.perf_counter()
     result=_PreparedModel(copy.deepcopy(model))
     records=[]
