@@ -1,0 +1,19 @@
+[package]
+name = "b2-runner"
+version = "0.0.1"
+edition = "2021"
+publish = false
+description = "Gate 0 experimental Brian2 reference standalone runner"
+default-run = "b2-runner"
+license = "CECILL-2.1"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+sha2 = "0.10"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "=0.2.100"

@@ -1,0 +1,1297 @@
+{
+  "schema": "atlas-cpu-port-v1",
+  "created_utc": "2026-10-08T12:37:26.968124+00:00",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "frontend_parent": "6d8373a604d0d36870884ff1dac4407951b92c60",
+  "status": "Validated CPU integration; regression failures resolved by named focused reruns. Hardware and packaging phases remain separate.",
+  "files": [
+    {
+      "source": "brian2-rust/Cargo.lock",
+      "target": "brian2-rust/Cargo.lock",
+      "source_sha256": "50bafe0491cc0cd280d527eb116e1c112d433ed419b555f66378c76836827507",
+      "target_sha256": "50bafe0491cc0cd280d527eb116e1c112d433ed419b555f66378c76836827507",
+      "source_git_state": "tracked",
+      "source_blob": "b64050044e7ebc323e7f57ff8e9fb54256f2ee6e",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/Cargo.toml",
+      "target": "brian2-rust/Cargo.toml",
+      "source_sha256": "bf39a76675acfa7289347da85707dc5aec93a556d0f36db8ec047178b70df2de",
+      "target_sha256": "c53196e9fdc8a79aef8a3068742f6c4541a83201f98c6cf7a9bd788c06232624",
+      "source_git_state": "tracked",
+      "source_blob": "3b0684566798f15efa67a9efef53e7af06913a99",
+      "adaptation": "Training binary lands later; retain target-specific WASM dependency to preserve the complete upstream lockfile."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/__init__.py",
+      "target": "brian2-rust/python/brian2_rust/__init__.py",
+      "source_sha256": "fb55e8473a0b0f70d9bccee8d621680d4d6b896e411c24a864db5f5ea5e91a59",
+      "target_sha256": "ac33d2ac2de0a6e984431cd13924a54492c8047a2c1ff0aeb59bf0fdc671eb52",
+      "source_git_state": "tracked",
+      "source_blob": "d992ed075867b158e8cacaf7c6386b99748699f0",
+      "adaptation": "Public MPI, WASM and training exports land with their later ports; CPU exports preserved."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/artifact.py",
+      "target": "brian2-rust/python/brian2_rust/artifact.py",
+      "source_sha256": "3211de97540b0e38a65ba750a7f4e70c98231f9e8bc397db68af202a862421bc",
+      "target_sha256": "3211de97540b0e38a65ba750a7f4e70c98231f9e8bc397db68af202a862421bc",
+      "source_git_state": "tracked",
+      "source_blob": "3f45a0c08b5f159a3684619ee9764bac9eace860",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/binary_topology.py",
+      "target": "brian2-rust/python/brian2_rust/binary_topology.py",
+      "source_sha256": "fabf37122bccc4fd3044177385b8ebfa9cec30183ea264591c6728cf0d0390be",
+      "target_sha256": "fabf37122bccc4fd3044177385b8ebfa9cec30183ea264591c6728cf0d0390be",
+      "source_git_state": "tracked",
+      "source_blob": "7a70d5c1c561535ae40316815c5a224a9c6e1d66",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/capabilities.py",
+      "target": "brian2-rust/python/brian2_rust/capabilities.py",
+      "source_sha256": "640fcbc473ed6e6ad30882741fba819f2d55a8d9c8625cd1b1daeeb1a4ecd256",
+      "target_sha256": "640fcbc473ed6e6ad30882741fba819f2d55a8d9c8625cd1b1daeeb1a4ecd256",
+      "source_git_state": "tracked",
+      "source_blob": "a37ea878c2120a70bed730d9d39906987c1ef09f",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/codegen_sums.py",
+      "target": "brian2-rust/python/brian2_rust/codegen_sums.py",
+      "source_sha256": "bb49ffcb6f608935a9104f346f2b2222151c572dc8f14d8ad29f2c1216614433",
+      "target_sha256": "bb49ffcb6f608935a9104f346f2b2222151c572dc8f14d8ad29f2c1216614433",
+      "source_git_state": "tracked",
+      "source_blob": "d95772370a42f8338d76cacc6d62335186f06089",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/device.py",
+      "target": "brian2-rust/python/brian2_rust/device.py",
+      "source_sha256": "232ee6ca4679193389afd7c0d8e17a6f5be6d8ccda34ddca7b247f19c0db4382",
+      "target_sha256": "232ee6ca4679193389afd7c0d8e17a6f5be6d8ccda34ddca7b247f19c0db4382",
+      "source_git_state": "tracked",
+      "source_blob": "1c0e9555617eb0b0e943467c9fc17e6511657516",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/encoded_array.py",
+      "target": "brian2-rust/python/brian2_rust/encoded_array.py",
+      "source_sha256": "fe4f2affe471b58bfbf0259f1635f8d7a2a442133cd4c9dae01913c594bf0391",
+      "target_sha256": "fe4f2affe471b58bfbf0259f1635f8d7a2a442133cd4c9dae01913c594bf0391",
+      "source_git_state": "tracked",
+      "source_blob": "c9ce653225bdc1253d25d7f8ef427aee29b842dd",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/export.py",
+      "target": "brian2-rust/python/brian2_rust/export.py",
+      "source_sha256": "5670b39a3372f2a056bf95972e646007bbb2462e40e54fbd145859d5202b77fc",
+      "target_sha256": "5670b39a3372f2a056bf95972e646007bbb2462e40e54fbd145859d5202b77fc",
+      "source_git_state": "tracked",
+      "source_blob": "f746961a41ed006a430224dfe942f0aa8f55f6d0",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/gpu_autotune.py",
+      "target": "brian2-rust/python/brian2_rust/gpu_autotune.py",
+      "source_sha256": "7d95a8b50af922a131d816fdda07954380f7893b35278d998f1287fed8d84f77",
+      "target_sha256": "7d95a8b50af922a131d816fdda07954380f7893b35278d998f1287fed8d84f77",
+      "source_git_state": "tracked",
+      "source_blob": "0d3a43e5733737d4365382ca86a895b9664c97e7",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/gpu_tuning_cache.py",
+      "target": "brian2-rust/python/brian2_rust/gpu_tuning_cache.py",
+      "source_sha256": "63e88132646f0437d9fea715be8865164fc9d79f6fd54cfb9dda40802fdaf874",
+      "target_sha256": "63e88132646f0437d9fea715be8865164fc9d79f6fd54cfb9dda40802fdaf874",
+      "source_git_state": "tracked",
+      "source_blob": "495cfad2b1ebbae27ccc78d262eeb683686f102b",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/monitor_observables.py",
+      "target": "brian2-rust/python/brian2_rust/monitor_observables.py",
+      "source_sha256": "d9ac2cb66aefe23d3d7fb6fbad0e7876239923c581ecfa34f2a1995ef94de005",
+      "target_sha256": "d9ac2cb66aefe23d3d7fb6fbad0e7876239923c581ecfa34f2a1995ef94de005",
+      "source_git_state": "tracked",
+      "source_blob": "ca2f515ee17081eb8f38b4b69dd04325863ecece",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/native.py",
+      "target": "brian2-rust/python/brian2_rust/native.py",
+      "source_sha256": "289163b09cf83145b603fad2e0adf984b88b57566b12fa8a6f4adb9c0ba17f47",
+      "target_sha256": "289163b09cf83145b603fad2e0adf984b88b57566b12fa8a6f4adb9c0ba17f47",
+      "source_git_state": "tracked",
+      "source_blob": "a1a1f9c390242df01ed69e8c7d94cbc9d853e3cf",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/plan.py",
+      "target": "brian2-rust/python/brian2_rust/plan.py",
+      "source_sha256": "00f6a082493f452cae64fffd1cc81d4aac51511b8b1f159ffd4ca1c490f88846",
+      "target_sha256": "00f6a082493f452cae64fffd1cc81d4aac51511b8b1f159ffd4ca1c490f88846",
+      "source_git_state": "tracked",
+      "source_blob": "59046b09eea4079b511bc82c2e6c213fc72bfb0f",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/planner.py",
+      "target": "brian2-rust/python/brian2_rust/planner.py",
+      "source_sha256": "41a653a65731235f68b9ac911f25a097fc44e53187ee7865032090e3eac64ac1",
+      "target_sha256": "41a653a65731235f68b9ac911f25a097fc44e53187ee7865032090e3eac64ac1",
+      "source_git_state": "tracked",
+      "source_blob": "f248773e1e69f613e2a22a45b77c3d3e2ad3d08b",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/protocol.py",
+      "target": "brian2-rust/python/brian2_rust/protocol.py",
+      "source_sha256": "2a19d29f874407c7b243db60fa2aa66eceada64b6d5f41d780a878a38a2cb8f4",
+      "target_sha256": "2a19d29f874407c7b243db60fa2aa66eceada64b6d5f41d780a878a38a2cb8f4",
+      "source_git_state": "tracked",
+      "source_blob": "aaf213e67df71050bab85a806233533b8db373fc",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/resource_limits.py",
+      "target": "brian2-rust/python/brian2_rust/resource_limits.py",
+      "source_sha256": "c50ddacd9c8ea2ca228127f3ae83e5ff1acf9aa52073c579de1fff657058652e",
+      "target_sha256": "c50ddacd9c8ea2ca228127f3ae83e5ff1acf9aa52073c579de1fff657058652e",
+      "source_git_state": "tracked",
+      "source_blob": "5aee6b872811ee925caafe6e1f6fc4ad4c726fdb",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/results.py",
+      "target": "brian2-rust/python/brian2_rust/results.py",
+      "source_sha256": "b72ba88dd0c9fb0897b1f27b99ecdaba4ca4841fde05ac999700daf880277587",
+      "target_sha256": "b72ba88dd0c9fb0897b1f27b99ecdaba4ca4841fde05ac999700daf880277587",
+      "source_git_state": "tracked",
+      "source_blob": "876b5bf1117a4bf7bc3b54b1b6eb0f9bc75133b5",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/schedule.py",
+      "target": "brian2-rust/python/brian2_rust/schedule.py",
+      "source_sha256": "5108a706ee8aff740b025b10039d9bcf35c7a4340125ce6b14c0048eb1084c13",
+      "target_sha256": "5108a706ee8aff740b025b10039d9bcf35c7a4340125ce6b14c0048eb1084c13",
+      "source_git_state": "tracked",
+      "source_blob": "f091390421d4d46bb3b4738f5eac2004e7b873e7",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/slot_codegen.py",
+      "target": "brian2-rust/python/brian2_rust/slot_codegen.py",
+      "source_sha256": "66f33ce07d08d1778788554c85dafdfc3110e916aefe2e8d140a29fc0bf82774",
+      "target_sha256": "66f33ce07d08d1778788554c85dafdfc3110e916aefe2e8d140a29fc0bf82774",
+      "source_git_state": "tracked",
+      "source_blob": "d22c5b5b6fd7682ce6c659a2d223f91201a75978",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/spec.py",
+      "target": "brian2-rust/python/brian2_rust/spec.py",
+      "source_sha256": "f8dbea22a30852a1f646735e5528fccf70f0c9e61226a9192e21746c3d921d4f",
+      "target_sha256": "f8dbea22a30852a1f646735e5528fccf70f0c9e61226a9192e21746c3d921d4f",
+      "source_git_state": "tracked",
+      "source_blob": "72fa5e0c47161bbb1f1f9cb14feefa4cceb84e22",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/streaming.py",
+      "target": "brian2-rust/python/brian2_rust/streaming.py",
+      "source_sha256": "09edfe76a364e2df0b3cec12b90625d3c452b96a1a8697fc0416ff437bf6259d",
+      "target_sha256": "09edfe76a364e2df0b3cec12b90625d3c452b96a1a8697fc0416ff437bf6259d",
+      "source_git_state": "tracked",
+      "source_blob": "efefc1f616a3927339490844ed5990ae56375875",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/summed_cache.py",
+      "target": "brian2-rust/python/brian2_rust/summed_cache.py",
+      "source_sha256": "bd0e36bd6c0cb618cedb5259aea9cb58257e0f3ccd886355eab61e3efa50dc9c",
+      "target_sha256": "bd0e36bd6c0cb618cedb5259aea9cb58257e0f3ccd886355eab61e3efa50dc9c",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/topology.py",
+      "target": "brian2-rust/python/brian2_rust/topology.py",
+      "source_sha256": "29d1c01bb58bb7fe6d8af2eaccab20a350d0c64e1d32f9383a9975986ed413cd",
+      "target_sha256": "29d1c01bb58bb7fe6d8af2eaccab20a350d0c64e1d32f9383a9975986ed413cd",
+      "source_git_state": "tracked",
+      "source_blob": "fef39a3a667a72c50df06c5c58f863692803f92e",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/rust-toolchain.toml",
+      "target": "brian2-rust/rust-toolchain.toml",
+      "source_sha256": "72da9f9e503464ba7393560f6f51a69fb06be72633d52ae7725fa0ba59dfda22",
+      "target_sha256": "72da9f9e503464ba7393560f6f51a69fb06be72633d52ae7725fa0ba59dfda22",
+      "source_git_state": "tracked",
+      "source_blob": "f71b0da057ee9b779c67f69ee3992c6e9617f089",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/binary_topology.rs",
+      "target": "brian2-rust/src/binary_topology.rs",
+      "source_sha256": "0ec5b8c87ba9a1a28242788aa17f418b8173fbf97f95ec4442dec33d4efe64f8",
+      "target_sha256": "0ec5b8c87ba9a1a28242788aa17f418b8173fbf97f95ec4442dec33d4efe64f8",
+      "source_git_state": "tracked",
+      "source_blob": "b97089b82242492cd2fb5452bb5139a101783e40",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/canonical.rs",
+      "target": "brian2-rust/src/canonical.rs",
+      "source_sha256": "e8b0507b8cabcb5cebacfac5ee223d728a0ad1686f5562f7bdc1fd0297ca7826",
+      "target_sha256": "e8b0507b8cabcb5cebacfac5ee223d728a0ad1686f5562f7bdc1fd0297ca7826",
+      "source_git_state": "tracked",
+      "source_blob": "6a476f5006c8a33f53217724eb46faf896d5f49f",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/compact_input.rs",
+      "target": "brian2-rust/src/compact_input.rs",
+      "source_sha256": "c677ebffca901123f59768b999e4345de74f54823ff1431d6db010511920bce8",
+      "target_sha256": "c677ebffca901123f59768b999e4345de74f54823ff1431d6db010511920bce8",
+      "source_git_state": "tracked",
+      "source_blob": "f715f74d5a495931b6124fdb1bbec6b50fc7be00",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/executor.rs",
+      "target": "brian2-rust/src/executor.rs",
+      "source_sha256": "cfd8cea9ff923466cddaaaa57860a1ac15582b13d8126f5ac134ba16c03380de",
+      "target_sha256": "cfd8cea9ff923466cddaaaa57860a1ac15582b13d8126f5ac134ba16c03380de",
+      "source_git_state": "tracked",
+      "source_blob": "7e1adcdfb3bf1e685718380250f07b717e8fb716",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/gpu_initialization.rs",
+      "target": "brian2-rust/src/gpu_initialization.rs",
+      "source_sha256": "b8c30034db5c1cdc2850b821a6bdf723d870b7d033f1c4514a8a4347a45072aa",
+      "target_sha256": "b8c30034db5c1cdc2850b821a6bdf723d870b7d033f1c4514a8a4347a45072aa",
+      "source_git_state": "tracked",
+      "source_blob": "0ae03e3967727875a335257f1f9fcf643067ee31",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/large_topology.rs",
+      "target": "brian2-rust/src/large_topology.rs",
+      "source_sha256": "9c2af538e3915f6cd8cf6a3d2371e77a046aa5c047acb761b562b95cd0f12ce3",
+      "target_sha256": "9c2af538e3915f6cd8cf6a3d2371e77a046aa5c047acb761b562b95cd0f12ce3",
+      "source_git_state": "tracked",
+      "source_blob": "a0b487e415d8bc2c1f5ec344790f7264c790fe2d",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/lib.rs",
+      "target": "brian2-rust/src/lib.rs",
+      "source_sha256": "61abbe11ef9262298568298847c29e06fa6d3bd4c9c4760817af9b96a589a787",
+      "target_sha256": "9ae00839b2bb29124703b72b1ea24fa67877f293fa53d4c5e8d06457e69af00a",
+      "source_git_state": "tracked",
+      "source_blob": "ecd3f46e029a44c2dda22ab6a3afadeb5f2a8c43",
+      "adaptation": "Retain shared browser-plan implementation and GPU initialization required by the engine; training and WASM bindings land later."
+    },
+    {
+      "source": "brian2-rust/src/main.rs",
+      "target": "brian2-rust/src/main.rs",
+      "source_sha256": "1bf371044927117e12e7e3a5dd7b594e6f71104332fe9d4aaa0a3ba854674c4e",
+      "target_sha256": "1bf371044927117e12e7e3a5dd7b594e6f71104332fe9d4aaa0a3ba854674c4e",
+      "source_git_state": "tracked",
+      "source_blob": "6a44d07b93135b55549cacb79322fc15d6a2809d",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/model.rs",
+      "target": "brian2-rust/src/model.rs",
+      "source_sha256": "314c996a36a04784fb470f0e7b9a7add80092efd8245480c4e479cdb1371c28c",
+      "target_sha256": "314c996a36a04784fb470f0e7b9a7add80092efd8245480c4e479cdb1371c28c",
+      "source_git_state": "tracked",
+      "source_blob": "10c22bceefbbcbcb8a6aa415cc87dd4413ba3789",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/recording.rs",
+      "target": "brian2-rust/src/recording.rs",
+      "source_sha256": "06682aa9c3fa299d304bc2f4bb8e289d8cf311e73b930a8a1709cb0e49ce6f22",
+      "target_sha256": "06682aa9c3fa299d304bc2f4bb8e289d8cf311e73b930a8a1709cb0e49ce6f22",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/resource_limits.rs",
+      "target": "brian2-rust/src/resource_limits.rs",
+      "source_sha256": "ab8dc5024bb66e43518804a9d17dcefab66109b4bd06f2b624bca3985fc78210",
+      "target_sha256": "ab8dc5024bb66e43518804a9d17dcefab66109b4bd06f2b624bca3985fc78210",
+      "source_git_state": "tracked",
+      "source_blob": "56b06b9ec77ac9b94ab55aa680e0d85f3b9f51f2",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/src/wasm_plan.rs",
+      "target": "brian2-rust/src/wasm_plan.rs",
+      "source_sha256": "3e421e2c4f542368103bd05bc98acd8a55412f1b7ad5937af3dce81903171da0",
+      "target_sha256": "3e421e2c4f542368103bd05bc98acd8a55412f1b7ad5937af3dce81903171da0",
+      "source_git_state": "tracked",
+      "source_blob": "5aede7a74ef4003a76039d661fbaaac76edb0fef",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/conftest.py",
+      "target": "brian2-rust/tests/conftest.py",
+      "source_sha256": "ba4b37a6e9e3c7485b99ade07322ea19fdb6cb9dd2c1813dae9617d1a6db4e71",
+      "target_sha256": "ba4b37a6e9e3c7485b99ade07322ea19fdb6cb9dd2c1813dae9617d1a6db4e71",
+      "source_git_state": "tracked",
+      "source_blob": "42606f8d4b888ab97c509cff63f89f92307d0100",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/golden/b2ir-v1/generate.py",
+      "target": "brian2-rust/tests/golden/b2ir-v1/generate.py",
+      "source_sha256": "4ceb4e1c220fbef3548c0b7f61be1c87b348863b7285ac86663e78e6be0c9341",
+      "target_sha256": "4ceb4e1c220fbef3548c0b7f61be1c87b348863b7285ac86663e78e6be0c9341",
+      "source_git_state": "tracked",
+      "source_blob": "b3af749be788cb02e11474521ec9db27a670fa3f",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/golden/b2ir-v1/hashes.json",
+      "target": "brian2-rust/tests/golden/b2ir-v1/hashes.json",
+      "source_sha256": "8bf13fc97b0d643c4d19d79e0162729c572d0b75e1b447afcd3099643ca61ded",
+      "target_sha256": "8bf13fc97b0d643c4d19d79e0162729c572d0b75e1b447afcd3099643ca61ded",
+      "source_git_state": "tracked",
+      "source_blob": "ca7dbe526d1fb42f7045ac755b001f2727c76f6f",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/golden/b2ir-v1/minimal-v1.json",
+      "target": "brian2-rust/tests/golden/b2ir-v1/minimal-v1.json",
+      "source_sha256": "1a2fe882237e477ddf942f3ade576096d13736a01ebef78aa7a18c3e0bc84b44",
+      "target_sha256": "1a2fe882237e477ddf942f3ade576096d13736a01ebef78aa7a18c3e0bc84b44",
+      "source_git_state": "tracked",
+      "source_blob": "e82f16a5bff6bb44c9f9c07e2160df9892e7a85b",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/golden/b2ir-v1/minimal-v34.json",
+      "target": "brian2-rust/tests/golden/b2ir-v1/minimal-v34.json",
+      "source_sha256": "a9419f4bf4b45a6354622f59a811407adf21e71caf6595f5fd2cec532d56be62",
+      "target_sha256": "a9419f4bf4b45a6354622f59a811407adf21e71caf6595f5fd2cec532d56be62",
+      "source_git_state": "tracked",
+      "source_blob": "718fc24f70f601501b70c3b933a1816080253db0",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/golden/b2ir-v1/minimal-v35.json",
+      "target": "brian2-rust/tests/golden/b2ir-v1/minimal-v35.json",
+      "source_sha256": "c915a4ebb831ef473fb056a5a6dfe24f8270cf30aa0eb3daf76a9aa9d75b5d8d",
+      "target_sha256": "c915a4ebb831ef473fb056a5a6dfe24f8270cf30aa0eb3daf76a9aa9d75b5d8d",
+      "source_git_state": "tracked",
+      "source_blob": "a4c88dc9351f0ac48f3ffa69ebe14ef16ef9da05",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/golden/b2ir-v1/minimal-v36.json",
+      "target": "brian2-rust/tests/golden/b2ir-v1/minimal-v36.json",
+      "source_sha256": "6c536e86c0e46db4b704d48a0253d6a9a4f9905ab39d1bb169b6a6f3842d12f3",
+      "target_sha256": "6c536e86c0e46db4b704d48a0253d6a9a4f9905ab39d1bb169b6a6f3842d12f3",
+      "source_git_state": "tracked",
+      "source_blob": "d6e79a56c81b8cbe6346e41dd6678dc2002472fe",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/golden/b2ir-v1/minimal-v37.json",
+      "target": "brian2-rust/tests/golden/b2ir-v1/minimal-v37.json",
+      "source_sha256": "56cd246bc475aa2a7b91302afd945dafde10769b0d3978e6a13f8290c93cc198",
+      "target_sha256": "56cd246bc475aa2a7b91302afd945dafde10769b0d3978e6a13f8290c93cc198",
+      "source_git_state": "tracked",
+      "source_blob": "0de5a4fd265892a8afb2d5f25cd7a09603d389f5",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_artifact.py",
+      "target": "brian2-rust/tests/test_artifact.py",
+      "source_sha256": "45b6f149ca11d6bd8df52e83156d0bd2d9f5d4a40e30cf66a7102ddf7135e6e0",
+      "target_sha256": "45b6f149ca11d6bd8df52e83156d0bd2d9f5d4a40e30cf66a7102ddf7135e6e0",
+      "source_git_state": "tracked",
+      "source_blob": "abb567e7f8f281975b15ea8480cc9e70a7d29a2f",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_b2ir_v1.py",
+      "target": "brian2-rust/tests/test_b2ir_v1.py",
+      "source_sha256": "c001877e36fb2e0eb51bb0d6358c03f12a9415918006f44d1b59461a8a800827",
+      "target_sha256": "c001877e36fb2e0eb51bb0d6358c03f12a9415918006f44d1b59461a8a800827",
+      "source_git_state": "tracked",
+      "source_blob": "3e258c1afa1b93d94ae6a9beb09e2a4e49997aee",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_clock_tick_continuation.py",
+      "target": "brian2-rust/tests/test_clock_tick_continuation.py",
+      "source_sha256": "fc817bd6fa3c885e1b80177f064060b892d703e6d8cd4b38ad2197f6de0d31d8",
+      "target_sha256": "fc817bd6fa3c885e1b80177f064060b892d703e6d8cd4b38ad2197f6de0d31d8",
+      "source_git_state": "tracked",
+      "source_blob": "7099c92dd7065ea4743c23ec8d96740b1141aee9",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_codegen_sums.py",
+      "target": "brian2-rust/tests/test_codegen_sums.py",
+      "source_sha256": "c593b42cca8853ceb90385198ae78c10e470818cfa5c78efb70509359b887d16",
+      "target_sha256": "cdd55499d72189d838da162940672b3bf6a2afd5496073e4d0f56b3eead1f0d2",
+      "source_git_state": "tracked",
+      "source_blob": "64be4b1ee6746e1d605d029c7ae19683d36b5444",
+      "adaptation": "Keep the existing 60-second default; allow B2_TEST_RUSTC_TIMEOUT for loaded validation hosts. All 20,000 terms, compilation mode and numerical assertions unchanged."
+    },
+    {
+      "source": "brian2-rust/tests/test_compact_validation.py",
+      "target": "brian2-rust/tests/test_compact_validation.py",
+      "source_sha256": "32ea2791587ca2dd2a14bd45f03593a3afa92f5786c7bdb9acc67264784e1e52",
+      "target_sha256": "32ea2791587ca2dd2a14bd45f03593a3afa92f5786c7bdb9acc67264784e1e52",
+      "source_git_state": "tracked",
+      "source_blob": "4569484325b26df0ba918219976f9d4f6a7079be",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_device.py",
+      "target": "brian2-rust/tests/test_device.py",
+      "source_sha256": "c9f6338e11b8df7a4f15cfdb46a38a16af76278e7137d74ca5f15c727a41f0dd",
+      "target_sha256": "c9f6338e11b8df7a4f15cfdb46a38a16af76278e7137d74ca5f15c727a41f0dd",
+      "source_git_state": "tracked",
+      "source_blob": "9f20dc8e2d3cc6c85c2c5060203b2f2c1d1859d9",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_encoded_array.py",
+      "target": "brian2-rust/tests/test_encoded_array.py",
+      "source_sha256": "c22f9a00d4ecb1fbd316516b720a19f52d44df73940cef8247acfdb30c01d4da",
+      "target_sha256": "c22f9a00d4ecb1fbd316516b720a19f52d44df73940cef8247acfdb30c01d4da",
+      "source_git_state": "tracked",
+      "source_blob": "7356e3724e7957018650cfcb3ea88d3dbb7dd8b2",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_execution_plan.py",
+      "target": "brian2-rust/tests/test_execution_plan.py",
+      "source_sha256": "8c58a4173948aeff69becd5e4001a8edb7923ac39f00944532a6c3671348a8a1",
+      "target_sha256": "8c58a4173948aeff69becd5e4001a8edb7923ac39f00944532a6c3671348a8a1",
+      "source_git_state": "tracked",
+      "source_blob": "be8f3c56f89b6050f56b49be00a4678ad1d3bcae",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_instance_encoding.py",
+      "target": "brian2-rust/tests/test_instance_encoding.py",
+      "source_sha256": "71214e8a943d7a83abaa089cb73e57ace1abfa40ffef1d2406c0cd7bfabc6c03",
+      "target_sha256": "71214e8a943d7a83abaa089cb73e57ace1abfa40ffef1d2406c0cd7bfabc6c03",
+      "source_git_state": "tracked",
+      "source_blob": "5e76cd35ccde27c95a67b2e0d69a1e3be966b46d",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_monitor_observables.py",
+      "target": "brian2-rust/tests/test_monitor_observables.py",
+      "source_sha256": "401e898a0fdb41d3a1b729105ba63321ae057bd97ad028a82685a43ed202e785",
+      "target_sha256": "401e898a0fdb41d3a1b729105ba63321ae057bd97ad028a82685a43ed202e785",
+      "source_git_state": "tracked",
+      "source_blob": "84b2ee32d651a2e20cbe840d3ce19b8a0c1c1bc6",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_native.py",
+      "target": "brian2-rust/tests/test_native.py",
+      "source_sha256": "7fa4ade3cf4d8c8563e7c2869fc85ad83718d884e4b57094f6ec489693a8d67d",
+      "target_sha256": "7fa4ade3cf4d8c8563e7c2869fc85ad83718d884e4b57094f6ec489693a8d67d",
+      "source_git_state": "tracked",
+      "source_blob": "d7e1e19888008551d0fd1520b528830da6e7f852",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_population.py",
+      "target": "brian2-rust/tests/test_population.py",
+      "source_sha256": "689b0fa8458e14afb019d30e6bd12713e9a4c9db788f4c6496b5405ab3c5d5a8",
+      "target_sha256": "689b0fa8458e14afb019d30e6bd12713e9a4c9db788f4c6496b5405ab3c5d5a8",
+      "source_git_state": "tracked",
+      "source_blob": "1b744eaecc3a597e3b07e7af57a5f8422b28f100",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_presynaptic_write_summed_only.py",
+      "target": "brian2-rust/tests/test_presynaptic_write_summed_only.py",
+      "source_sha256": "dccda5be696a591223bb02da32ba56a37068ca7896fb3fbd7f76aef9ee0ee4bf",
+      "target_sha256": "dccda5be696a591223bb02da32ba56a37068ca7896fb3fbd7f76aef9ee0ee4bf",
+      "source_git_state": "tracked",
+      "source_blob": "354adc4fdc8b8ead13ade59706c6df07cb4aee10",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_probe.py",
+      "target": "brian2-rust/tests/test_probe.py",
+      "source_sha256": "e8287b5448ff44efcfc842de074a0b4eddb81216fc4a5ba28d2a7ab879d423a0",
+      "target_sha256": "e8287b5448ff44efcfc842de074a0b4eddb81216fc4a5ba28d2a7ab879d423a0",
+      "source_git_state": "tracked",
+      "source_blob": "b2182f472c54b79c88c27fa874dff6698ce4d07e",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_rate_monitor.py",
+      "target": "brian2-rust/tests/test_rate_monitor.py",
+      "source_sha256": "e2bc9eee00168f4ff7123c341059cea90fd80e9c4854b1f66181bfcdde5f4887",
+      "target_sha256": "e2bc9eee00168f4ff7123c341059cea90fd80e9c4854b1f66181bfcdde5f4887",
+      "source_git_state": "tracked",
+      "source_blob": "a5da19f9937896e61e20b3fb6b6787f73f298c25",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_refractory.py",
+      "target": "brian2-rust/tests/test_refractory.py",
+      "source_sha256": "0a3e3eeca1453f0fc2e44696545df5eb001fcd4b6dabf8025713daf2eb153f77",
+      "target_sha256": "0a3e3eeca1453f0fc2e44696545df5eb001fcd4b6dabf8025713daf2eb153f77",
+      "source_git_state": "tracked",
+      "source_blob": "68d57e7e7003ba95c17b6c1c60275b90670f7340",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_resource_limits.py",
+      "target": "brian2-rust/tests/test_resource_limits.py",
+      "source_sha256": "a315ce7a2373dce36ea650f437699807116333dfaa5ccf401efe7e7417f754ff",
+      "target_sha256": "98e166d1467032e0c8a97d252e786bb9c2e5065f33e22dbe5fce83aaf86c8ffa",
+      "source_git_state": "tracked",
+      "source_blob": "2d6a4af4e3048e9b20a770b9bb7e67a61e3f1854",
+      "adaptation": "Use relocated immutable reference fixture; update obsolete error-text expectation to the actual primary-clock validation diagnostic and explicitly assert failure exit status. All numerical/byte comparisons and budget boundary cases retained."
+    },
+    {
+      "source": "brian2-rust/tests/test_rng_poisson.py",
+      "target": "brian2-rust/tests/test_rng_poisson.py",
+      "source_sha256": "7184c27e2db3432b979a0389afe2e8884785e4a11a6249eff34643885d77cfc7",
+      "target_sha256": "7184c27e2db3432b979a0389afe2e8884785e4a11a6249eff34643885d77cfc7",
+      "source_git_state": "tracked",
+      "source_blob": "506812864527fa1cb624c0d7434e0c60bc5f4cd9",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_string_connection.py",
+      "target": "brian2-rust/tests/test_string_connection.py",
+      "source_sha256": "6fb59eeaae71b3ac83597aa1acbaad3f4438ab684733a91935b9a2604afd6047",
+      "target_sha256": "6fb59eeaae71b3ac83597aa1acbaad3f4438ab684733a91935b9a2604afd6047",
+      "source_git_state": "tracked",
+      "source_blob": "402ae690a91e7dca2eb55e83ac35cc0a557a0e1f",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_summed_cache.py",
+      "target": "brian2-rust/tests/test_summed_cache.py",
+      "source_sha256": "ee4f7db2cb34465a369e10910e5b4f501c6298203b1484f69675d48e3d4b0282",
+      "target_sha256": "ee4f7db2cb34465a369e10910e5b4f501c6298203b1484f69675d48e3d4b0282",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/tests/test_synapses.py",
+      "target": "brian2-rust/tests/test_synapses.py",
+      "source_sha256": "e86acc666c9c1f017c97243751cce0e4585b26b433d1a0947552864599eaa40e",
+      "target_sha256": "c391ee4ef9ab3fdc0851949cc5c3f00611cf82be7b88c28b0e963db9f3ec8132",
+      "source_git_state": "tracked",
+      "source_blob": "9fc2b0d991311257d4c0519909b94f66f8bc94e3",
+      "adaptation": "Copied byte-for-byte from frozen capture. Reject a non-default RK2/Euler fallback sequence; explicit RK2 is supported and remains covered by the five-method differential test."
+    },
+    {
+      "source": "brian2-rust/tests/test_weighted_binomial.py",
+      "target": "brian2-rust/tests/test_weighted_binomial.py",
+      "source_sha256": "5dcc007c3b62abccdbf9b7da8036abe08cbc6f46b30db9c2ae16df55276ce1d6",
+      "target_sha256": "5dcc007c3b62abccdbf9b7da8036abe08cbc6f46b30db9c2ae16df55276ce1d6",
+      "source_git_state": "tracked",
+      "source_blob": "168e0791511819fa5dbd382565f8dc3b82508f56",
+      "adaptation": "Copied byte-for-byte from frozen capture."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/cuda.py",
+      "target": "brian2-rust/python/brian2_rust/cuda.py",
+      "source_sha256": "7e128bb08b531cc019d12999c3c7b25276dac27ff6168eac105ab04f6b5c4521",
+      "target_sha256": "7e128bb08b531cc019d12999c3c7b25276dac27ff6168eac105ab04f6b5c4521",
+      "source_git_state": "tracked",
+      "source_blob": "3ff96ab8a0154cfad248bced79cd63647e9f52a7",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/cuda_codegen.py",
+      "target": "brian2-rust/python/brian2_rust/cuda_codegen.py",
+      "source_sha256": "e9d85cb9bb0b31e8802615d0bc829002590946fefe766a331aa57e01bc5c926e",
+      "target_sha256": "e9d85cb9bb0b31e8802615d0bc829002590946fefe766a331aa57e01bc5c926e",
+      "source_git_state": "tracked",
+      "source_blob": "bf405c80d9427f7d32079ea3848270a6e8ca00e8",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/cuda_compiler.py",
+      "target": "brian2-rust/python/brian2_rust/cuda_compiler.py",
+      "source_sha256": "364392beba3b41b27153179e6797b440033660059d18cea84470a9f4c5be88ce",
+      "target_sha256": "364392beba3b41b27153179e6797b440033660059d18cea84470a9f4c5be88ce",
+      "source_git_state": "tracked",
+      "source_blob": "6d8e2bb744727d8c9637b8fa2472ea081fd67248",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/distributed.py",
+      "target": "brian2-rust/python/brian2_rust/distributed.py",
+      "source_sha256": "cc91931b1c86017d226a9a46b7cec84aeb8a51804730bae2a318509298dee289",
+      "target_sha256": "cc91931b1c86017d226a9a46b7cec84aeb8a51804730bae2a318509298dee289",
+      "source_git_state": "tracked",
+      "source_blob": "4a45256a431138e2545ecd9101d53272c6aaf8bd",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/gpu_initialization.py",
+      "target": "brian2-rust/python/brian2_rust/gpu_initialization.py",
+      "source_sha256": "db8615685488a3bd8dda05faf8a39cb8d5442713d96497140527cafc89e5d2ef",
+      "target_sha256": "db8615685488a3bd8dda05faf8a39cb8d5442713d96497140527cafc89e5d2ef",
+      "source_git_state": "tracked",
+      "source_blob": "0d6f17c0896b3b61f922b4547872267d66e0a5d5",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/gpu_types.py",
+      "target": "brian2-rust/python/brian2_rust/gpu_types.py",
+      "source_sha256": "690962b1448218519405e75bc932f0bd3c6e4fe742e896203e0e1d9e53742227",
+      "target_sha256": "690962b1448218519405e75bc932f0bd3c6e4fe742e896203e0e1d9e53742227",
+      "source_git_state": "tracked",
+      "source_blob": "89db47536c4cb814c9a2f4b57f5dfd994c4c049c",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/metal.py",
+      "target": "brian2-rust/python/brian2_rust/metal.py",
+      "source_sha256": "a2d300b326b8d6703fed09d3dd8eacefeb6c5db8f06f473401209babc50a9b83",
+      "target_sha256": "a2d300b326b8d6703fed09d3dd8eacefeb6c5db8f06f473401209babc50a9b83",
+      "source_git_state": "tracked",
+      "source_blob": "e00bef663116b3fb80ecb782bee3e709d448894e",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/metal_binomial.py",
+      "target": "brian2-rust/python/brian2_rust/metal_binomial.py",
+      "source_sha256": "2103ca7a17c29f2e8cd8c1edd813f4e025b4f5e4b48c1800f9bdde1b8b582e80",
+      "target_sha256": "2103ca7a17c29f2e8cd8c1edd813f4e025b4f5e4b48c1800f9bdde1b8b582e80",
+      "source_git_state": "tracked",
+      "source_blob": "deb0200b8b0acc1fecd9bdde31521551650a5577",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/metal_poisson.py",
+      "target": "brian2-rust/python/brian2_rust/metal_poisson.py",
+      "source_sha256": "be5d6bb9a8f98884ec48ea788f9eaf0000f410287838d77f7951b2c9ae31b9f9",
+      "target_sha256": "be5d6bb9a8f98884ec48ea788f9eaf0000f410287838d77f7951b2c9ae31b9f9",
+      "source_git_state": "tracked",
+      "source_blob": "4c431b26151b9b2dda7d508d2aeb671163576123",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/metal_random.py",
+      "target": "brian2-rust/python/brian2_rust/metal_random.py",
+      "source_sha256": "a7b0c05bf67037b1ee6f7ef565db9e702e6b681e43e80727d9f4df6bc6bd6e08",
+      "target_sha256": "a7b0c05bf67037b1ee6f7ef565db9e702e6b681e43e80727d9f4df6bc6bd6e08",
+      "source_git_state": "tracked",
+      "source_blob": "b721de7d6042b247a8ec11f0a5b8a9ee1e8436bf",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/metal_timed_array.py",
+      "target": "brian2-rust/python/brian2_rust/metal_timed_array.py",
+      "source_sha256": "65fc8a03bbed14d71728efd41b705f0a5de8743330a8639e12e1a039c34b7a84",
+      "target_sha256": "65fc8a03bbed14d71728efd41b705f0a5de8743330a8639e12e1a039c34b7a84",
+      "source_git_state": "tracked",
+      "source_blob": "2671fc0be9ab66bcd377872290ba2f65df891560",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/wasm.py",
+      "target": "brian2-rust/python/brian2_rust/wasm.py",
+      "source_sha256": "2a62c6e2d78733e084be79fc0483841778f71651ec14d7566aa2ed52881a04a9",
+      "target_sha256": "2a62c6e2d78733e084be79fc0483841778f71651ec14d7566aa2ed52881a04a9",
+      "source_git_state": "tracked",
+      "source_blob": "51797790e72c8a4d2c31bc5dfd69262335c2cc8f",
+      "adaptation": "Shared plan type / import dependency required by CPU plan verification, binding and explanation. Byte-preserved implementation; backend execution qualification remains separate."
+    },
+    {
+      "source": "brian2-rust/mpi-evidence/model.json",
+      "target": "brian2-rust/tests/fixtures/reference-v1/model.json",
+      "source_sha256": "39128cf74b7586db73e531c60dee93a11e2bdd89ce929273b8e9eb8c42a4d87c",
+      "target_sha256": "39128cf74b7586db73e531c60dee93a11e2bdd89ce929273b8e9eb8c42a4d87c",
+      "source_git_state": "tracked",
+      "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+      "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+    },
+    {
+      "source": "brian2-rust/mpi-evidence/reference/events.bin",
+      "target": "brian2-rust/tests/fixtures/reference-v1/reference/events.bin",
+      "source_sha256": "cc8237d4158446b226a212f1f17ecb01217fbc4c8231b61c2bd2b8d9fdfe555e",
+      "target_sha256": "cc8237d4158446b226a212f1f17ecb01217fbc4c8231b61c2bd2b8d9fdfe555e",
+      "source_git_state": "tracked",
+      "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+      "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+    },
+    {
+      "source": "brian2-rust/mpi-evidence/reference/results.bin",
+      "target": "brian2-rust/tests/fixtures/reference-v1/reference/results.bin",
+      "source_sha256": "6bff9cdbf233e901175bc52a56563fdd35a9c643e8baabcba38b1f65b64c2df5",
+      "target_sha256": "6bff9cdbf233e901175bc52a56563fdd35a9c643e8baabcba38b1f65b64c2df5",
+      "source_git_state": "tracked",
+      "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+      "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+    },
+    {
+      "source": "brian2-rust/mpi-evidence/reference/summary.json",
+      "target": "brian2-rust/tests/fixtures/reference-v1/reference/summary.json",
+      "source_sha256": "bac0a8844910ee23a2ffbb40b972ce359159835646cecfd7840c27ea6ac87e57",
+      "target_sha256": "bac0a8844910ee23a2ffbb40b972ce359159835646cecfd7840c27ea6ac87e57",
+      "source_git_state": "tracked",
+      "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+      "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+    },
+    {
+      "source": "brian2-rust/tests/test_binary_topology.py",
+      "target": "brian2-rust/tests/test_binary_topology.py",
+      "source_sha256": "9a3b3e2aeffbcb53100b1b54f756dea39aaa49bd042fcc7daa2d2500114d9d27",
+      "target_sha256": "9a3b3e2aeffbcb53100b1b54f756dea39aaa49bd042fcc7daa2d2500114d9d27",
+      "source_git_state": "tracked",
+      "source_blob": "9087d6c01078978290ff66076a86de734fccde82",
+      "adaptation": "Exact frozen source; binary-topology regression and user-facing streamed CSR import utility."
+    },
+    {
+      "source": "brian2-rust/tests/test_results_bounded.py",
+      "target": "brian2-rust/tests/test_results_bounded.py",
+      "source_sha256": "ab5d56ddfd053a02e4466be731a3e055f0873f04d9d4ef49704c45528aa7d738",
+      "target_sha256": "11e82aed69b501a580ad6520c8016e5148b4a9b15b0e132394b7403700f4f648",
+      "source_git_state": "tracked",
+      "source_blob": "6de2c4650f98632794ad26a4c2495a3117dc8d70",
+      "adaptation": "Use immutable reference-v1 test fixture relocated from legacy mpi-evidence; no assertion or expected numerical data changed."
+    },
+    {
+      "source": "brian2-rust/tests/test_results_times.py",
+      "target": "brian2-rust/tests/test_results_times.py",
+      "source_sha256": "f82ce11042fd11a04a2d5a1d3952db0858bbadd7204a3b6a66090255d478fa84",
+      "target_sha256": "0158d5b509f84d496a22b70eb90ec26adf83dc43832ce7795c1286ca6711bcc4",
+      "source_git_state": "tracked",
+      "source_blob": "223706c24848fa27bc07828ff1fd344af76ddb61",
+      "adaptation": "Use immutable reference-v1 test fixture relocated from legacy mpi-evidence; no assertion or expected numerical data changed."
+    },
+    {
+      "source": "brian2-rust/examples/flywire_import.py",
+      "target": "brian2-rust/examples/flywire_import.py",
+      "source_sha256": "c700c6fbe828a62f3a6b927beb1df986c8f62b67f9653825a50aee5994b7c443",
+      "target_sha256": "c700c6fbe828a62f3a6b927beb1df986c8f62b67f9653825a50aee5994b7c443",
+      "source_git_state": "tracked",
+      "source_blob": "28b078cb1e85215c6b8fc1017f9d9f9851eda307",
+      "adaptation": "Exact frozen source; binary-topology regression and user-facing streamed CSR import utility."
+    },
+    {
+      "source": "brian2-rust/tests/test_coba_hh.py",
+      "target": "brian2-rust/tests/test_coba_hh.py",
+      "source_sha256": "c6172a42d85d5df3ac7694213d32984131a989eaaed9da7b641746f69edb1984",
+      "target_sha256": "c6172a42d85d5df3ac7694213d32984131a989eaaed9da7b641746f69edb1984",
+      "source_git_state": "tracked",
+      "source_blob": "e31c2d84ac432119f569043147f5fcbb22b5770e",
+      "adaptation": "Exact captured regression for conductance/HH expressions or general clock-driven NMDA/summed/delay semantics."
+    },
+    {
+      "source": "brian2-rust/tests/test_nmda_deterministic_core.py",
+      "target": "brian2-rust/tests/test_nmda_deterministic_core.py",
+      "source_sha256": "dca37f8fdc914618003bb552884b9c332cca7739c32cc65e8099277baf0e2bc8",
+      "target_sha256": "dca37f8fdc914618003bb552884b9c332cca7739c32cc65e8099277baf0e2bc8",
+      "source_git_state": "tracked",
+      "source_blob": "dc719bebf33919900dd52b691dce63979017e05e",
+      "adaptation": "Exact captured regression for conductance/HH expressions or general clock-driven NMDA/summed/delay semantics."
+    }
+  ],
+  "validation": {
+    "native_runner_sha256": "89472290e9628a8da1a1f7f1b93ab2f58f0a261b1d7eaf5283a8987f821bc417",
+    "rust_library": "10 passed",
+    "core": "135 passed; six original failures resolved by matching focused reruns",
+    "supplemental": "59 passed, 3 macOS cache-advice skips",
+    "large_sum": "20000-term compile/numerical regression passed in 696.18 seconds",
+    "extended": "213 original passes; all six original failures resolved by focused reruns. See extended_resolution.",
+    "portable_gate": "33 B2IR/compact cases passed from the canonical integration checkout.",
+    "cpu_test_files": [
+      "test_artifact.py",
+      "test_b2ir_v1.py",
+      "test_binary_topology.py",
+      "test_clock_tick_continuation.py",
+      "test_coba_hh.py",
+      "test_codegen_sums.py",
+      "test_compact_validation.py",
+      "test_device.py",
+      "test_encoded_array.py",
+      "test_execution_plan.py",
+      "test_instance_encoding.py",
+      "test_monitor_observables.py",
+      "test_native.py",
+      "test_nmda_deterministic_core.py",
+      "test_population.py",
+      "test_presynaptic_write_summed_only.py",
+      "test_probe.py",
+      "test_rate_monitor.py",
+      "test_refractory.py",
+      "test_resource_limits.py",
+      "test_results_bounded.py",
+      "test_results_times.py",
+      "test_rng_poisson.py",
+      "test_string_connection.py",
+      "test_summed_cache.py",
+      "test_synapses.py",
+      "test_weighted_binomial.py"
+    ],
+    "ci": "CPU workflow configured for Linux Python 3.12 and 3.14; hosted result not yet verified."
+  },
+  "evidence": {
+    "p2-core-failure-resolution.json": {
+      "sha256": "714a8f30948985ef141f553bee6a4d623bb0e3f3bcff4ee1af326ac23b4f8478",
+      "record": {
+        "schema": "atlas-core-failure-resolution-v1",
+        "status": "All six failures from the original core gate have passing targeted evidence; extended semantics remain a separate pending gate.",
+        "original_run": "p2-cpu-core-with-plans",
+        "resolved": [
+          {
+            "test": {
+              "classname": "staging.p2-cpu.brian2-rust.tests.test_device.DeviceTest",
+              "name": "test_partial_clock_intervals_match_numpy_across_continuations",
+              "time": "300.697"
+            },
+            "passing_runs": [
+              "p2-partial-clock-diagnostic"
+            ],
+            "resolution": "Original 300-second compiler timeout; identical numerical assertions passed with 1200-second timeout and pinned toolchain."
+          },
+          {
+            "test": {
+              "classname": "staging.p2-cpu.brian2-rust.tests.test_native.NativeTest",
+              "name": "test_canonical_regular_slots_delays_and_segmented_execution",
+              "time": "428.050"
+            },
+            "passing_runs": [
+              "p2-core-targeted-repair"
+            ],
+            "resolution": "Original 300-second compiler timeout; identical numerical assertions passed with 1200-second timeout and pinned toolchain."
+          },
+          {
+            "test": {
+              "classname": "staging.p2-cpu.brian2-rust.tests.test_resource_limits",
+              "name": "test_mainline_steps_and_explicit_lower_budget_in_both_validators[neuron]",
+              "time": "0.695"
+            },
+            "passing_runs": [
+              "p2-core-targeted-repair"
+            ],
+            "resolution": "Assert the actual current validator diagnostic and nonzero exit; all boundary cases retained."
+          },
+          {
+            "test": {
+              "classname": "staging.p2-cpu.brian2-rust.tests.test_resource_limits",
+              "name": "test_mainline_steps_and_explicit_lower_budget_in_both_validators[poisson]",
+              "time": "0.589"
+            },
+            "passing_runs": [
+              "p2-core-targeted-repair"
+            ],
+            "resolution": "Assert the actual current validator diagnostic and nonzero exit; all boundary cases retained."
+          },
+          {
+            "test": {
+              "classname": "staging.p2-cpu.brian2-rust.tests.test_resource_limits",
+              "name": "test_mainline_steps_and_explicit_lower_budget_in_both_validators[generator]",
+              "time": "0.569"
+            },
+            "passing_runs": [
+              "p2-core-targeted-repair"
+            ],
+            "resolution": "Assert the actual current validator diagnostic and nonzero exit; all boundary cases retained."
+          },
+          {
+            "test": {
+              "classname": "staging.p2-cpu.brian2-rust.tests.test_resource_limits",
+              "name": "test_default_execution_retains_frozen_output_bytes",
+              "time": "0.167"
+            },
+            "passing_runs": [
+              "p2-core-targeted-repair"
+            ],
+            "resolution": "Restored immutable golden reference fixture and pointed test to its product location."
+          }
+        ],
+        "evidence": {
+          "p2-cpu-core-with-plans": {
+            "exit_code": 1,
+            "runner_sha256": "89472290e9628a8da1a1f7f1b93ab2f58f0a261b1d7eaf5283a8987f821bc417",
+            "frontend_head": "6b3b061c07c860cd79c18c881181716c964ddc60",
+            "xml_sha256": "f6b50feab664f4fe80fed6fd20ab39a2f1e517423cfc951e8fa1b20f5a9e331e",
+            "suites": [
+              {
+                "name": "pytest",
+                "errors": "0",
+                "failures": "6",
+                "skipped": "0",
+                "tests": "233",
+                "time": "4938.530",
+                "timestamp": "2026-10-08T17:20:37.002944+08:00",
+                "hostname": "Rocks-MacBook-Air.local"
+              }
+            ]
+          },
+          "p2-partial-clock-diagnostic": {
+            "exit_code": 0,
+            "runner_sha256": "89472290e9628a8da1a1f7f1b93ab2f58f0a261b1d7eaf5283a8987f821bc417",
+            "frontend_head": "fa2dd785f7d7a381a9e33167d716a1a06591b7c7",
+            "xml_sha256": "febb24bce0792d1c10e0bbaf41b9a795bfe9f180aa7f5943f9cc0ee03842ca0e",
+            "suites": [
+              {
+                "name": "pytest",
+                "errors": "0",
+                "failures": "0",
+                "skipped": "0",
+                "tests": "1",
+                "time": "732.995",
+                "timestamp": "2026-10-08T18:11:36.404687+08:00",
+                "hostname": "Rocks-MacBook-Air.local"
+              }
+            ]
+          },
+          "p2-core-targeted-repair": {
+            "exit_code": 0,
+            "runner_sha256": "89472290e9628a8da1a1f7f1b93ab2f58f0a261b1d7eaf5283a8987f821bc417",
+            "frontend_head": "fa2dd785f7d7a381a9e33167d716a1a06591b7c7",
+            "xml_sha256": "4cf4b920fc8c2e8faf1fcf1da751b176b2eca1daa4c4931cd45c30681a9feddc",
+            "suites": [
+              {
+                "name": "pytest",
+                "errors": "0",
+                "failures": "0",
+                "skipped": "0",
+                "tests": "14",
+                "time": "222.582",
+                "timestamp": "2026-10-08T18:54:40.631963+08:00",
+                "hostname": "Rocks-MacBook-Air.local"
+              }
+            ]
+          }
+        },
+        "repair_manifest": "p2-cpu-gate-input-repair.json"
+      }
+    },
+    "p2-cpu-result-topology.json": {
+      "sha256": "bd0e82d92d2ee2bd3c7da19b361b146f24a60e9a60480dbf781ffb880cc8e45d",
+      "record": {
+        "label": "p2-cpu-result-topology",
+        "frontend": "/atlas-storage/0001/repos/atlas-port-frontend/brian2/__init__.py",
+        "backend": "/atlas-storage/0001/staging/p2-cpu/brian2-rust/python/brian2_rust/__init__.py",
+        "frontend_head": "fa2dd785f7d7a381a9e33167d716a1a06591b7c7",
+        "frontend_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runner": "/atlas-storage/0001/build/cargo/release/b2-runner",
+        "runner_sha256": "89472290e9628a8da1a1f7f1b93ab2f58f0a261b1d7eaf5283a8987f821bc417",
+        "rust": "rustc 1.98.1 (48a229cea 2026-09-01)",
+        "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+        "files": [
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_binary_topology.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_results_bounded.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_results_times.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_coba_hh.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_nmda_deterministic_core.py"
+        ],
+        "pytest_args": [
+          "-q",
+          "--disable-warnings",
+          "--maxfail=8",
+          "--timeout=1200",
+          "--junitxml=/atlas-storage/0002/brian2-atlas-migration-20261008/evidence/p2-cpu-result-topology.xml",
+          "--basetemp=/atlas-storage/0001/tmp/p2-cpu-result-topology",
+          "-o",
+          "cache_dir=/atlas-storage/0001/cache/pytest/p2-cpu-result-topology",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_binary_topology.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_results_bounded.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_results_times.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_coba_hh.py",
+          "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_nmda_deterministic_core.py"
+        ],
+        "started_unix": 1791459128.035203,
+        "exit_code": 0,
+        "ended_unix": 1791459698.9378948
+      }
+    },
+    "p2-codegen-sum-resolution.json": {
+      "sha256": "2acc226053d35fbc9f7c71aaf1103405f71ae32a444e4c506f2109c36a285abf",
+      "record": {
+        "schema": "atlas-gate-resolution-v1",
+        "original": "p2-cpu-extended (final pending); p2-codegen-sum retry inner rustc timeout=60",
+        "passing_gate": "p2-codegen-sum-compile-budget.json",
+        "gate_sha256": "74c85b55106dbf5d2fa39a1b7e88e1efe637a83b51892f5903d86ca62eb729ca",
+        "result": "1 passed in 696.18 seconds; all 20000 terms and compilation/numerical assertions preserved",
+        "scope": "Only test_codegen_sums; other extended failures remain unresolved"
+      }
+    },
+    "p2-cpu-gate-input-repair.json": {
+      "sha256": "e135a53c9ff8b9d0386f8d5ae1651d7001130ff2982c3b7bc646447243adc5b1",
+      "record": {
+        "schema": "atlas-cpu-gate-input-repair-v1",
+        "fixtures": [
+          {
+            "source": "brian2-rust/mpi-evidence/model.json",
+            "target": "brian2-rust/tests/fixtures/reference-v1/model.json",
+            "source_sha256": "39128cf74b7586db73e531c60dee93a11e2bdd89ce929273b8e9eb8c42a4d87c",
+            "target_sha256": "39128cf74b7586db73e531c60dee93a11e2bdd89ce929273b8e9eb8c42a4d87c",
+            "source_git_state": "tracked",
+            "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+            "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+          },
+          {
+            "source": "brian2-rust/mpi-evidence/reference/events.bin",
+            "target": "brian2-rust/tests/fixtures/reference-v1/reference/events.bin",
+            "source_sha256": "cc8237d4158446b226a212f1f17ecb01217fbc4c8231b61c2bd2b8d9fdfe555e",
+            "target_sha256": "cc8237d4158446b226a212f1f17ecb01217fbc4c8231b61c2bd2b8d9fdfe555e",
+            "source_git_state": "tracked",
+            "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+            "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+          },
+          {
+            "source": "brian2-rust/mpi-evidence/reference/results.bin",
+            "target": "brian2-rust/tests/fixtures/reference-v1/reference/results.bin",
+            "source_sha256": "6bff9cdbf233e901175bc52a56563fdd35a9c643e8baabcba38b1f65b64c2df5",
+            "target_sha256": "6bff9cdbf233e901175bc52a56563fdd35a9c643e8baabcba38b1f65b64c2df5",
+            "source_git_state": "tracked",
+            "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+            "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+          },
+          {
+            "source": "brian2-rust/mpi-evidence/reference/summary.json",
+            "target": "brian2-rust/tests/fixtures/reference-v1/reference/summary.json",
+            "source_sha256": "bac0a8844910ee23a2ffbb40b972ce359159835646cecfd7840c27ea6ac87e57",
+            "target_sha256": "bac0a8844910ee23a2ffbb40b972ce359159835646cecfd7840c27ea6ac87e57",
+            "source_git_state": "tracked",
+            "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+            "adaptation": "Relocate the immutable captured model and reference output bytes into necessary product test fixtures; no expected values regenerated."
+          }
+        ],
+        "test_changes": [
+          {
+            "stage": "p2-cpu",
+            "target": "brian2-rust/tests/test_resource_limits.py",
+            "before_sha256": "a315ce7a2373dce36ea650f437699807116333dfaa5ccf401efe7e7417f754ff",
+            "target_sha256": "98e166d1467032e0c8a97d252e786bb9c2e5065f33e22dbe5fce83aaf86c8ffa"
+          },
+          {
+            "stage": "p3-gpu-wasm",
+            "target": "brian2-rust/tests/test_resource_limits.py",
+            "before_sha256": "a315ce7a2373dce36ea650f437699807116333dfaa5ccf401efe7e7417f754ff",
+            "target_sha256": "98e166d1467032e0c8a97d252e786bb9c2e5065f33e22dbe5fce83aaf86c8ffa"
+          },
+          {
+            "stage": "full-backends",
+            "target": "brian2-rust/tests/test_resource_limits.py",
+            "before_sha256": "a315ce7a2373dce36ea650f437699807116333dfaa5ccf401efe7e7417f754ff",
+            "target_sha256": "98e166d1467032e0c8a97d252e786bb9c2e5065f33e22dbe5fce83aaf86c8ffa"
+          }
+        ],
+        "reason": "Failures were diagnosed from the completed JUnit trace. Three configured-lower-budget cases fail only because the test expects a superseded message; the actual nonzero rejection is preserved and now explicitly asserted. One byte-identity test lacked its four captured fixture files. Two compile-heavy cases hit the 300s test deadline; no numeric assertion is removed.",
+        "status": "All six original core failures have successful focused evidence; see p2-core-failure-resolution.json. Extended and supplemental gates have separate scope."
+      }
+    },
+    "p2-codegen-sum-timeout-port.json": {
+      "sha256": "a38799ad1168445f5701f8c1a1caa0567958ee1e5c736ae74dc861d1064ebdcb",
+      "record": {
+        "files": [
+          {
+            "stage": "p2-cpu",
+            "source": "brian2-rust/tests/test_codegen_sums.py",
+            "source_sha256": "c593b42cca8853ceb90385198ae78c10e470818cfa5c78efb70509359b887d16",
+            "target_sha256": "cdd55499d72189d838da162940672b3bf6a2afd5496073e4d0f56b3eead1f0d2"
+          },
+          {
+            "stage": "p3-gpu-wasm",
+            "source": "brian2-rust/tests/test_codegen_sums.py",
+            "source_sha256": "c593b42cca8853ceb90385198ae78c10e470818cfa5c78efb70509359b887d16",
+            "target_sha256": "cdd55499d72189d838da162940672b3bf6a2afd5496073e4d0f56b3eead1f0d2"
+          },
+          {
+            "stage": "full-backends",
+            "source": "brian2-rust/tests/test_codegen_sums.py",
+            "source_sha256": "c593b42cca8853ceb90385198ae78c10e470818cfa5c78efb70509359b887d16",
+            "target_sha256": "cdd55499d72189d838da162940672b3bf6a2afd5496073e4d0f56b3eead1f0d2"
+          }
+        ],
+        "diagnostic": "p2-extended-first-failures.log",
+        "reason": "Focused pinned-toolchain retry proved the inner rustc subprocess timeout is fixed at 60 seconds, independent of pytest timeout. The fractional-clock test passed. No numeric or AST-size requirement is reduced.",
+        "validation": "pending",
+        "validation_configuration": {
+          "label": "p2-codegen-sum-compile-budget",
+          "B2_TEST_RUSTC_TIMEOUT": 900,
+          "pytest_timeout_seconds": 1200
+        }
+      }
+    },
+    "p2-synaptic-method-test-port.json": {
+      "sha256": "803b14c45cc3f510244d5e4704e64d979e54fab10d1d8ca5e457818ee22bb3b0",
+      "record": {
+        "schema": "atlas-regression-fixture-port-v1",
+        "created_utc": "2026-10-08T13:03:25.353898+00:00",
+        "reason": "Frozen negative test rejects explicit RK2, but frozen capability/export code supports it and the same test file has positive RK2 differential coverage. Use a valid Brian non-default fallback tuple to exercise the documented unsupported selection guard. No product implementation or numerical assertion changed.",
+        "implementation_evidence": [
+          "capabilities.py:supported_method_choice",
+          "export.py synaptic state_updater guard",
+          "test_deterministic_synaptic_ode_methods_match_numpy includes RK2"
+        ],
+        "files": [
+          {
+            "path": "/atlas-storage/0001/staging/p2-cpu/brian2-rust/tests/test_synapses.py",
+            "before_sha256": "e86acc666c9c1f017c97243751cce0e4585b26b433d1a0947552864599eaa40e",
+            "after_sha256": "c391ee4ef9ab3fdc0851949cc5c3f00611cf82be7b88c28b0e963db9f3ec8132"
+          },
+          {
+            "path": "/atlas-storage/0001/staging/p3-gpu-wasm/brian2-rust/tests/test_synapses.py",
+            "before_sha256": "e86acc666c9c1f017c97243751cce0e4585b26b433d1a0947552864599eaa40e",
+            "after_sha256": "c391ee4ef9ab3fdc0851949cc5c3f00611cf82be7b88c28b0e963db9f3ec8132"
+          },
+          {
+            "path": "/atlas-storage/0001/staging/full-backends/brian2-rust/tests/test_synapses.py",
+            "before_sha256": "e86acc666c9c1f017c97243751cce0e4585b26b433d1a0947552864599eaa40e",
+            "after_sha256": "c391ee4ef9ab3fdc0851949cc5c3f00611cf82be7b88c28b0e963db9f3ec8132"
+          },
+          {
+            "path": "/atlas-storage/0001/repos/brian2-atlas/brian2-rust/tests/test_synapses.py",
+            "before_sha256": "e86acc666c9c1f017c97243751cce0e4585b26b433d1a0947552864599eaa40e",
+            "after_sha256": "c391ee4ef9ab3fdc0851949cc5c3f00611cf82be7b88c28b0e963db9f3ec8132"
+          }
+        ],
+        "validation": "pending targeted rerun"
+      }
+    },
+    "p2-portable-gate-port.json": {
+      "sha256": "f6e5a8d38ca95315a0f683bfd1cbb875db5812538dfce2e7695781103a10aa39",
+      "record": {
+        "schema": "atlas-portable-gate-port-v1",
+        "status": "33 B2IR/compact cases passed from canonical integration tree with the existing pinned native binary",
+        "first_attempt": "8 missing conventional Cargo path failures; no numerical failure. Preserved p2-canonical-portable-gate.log",
+        "repair": "When an external runner is selected, provide the conventional Cargo test path without overwriting a different executable. Preserve frozen tests.",
+        "validation": {
+          "schema": "atlas-backend-gate-v1",
+          "started_unix": 1791464240.4776099,
+          "source_root": "/atlas-storage/0001/repos/brian2-atlas",
+          "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+          "runner": "/atlas-storage/0001/build/cargo/release/b2-runner",
+          "runner_sha256": "89472290e9628a8da1a1f7f1b93ab2f58f0a261b1d7eaf5283a8987f821bc417",
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+          "tests": [
+            "test_b2ir_v1.py",
+            "test_compact_validation.py"
+          ],
+          "pytest_args": [
+            "-q",
+            "--maxfail=8",
+            "--timeout=1200",
+            "--junitxml=/atlas-storage/0001/output/p2-canonical-portable-gate-retry/results.xml",
+            "--basetemp=/atlas-storage/0001/output/p2-canonical-portable-gate-retry/tmp",
+            "-o",
+            "cache_dir=/atlas-storage/0001/output/p2-canonical-portable-gate-retry/pytest-cache",
+            "/atlas-storage/0001/repos/brian2-atlas/brian2-rust/tests/test_b2ir_v1.py",
+            "/atlas-storage/0001/repos/brian2-atlas/brian2-rust/tests/test_compact_validation.py"
+          ],
+          "git_head": "6d8373a604d0d36870884ff1dac4407951b92c60",
+          "git_diff_sha256": "5c8132ad77f74047b29c4237e900173bb606e67d11990a0cebecc0e8d972cc9d",
+          "exit_code": 0,
+          "ended_unix": 1791464266.615933
+        },
+        "files": {
+          "dev/atlas/run_backend.py": "e5fdf9bb6de35830848e6cb80da4c5ddcaee1ecfba3ba2c07307f79e48670e64",
+          ".github/workflows/atlas.yml": "eeb4015f626ae8583856450c48100a9efdd3735baf5d16c6fe8255584c710f10"
+        },
+        "ci_status": "Linux Python 3.12/3.14 CPU job prepared; hosted execution not yet verified",
+        "cpu_suite_files": [
+          "test_artifact.py",
+          "test_b2ir_v1.py",
+          "test_binary_topology.py",
+          "test_clock_tick_continuation.py",
+          "test_coba_hh.py",
+          "test_codegen_sums.py",
+          "test_compact_validation.py",
+          "test_device.py",
+          "test_encoded_array.py",
+          "test_execution_plan.py",
+          "test_instance_encoding.py",
+          "test_monitor_observables.py",
+          "test_native.py",
+          "test_nmda_deterministic_core.py",
+          "test_population.py",
+          "test_presynaptic_write_summed_only.py",
+          "test_probe.py",
+          "test_rate_monitor.py",
+          "test_refractory.py",
+          "test_resource_limits.py",
+          "test_results_bounded.py",
+          "test_results_times.py",
+          "test_rng_poisson.py",
+          "test_string_connection.py",
+          "test_summed_cache.py",
+          "test_synapses.py",
+          "test_weighted_binomial.py"
+        ],
+        "selection_policy": "Fixed CPU manifest prevents future GPU/training additions from silently expanding the CPU-only CI job. --suite all remains an explicit full-tree option."
+      }
+    }
+  },
+  "extended_resolution": {
+    "schema": "atlas-gate-resolution-v1",
+    "created_utc": "2026-10-08T13:37:32.239322+00:00",
+    "original_gate": "/atlas-storage/0002/brian2-atlas-migration-20261008/evidence/p2-cpu-extended.xml",
+    "original_sha256": "b1fd2c7c513287d068983d2ea2db0ad23964d5f0e641cffbc5bf5736270806f3",
+    "original_result": "213 passed, 6 failed, 68 subtests passed",
+    "resolved_failures": [
+      {
+        "test": "test_fractional_second_segments_match_uninterrupted_and_numpy",
+        "original_failure": "Failed: Timeout (>300.0s) from pytest-timeout.",
+        "passing_report": "/atlas-storage/0002/brian2-atlas-migration-20261008/evidence/p2-extended-first-failures.xml",
+        "passing_report_sha256": "45bb256aebbc26df2298338a4ff81628a74a6e58c22547f6c9e224f476afe506"
+      },
+      {
+        "test": "test_twenty_thousand_counter_terms_compile_and_keep_the_total",
+        "original_failure": "subprocess.TimeoutExpired: Command '['rustc', '--edition=2021', '-C', 'opt-level=0', '/atlas-storage/0001/tmp/p2-cpu-extended/test_twenty_thousand_counter_t0/sum.rs', '-o', '/atlas-storage/0001/tmp/p2-cpu-extended/test_twenty_thousand_counter_t0/sum']' timed out after 60 seconds",
+        "passing_report": "/atlas-storage/0002/brian2-atlas-migration-20261008/evidence/p2-codegen-sum-compile-budget.xml",
+        "passing_report_sha256": "fb059b8ebf157d358e35f660bb2807453ccf063028e73f16ffe767158424d41d"
+      },
+      {
+        "test": "test_deterministic_synaptic_ode_methods_match_numpy",
+        "original_failure": "Failed: Timeout (>300.0s) from pytest-timeout.",
+        "passing_report": "/atlas-storage/0001/output/p2-extended-final-repair/results.xml",
+        "passing_report_sha256": "1f1a42bba46245cca7efc08d919c2d225d9647235c06130015e00ef9de899276"
+      },
+      {
+        "test": "test_sparse_spike_fanout_parallelizes_heterogeneous_enqueue",
+        "original_failure": "Failed: Timeout (>300.0s) from pytest-timeout.\nwhen serializing list item 56515",
+        "passing_report": "/atlas-storage/0001/output/p2-extended-final-repair/results.xml",
+        "passing_report_sha256": "1f1a42bba46245cca7efc08d919c2d225d9647235c06130015e00ef9de899276"
+      },
+      {
+        "test": "test_target_partitioned_on_pre_and_fused_threshold_are_byte_exact",
+        "original_failure": "Failed: Timeout (>300.0s) from pytest-timeout.",
+        "passing_report": "/atlas-storage/0001/output/p2-extended-final-repair/results.xml",
+        "passing_report_sha256": "1f1a42bba46245cca7efc08d919c2d225d9647235c06130015e00ef9de899276"
+      },
+      {
+        "test": "test_unsupported_synaptic_equation_modes_fail_before_build",
+        "original_failure": "AssertionError: premature build",
+        "passing_report": "/atlas-storage/0001/output/p2-extended-final-repair/results.xml",
+        "passing_report_sha256": "1f1a42bba46245cca7efc08d919c2d225d9647235c06130015e00ef9de899276"
+      }
+    ],
+    "remaining_failures": 0,
+    "scope": "27 mapped CPU test files are covered across core, extended and supplemental gates; three platform cache-advice skips remain explicit."
+  }
+}

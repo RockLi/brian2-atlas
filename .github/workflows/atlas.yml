@@ -1,4 +1,4 @@
-name: Atlas frontend validation
+name: Atlas validation
 
 on:
   push:
@@ -38,3 +38,32 @@ jobs:
         run: python -m pip install -e '.[test]' scipy matplotlib
       - name: Validate the NumPy frontend
         run: python dev/atlas/run_frontend.py
+
+  cpu_backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.12', '3.14']
+    env:
+      MPLBACKEND: Agg
+      MPL_IGNORE_SYSTEM_FONTS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      CARGO_BUILD_JOBS: '2'
+      B2_TEST_RUSTC_TIMEOUT: '900'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install source and CPU test dependencies
+        run: python -m pip install -e '.[test]' scipy pyarrow
+      - name: Install the pinned Rust compiler
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Build and validate the CPU backend
+        run: python dev/atlas/run_backend.py --suite cpu --timeout 1200
