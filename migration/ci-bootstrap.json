@@ -1,0 +1,50 @@
+{
+  "stage": "repository bootstrap",
+  "upstream_workflows": [
+    {
+      "source": ".github/workflows/post_release_updates.yml",
+      "target": ".github/upstream-workflows/post_release_updates.yml",
+      "sha256": "671488e90e5d0c1dcbeb4a4eae98e9330cb690e2d0634fe68653e59feee7fb85"
+    },
+    {
+      "source": ".github/workflows/publish.yml",
+      "target": ".github/upstream-workflows/publish.yml",
+      "sha256": "4a9720147cd15b6dea4748ee6664ed96135e705c7a4052bd8f9ee62c8466189f"
+    },
+    {
+      "source": ".github/workflows/static_analysis.yml",
+      "target": ".github/upstream-workflows/static_analysis.yml",
+      "sha256": "142f5616029c3ea32aa9fccfd6fedc4d0fe673222b4ccae6953bc3aa99725afc"
+    },
+    {
+      "source": ".github/workflows/test_doc_build.yml",
+      "target": ".github/upstream-workflows/test_doc_build.yml",
+      "sha256": "83190b9426cba9b88b641dd098361bc12aa86a0f639cddf261687c62e7a4bb5c"
+    },
+    {
+      "source": ".github/workflows/test_latest.yml",
+      "target": ".github/upstream-workflows/test_latest.yml",
+      "sha256": "2b71d0b7a3740907378b7f9734f1c23e75d9e41494ff1765f2a952fdaac5e9c7"
+    },
+    {
+      "source": ".github/workflows/testsuite.yml",
+      "target": ".github/upstream-workflows/testsuite.yml",
+      "sha256": "a8c605ef1f914f5b186a8c89346d1cf4dda8a588f8d41d204020b8b9b0ea1cc5"
+    },
+    {
+      "source": ".github/workflows/update-spec-0-deps.yaml",
+      "target": ".github/upstream-workflows/update-spec-0-deps.yaml",
+      "sha256": "22f77b0e16079e013a7bd960067ae40c7c00a7536c818935ebed429f65ac2adc"
+    }
+  ],
+  "scope": "Read-only frontend CI and Atlas migration documentation. No package publication or native backend qualification.",
+  "validated_frontend_commit": "f6f6f05608012d542e4994ce10d2a7ed771b9ecd",
+  "native_ports": "pending",
+  "upstream_baseline_regression": "still running; its result is not claimed here",
+  "configuration_checks": {
+    "workflow_yaml": "parsed with system Ruby YAML loader",
+    "runner_syntax": "Python AST parsed",
+    "runner_help": "exited 0",
+    "hosted_ci": "not yet run for this commit"
+  }
+}
