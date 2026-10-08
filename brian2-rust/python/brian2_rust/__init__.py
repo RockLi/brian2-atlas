@@ -60,3 +60,8 @@ __all__ = [
 
 from .wasm import WasmPlan, export_wasm_bundle
 __all__ += ["WasmPlan", "export_wasm_bundle"]
+
+from .distributed import (DistributedPlan, build_distributed_plan,
+                          write_mpi_project, compile_mpi_project, run_mpi_project)
+__all__ += ["DistributedPlan", "build_distributed_plan", "write_mpi_project",
+            "compile_mpi_project", "run_mpi_project"]

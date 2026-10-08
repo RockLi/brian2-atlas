@@ -31,3 +31,7 @@ Installed wheel/sdist qualification is still a later migration stage.
 The CUDA and Apple Metal simulation runtimes and browser WASM/WebGPU code are now included. Build browser assets with `python brian2-rust/tools/build_wasm.py`; the Rust WASM target and wasm-bindgen 0.2.100 are required. Serve the resulting `brian2-rust/output/wasm` directory over localhost to use the browser examples.
 
 Actual migration checks covered an NVIDIA L4, Apple Metal, and Chrome with a non-fallback Apple WebGPU adapter. The tested scope and source hashes are in `migration/p3-gpu-wasm-port.json`. GPU regression execution is opt-in and requires the matching device/toolchain; a skipped hardware case does not count as passed. Native training, distributed runtime integration and packaged installation follow in separate stages.
+
+## MPI simulation
+
+Distributed planning, generated MPI projects, partitioning, collective transport and MPI regression inputs are included. Install an MPI implementation providing `mpicc` and `mpiexec` alongside the pinned Rust compiler. Tests using actual MPI require `B2_TEST_MPI=1`. The migration validated same-host 1/2/4-rank execution, exact reference results, continuation and coordinated failure exits; see `migration/p4-mpi-port.json`. Cross-host execution has not been qualified by this migration.
