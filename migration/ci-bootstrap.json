@@ -40,7 +40,7 @@
   "scope": "Read-only frontend CI and Atlas migration documentation. No package publication or native backend qualification.",
   "validated_frontend_commit": "f6f6f05608012d542e4994ce10d2a7ed771b9ecd",
   "native_ports": "pending",
-  "upstream_baseline_regression": "still running; its result is not claimed here",
+  "upstream_baseline_regression": "passed; see upstream-baseline.json",
   "configuration_checks": {
     "workflow_yaml": "parsed with system Ruby YAML loader",
     "runner_syntax": "Python AST parsed",
