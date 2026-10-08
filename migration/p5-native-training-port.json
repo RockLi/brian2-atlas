@@ -2293,7 +2293,7 @@
   },
   "limits": [
     "Representative numerical and checkpoint gates, not all training tests on every backend.",
-    "138 captured-increment CUDA variants remain explicitly unexecuted; they are not counted as passes.",
+    "The 138 captured-increment CUDA variants were unexecuted at this stage; all were subsequently covered by cuda-cutoff-followup.json on the repaired source.",
     "No multi-GPU or cross-host MPI acceptance claim.",
     "Packaging/installation layout is a separately validated candidate and follows in its own port."
   ],
@@ -2310,5 +2310,12 @@
       "after_sha256": "4996d2e8809071f94bad11b6fa670b0dfabf625e9ecbae720dd0541ec7046ac9",
       "python_ast_unchanged": true
     }
-  ]
+  ],
+  "cuda_followup": {
+    "status": "all recorded CUDA skips passed after targeted C ABI repair",
+    "historical_skip_count": 138,
+    "code_commit": "de36f5d6d1f822707d5036e14decefc58667c99f",
+    "record": "cuda-cutoff-followup.json",
+    "note": "Original stage counts remain historical; scopes overlap and must not be summed."
+  }
 }

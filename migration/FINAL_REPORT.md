@@ -38,6 +38,14 @@ Counts below refer to the exact stage sources and scopes in the linked records. 
 | Preprint | Clean retained-data build reproduced 10 figures, 7 tables and 16 references; 44-page PDF layout/links were checked. [Preprint build records](https://github.com/RockLi/brian2-atlas-preprint/tree/main/migration). |
 | New reproduction | Pinned PD14 Cargo consumer at Atlas `6677a5bafd3b703ab56b6ed176e9aad70f4638cd`; topology-shape test and repeated fresh-process bounded simulation passed: 772 neurons, 29,885 synapses, 91 delivered events, spike counts `[1,0,1,0,1,0,0,0]`. [Reproduction command](https://github.com/RockLi/brian2-atlas-preprint/tree/main/experiments/reproduction/pd14). |
 
+## CUDA follow-up on Modal (2026-10-09)
+
+The user subsequently requested actual Modal verification of the newer CUDA skips. The three training-increment records contained **708 unique CUDA cases across 15 modules** (the 138 earlier skips overlap later scopes). On an NVIDIA L4, the unchanged cutoff initially failed three cases with `GPU sequence capability missing`; the run stopped and its evidence was preserved. Four CUDA capability exports lacked C linkage, so Rust's dynamic symbol lookup could not resolve their names.
+
+Follow-up commit `de36f5d6d1f822707d5036e14decefc58667c99f` adds `extern "C"` to those four exports and a compiled-library lookup regression. With this targeted repair, **all 708 original cases plus the new regression passed: 709 passed, zero failures, zero skips**, in 24 bounded batches. This includes single-process CUDA and same-host two-rank MPI sharing one L4. All uploaded source hashes matched the repair commit before and after testing; no development after the migration cutoff was ported. Both owned Modal apps stopped with zero remaining tasks.
+
+The original stage counts above remain historical evidence. These 708 skips are now covered on the repaired source; this does not assert every CUDA test in the repository was run. [Per-case acceptance and hashes](cuda-cutoff-followup.json) and the [complete run evidence](evidence/cuda-followup-20261009.tar.gz) preserve both the initial failure and successful rerun. The previously built distribution candidates below predate this repair and require rebuilding before release.
+
 ## Final distribution candidates
 
 Both artifacts are retained under `/atlas-storage/0001/build/dist-candidate-v5/` on the T7-backed workspace:
@@ -58,7 +66,7 @@ Six intermediate contents from two old FlyWire MNIST development runs remain una
 The remaining release decisions/work are explicit:
 
 1. Port development after the approved cutoff separately, with its own frozen inputs and tests.
-2. Inspect hosted Linux/macOS CI results and qualify additional intended platforms/hardware. Hosted passes, Windows, cross-host MPI and multiple GPUs are not established here; newer skipped CUDA variants are not passes.
+2. Inspect hosted Linux/macOS CI results and qualify additional intended platforms/hardware. Hosted passes, Windows, cross-host MPI and multiple GPUs are not established here; the 708 newer training CUDA skips were subsequently covered by the targeted Modal follow-up above; other unexecuted CUDA scopes are not passes.
 3. Publish selected preservation archives/data at durable public URLs if public reproduction is required; current archive indices describe local availability only.
 4. Choose the public release version/tag, publish distribution artifacts and prepare a formal release separately. Paper submission is also separate.
 

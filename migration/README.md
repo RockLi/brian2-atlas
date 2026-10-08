@@ -74,3 +74,5 @@ the final canonical integration passed 52 cases with no skips.
 [`final-distribution-acceptance.json`](final-distribution-acceptance.json) binds
 the final artifacts to code commit `243b9e47b83a48d1f38381b04ad8315df168a4b4`,
 including 12 additional installed-wheel CPU/Metal training checks.
+
+The follow-up [Modal CUDA acceptance](cuda-cutoff-followup.json) covers all 708 unique CUDA skips from the three training increments, plus one C ABI regression, on repair commit `de36f5d6`. Original failure and successful rerun evidence are retained; see [the final report](FINAL_REPORT.md#cuda-follow-up-on-modal-2026-10-09).

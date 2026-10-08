@@ -110,5 +110,12 @@
       "junit_sha256": "a369f81ba832d2de29a6330195de4c3450301fd50e56979bd1300eefab18a86d"
     }
   },
-  "cutoff": "User selected this third frozen increment as the migration cutoff; subsequent development is a separate future port."
+  "cutoff": "User selected this third frozen increment as the migration cutoff; subsequent development is a separate future port.",
+  "cuda_followup": {
+    "status": "all recorded CUDA skips passed after targeted C ABI repair",
+    "historical_skip_count": 184,
+    "code_commit": "de36f5d6d1f822707d5036e14decefc58667c99f",
+    "record": "cuda-cutoff-followup.json",
+    "note": "Original stage counts remain historical; scopes overlap and must not be summed."
+  }
 }

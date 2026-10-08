@@ -188,5 +188,12 @@
       "json_sha256": "a953392d3e91262657d4888cbe623f7053c6384d6535d5415e14c7e5662de80b",
       "junit_sha256": "8919c69efb1ff560e20918b6ce130fb484bb3320468138d29008f40334b2c13f"
     }
+  },
+  "cuda_followup": {
+    "status": "all recorded CUDA skips passed after targeted C ABI repair",
+    "historical_skip_count": 524,
+    "code_commit": "de36f5d6d1f822707d5036e14decefc58667c99f",
+    "record": "cuda-cutoff-followup.json",
+    "note": "Original stage counts remain historical; scopes overlap and must not be summed."
   }
 }
