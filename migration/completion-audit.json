@@ -1,0 +1,129 @@
+{
+  "schema": "atlas-migration-completion-audit-v1",
+  "audited_utc": "2026-10-08T16:47:01.007108+00:00",
+  "code_commit": "243b9e47b83a48d1f38381b04ad8315df168a4b4",
+  "status": "All local scope/validation/documentation requirements verified; final documentation commits and remote heads pending",
+  "requirements": [
+    {
+      "requirement": "0 independent T7 storage",
+      "status": "verified",
+      "evidence": {
+        "workspace": "/Volumes/AtlasMigration20261008",
+        "archive_root": "/atlas-storage/0002/brian2-atlas-migration-20261008",
+        "original_source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+        "migration_isolated_from_original": true
+      }
+    },
+    {
+      "requirement": "1 complete baseline/captured-increment disposition",
+      "status": "verified",
+      "evidence": {
+        "paths": 59821,
+        "unresolved": 0,
+        "mapping": "preprint:archives/migration-cutoff-disposition.jsonl.gz",
+        "cutoff": "20261008T161008Z",
+        "post_cutoff_product_paths": 5
+      }
+    },
+    {
+      "requirement": "2 upstream ancestry/remotes",
+      "status": "verified",
+      "evidence": {
+        "fixed_upstream": "27b5431168cf9959f0c27894cd4d92cdc6ad5c31",
+        "accepted_code": "243b9e47b83a48d1f38381b04ad8315df168a4b4",
+        "remotes": "Atlas origin/upstream and preprint origin verified"
+      }
+    },
+    {
+      "requirement": "3/4 phased product ports including uncommitted captures",
+      "status": "verified",
+      "evidence": {
+        "stage_records": [
+          "p1b-indirect-indices.json",
+          "p2-cpu-port.json",
+          "p3-gpu-wasm-port.json",
+          "p4-mpi-port.json",
+          "p5-native-training-port.json",
+          "p6-user-example-port.json",
+          "p7-packaging-port.json",
+          "concurrent-training-increment-2.json",
+          "concurrent-training-increment-3.json"
+        ],
+        "latest_full_gate": {
+          "passed": 380,
+          "cuda_skips": 184
+        },
+        "latest_canonical_gate": {
+          "passed": 52,
+          "skipped": 0
+        },
+        "all_cutoff_inputs_mapped": true
+      }
+    },
+    {
+      "requirement": "5 package/modules/examples/CI/upstream attribution",
+      "status": "verified",
+      "evidence": {
+        "distribution": "brian2-atlas",
+        "version": "0.1.0.dev0",
+        "source_module_names_retained": true,
+        "license_author_files_match_official_upstream": true,
+        "publication_workflows_preserved_outside_active_directory": true,
+        "hosted_ci": "configured; results unverified"
+      }
+    },
+    {
+      "requirement": "6 historical identities/archives and fixed new reproduction",
+      "status": "verified",
+      "evidence": {
+        "verified_archives": 8,
+        "archive_bytes": 8068338516,
+        "reviewed_source_files_restored": 626,
+        "unavailable_historical_intermediate_hashes": 6,
+        "latest_affected_files_preserved": 4,
+        "new_reproduction": "PD14 pinned Atlas6677a5ba; separate from historical identities"
+      }
+    },
+    {
+      "requirement": "7 backend/installation/manuscript/end-to-end gates",
+      "status": "verified",
+      "evidence": {
+        "final_distribution": "migration/final-distribution-acceptance.json",
+        "final_wheel_and_source_runtime": "CPUreference/AOT,Metal,fresh-processcheckpoint passed",
+        "additional_installed_training": 12,
+        "paper_records": [
+          "clean-manuscript-build.json",
+          "pdf-build.json",
+          "pd14-pinned-reproduction.json"
+        ],
+        "limits": "Hardware/dependency skips and hosted CI scope explicitly retained"
+      }
+    },
+    {
+      "requirement": "8 final report and publication boundary",
+      "status": "verified",
+      "evidence": {
+        "report": "Atlas:migration/FINAL_REPORT.md",
+        "public_package_release": "not performed; explicitly outside scope",
+        "remote_final_push": "Pending final documentation/index commit; verified separately before goal completion"
+      }
+    }
+  ],
+  "stage_manifest_sha256": {
+    "p1b-indirect-indices.json": "1ccc084c11df74173e8c77d95f120863e921ae92271d5eee8790024b056cfe59",
+    "p2-cpu-port.json": "74ea817642a606a29004317695b9a0e8aa66c8e32c1fe549980a40b8d66214c7",
+    "p3-gpu-wasm-port.json": "0d37258e11e1b5e47a4da6a0c9acf830923e7e5de78d9b41b65d3502d058dd20",
+    "p4-mpi-port.json": "30bfccd8fed6b572696b19cc3a30c4c5db9a4de5a8cc8e60416b487a72a80c3f",
+    "p5-native-training-port.json": "7d0a4a6650d3fb1fd79c443a3434910ea4c23a0b2a5c3ca4bdc715bed9f685cf",
+    "p6-user-example-port.json": "8c65590c9d720ac8c978be937f4ec07c3b58ea0f105876185c4fdea37335088d",
+    "p7-packaging-port.json": "bc99a140013fe43f3b4d44444655cb03fc4a63c95c09e422c51a7d9d3c77b94d",
+    "concurrent-training-increment-2.json": "3c1794877143e71dd5dc362567d4854f4d442a4cb5bdce24d7db1c2ee10d3121",
+    "concurrent-training-increment-3.json": "9ff52cbef47f2b01a93f27ca4ee09396d49eb1ba2decb53d384f473848887494"
+  },
+  "archive_receipt_sha256": "0e3546beef60101b974c8fc6e064fe4376051cd97240d267af0537107faba32c",
+  "cutoff_sha256": "9509820fda8c529c298d95753f9f711f23696ef64ad6615bacc17934a2374825",
+  "paper_reproduction_final_integrity": {
+    "status": "passed",
+    "sha256": "bd0d37bdde65731df1a4e430bfb86d9250f5f5b93dcb8cb9855ab1d2cb0be7d7"
+  }
+}

@@ -3,7 +3,7 @@
 Atlas starts from official Brian2 commit `27b5431168cf9959f0c27894cd4d92cdc6ad5c31`.
 The legacy development checkout was captured at `81eb571d78292a0e24a8e79980ea0d5c26e8a48c`, including working-tree and untracked changes. File hashes, not the HEAD alone, identify the imported contents. Its original upstream merge base was `cf0b25cce13b620aac740873e88ba91061a70275`.
 
-Stage records describe file origins, transformations and validation. Tests for later backend stages are not implied by a passing frontend stage. The frontend, CPU, GPU/WASM, MPI and native training stages are integrated. Distribution packaging has independent installation gates. The migration remains in progress until final source reconciliation, concurrent training increments and migration reporting are complete.
+Stage records describe file origins, transformations and validation. Tests for later backend stages are not implied by a passing frontend stage. The frontend, CPU, GPU/WASM, MPI and native training stages are integrated. Distribution packaging has independent installation gates. The user-approved third-increment migration scope is complete; see [the final report](FINAL_REPORT.md) for the cutoff, source map, exact validation scope and deferred publication tasks.
 
 The fixed upstream baseline passed the selected NumPy frontend regression: 277 passed, 7 skipped, 7 deselected. See `upstream-baseline.json` for the exact suite scope and report identity. Native backend validation remains separate.
 
@@ -46,12 +46,12 @@ The distribution is `brian2-atlas` version `0.1.0.dev0`; Python imports remain
 macOS arm64/Python 3.14. Hosted Linux/macOS CI is configured separately; no hosted
 pass or Windows distribution support is implied by these local results.
 
-### Remaining migration audit
+### Approved migration cutoff
 
 The complete initial 59,309-path mapping is preserved in the preprint repository,
 including explicit generated-file exclusions. Later evidence is captured in
-separate checksummed supplements. Final concurrent source integration and
-distribution checks must complete before the full migration is declared complete.
+separate checksummed supplements. The third frozen product increment and final distribution checks are complete.
+The user explicitly assigned later source development to a separate future port.
 The preprint repository retains historical source identities; its new
 PD14 end-to-end reproduction pins Atlas commit `6677a5bafd3b703ab56b6ed176e9aad70f4638cd`
 and has passed bounded build-to-simulation validation. Publishing a
@@ -66,3 +66,11 @@ emission-addressed random draws. The full isolated gate passed 1,059 cases; 524
 actual-CUDA variants were skipped locally. Integration in the product checkout
 passed 43 CPU/Metal/local-MPI and compiler checks with no failures or skips.
 Earlier CUDA acceptance does not imply execution of these newer skipped variants.
+
+[`concurrent-training-increment-3.json`](concurrent-training-increment-3.json)
+records whole-caller carry, derived storage and random/time behavior at the
+approved cutoff. Its isolated gate passed 380 cases with 184 actual-CUDA skips;
+the final canonical integration passed 52 cases with no skips.
+[`final-distribution-acceptance.json`](final-distribution-acceptance.json) binds
+the final artifacts to code commit `243b9e47b83a48d1f38381b04ad8315df168a4b4`,
+including 12 additional installed-wheel CPU/Metal training checks.
