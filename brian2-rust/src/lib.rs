@@ -7,5 +7,7 @@ mod executor;
 mod gpu_initialization;
 mod resource_limits;
 pub mod large_topology;
+#[cfg(target_arch = "wasm32")]
+mod wasm;
 mod wasm_plan;
 pub use wasm_plan::{compile_browser_bundle, WasmExecution};

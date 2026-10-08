@@ -12,7 +12,10 @@ fn parse(name: &str, text: &str, maximum: usize) -> Result<usize> {
     Ok(value)
 }
 
-fn environment(name: &str, default: usize, maximum: usize) -> Result<usize> {
+fn environment(name: &str, default: usize, maximum: u64) -> Result<usize> {
+    // Native process ceilings can exceed a wasm32 address space. Keep the
+    // declared ceiling wide, then constrain it to this target's index width.
+    let maximum = usize::try_from(maximum).unwrap_or(usize::MAX);
     match std::env::var(name) {
         Ok(text) => parse(name, &text, maximum),
         Err(std::env::VarError::NotPresent) => Ok(default),

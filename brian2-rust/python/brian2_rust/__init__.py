@@ -57,3 +57,6 @@ __all__ = [
     "ExecutionPlan", "PlanValidationError", "build_execution_plan",
     "explain_plan", "verify_execution_plan", "RuntimeBinding", "bind_execution_plan",
 ]
+
+from .wasm import WasmPlan, export_wasm_bundle
+__all__ += ["WasmPlan", "export_wasm_bundle"]

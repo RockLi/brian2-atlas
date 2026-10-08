@@ -12,3 +12,7 @@ The indirect-index port passed 194 tests (1 skipped, 3 deselected) across the co
 Five independent upstream-example compatibility changes are recorded in `example-compatibility.json`: NumPy 2 profiling/array membership, Matplotlib artist input, importable Gaussian connection generation, and mathematical docstrings. All five files parse; all three connection generators were executed at 32 neurons. Full scientific runs and performance sweeps were not repeated. Backend-dependent example ports remain in progress.
 
 The CPU/B2IR/AOT port is recorded in `p2-cpu-port.json`. Its 27 test files were covered by the core, extended and supplemental gates, with named focused reruns resolving the original failures. Three macOS cache-advice skips remain explicit. The portable `dev/atlas/run_backend.py` command and Linux CPU CI configuration are included; hosted CI, accelerator stages and wheel/sdist qualification are separate.
+
+### GPU/WASM port
+
+`p3-gpu-wasm-port.json` records this port, its source hashes, the WASM address-width and browser-authoring fixes, and the actual CUDA/Metal/Node/Chrome verification scope. Source provenance and hardware scope remain explicit; full native training is a later commit.

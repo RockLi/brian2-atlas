@@ -25,3 +25,9 @@ For the 20,000-term compiler stress case on a loaded host, set
 Source hashes, adaptations, named failure resolutions and actual validation
 scope are recorded in [the CPU port manifest](../migration/p2-cpu-port.json).
 Installed wheel/sdist qualification is still a later migration stage.
+
+## GPU and browser backends
+
+The CUDA and Apple Metal simulation runtimes and browser WASM/WebGPU code are now included. Build browser assets with `python brian2-rust/tools/build_wasm.py`; the Rust WASM target and wasm-bindgen 0.2.100 are required. Serve the resulting `brian2-rust/output/wasm` directory over localhost to use the browser examples.
+
+Actual migration checks covered an NVIDIA L4, Apple Metal, and Chrome with a non-fallback Apple WebGPU adapter. The tested scope and source hashes are in `migration/p3-gpu-wasm-port.json`. GPU regression execution is opt-in and requires the matching device/toolchain; a skipped hardware case does not count as passed. Native training, distributed runtime integration and packaged installation follow in separate stages.
