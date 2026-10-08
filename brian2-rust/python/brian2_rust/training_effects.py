@@ -637,7 +637,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                                    copied_array_states=(), reload_arrays_each_statement=False,array_callables=(),
                                    write_guards=None,indexed_guard_reads=(),scalar_write_guards=False,parameter_types=None,
                                    predicate_outputs=None,scalar_eager=False,eager_guard=None,empty_vector=False,
-                                   unconditional_states=(),retained_array_states=(),unconditional_parameters=(),whole_eager=False,array_aliases=None,capture_vectors=None,selected_output=None,copied_array_sources=None,selected_vectors=None,selected_accumulators=(),separate_whole_eager=False,selected_call_presence=None,selected_guards=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=()):
+                                   unconditional_states=(),retained_array_states=(),unconditional_parameters=(),whole_eager=False,array_aliases=None,capture_vectors=None,selected_output=None,copied_array_sources=None,selected_vectors=None,selected_accumulators=(),separate_whole_eager=False,selected_call_presence=None,selected_guards=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=(),whole_array_locals=()):
     """Compose state-effect callbacks into the existing native action ABI."""
     from .training_equations import StateSlot, RefractoryActive, _compile_training_ast
     states=dict(states);parameters=dict(parameters);types={} if state_types is None else dict(state_types)
@@ -756,6 +756,13 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                 or not set(group)<=set(array_states)-set(copied_array_states)|set(array_parameters)-set(temporary_parameters)):
             raise ValueError('capture vectors require whole physical or readonly parameter columns')
         engine.capture_vectors[name]=(tuple(engine.environment[source] for source in group),group.index(name))
+    whole_array_locals=set(whole_array_locals)
+    if not whole_array_locals<=set(vectors) or not whole_array_locals<=set(unconditional_states)|set(unconditional_parameters):
+        raise ValueError('whole caller locals require physical or readonly vectors')
+    for name in whole_array_locals:
+        value=engine.environment[name];columns,column=engine.capture_vectors[name]
+        engine.environment[name]=ArrayCell(engine.materialize(value),value.writable,value.origin,dtype=value.dtype,
+                                          length=len(columns),columns=columns,column=column)
     selected_vectors={} if selected_vectors is None else dict(selected_vectors)
     if not set(selected_row_operands)<=set(selected_vectors) or selected_row_operands and not selected_guards:
         raise ValueError('row operands require masked compact batch vectors')
@@ -904,7 +911,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                     projected_keys.add(ast.dump(value,include_attributes=False))
                 engine.environment[name]=ArrayCell(value,name in writable_states,None,dtype=types.get(states[name],'float'))
                 if name in physical_vectors and (name not in selected_accumulators or name in callback_reads):engine.environment[name]=copy.deepcopy(physical_vectors[name])
-            for name in used & parameter_arrays:
+            for name in used & parameter_arrays-whole_array_locals:
                 engine.environment[name]=ArrayCell(ast.Name(id=name,ctx=ast.Load()),name in temporary,None,dtype=engine.input_dtypes.get(name,'float'))
                 if name in physical_vectors:engine.environment[name]=copy.deepcopy(physical_vectors[name])
             if isinstance(statement,ast.AugAssign) and statement.target.id in selected_accumulators:
@@ -939,7 +946,10 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             raise ValueError('state effect statements exceed budget')
         for statement in tree.body:statement_effect(statement)
         outputs={name:ast.unparse(output_value(name,engine.environment[name])) for name in states}
-    explicit={n.id for n in ast.walk(ast.parse(statements)) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}&set(states)
+    # Whole caller bindings are local references. Assignment rebinds that
+    # reference; only an in-place mutation recorded in effect_writes updates
+    # its physical vector. It must not overwrite a previously borrowed array.
+    explicit=({n.id for n in ast.walk(ast.parse(statements)) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}&set(states))-whole_array_locals
     if physical is not None:
         if set(writeback_order)!=explicit&set(array_states):
             raise ValueError('NumPy writeback order must cover all explicit array writes')

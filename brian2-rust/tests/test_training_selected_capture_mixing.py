@@ -64,8 +64,9 @@ def reference(data,mode,weights,window,initial=None,anchors=None):
     h=bundle.provenance['dynamic_state_layout'][syn.name]['h']
     a=next(row['cells'] for row in bundle.provenance['mutable_capture_layout'] if any(alias['capture']=='array' for alias in row['aliases']))
     gain=next(row['bank'] for row in bundle.provenance['bindings'] if row['object']==syn.name and row['variables']==['gain'])
-    path=bundle.provenance['event_callback_stage_groups'][syn.pre.name][1]
-    routes=bundle.provenance['delay_queues'][path]['new']
+    paths=bundle.provenance['event_callback_stage_groups'][syn.pre.name][1:]
+    assert len(paths)==(2 if mode=='vectorised' else 1)
+    routes=bundle.provenance['delay_queues'][paths[0]]['new']
     before=[]; margins=[]; hard=[]; spikes=[]
     for tick in range(3):
         if anchors is not None and window and tick and tick%window==0:z=anchors['before'][tick].copy()
@@ -74,13 +75,20 @@ def reference(data,mode,weights,window,initial=None,anchors=None):
         if anchors is not None:
             old=anchors['margins'][tick]
             event=anchors['hard'][tick]+p['surrogate']['scale']/(1+p['surrogate']['slope']*abs(old))**2*(margin-old)
-        spikes.append(event.copy()); old=z.copy()
+        spikes.append(event.copy())
+        for row in bundle.provenance['event_callback_snapshots'].get(paths[0],[]):z[row['cache']]=z[row['source']]
+        old=z.copy()
         for ordinal,row in enumerate(routes):
             edge=row['edge']; gate=old[row['states'][0]]
             column=ordinal if tick==1 else 0
             value=np.sqrt(.8*old[h[edge]]-old[a[column]])
             z[h[edge]]=old[h[edge]]+gate*(value-old[h[edge]])
-            if mode=='vectorised':z[u[0]]+=gate*weights[gain][edge]*value
+        if mode=='vectorised':
+            for row in bundle.provenance['event_callback_snapshots'].get(paths[1],[]):z[row['cache']]=z[row['source']]
+            old=z.copy()
+            for row in bundle.provenance['delay_queues'][paths[1]]['new']:
+                edge=row['edge'];gate=old[row['states'][0]]
+                z[u[0]]+=gate*weights[gain][edge]*old[h[edge]]
         for queue in bundle.provenance['delay_queues'].values():
             for row in queue['new']:
                 cells=row['states']

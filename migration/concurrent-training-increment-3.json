@@ -1,0 +1,114 @@
+{
+  "schema": "atlas-concurrent-training-increment-v3",
+  "created_utc": "20261008T161008Z",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "frozen_directory": "/atlas-storage/0001/frozen-increments/20261008T161008Z",
+  "archive": "/atlas-storage/0002/brian2-atlas-migration-20261008/snapshots/supplements/20261008T161008Z/training-increment.tar",
+  "archive_sha256": "303ad3be28c92fefe9acc2ea20de91abc778ecd955de20e5630ea6e074a30763",
+  "files": [
+    {
+      "source": "brian2-rust/python/brian2_rust/training_batch_locals.py",
+      "sha256": "8eab20c7b198ca55cc8e9f4a24b3f9871e8c8b983dec7bf842815444632fda6f",
+      "bytes": 10206,
+      "previous_captured_sha256": "99df5d5e07d4eebafcb9f7f30b9eab249fd2fa4bb479895e9b87a023096f7d6f",
+      "atlas_before_sha256": "99df5d5e07d4eebafcb9f7f30b9eab249fd2fa4bb479895e9b87a023096f7d6f",
+      "target_sha256": "8eab20c7b198ca55cc8e9f4a24b3f9871e8c8b983dec7bf842815444632fda6f",
+      "integration": "exact source"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian_dynamic.py",
+      "sha256": "855b1b267aabf07dfe5dcd32baf339d57d5a324ee256e8b827e99d9dc310cfe4",
+      "bytes": 233792,
+      "previous_captured_sha256": "9053c8c8a280a46eecb160dceb2998b41edf884f9293d883918dad086971aa7c",
+      "atlas_before_sha256": "9053c8c8a280a46eecb160dceb2998b41edf884f9293d883918dad086971aa7c",
+      "target_sha256": "855b1b267aabf07dfe5dcd32baf339d57d5a324ee256e8b827e99d9dc310cfe4",
+      "integration": "exact source"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_effects.py",
+      "sha256": "b770342580f1e8a2f160f6f80c3206d7e9a8da5f76072d459fa55c03534b7c4c",
+      "bytes": 83846,
+      "previous_captured_sha256": "eade2174a518e9660e78e75990acaf0e38776c6d40662fc8fc9137e254011d49",
+      "atlas_before_sha256": "6b6361c2f8ece9441cdbaa48bc63a411f1d8fcd874d85b767caed76ea4e896f5",
+      "target_sha256": "3ff8af67181ac1db37342c3d308bebfe72447b4b0092ff3309fa7376dc519579",
+      "integration": "trailing whitespace normalized; identical AST"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_event_captures.py",
+      "sha256": "f77eb5ed94ea094023d5a5085fce78c13e88dd7681b87a8a3cc3ffbe21523c78",
+      "bytes": 13595,
+      "previous_captured_sha256": "e0286692b4d0ca29dc08b1be72608c0fc650760e20f6549ed649cc0409707564",
+      "atlas_before_sha256": "e0286692b4d0ca29dc08b1be72608c0fc650760e20f6549ed649cc0409707564",
+      "target_sha256": "f77eb5ed94ea094023d5a5085fce78c13e88dd7681b87a8a3cc3ffbe21523c78",
+      "integration": "exact source"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_capture_mixing.py",
+      "sha256": "f2ff141d9afa775550f787c920debf92b8747755c34ca50485fa0f421d527815",
+      "bytes": 8263,
+      "previous_captured_sha256": "7138081bd7590d5dbf0951aca3281f02e866384b00d2a6db7e13b72b2297691c",
+      "atlas_before_sha256": "7138081bd7590d5dbf0951aca3281f02e866384b00d2a6db7e13b72b2297691c",
+      "target_sha256": "f2ff141d9afa775550f787c920debf92b8747755c34ca50485fa0f421d527815",
+      "integration": "exact source"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_capture_returns.py",
+      "sha256": "d37ca7c163907b3b1aa8c73d3d991f94ef640ca96ffe562e8725e200d2fee8d7",
+      "bytes": 13072,
+      "previous_captured_sha256": "1a6942896c0bf906c8ebf1c882da83d862dc1606b348c3d723b688b7216b729b",
+      "atlas_before_sha256": "1a6942896c0bf906c8ebf1c882da83d862dc1606b348c3d723b688b7216b729b",
+      "target_sha256": "d37ca7c163907b3b1aa8c73d3d991f94ef640ca96ffe562e8725e200d2fee8d7",
+      "integration": "exact source"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_whole_caller_carry.py",
+      "sha256": "7f1fe19dc31712709e9aa8f0db528e93a459c7052368498e90f7a14b0dd02df6",
+      "bytes": 6673,
+      "previous_captured_sha256": null,
+      "atlas_before_sha256": null,
+      "target_sha256": "7f1fe19dc31712709e9aa8f0db528e93a459c7052368498e90f7a14b0dd02df6",
+      "integration": "exact source"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_whole_caller_derived.py",
+      "sha256": "2e0860e967c2b95bbc0b6cdbf4ccc4e9f3579364698c8d29f969227b0ebf5f1c",
+      "bytes": 8068,
+      "previous_captured_sha256": null,
+      "atlas_before_sha256": null,
+      "target_sha256": "2e0860e967c2b95bbc0b6cdbf4ccc4e9f3579364698c8d29f969227b0ebf5f1c",
+      "integration": "exact source"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_whole_caller_random.py",
+      "sha256": "f78fdc3428b5e527655529d16804d2f1f46d80c1596216bba69814d19872ca47",
+      "bytes": 9388,
+      "previous_captured_sha256": null,
+      "atlas_before_sha256": null,
+      "target_sha256": "f78fdc3428b5e527655529d16804d2f1f46d80c1596216bba69814d19872ca47",
+      "integration": "exact source"
+    }
+  ],
+  "validation_stage": "/atlas-storage/0001/staging/concurrent-training-v3",
+  "atlas_base": "f84089cb2c843100c7077033e21dca98d189b65f",
+  "parent": "8cbe565540151d95c62fb0affbb47cbeb3541335",
+  "validation": {
+    "isolated": {
+      "passed": 380,
+      "skipped": 184,
+      "skip_reasons": {
+        "actual cuda hardware required": 184
+      },
+      "json_sha256": "07ac77b5d61794105ad0cb52a1c34b204ae474a608bbf183953f67a116ca10c3",
+      "junit_sha256": "4213657db91dd00d87822980299dfe3ad7c9e8021e404a11d31781e0f50b91cd"
+    },
+    "canonical": {
+      "passed": 52,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Prior43 integration cases plus9 new independent-gradient checks across CPU,Metal,localMPI",
+      "json_sha256": "6db998dd7c0a5c78ecd99b76ae331a6a096931d5f81942b3a2621944067610b0",
+      "junit_sha256": "a369f81ba832d2de29a6330195de4c3450301fd50e56979bd1300eefab18a86d"
+    }
+  },
+  "cutoff": "User selected this third frozen increment as the migration cutoff; subsequent development is a separate future port."
+}

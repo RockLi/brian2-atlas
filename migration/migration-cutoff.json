@@ -1,0 +1,53 @@
+{
+  "schema": "atlas-user-approved-migration-cutoff-v1",
+  "recorded_utc": "2026-10-08T16:29:40.199897+00:00",
+  "authorization": "User explicitly selected: 以第 3 批冻结版本为截止点，后续开发另行 port（推荐）",
+  "product_cutoff": "20261008T161008Z",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "third_increment_archive_sha256": "303ad3be28c92fefe9acc2ea20de91abc778ecd955de20e5630ea6e074a30763",
+  "included_captures": [
+    "20261008T063409Z initial whole source",
+    "latest-product-supplement.json",
+    "product-concurrent-increment-2.json",
+    "product-concurrent-increment-3.json"
+  ],
+  "research_evidence_supplement": "concurrent-evidence-supplement.json",
+  "subsequent_development": {
+    "audit_utc": "2026-10-08T16:26:06.794720+00:00",
+    "changed": [
+      {
+        "source": "brian2-rust/python/brian2_rust/training_batch_locals.py",
+        "before_sha256": "8eab20c7b198ca55cc8e9f4a24b3f9871e8c8b983dec7bf842815444632fda6f",
+        "current_sha256": "5fdc3b975791c3a282514e46ca224cd5c8559a26a319ba53df293c7f0f457dbf",
+        "bytes": 10338
+      },
+      {
+        "source": "brian2-rust/python/brian2_rust/training_brian_dynamic.py",
+        "before_sha256": "855b1b267aabf07dfe5dcd32baf339d57d5a324ee256e8b827e99d9dc310cfe4",
+        "current_sha256": "1b3365e9b662bd46357a182544c8ed3823f9fd7643eebfaf95899d1c031e8c76",
+        "bytes": 234400
+      },
+      {
+        "source": "brian2-rust/python/brian2_rust/training_effects.py",
+        "before_sha256": "b770342580f1e8a2f160f6f80c3206d7e9a8da5f76072d459fa55c03534b7c4c",
+        "current_sha256": "fbd35c5ead611f593abc4f644982b5eda7dcd5265cc4a048a15c6c69c347512d",
+        "bytes": 88724
+      },
+      {
+        "source": "brian2-rust/python/brian2_rust/training_event_captures.py",
+        "before_sha256": "f77eb5ed94ea094023d5a5085fce78c13e88dd7681b87a8a3cc3ffbe21523c78",
+        "current_sha256": "8a6027ee369fbbd7ba737be5218f76c0c9f552767ed489a437d1d18a26cce7fa",
+        "bytes": 14532
+      }
+    ],
+    "added": [
+      {
+        "source": "brian2-rust/tests/test_training_whole_caller_lengths.py",
+        "sha256": "6c73aba384a1be7e37fb6e39bbe00579063886ddebd9a617ea4975e3035c3e09",
+        "bytes": 10706
+      }
+    ],
+    "status": "Outside the user-approved migration cutoff; not ported or accepted by this migration. Future work must recapture current contents and validate them independently."
+  },
+  "original_checkout_policy": "Read-only migration; ongoing development remains in original checkout."
+}

@@ -96,9 +96,15 @@ def compile_scalar_event_captures(code,names,reads,parameters,fields,*,
 
 
 def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_types,
-                                 array_names,parameter_arrays,parameter_types,reload,typed_parameter,selected_output=None,selected_vector_factory=None,selected_accumulators=(),selected_guards=None,selected_call_presence=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=()):
+                                 array_names,parameter_arrays,parameter_types,reload,typed_parameter,selected_output=None,selected_vector_factory=None,selected_accumulators=(),selected_guards=None,selected_call_presence=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=(),whole_local_inputs=None,whole_local_outputs=None):
     """Separate independent whole-column writes from selected-row copies."""
     names=dict(names);parameters=dict(parameters);state_types=dict(state_types)
+    whole_local_inputs={} if whole_local_inputs is None else dict(whole_local_inputs)
+    whole_local_outputs={} if whole_local_outputs is None else dict(whole_local_outputs)
+    if any(name in names or name in array_names or name in parameter_arrays or source not in fields for name,source in whole_local_inputs.items()):
+        raise ValueError('invalid physical caller array binding')
+    if any(source not in fields or fields[source][0] is None for source in whole_local_outputs.values()):
+        raise ValueError('whole caller outputs require private physical vectors')
     bindings,lengths,arrays,readonly,capture_types,vectors=_columns(fields,names,reads,parameters,state_types,typed_parameter,'batch')
     parameter_types={**parameter_types,**capture_types}
     canonical={};aliases={}
@@ -113,22 +119,36 @@ def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_type
             raise ValueError('masked batch captures require one compact callback selection')
         selected_vectors=selected_vector_factory(names,reads,parameters,state_types,max(lengths.values()))
     for column,mapping in enumerate(bindings):
-        bound=dict(parameters)
+        bound=dict(parameters);column_names=dict(names);column_aliases=dict(aliases);column_vectors=dict(vectors);column_types=dict(parameter_types);local_arrays=set();local_parameters=set()
+        for local,field in whole_local_inputs.items():
+            source=mapping[field];bound.pop(local,None)
+            column_vectors[local]=tuple(local if name==source else name for name in vectors[source])
+            if source in names:
+                column_names[local]=names[source];local_arrays.add(local);column_aliases[local]=aliases.get(source,source)
+            else:
+                bound[local]=bound[source];local_parameters.add(local)
+                column_types[local]=parameter_types[source]
         for name,descriptor in parameters.items():
             if type(descriptor) is StateEffectFunction and descriptor.captured_arrays:
                 bound[name]=bind_state_effect_captures(descriptor,
                     {capture:mapping[source] for capture,source in descriptor.capture_bindings},
                     readonly=descriptor.parameter_captures)
         def compile_column(whole_eager=False):
-            return compile_state_effect_transform(code,states=names,parameters=bound,
-                array_states=set(array_names)|arrays,writable_states=set(array_names)|arrays,
-                copied_array_states=array_names,array_parameters=set(parameter_arrays)|readonly,temporary_parameters=parameter_arrays,
-                parameter_types=parameter_types,state_types=state_types,eager_limit=128,
-                reload_arrays_each_statement=reload,unconditional_states=arrays,retained_array_states=arrays,
-                unconditional_parameters=readonly,whole_eager=whole_eager,array_aliases=aliases,capture_vectors=vectors,selected_output=selected_output,copied_array_sources=copied_sources,selected_vectors=selected_vectors,selected_accumulators=selected_accumulators,separate_whole_eager=True,
+            # Compaction can allocate scalar inputs after the first compile
+            # requests selected vectors. Keep the column's local aliases while
+            # including those newly allocated context slots on the retry.
+            column_names.update({name:slot for name,slot in names.items() if name not in column_names})
+            column_code=code if not whole_local_outputs else code+'\n'+'\n'.join(mapping[field]+' = '+local for local,field in whole_local_outputs.items())
+            return compile_state_effect_transform(column_code,states=column_names,parameters=bound,
+                array_states=set(array_names)|arrays|local_arrays,writable_states=set(array_names)|arrays|local_arrays,
+                copied_array_states=array_names,array_parameters=set(parameter_arrays)|readonly|local_parameters,temporary_parameters=parameter_arrays,
+                parameter_types=column_types,state_types=state_types,eager_limit=128,
+                reload_arrays_each_statement=reload,unconditional_states=arrays|local_arrays,retained_array_states=arrays|local_arrays,
+                unconditional_parameters=readonly|local_parameters,whole_eager=whole_eager,array_aliases=column_aliases,capture_vectors=column_vectors,selected_output=selected_output,copied_array_sources=copied_sources,selected_vectors=selected_vectors,selected_accumulators=selected_accumulators,separate_whole_eager=True,
                 selected_guards=selected_guards,selected_call_presence=selected_call_presence,
                 selected_row_operands=selected_row_operands,
                 copied_array_aliases=copied_array_aliases,retained_copied_outputs=retained_copied_outputs,
+                whole_array_locals=whole_local_inputs,
                 eager_guard=next(iter(selected_guards.values())) if selected_guards else None)
         try:
             transform=compile_column()

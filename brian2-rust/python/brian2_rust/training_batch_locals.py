@@ -7,6 +7,29 @@ from .training_effects import (Effects,ArrayCell,StateEffectFunction,
                                bind_state_effect_captures)
 
 
+class ShapeEffects(Effects):
+    """Infer a fixed broadcast result without choosing an arrival count.
+
+    A selected vector can broadcast with a fixed N>1 vector only at counts
+    one or N. The effect compiler retains the actual runtime shape check.
+    Singleton captures leave the result's selected length dynamic.
+    """
+    def broadcast_length(self,values):
+        result=super().broadcast_length(values)
+        arrays=[value for value in values if isinstance(value,ArrayCell) and not value.zero_dim]
+        fixed={value.length for value in arrays if value.length not in (None,1) and not value.selection_shape}
+        unknown=[value for value in arrays if value.length is None]
+        if result is None and len(fixed)==1 and unknown and all(value.selection_shape for value in unknown):return next(iter(fixed))
+        return result
+
+    def result(self,node,*operands):
+        value=super().result(node,*operands)
+        arrays=[operand for operand in operands if isinstance(operand,ArrayCell) and not operand.zero_dim]
+        if isinstance(value,ArrayCell) and value.length is None and arrays and all(operand.selection_shape or operand.length==1 for operand in arrays):
+            value.selection_shape=True
+        return value
+
+
 def batch_local_lifetimes(code,variables,functions,*,mode,synthetic_types=None):
     """Trace object identity; never execute callbacks or numeric model code.
 
@@ -24,26 +47,29 @@ def batch_local_lifetimes(code,variables,functions,*,mode,synthetic_types=None):
     types.update({} if synthetic_types is None else synthetic_types)
     states={name:k for k,name in enumerate(types)}
     arrays={name for name,var in normal.items() if isinstance(var,ArrayVariable) and not var.scalar}|set(synthetic_types or {})
-    captures=set();protected=set();bound={}
+    captures=set();protected=set();bound={};capture_bindings={}
     for name,descriptor in functions.items():
         if type(descriptor) is not StateEffectFunction:continue
         bindings={}
         for capture,value in descriptor.captured_arrays:
             key='_b2_local_capture_'+str(len(states));slot=len(states);states[key]=slot;captures.add(key)
+            capture_bindings[slot]=[name,capture]
             types[key]='boolean' if value.dtype.kind=='b' else 'integer' if value.dtype.kind=='i' else 'float'
             if capture in descriptor.parameter_captures or not value.flags.writeable:protected.add(key)
             bindings[capture]=key
         bound[name]=bind_state_effect_captures(descriptor,bindings,readonly=descriptor.parameter_captures)
-    engine=Effects(states,bound,array_states=arrays|captures,writable_states=(arrays|captures)-protected,
+    engine=ShapeEffects(states,bound,array_states=arrays|captures,writable_states=(arrays|captures)-protected,
                    state_types={slot:types[name] for name,slot in states.items()},eager_limit=128)
-    for name in arrays:engine.environment[name].origin=None
+    for name in arrays:engine.environment[name].origin=None;engine.environment[name].selection_shape=True
     objects=[];by_identity={};tokens=[]
     def token(value,source=None):
         key=id(value)
         if key not in by_identity:
             by_identity[key]=len(tokens);objects.append(value)
             whole=isinstance(value,ArrayCell) and any(isinstance(node,ast.Name) and node.id in captures for node in ast.walk(engine.materialize(value)))
-            tokens.append(dict(dtype=engine.dtype(value),array=isinstance(value,ArrayCell),zero_dim=isinstance(value,ArrayCell) and value.zero_dim,source=source,whole_capture=whole))
+            tokens.append(dict(dtype=engine.dtype(value),array=isinstance(value,ArrayCell),zero_dim=isinstance(value,ArrayCell) and value.zero_dim,source=source,whole_capture=whole,
+                               length=value.length if isinstance(value,ArrayCell) else None,
+                               capture_binding=capture_bindings.get(value.origin) if isinstance(value,ArrayCell) else None))
         return by_identity[key]
     initial={name:token(engine.environment[name],name) for name in types if name not in captures}
     stages=[]
@@ -55,7 +81,7 @@ def batch_local_lifetimes(code,variables,functions,*,mode,synthetic_types=None):
         if isinstance(statement,ast.AugAssign):reads.add(target)
         if mode=='vectorised':
             for name in arrays&reads:
-                engine.environment[name]=ArrayCell(ast.Name(id=name,ctx=ast.Load()),dtype=types[name]);token(engine.environment[name],name)
+                engine.environment[name]=ArrayCell(ast.Name(id=name,ctx=ast.Load()),dtype=types[name],selection_shape=True);token(engine.environment[name],name)
         before={name:token(value) for name,value in engine.environment.items() if name not in captures}
         original={name:ast.dump(engine.materialize(value),include_attributes=False) for name,value in engine.environment.items() if isinstance(value,ArrayCell) and name not in captures}
         condition=getattr(normal.get(target),'conditional_write',None)
@@ -90,24 +116,36 @@ def batch_local_lifetimes(code,variables,functions,*,mode,synthetic_types=None):
     return dict(tokens=tokens,initial=initial,stages=stages,final={name:token(value) for name,value in engine.environment.items() if name not in captures})
 
 
-def whole_capture_local_groups(trace,persistent):
-    """Keep temporary whole vectors inside their actual statement scope.
-
-    Projection is only valid at a persistent indexed write, never at a local
-    assignment. A temporary that survives that boundary needs full-vector
-    persistent storage and cannot use this grouping.
-    """
+def whole_capture_carry_groups(trace,persistent):
+    """Carry borrowed physical roots without projecting them into event lanes."""
     persistent=set(persistent);groups=[];current=[]
     for stage in trace['stages']:
         current.append(stage)
-        if stage['target'] in persistent:
-            groups.append(current);current=[]
+        if stage['target'] in persistent:groups.append(current);current=[]
     if current:return None
-    created=set()
+    previous=set();result=[];buffers=set();live={}
     for group in groups:
+        defined=set();bindings={}
         for stage in group:
-            reads={n.id for n in ast.walk(ast.parse(stage['code'])) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Load)}
-            if isinstance(ast.parse(stage['code']).body[0],ast.AugAssign):reads.add(stage['target'])
-            if reads&created:return None
-        created.update(stage['target'] for stage in group if stage['target'] not in persistent)
-    return ['\n'.join(stage['code'] for stage in group) for group in groups]
+            statement=ast.parse(stage['code']).body[0]
+            reads={n.id for n in ast.walk(statement) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Load)}
+            if isinstance(statement,ast.AugAssign):reads.add(stage['target'])
+            for name in reads&previous-defined:
+                token=trace['tokens'][stage['inputs'][name]]
+                if token['capture_binding'] is not None:bindings[name]=token['capture_binding']
+                elif token['source'] is None and token['array'] and not token['zero_dim'] and type(token['length']) is int and token['length']>0:
+                    index=stage['inputs'][name];bindings[name]=dict(token=index);buffers.add(index)
+                else:return None
+            if stage['target'] not in persistent:defined.add(stage['target'])
+            live.update({name:index for name,index in stage['outputs'].items() if name not in persistent})
+        result.append(dict(code='\n'.join(stage['code'] for stage in group),whole_local_inputs=bindings,live=dict(live)))
+        previous.update(defined)
+    seeded=set()
+    for group in result:
+        outputs={}
+        inputs={entry['token'] for entry in group['whole_local_inputs'].values() if isinstance(entry,dict)}
+        for name,index in group.pop('live').items():
+            if index in buffers and index not in seeded and index not in inputs:
+                outputs.setdefault(name,index);seeded.add(index)
+        group['whole_local_outputs']=outputs
+    return result

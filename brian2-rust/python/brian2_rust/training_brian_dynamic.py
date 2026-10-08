@@ -1179,6 +1179,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
     batch_random_fields={}
     batch_compacted_random={}
     batch_caller_locals={}
+    batch_whole_locals={}
 
     def build_synaptic(syn,edge,code,*,trigger=None,streams=(),owner=None,pathway=None,
                        noise_domain=None,event_noise=None):
@@ -1386,6 +1387,17 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                 return self.generic_visit(node)
         tree=ExplicitDraw().visit(tree)
         locals_={n.id for n in ast.walk(tree) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}
+        whole_local_inputs=caller_spec.get('whole_local_inputs',{})
+        whole_local_outputs=caller_spec.get('whole_local_outputs',{})
+        carry_functions={}
+        for local,entry in whole_local_inputs.items():
+            if isinstance(entry,dict):parameters[local]=0.;continue
+            function,capture=entry
+            hidden='_b2_carry_function_'+function
+            require(hidden not in used_names,'function',syn,'reserved physical caller function name')
+            parameters[hidden]=lower_state_effect_function(info['path_variables'][original_pathway][function])
+            parameters[local]=0.
+            carry_functions[local]=(hidden,capture)
         needed={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}-names.keys()-parameters.keys()-locals_
         # Non-scalar neuron constants retain any optimizer bindings from the base lowerer.
         for name in sorted(needed):
@@ -1438,7 +1450,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                 index=resolved;indexed_owner=True
             require(variable.scalar or indexed_owner and len(values)>index,'coefficient',syn,f'{name} has an unsupported indexed shape')
             parameters[name]=typed_parameter(*mapped,_state_dtype(variable)) if mapped is not None else values[0 if variable.scalar else index].item()
-        capture_fields={};event_capture_slots=set()
+        capture_fields={};event_capture_slots=set();whole_local_fields={}
         for function_name,descriptor in list(parameters.items()):
             if type(descriptor) is not StateEffectFunction or not descriptor.captured_arrays:continue
             scalar_event=pathway in event_effect_modes and event_effect_modes[pathway]['mode']=='scalar'
@@ -1454,8 +1466,17 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     info['integrator_variables'][name]=field[3]
                 else:
                     slots,dtype=field;used_names.add(name);bind(name,slots[edge])
+        for local,(function,capture) in carry_functions.items():
+            whole_local_fields[local]=dict(parameters[function].capture_bindings)[capture]
+        whole_output_fields={}
+        buffers=batch_whole_locals.get(original_pathway,{})
+        for local,entry in whole_local_inputs.items():
+            if isinstance(entry,dict):
+                source,field=buffers[entry['token']];capture_fields[source]=field;whole_local_fields[local]=source
+        for local,token in whole_local_outputs.items():
+            source,field=buffers[token];capture_fields[source]=field;whole_output_fields[local]=source
         try:
-            if any(type(value) is StateEffectFunction for value in parameters.values()):
+            if any(type(value) is StateEffectFunction for value in parameters.values()) or whole_local_fields or whole_output_fields:
                 if pathway is not None:
                     spec=event_effect_modes[pathway]
                     guard_slots=set(guards.values())
@@ -1540,6 +1561,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 and type(parameters.get(call.func.id)) is StateEffectFunction
                                 for argument in call.args for item in ast.walk(argument) if isinstance(item,ast.Name)}
                             actual_callback_operands=set(callback_operands)
+                            if random_batch is not None:
+                                # A whole returned expression can consume a
+                                # cached draw outside the callback arguments.
+                                callback_operands.update(item.id for item in ast.walk(tree) if isinstance(item,ast.Name) and isinstance(item.ctx,ast.Load))
                             if guard_names:
                                 callback_operands.update(item.id for item in ast.walk(tree) if isinstance(item,ast.Name) and isinstance(item.ctx,ast.Load))
                             for operand in sorted((array_names|parameter_arrays)&callback_operands):
@@ -1616,7 +1641,8 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                             selected_output=(copy.deepcopy(selected_ordinals[selected_row]) if selected_ordinals is not None else row_sum(selected_rows[:selected_row]),copy.deepcopy(selected_count) if selected_count is not None else row_sum(selected_rows)),selected_vector_factory=selected_vector_factory,
                             selected_accumulators=set(spec['accum'])&array_names if spec['mode']=='vectorised' else (),
                             selected_guards=guard_names,selected_call_presence=call_presence,selected_row_operands=row_operands,
-                            copied_array_aliases=local_aliases,retained_copied_outputs=caller_spec.get('retained_local_outputs',()))
+                            copied_array_aliases=local_aliases,retained_copied_outputs=caller_spec.get('retained_local_outputs',()),
+                            whole_local_inputs=whole_local_fields,whole_local_outputs=whole_output_fields)
                         require(not any(length>1 for length in transform['selected_output_lengths']) or original_pathway not in info['path_runtime'],
                                 'function',syn,'multi-column event returns require fixed delay routing')
                         if transform['unconditional_checks'] and pathway not in batch_capture_checks:
@@ -2581,28 +2607,44 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     except ValueError as error:raise TrainingConversionError('noise',obj,str(error)) from error
                     if random_draws:stage_specs=[dict(stage_specs[0],code=rewritten)]
                     if plan_locals:
-                        from .training_batch_locals import batch_local_lifetimes,whole_capture_local_groups
+                        from .training_batch_locals import batch_local_lifetimes,whole_capture_carry_groups
                         caller_functions={name:lower_state_effect_function(info['path_variables'][obj.name][name]) for name in captured_functions}
                         try:caller_trace=batch_local_lifetimes(stage_specs[0]['code'],info['path_variables'][obj.name],caller_functions,
                                 mode=effect_spec['mode'],synthetic_types={draw['name']:'float' for draw in random_draws})
                         except (ValueError,TypeError,RecursionError) as error:raise TrainingConversionError('function',obj,str(error)) from error
                         if any(token['whole_capture'] for token in caller_trace['tokens']):
-                            grouped=([stage_specs[0]['code']] if effect_spec['mode']=='array'
-                                     else whole_capture_local_groups(caller_trace,syn.variables))
+                            grouped=([dict(code=stage_specs[0]['code'],whole_local_inputs={})] if effect_spec['mode']=='array'
+                                     else whole_capture_carry_groups(caller_trace,syn.variables))
                             require(grouped is not None,'function',obj,
                                     'whole-vector caller temporaries spanning indexed writes require persistent whole-vector storage')
                             if grouped is not None:
                                 template=stage_specs[0];parts=[]
-                                for part_code in grouped:
+                                tokens={token for part in grouped for token in part.get('whole_local_outputs',{}).values()}
+                                buffers={}
+                                for token in sorted(tokens):
+                                    descriptor=caller_trace['tokens'][token];length=descriptor['length']
+                                    require(1<=length<=64,'budget',obj,'whole caller vector exceeds 64 columns')
+                                    require(len(initial)+length<=1_000_000,'budget',obj,'whole caller state budget exceeded')
+                                    check_budget(length*64);slots=[]
+                                    for column in range(length):
+                                        cell=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(descriptor['dtype']!='float');slots.append(cell)
+                                        if descriptor['dtype']=='integer':integer_states.add(cell)
+                                        if descriptor['dtype']=='boolean':binary_states.append(cell)
+                                    buffers[token]=('_b2_whole_local_'+str(len(batch_whole_locals))+'_'+str(token),(slots,descriptor['dtype']))
+                                if buffers:batch_whole_locals[obj.name]=buffers
+                                for group in grouped:
+                                    part_code=group['code']
                                     target=ast.parse(part_code).body[-1]
                                     target=target.targets[0].id if isinstance(target,ast.Assign) else target.target.id
                                     parts.append(dict(template,code=part_code,writes=(target,),
+                                        whole_local_inputs=group['whole_local_inputs'],
+                                        whole_local_outputs=group.get('whole_local_outputs',{}),
                                         accum=tuple(name for name in template['accum'] if name==target),
                                         guarded_writes=tuple(name for name in template['guarded_writes'] if name==target)))
                                 stage_specs=parts;caller_trace=None;grouped_caller=True
                                 if effect_spec['mode']=='array' and len(parts)>1:
                                     stage_specs.append(dict(template,code='',writes=(),accum=(),guarded_writes=(),publish_array_locals=True))
-                            if effect_spec['mode']=='array':stage_specs=[dict(template,code=grouped[0])]
+                            if effect_spec['mode']=='array':stage_specs=[dict(template,code=grouped[0]['code'])]
                         elif not materialise_locals:caller_trace=None
                     if caller_trace is not None:
                         require(obj.name not in info['path_runtime'],'function',obj,'caller local arrays require fixed delay routing')
@@ -2918,6 +2960,8 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                      for path,spec in batch_random_fields.items()},
         event_callback_caller_locals={path:dict(trace=spec['trace'],rows=[dict(key=list(key),fields=fields) for key,fields in spec['rows'].items()])
                                      for path,spec in batch_caller_locals.items()},
+        event_callback_whole_locals={path:{str(token):dict(name=source,cells=field[0],dtype=field[1]) for token,(source,field) in fields.items()}
+                                    for path,fields in batch_whole_locals.items()},
         phased_event_gradient='surrogate-through-operational-NumPy-stage-order-and-row-gates' if event_stage_groups else None)
     provenance.pop('snapshot_sha256',None)
     bundle.initial_state=list(initial)
