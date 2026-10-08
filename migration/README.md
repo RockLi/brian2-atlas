@@ -6,3 +6,5 @@ The legacy development checkout was captured at `81eb571d78292a0e24a8e79980ea0d5
 Stage records describe file origins, transformations and validation. Tests for later backend stages are not implied by a passing frontend stage. The migration is in progress; packaging, backend integration and release preparation remain pending.
 
 The fixed upstream baseline passed the selected NumPy frontend regression: 277 passed, 7 skipped, 7 deselected. See `upstream-baseline.json` for the exact suite scope and report identity. Native backend validation remains separate.
+
+The indirect-index port passed 194 tests (1 skipped, 3 deselected) across the code generation, synapse and monitor gate. Two additional maintained regressions execute nested references through real NumPy and compiled Cython code objects. See `p1b-indirect-indices.json`; `frontend-source-commits.json` records legacy history separately from captured working-tree contents.

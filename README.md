@@ -4,7 +4,7 @@ Brian2 Atlas extends [Brian2](https://github.com/brian-team/brian2) with heterog
 
 ## Current migration checkpoint
 
-The committed implementation currently contains the upstream Brian2 frontend and the first verified Atlas function-semantics port. Native CPU, GPU, WASM, MPI and training backends are being ported in dependency order. See [migration provenance](migration/README.md) for the fixed upstream commit, source hashes and stage validation. Release packaging and the complete support matrix remain in progress.
+The committed implementation currently contains the upstream Brian2 frontend and verified Atlas function-semantics and indirect-index ports. Native CPU, GPU, WASM, MPI and training backends are being ported in dependency order. See [migration provenance](migration/README.md) for the fixed upstream commit, source hashes and stage validation. Release packaging and the complete support matrix remain in progress.
 
 [Paper, experimental records and reproduction materials](https://github.com/RockLi/brian2-atlas-preprint) are maintained in a separate repository. Historical results keep their actual experimental code identities.
 

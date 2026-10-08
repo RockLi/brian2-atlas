@@ -1,4 +1,3 @@
-import itertools
 
 import numpy as np
 
@@ -185,7 +184,7 @@ class NumpyCodeGenerator(CodeGenerator):
                     write = write - {statement.var}
                 ufunc_lines.extend(
                     self.write_arrays(
-                        [statement], read, write, variables, variable_indices
+                        [statement], read | indices, write, variables, variable_indices
                     )
                 )
                 lines.extend(ufunc_lines)
@@ -201,7 +200,7 @@ class NumpyCodeGenerator(CodeGenerator):
             lines = []
             lines.extend(
                 [
-                    "_full_idx = _idx",
+                    "_full_idx = _vectorisation_idx" if index in self.iterate_all else f"_full_idx = {index}",
                     "for _idx in _full_idx:",
                     "    _vectorisation_idx = _idx",
                 ]
@@ -209,12 +208,17 @@ class NumpyCodeGenerator(CodeGenerator):
             read, write, indices, conditional_write_vars = self.arrays_helper(
                 statements
             )
-            lines.extend(
-                indent(code)
-                for code in self.read_arrays(
-                    read, write, indices, variables, variable_indices
-                )
-            )
+            # A scalar fallback indexes every physical array, including an
+            # index normally covered by ITERATE_ALL in stateupdate templates.
+            # Restore the generator contract after emitting this local loop.
+            iterate_all = self.iterate_all
+            self.iterate_all = set(iterate_all) - {index}
+            try:
+                read_lines = self.read_arrays(read, write, indices, variables, variable_indices)
+                write_lines = self.write_arrays(statements, read | indices, write, variables, variable_indices)
+            finally:
+                self.iterate_all = iterate_all
+            lines.extend(indent(code) for code in read_lines)
             for statement in statements:
                 line = self.translate_statement(statement)
                 if statement.var in conditional_write_vars:
@@ -222,18 +226,13 @@ class NumpyCodeGenerator(CodeGenerator):
                     lines.append(indent(line, 2))
                 else:
                     lines.append(indent(line))
-            lines.extend(
-                indent(code)
-                for code in self.write_arrays(
-                    statements, read, write, variables, variable_indices
-                )
-            )
+            lines.extend(indent(code) for code in write_lines)
         return lines
 
     def read_arrays(self, read, write, indices, variables, variable_indices):
         # index and read arrays (index arrays first)
         lines = []
-        for varname in itertools.chain(indices, read):
+        for varname in self.ordered_array_reads(read, indices):
             var = variables[varname]
             index = variable_indices[varname]
             # if index in iterate_all:
@@ -322,7 +321,7 @@ class NumpyCodeGenerator(CodeGenerator):
                 )
                 lines.append(line)
             lines.extend(
-                self.write_arrays(statements, read, write, variables, variable_indices)
+                self.write_arrays(statements, read | indices, write, variables, variable_indices)
             )
         else:
             # More complex translation to deal with repeated indices

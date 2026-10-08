@@ -23,6 +23,7 @@ def main():
         pytest_args = [str(root / "brian2/tests" / name) for name in (
             "test_functions.py", "test_codegen.py", "test_statements.py",
             "test_codestrings.py", "test_units.py", "test_synapses.py", "test_monitor.py",
+            "test_atlas_index_codegen.py",
         )]
     return pytest.main([
         "-q", "--timeout=300", "--maxfail=8",
