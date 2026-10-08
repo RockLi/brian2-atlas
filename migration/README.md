@@ -9,7 +9,7 @@ The fixed upstream baseline passed the selected NumPy frontend regression: 277 p
 
 The indirect-index port passed 194 tests (1 skipped, 3 deselected) across the code generation, synapse and monitor gate. Two additional maintained regressions execute nested references through real NumPy and compiled Cython code objects. See `p1b-indirect-indices.json`; `frontend-source-commits.json` records legacy history separately from captured working-tree contents.
 
-Five independent upstream-example compatibility changes are recorded in `example-compatibility.json`: NumPy 2 profiling/array membership, Matplotlib artist input, importable Gaussian connection generation, and mathematical docstrings. All five files parse; all three connection generators were executed at 32 neurons. Full scientific runs and performance sweeps were not repeated. Backend-dependent example ports remain in progress.
+Five independent upstream-example compatibility changes are recorded in `example-compatibility.json`: NumPy 2 profiling/array membership, Matplotlib artist input, importable Gaussian connection generation, and mathematical docstrings. All five files parse; all three connection generators were executed at 32 neurons. Full scientific runs and performance sweeps were not repeated. Backend-dependent example ports and their scoped validation are recorded under Product examples and tools below.
 
 The CPU/B2IR/AOT port is recorded in `p2-cpu-port.json`. Its 27 test files were covered by the core, extended and supplemental gates, with named focused reruns resolving the original failures. Three macOS cache-advice skips remain explicit. The portable `dev/atlas/run_backend.py` command and Linux CPU CI configuration are included; hosted CI results are recorded separately from local acceptance.
 
@@ -48,10 +48,21 @@ pass or Windows distribution support is implied by these local results.
 
 ### Remaining migration audit
 
-The initial file mapping, large evidence archives and final concurrent source
-increments must be reconciled before the full migration is declared complete.
+The complete initial 59,309-path mapping is preserved in the preprint repository,
+including explicit generated-file exclusions. Later evidence is captured in
+separate checksummed supplements. Final concurrent source integration and
+distribution checks must complete before the full migration is declared complete.
 The preprint repository retains historical source identities; its new
 PD14 end-to-end reproduction pins Atlas commit `6677a5bafd3b703ab56b6ed176e9aad70f4638cd`
 and has passed bounded build-to-simulation validation. Publishing a
 package, creating a formal release and submitting the paper are outside this
 migration's execution scope.
+
+### Later training increments
+
+[`concurrent-training-increment-2.json`](concurrent-training-increment-2.json)
+records batch capture lifetimes, private temporaries, masked operand copies and
+emission-addressed random draws. The full isolated gate passed 1,059 cases; 524
+actual-CUDA variants were skipped locally. Integration in the product checkout
+passed 43 CPU/Metal/local-MPI and compiler checks with no failures or skips.
+Earlier CUDA acceptance does not imply execution of these newer skipped variants.

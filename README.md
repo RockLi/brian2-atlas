@@ -96,8 +96,9 @@ interpreter and without `PYTHONPATH`, `B2_RUNNER` or `B2_TRAIN_RUNNER` overrides
 The `dev` branch is the Atlas development branch. `upstream` points to
 [brian-team/brian2](https://github.com/brian-team/brian2); product ports retain
 source hashes and adaptation notes. Historical paper results remain tied to the
-source versions that produced them. New paper reproduction will pin an Atlas
-commit in the preprint repository. Public package publication, a formal release
+source versions that produced them. The [PD14 reproduction](https://github.com/RockLi/brian2-atlas-preprint/tree/main/experiments/reproduction/pd14)
+pins Atlas commit `6677a5bafd3b703ab56b6ed176e9aad70f4638cd` and has passed its
+documented bounded build-to-simulation checks. Public package publication, a formal release
 and paper submission are separate steps.
 
 ## Optional dependencies
