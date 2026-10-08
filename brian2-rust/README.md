@@ -35,3 +35,9 @@ Actual migration checks covered an NVIDIA L4, Apple Metal, and Chrome with a non
 ## MPI simulation
 
 Distributed planning, generated MPI projects, partitioning, collective transport and MPI regression inputs are included. Install an MPI implementation providing `mpicc` and `mpiexec` alongside the pinned Rust compiler. Tests using actual MPI require `B2_TEST_MPI=1`. The migration validated same-host 1/2/4-rank execution, exact reference results, continuation and coordinated failure exits; see `migration/p4-mpi-port.json`. Cross-host execution has not been qualified by this migration.
+
+## Native training
+
+`NativeLIFTrainer`, Brian network conversion, dynamic clocks, state/checkpoint continuation and native CPU/Metal/CUDA/MPI training are included. Build the training executable with `cargo +1.98.1 build --release --locked --bin b2-train --manifest-path brian2-rust/Cargo.toml`. Source-mode tests can select it with `B2_TRAIN_RUNNER`; installation packaging follows separately.
+
+The migration verified CPU/Metal numerical and checkpoint behavior, captured callback-training increments, selected CUDA VJP cases, and CUDA clock/checkpoint continuation including same-host MPI. Exact coverage, source hashes, retained timeout evidence and unexecuted CUDA variants are recorded in `migration/p5-native-training-port.json`.

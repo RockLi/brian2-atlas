@@ -83,6 +83,12 @@ def main():
             'runner': str(runner), 'runner_sha256': hashlib.sha256(runner.read_bytes()).hexdigest(),
             'rustc': subprocess.check_output(['rustc', '--version'], text=True).strip(),
             'tests': selections, 'pytest_args': command}
+    if os.environ.get('B2_TRAIN_RUNNER'):
+        training_runner = Path(os.environ['B2_TRAIN_RUNNER']).expanduser().resolve()
+        if not training_runner.is_file():
+            raise FileNotFoundError(training_runner)
+        meta['training_runner'] = str(training_runner)
+        meta['training_runner_sha256'] = hashlib.sha256(training_runner.read_bytes()).hexdigest()
     try:
         meta['git_head'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
         meta['git_diff_sha256'] = hashlib.sha256(subprocess.check_output(['git', 'diff', 'HEAD'])).hexdigest()

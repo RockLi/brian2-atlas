@@ -7,6 +7,7 @@ mod executor;
 mod gpu_initialization;
 mod resource_limits;
 pub mod large_topology;
+pub mod training;
 #[cfg(target_arch = "wasm32")]
 mod wasm;
 mod wasm_plan;
