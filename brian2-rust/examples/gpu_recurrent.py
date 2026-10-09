@@ -78,11 +78,11 @@ def brian_run(backend,neurons,steps,degree,output,profile,*,prepared=None,state_
     import brian2 as b
     from gpu_baseline import canonical_result
     if backend in {'rust','cuda','metal','cpu-f32'}:
-        import brian2_rust
+        import brian2_atlas
         opts=dict(engine='aot' if backend in {'rust','cpu-f32'} else backend,directory=output/'project',
                   runner=Path(__file__).resolve().parents[1]/'target/release/b2-runner')
         if backend in {'cuda','metal'}:opts.update(numeric_mode='float32',event_delivery='sparse')
-        b.set_device('rust_standalone',**opts)
+        b.set_device('atlas',**opts)
     elif backend=='brian2cuda':
         import brian2cuda
         b.set_device('cuda_standalone',directory=str(output/'project'))

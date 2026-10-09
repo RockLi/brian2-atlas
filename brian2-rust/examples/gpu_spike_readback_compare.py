@@ -11,7 +11,7 @@ OPTIONS=dict(drive=10/256,delay_span=16,post_delay=16,topology_kind='random-fixe
 
 @contextmanager
 def readback_mode(mode):
-    from brian2_rust import gpu_readback as module
+    from brian2_atlas import gpu_readback as module
     if mode not in MODES:raise ValueError('Unknown spike readback policy')
     original=module.spike_prefix_bindings;original_upload=module.spike_upload_omissions;calls=[]
     def selected(*args):

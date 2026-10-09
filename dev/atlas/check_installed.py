@@ -5,10 +5,13 @@ for key in ['PYTHONPATH','B2_RUNNER','B2_TRAIN_RUNNER']:
     assert not os.environ.get(key),f'Installation gate forbids {key}'
 started=time.time()
 import brian2 as b
-import brian2_rust as atlas
+import brian2_atlas as atlas
+import brian2_rust as implementation
 import numpy as np
 from brian2_rust._runtime import executable_path,source_root
-prefix=pathlib.Path(sys.prefix).resolve();package=pathlib.Path(atlas.__file__).resolve().parent
+prefix=pathlib.Path(sys.prefix).resolve();package=pathlib.Path(implementation.__file__).resolve().parent
+assert pathlib.Path(atlas.__file__).resolve().is_relative_to(prefix)
+assert atlas.AtlasDevice is implementation.RustStandaloneDevice
 assert pathlib.Path(b.__file__).resolve().is_relative_to(prefix)
 assert package.is_relative_to(prefix) and source_root() is None
 assert importlib.metadata.version('brian2-atlas')=='0.1.0.dev0'
@@ -31,7 +34,8 @@ def simulate(engine):
     if engine=='numpy':b.set_device('runtime')
     else:
         from brian2.devices.device import all_devices
-        all_devices['rust_standalone'].reinit();b.set_device('rust_standalone',engine=engine)
+        assert all_devices['atlas'] is all_devices['rust_standalone']
+        all_devices['atlas'].reinit();b.set_device('atlas',engine=engine)
     b.start_scope()
     neurons=b.NeuronGroup(1,'dv/dt=(1.5-v)/(10*ms) : 1',threshold='v>1',reset='v=0',method='euler',dt=0.1*b.ms)
     state=b.StateMonitor(neurons,'v',record=True);spikes=b.SpikeMonitor(neurons)
@@ -64,7 +68,7 @@ with tempfile.TemporaryDirectory(prefix='atlas-installed-checkpoint-') as direct
     trainer.step(inputs,labels);expected_state=copy.deepcopy(trainer.state)
     code='''import json,sys
 import numpy as np
-from brian2_rust import NativeLIFTrainer
+from brian2_atlas import NativeLIFTrainer
 trainer=NativeLIFTrainer(json.loads(sys.argv[2]));trainer.restore(sys.argv[1])
 x=np.zeros((4,24,2));x[:2,:,0]=1;x[2:,:,1]=1
 trainer.step(x,[0,0,1,1]);print(json.dumps(trainer.state))

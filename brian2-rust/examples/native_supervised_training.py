@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 import numpy as np
-from brian2_rust import NativeLIFTrainer,lif_training_plan
+from brian2_atlas import NativeLIFTrainer,lif_training_plan
 
 
 def main():

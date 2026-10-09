@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 import brian2 as b
-import brian2_rust
+import brian2_atlas
 import numpy as np
 
 
@@ -20,7 +20,7 @@ def main():
     parser.add_argument('--resume',action='store_true')
     args=parser.parse_args()
     gpu={} if args.rank_backends is None else dict(rank_backends=args.rank_backends.split(','),numeric_mode='mixed-f32')
-    b.set_device('rust_standalone',engine='mpi',ranks=args.ranks,directory=args.directory,**gpu)
+    b.set_device('atlas',engine='mpi',ranks=args.ranks,directory=args.directory,**gpu)
     b.seed(123)
     clock=b.Clock(dt=b.second/1024,name='learning_clock')
     group=b.NeuronGroup(3,'dv/dt=drive*1024*Hz:1\ndrive:1\nx:1',

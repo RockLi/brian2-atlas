@@ -10,7 +10,7 @@ LEGACY_ATOMIC_LOAD='__device__ inline uint atomic_load_explicit(uint *p,int) { r
 @contextmanager
 def atomic_reads(*,legacy=False):
     """Single-threaded harness selection; production uses the guarded load."""
-    from brian2_rust import cuda_codegen
+    from brian2_atlas import cuda_codegen
     header=cuda_codegen.CUDA_HEADER
     assert header.count(cuda_codegen.CUDA_ATOMIC_LOAD)==1
     if legacy:header=header.replace(cuda_codegen.CUDA_ATOMIC_LOAD,LEGACY_ATOMIC_LOAD)

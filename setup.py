@@ -61,7 +61,8 @@ setup(
     ext_modules=extensions,
     packages=find_packages(include=["brian2", "brian2.*"])
              + find_packages(where="brian2-rust/python"),
-    package_dir={"brian2_rust": "brian2-rust/python/brian2_rust"},
+    package_dir={"brian2_rust": "brian2-rust/python/brian2_rust",
+                 "brian2_atlas": "brian2-rust/python/brian2_atlas"},
     package_data={"brian2_rust": ["*.c", "*.cu", "*.h", "*.m", "*.metal", "*.toml", "*.rs", "*.cpp",
                                 "metal_runtime/*", "mpi_runtime/*"]},
     cmdclass={"build_py": AtlasBuildPy},

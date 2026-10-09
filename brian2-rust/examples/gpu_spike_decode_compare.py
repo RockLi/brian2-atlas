@@ -25,7 +25,7 @@ def capacity_mask(ticks,counts,capacity):
 
 @contextmanager
 def decode_mode(mode):
-    from brian2_rust import metal_event_layout as module
+    from brian2_atlas import metal_event_layout as module
     if mode not in MODES:raise ValueError('Unknown spike decoder')
     original=module.spike_coordinates;times=[]
     implementation=capacity_mask if mode=='capacity-mask' else original

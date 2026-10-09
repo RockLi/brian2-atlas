@@ -73,10 +73,10 @@ def main():
     args.output = args.output.resolve()
     args.output.mkdir(parents=True, exist_ok=False)
     previous = b.get_device()
-    device = all_devices["rust_standalone"]
+    device = all_devices["atlas"]
     try:
         device.reinit()
-        b.set_device("rust_standalone", runner=ROOT/"target/release/b2-runner")
+        b.set_device("atlas", runner=ROOT/"target/release/b2-runner")
         model = make_model(args.neurons, args.steps, args.degree)
         model_path = args.output/"model.json"
         model_path.write_text(json.dumps(model, indent=2) + "\n")

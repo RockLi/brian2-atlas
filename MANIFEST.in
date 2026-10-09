@@ -46,3 +46,5 @@ prune brian2-rust/target
 prune brian2-rust/output
 
 include brian2-rust/tools/install_user.sh
+
+recursive-include brian2-rust/python/brian2_atlas *.py

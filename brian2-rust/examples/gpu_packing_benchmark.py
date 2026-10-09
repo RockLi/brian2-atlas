@@ -29,7 +29,7 @@ def scalar_pack(values, dtype):
 
 
 def benchmark(output, backend):
-    from brian2_rust import gpu_types
+    from brian2_atlas import gpu_types
     bulk_pack=gpu_types.pack
     from brian2_rust.gpu_autotune import observable_fingerprint
     from brian2_rust.gpu_tuning_cache import TuningCache

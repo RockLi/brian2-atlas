@@ -71,7 +71,7 @@ def brian_run(backend,neurons,steps,output,profile):
         runner=Path(__file__).resolve().parents[1]/"target/release/b2-runner"
         if runner.is_file():options["runner"]=runner
         if backend in {"cuda","metal"}:options["numeric_mode"]="float32"
-        b.set_device("rust_standalone",**options)
+        b.set_device("atlas",**options)
     elif backend=="brian2cuda":
         import brian2cuda
         b.set_device("cuda_standalone",directory=str(output/"project"))

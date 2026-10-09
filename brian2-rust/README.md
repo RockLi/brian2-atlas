@@ -1,6 +1,6 @@
 # Atlas native backend
 
-The `brian2_rust` module provides native CPU/AOT simulation, GPU/browser backends,
+The `brian2_atlas` module provides native CPU/AOT simulation, GPU/browser backends,
 distributed MPI simulation and native training. Both native executables and their
 runtime resources are included in Atlas platform wheels. This is a development
 version; see the [root installation guide](../README.md) and the stage manifests

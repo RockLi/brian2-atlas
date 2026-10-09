@@ -84,7 +84,7 @@ def build(graph, output, backend='aot', threads=1, condition='odor', config=None
                                       cfg['stimulus_start_ms'],cfg['stimulus_end_ms'])
     project=output/'project'
     if backend in ('aot', 'mpi'):
-        b.set_device('rust_standalone',engine=backend,threads=threads,directory=project,
+        b.set_device('atlas',engine=backend,threads=threads,directory=project,
                      runner=ROOT/'target/release/b2-runner',
                      **({'ranks':ranks} if backend=='mpi' else {}))
     else:

@@ -7,10 +7,10 @@ import brian2 as b
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
-import brian2_rust  # noqa: E402, F401
+import brian2_atlas  # noqa: E402, F401
 
 
-b.set_device("rust_standalone", engine="aot")
+b.set_device("atlas", engine="aot")
 equations = """
 dv/dt = drive/ms : 1
 drive : 1 (constant)

@@ -50,7 +50,7 @@ def main():
     a.output.mkdir(parents=True,exist_ok=False)
     report={'schema':'b2-mpi-procedural-pilot-v1','scientific_scope':'synthetic E/I construction pilot; not MAM','models':[],'complete':False}
     for edges in a.edges_per_projection:
-        b.get_device().reinit();b.set_device('rust_standalone',runner=ROOT/'target/release/b2-runner')
+        b.get_device().reinit();b.set_device('atlas',runner=ROOT/'target/release/b2-runner')
         model=make_model(edges);folder=a.output/f'edges-{edges*4}';folder.mkdir()
         (folder/'model.json').write_text(json.dumps(model)+'\n')
         row={'global_edges':edges*4,'neurons':1000,'projects':{}}

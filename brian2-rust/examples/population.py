@@ -13,7 +13,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
-import brian2_rust  # noqa: E402, F401
+import brian2_atlas  # noqa: E402, F401
 
 
 def make_network():
@@ -40,7 +40,7 @@ def make_network():
 def run_backend(backend, output):
     output.mkdir(parents=True, exist_ok=False)
     if backend == "rust":
-        b.set_device("rust_standalone", directory=output / "project")
+        b.set_device("atlas", directory=output / "project")
     elif backend == "cpp":
         # Conformance comparison: use strict arithmetic, not Brian's default
         # fast-math flags. This is not a performance benchmark.

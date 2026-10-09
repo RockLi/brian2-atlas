@@ -20,7 +20,7 @@ def workload(neurons,steps,degree,directory):
     import brian2_rust
     from brian2_rust.export import lower_network
     from gpu_recurrent import arrays,DT_MS,REF_TICKS,DELAY_TICKS
-    b.set_device('rust_standalone',engine='reference',directory=directory,
+    b.set_device('atlas',engine='reference',directory=directory,
                  runner=Path(__file__).resolve().parents[1]/'target/release/b2-runner')
     v,drive,projections=arrays(neurons,degree)
     pop=b.NeuronGroup(neurons,'''dv/dt=(drive-v+I_syn)/(20*ms):1 (unless refractory)

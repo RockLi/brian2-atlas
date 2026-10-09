@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from brian2_rust import (NativeLIFTrainer,lif_training_plan,
+from brian2_atlas import (NativeLIFTrainer,lif_training_plan,
                         dense_training_projection,conv2d_training_projection)
 
 
@@ -20,7 +20,7 @@ def demo(backend='cpu', *, equations=False, mpi_ranks=None):
     weights=[[1.2,.4,.4,1.2],(np.eye(8)*.05).ravel().tolist(),
              np.array([[.05,.2]]*4+[[.2,.05]]*4).ravel().tolist()]
     if equations:
-        from brian2_rust import compile_training_equation,neuron_parameter_bank
+        from brian2_atlas import compile_training_equation,neuron_parameter_bank
         projections=[convolution,recurrent,readout,neuron_parameter_bank(2)]
         programs=[compile_training_equation('v*(1-dt/(.1+exp(log_tau)))',
                   parameters={'dt':.1,'log_tau':(3,l)}) for l in range(2)]

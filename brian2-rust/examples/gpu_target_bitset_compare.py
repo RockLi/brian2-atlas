@@ -12,7 +12,7 @@ def target_bitset():
     Only canonical target queues switch representation. Immutable sparse
     consumers, pending queues, scalar execution and stage barriers are unchanged.
     """
-    from brian2_rust import metal_dag
+    from brian2_atlas import metal_dag
     from brian2_rust.metal_synapses import canonical_projection
     producer,consumer=metal_dag.sparse_history_kernel,metal_dag.canonical_kernel
     def enqueue(model,logical,node,ordinal,**kwargs):

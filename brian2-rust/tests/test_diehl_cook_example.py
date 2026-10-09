@@ -68,7 +68,8 @@ def test_mnist_reader_accepts_gzip_without_shifting_labels(tmp_path):
     np.testing.assert_allclose(images, expected_images.reshape(2, -1) / 8.0)
 
 
-def test_rust_runs_reduced_train_observe_test_pipeline(tmp_path):
+@pytest.mark.parametrize("device_name", ["atlas", "rust_standalone"])
+def test_rust_runs_reduced_train_observe_test_pipeline(tmp_path, device_name):
     pytest.importorskip("progressbar")
     if not RUNNER.is_file():
         pytest.skip("release b2-runner is not built")
@@ -87,7 +88,7 @@ def test_rust_runs_reduced_train_observe_test_pipeline(tmp_path):
         "--presentation-ms", "0.1",
         "--rest-ms", "0.1",
         "--min-spikes", "0",
-        "--device", "rust_standalone",
+        "--device", device_name,
         "--engine", "reference",
         "--runner", str(RUNNER),
     ]

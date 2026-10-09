@@ -281,7 +281,7 @@ def select_backend(backend: str, output: Path, threads: int) -> None:
             raise FileNotFoundError(
                 f"missing {runner}; build brian2-rust with cargo build --release")
         b.set_device(
-            "rust_standalone", runner=runner, directory=output / "project",
+            "atlas", runner=runner, directory=output / "project",
             engine="aot", threads=threads, profile=True)
     elif backend == "cpp":
         b.prefs.devices.cpp_standalone.openmp_threads = 0 if threads == 1 else threads

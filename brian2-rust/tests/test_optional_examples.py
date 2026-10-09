@@ -34,7 +34,8 @@ def example_environment(tmp_path):
     return environment
 
 
-def test_opencv_example_uses_python_frames_with_rust(tmp_path):
+@pytest.mark.parametrize("device_name,module_name", [("atlas", "brian2_atlas"), ("rust_standalone", "brian2_rust")])
+def test_opencv_example_uses_python_frames_with_rust(tmp_path, device_name, module_name):
     cv2 = pytest.importorskip("cv2")
     video_path = tmp_path / "tiny.avi"
     writer = cv2.VideoWriter(
@@ -57,8 +58,8 @@ def test_opencv_example_uses_python_frames_with_rust(tmp_path):
 
     environment = example_environment(tmp_path)
     environment.update({
-        "BRIAN2_STANDALONE_DEVICE": "rust_standalone",
-        "BRIAN2_STANDALONE_MODULE": "brian2_rust",
+        "BRIAN2_STANDALONE_DEVICE": device_name,
+        "BRIAN2_STANDALONE_MODULE": module_name,
         "BRIAN2_STANDALONE_DIRECTORY": str(tmp_path / "device"),
         "BRIAN2_OPENCV_VIDEO": str(video_path),
     })
@@ -82,12 +83,13 @@ def test_opencv_example_uses_python_frames_with_rust(tmp_path):
     assert list((tmp_path / "device").glob("**/model.json"))
 
 
-def test_opencv_example_accepts_bounded_camera_stream_with_rust(tmp_path):
+@pytest.mark.parametrize("device_name,module_name", [("atlas", "brian2_atlas"), ("rust_standalone", "brian2_rust")])
+def test_opencv_example_accepts_bounded_camera_stream_with_rust(tmp_path, device_name, module_name):
     pytest.importorskip("cv2")
     environment = example_environment(tmp_path)
     environment.update({
-        "BRIAN2_STANDALONE_DEVICE": "rust_standalone",
-        "BRIAN2_STANDALONE_MODULE": "brian2_rust",
+        "BRIAN2_STANDALONE_DEVICE": device_name,
+        "BRIAN2_STANDALONE_MODULE": module_name,
         "BRIAN2_STANDALONE_DIRECTORY": str(tmp_path / "device"),
         "BRIAN2_OPENCV_CAMERA": "2",
         "BRIAN2_OPENCV_FRAMES": "3",

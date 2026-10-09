@@ -169,13 +169,13 @@ def brian_run(backend,neurons,degree,steps,output,split=False,*,prepared=None,cp
     import brian2 as b
     b.get_device().reinit();b.prefs.core.default_float_dtype=np.float64 if backend in {'rust','cpp-f64'} else np.float32
     if backend in {'rust','cpu-f32','metal','cuda'}:
-        import brian2_rust
+        import brian2_atlas
         from brian2.devices.device import all_devices
-        all_devices['rust_standalone'].reinit()
+        all_devices['atlas'].reinit()
         options=dict(engine='aot' if backend=='rust' else 'reference',directory=output/'project',
             runner=Path(os.environ.get('B2_RUNNER',Path(__file__).resolve().parents[1]/'target/release/b2-runner')))
         if backend in {'metal','cuda'}:options.update(engine=backend,numeric_mode='float32',event_delivery='sparse')
-        b.set_device('rust_standalone',**options)
+        b.set_device('atlas',**options)
     elif backend=='cpp-f64':
         from brian2.devices.device import all_devices
         all_devices['cpp_standalone'].reinit()

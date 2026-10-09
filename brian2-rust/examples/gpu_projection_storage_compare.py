@@ -16,7 +16,7 @@ CASES=(('quiet',4096,8,1/64,16,16),('low',4096,8,17/512,16,16),('dense',1024,128
 
 @contextmanager
 def legacy_projection_storage():
-    from brian2_rust import metal_dag
+    from brian2_atlas import metal_dag
     current=metal_dag.derive_dag
     def derive(*args,**kwargs):
         kwargs['_keep_unused_projection_queues']=True

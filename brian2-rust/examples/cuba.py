@@ -13,7 +13,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
-import brian2_rust  # noqa: E402, F401
+import brian2_atlas  # noqa: E402, F401
 
 
 def make_network(refractory_ms=None):
@@ -74,7 +74,7 @@ def make_network(refractory_ms=None):
 def run_backend(backend, output, refractory_ms=None):
     output.mkdir(parents=True, exist_ok=False)
     if backend in {"aot", "reference"}:
-        b.set_device("rust_standalone", directory=output / "project", engine=backend)
+        b.set_device("atlas", directory=output / "project", engine=backend)
     elif backend == "cpp":
         if sys.platform == "win32":
             b.prefs.codegen.cpp.extra_compile_args = ["/O2", "/fp:strict", "/std:c++17"]

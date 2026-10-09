@@ -6,9 +6,9 @@ from pathlib import Path
 from brian2 import Network, NeuronGroup, SpikeMonitor, StateMonitor, Synapses, ms, set_device
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python"))
-import brian2_rust  # noqa: E402, F401
+import brian2_atlas  # noqa: E402, F401
 
-set_device("rust_standalone")
+set_device("atlas")
 group = NeuronGroup(3, "dv/dt = 0*Hz : 1", threshold="v > 1", reset="v = 0",
                     method="euler", dt=1*ms)
 group.v = [1.1, 0, 0]

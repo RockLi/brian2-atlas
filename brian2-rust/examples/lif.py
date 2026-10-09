@@ -10,7 +10,7 @@ from brian2 import Network, NeuronGroup, SpikeMonitor, StateMonitor, get_device,
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
-import brian2_rust  # noqa: E402, F401 -- registers rust_standalone
+import brian2_atlas  # noqa: E402, F401 -- registers atlas
 
 
 def make_network():
@@ -33,7 +33,7 @@ def main():
     if args.output is not None and args.output.exists():
         parser.error("output already exists; choose a new directory")
 
-    set_device("rust_standalone", directory=args.output, runner=args.runner)
+    set_device("atlas", directory=args.output, runner=args.runner)
     rust_network, rust_group, rust_state, rust_spikes = make_network()
     rust_network.run(100 * ms)
     output = get_device().last_run_directory
@@ -56,7 +56,7 @@ def main():
     np.testing.assert_allclose(rust_group.v[:], group.v[:], rtol=1e-12, atol=1e-14)
     np.testing.assert_equal(rust_network.t, network.t)
     comparison = {
-        "device": "rust_standalone",
+        "device": "atlas",
         "reference": "Brian2 NumPy", "samples": len(state.t),
         "spikes": int(rust_spikes.num_spikes), "spike_ticks": rust_ticks.tolist(),
         "max_abs_state_error": float(np.max(np.abs(rust_state.v - state.v))),

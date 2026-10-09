@@ -50,9 +50,9 @@ Installed runtime output goes to temporary directories; set
 
 ```python
 import brian2 as b
-import brian2_rust
+import brian2_atlas
 
-b.set_device("rust_standalone", engine="reference")
+b.set_device("atlas", engine="reference")
 group = b.NeuronGroup(
     1, "dv/dt = (1.5-v)/(10*ms) : 1",
     threshold="v>1", reset="v=0", method="euler", dt=0.1*b.ms,
@@ -61,6 +61,16 @@ spikes = b.SpikeMonitor(group)
 b.Network(group, spikes).run(100*b.ms)
 print(spikes.num_spikes)  # 9
 ```
+
+`brian2_atlas.AtlasDevice` is the public Brian2 Device. Select `atlas` once,
+then choose the execution engine: `reference`, `aot`, `cuda`, `metal` or `mpi`.
+For CUDA/Metal, also specify `numeric_mode="float32"`. Browser execution uses
+the separate `export_wasm_bundle` API.
+
+Existing `import brian2_rust`, `RustStandaloneDevice` and
+`set_device("rust_standalone", ...)` remain compatible aliases of the same
+implementation and Device instance. Internal Rust module paths and native
+executable names are unchanged.
 
 Use `engine="aot"` for model-specialized CPU execution. Backend capabilities
 are checked explicitly; unsupported model constructs raise a capability error.

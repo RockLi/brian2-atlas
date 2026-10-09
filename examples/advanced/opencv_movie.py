@@ -150,7 +150,7 @@ if processing_size != source_size:
 print(f"OpenCV source: {source_description}; {size_description} at {fps:g} fps; "
       f"processing {frame_count} frames")
 time_between_frames = 1*second/fps
-if standalone_device == "rust_standalone":
+if standalone_device in {"atlas", "rust_standalone"}:
     # NetworkOperation boundaries have to coincide with the model clock. Use
     # the closest representable interval (42 ms for a 24 fps source at 1 ms).
     frame_ticks = max(1, int(round(time_between_frames/defaultclock.dt)))
@@ -237,7 +237,7 @@ G.v_th = 1
 G.row = 'i//width'
 G.column = 'i%width'
 
-if standalone_device == "rust_standalone":
+if standalone_device in {"atlas", "rust_standalone"}:
     @network_operation(dt=time_between_frames, when="start")
     def update_video_input():
         G.I = video_input(0, 0)
@@ -250,7 +250,7 @@ else:
 mon = SpikeMonitor(G)
 runtime = frame_count*time_between_frames
 run(runtime, report='text')
-if standalone_device == "rust_standalone":
+if standalone_device in {"atlas", "rust_standalone"}:
     video.release()
 
 # Avoid going through the whole Brian2 indexing machinery too much

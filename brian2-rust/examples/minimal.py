@@ -7,9 +7,9 @@ import brian2 as b
 
 # For this source checkout; external scripts can instead set PYTHONPATH.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python"))
-import brian2_rust  # noqa: E402, F401 -- registers the optional Device
+import brian2_atlas  # noqa: E402, F401 -- registers the optional Device
 
-b.set_device("rust_standalone")
+b.set_device("atlas")
 b.defaultclock.dt = 0.1 * b.ms
 
 tau = 10 * b.ms

@@ -21,7 +21,7 @@ def queue_reservations(*, saturate):
     correctness checks but did not improve dense replay on the tested devices.
     This scoped patch is only for the single-threaded comparison/test harness.
     """
-    from brian2_rust import metal_dag
+    from brian2_atlas import metal_dag
     current=metal_dag.sparse_history_kernel
     def original(*args,**kwargs):
         kwargs['saturate']=saturate

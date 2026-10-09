@@ -8,7 +8,7 @@ import brian2 as b
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "python"))
-import brian2_rust  # noqa: F401
+import brian2_atlas  # noqa: F401
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     parser.add_argument("--directory", type=Path, required=True)
     args = parser.parse_args()
     backends = args.rank_backends.split(",")
-    b.set_device("rust_standalone", engine="mpi", ranks=len(backends),
+    b.set_device("atlas", engine="mpi", ranks=len(backends),
                  rank_backends=backends, directory=args.directory,
                  numeric_mode="mixed-f32" if any(v != "cpu" for v in backends) else "reference-f64")
     clock = b.Clock(dt=b.second / 1024)

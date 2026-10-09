@@ -62,7 +62,7 @@ def configure_standalone_device():
     standalone_threads = os.environ.get("BRIAN2_STANDALONE_THREADS")
     if standalone_threads:
         options["threads"] = int(standalone_threads)
-    if standalone_device == "rust_standalone":
+    if standalone_device in {"atlas", "rust_standalone"}:
         # This example performs 1,600 restore/replay runs.  Keep the last
         # successful artifact per worker instead of retaining every replay.
         options["retain_run_artifacts"] = False

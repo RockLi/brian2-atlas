@@ -11,7 +11,7 @@ OPTIONS=dict(drive=10/256,delay_span=16,post_delay=16,topology_kind='random-fixe
 
 @contextmanager
 def host_reuse_mode(mode):
-    from brian2_rust import gpu_readback as module
+    from brian2_atlas import gpu_readback as module
     if mode not in MODES:raise ValueError('Unknown host reuse policy')
     original=module.host_spike_cache;calls=[]
     def selected(*args):

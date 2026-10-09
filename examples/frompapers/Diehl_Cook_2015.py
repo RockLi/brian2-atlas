@@ -407,11 +407,11 @@ def main(argv=None):
                         default=float(REST_DURATION / ms))
     parser.add_argument('--min-spikes', type=int, default=MIN_SPIKES)
     parser.add_argument('--device', default=None,
-                        help='Brian device, e.g. cpp_standalone or rust_standalone')
+                        help='Brian device, e.g. cpp_standalone or atlas')
     parser.add_argument('--engine', default='reference',
-                        help='rust_standalone execution engine')
+                        help='Atlas execution engine')
     parser.add_argument('--runner', type=Path, default=None,
-                        help='existing b2-runner executable for rust_standalone')
+                        help='existing b2-runner executable for Atlas')
     parser.add_argument('--build-directory', type=Path, default=None)
     args = parser.parse_args(argv)
 
@@ -436,8 +436,8 @@ def main(argv=None):
         device_options = {}
         if args.build_directory is not None:
             device_options['directory'] = args.build_directory
-        if args.device == 'rust_standalone':
-            import brian2_rust  # noqa: F401 -- registers the device
+        if args.device in {'atlas', 'rust_standalone'}:
+            import brian2_atlas  # noqa: F401 -- registers both device names
             device_options['engine'] = args.engine
             if args.runner is not None:
                 device_options['runner'] = args.runner

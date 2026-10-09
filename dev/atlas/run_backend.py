@@ -8,8 +8,8 @@ import subprocess
 import sys
 import time
 
-CORE = ('b2ir_v1', 'compact_validation', 'probe', 'device', 'native', 'resource_limits')
-CPU = ('test_artifact.py', 'test_b2ir_v1.py', 'test_binary_topology.py', 'test_clock_tick_continuation.py', 'test_coba_hh.py', 'test_codegen_sums.py', 'test_compact_validation.py', 'test_device.py', 'test_encoded_array.py', 'test_execution_plan.py', 'test_instance_encoding.py', 'test_monitor_observables.py', 'test_native.py', 'test_nmda_deterministic_core.py', 'test_population.py', 'test_presynaptic_write_summed_only.py', 'test_probe.py', 'test_rate_monitor.py', 'test_refractory.py', 'test_resource_limits.py', 'test_results_bounded.py', 'test_results_times.py', 'test_rng_poisson.py', 'test_string_connection.py', 'test_summed_cache.py', 'test_synapses.py', 'test_weighted_binomial.py')
+CORE = ('atlas_api', 'b2ir_v1', 'compact_validation', 'probe', 'device', 'native', 'resource_limits')
+CPU = ('test_atlas_api.py', 'test_artifact.py', 'test_b2ir_v1.py', 'test_binary_topology.py', 'test_clock_tick_continuation.py', 'test_coba_hh.py', 'test_codegen_sums.py', 'test_compact_validation.py', 'test_device.py', 'test_encoded_array.py', 'test_execution_plan.py', 'test_instance_encoding.py', 'test_monitor_observables.py', 'test_native.py', 'test_nmda_deterministic_core.py', 'test_population.py', 'test_presynaptic_write_summed_only.py', 'test_probe.py', 'test_rate_monitor.py', 'test_refractory.py', 'test_resource_limits.py', 'test_results_bounded.py', 'test_results_times.py', 'test_rng_poisson.py', 'test_string_connection.py', 'test_summed_cache.py', 'test_synapses.py', 'test_weighted_binomial.py')
 
 
 def main():

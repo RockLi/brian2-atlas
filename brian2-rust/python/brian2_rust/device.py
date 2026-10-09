@@ -123,7 +123,7 @@ class _RestoreOnlySpikeQueue:
                 "Rust Device checkpoints must not contain a runtime SpikeQueue")
 
 
-class RustStandaloneDevice(Device):
+class AtlasDevice(Device):
     """Own frontend arrays and dispatch a whole supported model to Rust.
 
     Python arrays hold initial values and completed results. There is no Python
@@ -1279,7 +1279,7 @@ class RustStandaloneDevice(Device):
                 if isinstance(var, ArrayVariable) and (var.device is not self or var not in self.arrays):
                     raise RuntimeError(
                         f"{obj.name}.{var.name} belongs to another Device or an old initialization. "
-                        "Call set_device('rust_standalone') before constructing clocks, groups and monitors."
+                        "Call set_device('atlas') before constructing clocks, groups and monitors."
                     )
 
     def _prepare_network_identity(self, network):
@@ -1366,7 +1366,7 @@ class RustStandaloneDevice(Device):
 
     @staticmethod
     def _pinned_rustc(rustc="rustc"):
-        verbose = RustStandaloneDevice._invoke(
+        verbose = AtlasDevice._invoke(
             [str(rustc), "--version", "--verbose"], cwd=ROOT).stdout
         release = next((line.removeprefix("release: ").strip()
                         for line in verbose.splitlines()
@@ -2615,3 +2615,7 @@ class RustStandaloneDevice(Device):
                 obj.variables["t"].set_value(times)
                 for name, array in values.items():
                     obj.variables[name].set_value(array)
+
+
+# Compatibility with existing imports and serialized class references.
+RustStandaloneDevice = AtlasDevice
