@@ -1,0 +1,118 @@
+name: Atlas validation
+
+on:
+  push:
+    branches: [dev, main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atlas-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.12', '3.14']
+    env:
+      MPLBACKEND: Agg
+      MPL_IGNORE_SYSTEM_FONTS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the pinned Rust compiler
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Install source and frontend test dependencies
+        run: python -m pip install -e '.[test]' scipy matplotlib
+      - name: Validate the NumPy frontend
+        run: python dev/atlas/run_frontend.py
+
+  cpu_backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.12', '3.14']
+    env:
+      MPLBACKEND: Agg
+      MPL_IGNORE_SYSTEM_FONTS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      CARGO_BUILD_JOBS: '2'
+      B2_TEST_RUSTC_TIMEOUT: '900'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the pinned Rust compiler
+        run: rustup toolchain install 1.98.1 --profile minimal
+      - name: Install source and CPU test dependencies
+        run: python -m pip install -e '.[test]' scipy pyarrow joblib progressbar2 opencv-python-headless
+      - name: Build and validate the CPU backend
+        run: python dev/atlas/run_backend.py --suite cpu --timeout 1200
+      - name: Validate bounded user examples
+        run: python dev/atlas/run_backend.py --suite examples --timeout 900
+
+  distribution:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.12'
+          - os: macos-latest
+            python: '3.14'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_TARGET_DIR: ${{ github.workspace }}/build/distribution-cargo
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the pinned Rust compiler and Python builder
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          python -m pip install build
+      - name: Build source archive and a wheel from that archive
+        run: |
+          python -m build --sdist --outdir dist
+          python -m pip wheel --no-deps --wheel-dir wheelhouse dist/*.tar.gz
+      - name: Install and exercise the wheel outside the source tree
+        shell: bash
+        run: |
+          python -m venv build/installed
+          build/installed/bin/python -m pip install wheelhouse/*.whl
+          export TMPDIR="$RUNNER_TEMP/atlas-runtime"
+          export XDG_CACHE_HOME="$RUNNER_TEMP/atlas-cache"
+          mkdir -p "$TMPDIR" "$XDG_CACHE_HOME"
+          unset PYTHONPATH B2_RUNNER B2_TRAIN_RUNNER RUSTUP_TOOLCHAIN
+          build/installed/bin/python dev/atlas/check_installed.py --report build/installed-validation.json

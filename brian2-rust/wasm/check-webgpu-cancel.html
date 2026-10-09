@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>WebGPU cancellation check</title><button id="run">Cancel after first GPU chunk</button><button id="budget">Check spike output budgets</button><pre id="result">Ready</pre><script type="module">
+import {models} from './models.js';import {makeDraft} from './experiment.js';import {runDraft} from './runtime.js';
+document.querySelector('#run').onclick=async()=>{const output=document.querySelector('#result'),controller=new AbortController();let computed=false;
+try{const config={...models.adaptive_lif.defaults,neurons:65536},template=await (await fetch('editor-template.json')).json();await runDraft(makeDraft(template,config,{backend:'webgpu'}),{backend:'webgpu',config,signal:controller.signal,onProgress:({phase})=>{if(phase==='compute'){computed=true;controller.abort();}}});output.textContent='FAILED: did not cancel';}
+catch(error){output.textContent=error.name==='AbortError'&&computed?'PASS: cancelled after a completed GPU chunk':String(error);}}
+document.querySelector('#budget').onclick=async()=>{const output=document.querySelector('#result');let passed=[];
+try{const config={...models.adaptive_lif.defaults,neurons:16384,duration_ms:600,dt_ms:1,tau_ms:5,drive:4,spread:0,adaptation:0,refractory_ms:0,synchronize:true},template=await (await fetch('editor-template.json')).json(),draft=makeDraft(template,config);
+for(const backend of ['webgpu','wasm']){output.textContent='Testing '+backend+' spike budget';try{await runDraft(draft,{backend,config});throw Error(backend+' failed to reject excessive output');}catch(error){if(!String(error).includes('4 million event budget'))throw error;passed.push(backend);}}
+output.textContent='PASS: WebGPU and WASM rejected output above 4 million spikes';}catch(error){output.textContent=String(error);}}
+</script></html>

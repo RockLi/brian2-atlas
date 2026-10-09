@@ -170,6 +170,11 @@ class BinomialFunction(Function, Nameable):
     @check_units(n=1, p=1)
     def __init__(self, n, p, approximate=True, name="_binomial*"):
         Nameable.__init__(self, name)
+        # Keep the distribution contract available to non-C++ code generators
+        # instead of requiring them to parse generated support-code strings.
+        self.n = int(n)
+        self.p = float(p)
+        self.approximate = bool(approximate)
 
         # Python implementation
         use_normal = approximate and (n * p > 5) and n * (1 - p) > 5

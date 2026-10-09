@@ -94,7 +94,7 @@ def do_animation(fig, axes, K_values, theta_values):
             dots.set_offsets(np.vstack([x, y]).T)
             r, phi = calc_coherence_and_phase(x, y)
             arrow.set_data(dx=r*np.cos(phi), dy=r*np.sin(phi))
-            mean_dot.set_data(r*np.cos(phi), r*np.sin(phi))
+            mean_dot.set_data([r*np.cos(phi)], [r*np.sin(phi)])
             updated_artists.extend([dots, arrow, mean_dot])
         return updated_artists
 

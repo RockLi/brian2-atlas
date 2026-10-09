@@ -1,0 +1,2321 @@
+{
+  "schema": "atlas-native-training-port-v1",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "parent": "3e117a8f1ee858738a25ad90e94651af55b57f17",
+  "files": [
+    {
+      "source": "brian2-rust/Cargo.toml",
+      "source_sha256": "bf39a76675acfa7289347da85707dc5aec93a556d0f36db8ec047178b70df2de",
+      "target": "brian2-rust/Cargo.toml",
+      "target_sha256": "bf39a76675acfa7289347da85707dc5aec93a556d0f36db8ec047178b70df2de",
+      "previous_target_sha256": "c53196e9fdc8a79aef8a3068742f6c4541a83201f98c6cf7a9bd788c06232624",
+      "stage": "p5-shared-exports"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/__init__.py",
+      "source_sha256": "fb55e8473a0b0f70d9bccee8d621680d4d6b896e411c24a864db5f5ea5e91a59",
+      "target": "brian2-rust/python/brian2_rust/__init__.py",
+      "target_sha256": "fb55e8473a0b0f70d9bccee8d621680d4d6b896e411c24a864db5f5ea5e91a59",
+      "previous_target_sha256": "bc64d06e8cb33db7e84ee0a5d6df2cbea61f350587afad6f75bbb1f332259084",
+      "stage": "p5-shared-exports"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training.py",
+      "source_sha256": "d03084741600e85be638854841405e06b3ad5995a5e4130224de58529b67ba5f",
+      "target": "brian2-rust/python/brian2_rust/training.py",
+      "target_sha256": "d03084741600e85be638854841405e06b3ad5995a5e4130224de58529b67ba5f",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian.py",
+      "source_sha256": "083616b39dd8d4dacb90704cb2e764bf0b84ff541d0117e6d9e7a2434db2375e",
+      "target": "brian2-rust/python/brian2_rust/training_brian.py",
+      "target_sha256": "083616b39dd8d4dacb90704cb2e764bf0b84ff541d0117e6d9e7a2434db2375e",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian_dynamic.py",
+      "source_sha256": "ad06b30f66f8b16832f202c06cdec7cae0ad0bf895fa622755abd747d3584b01",
+      "target": "brian2-rust/python/brian2_rust/training_brian_dynamic.py",
+      "target_sha256": "3667a5ebf0bb103d16339377652a57106c7f510f99774177840f72610a4a2f1d",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian_events.py",
+      "source_sha256": "8e5ae334e819131fd646d45eec630595e592d137b393d061ca90c7a6dc2dfb91",
+      "target": "brian2-rust/python/brian2_rust/training_brian_events.py",
+      "target_sha256": "8e5ae334e819131fd646d45eec630595e592d137b393d061ca90c7a6dc2dfb91",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian_regular.py",
+      "source_sha256": "51d7659b31a320cd04e8a72c1d2965ca75a8df7d2fb435d898feeb2cfa76e2b6",
+      "target": "brian2-rust/python/brian2_rust/training_brian_regular.py",
+      "target_sha256": "51d7659b31a320cd04e8a72c1d2965ca75a8df7d2fb435d898feeb2cfa76e2b6",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_clock.metal",
+      "source_sha256": "131c9c805dcd825f15f8f59b3deae78e027fcb0ec5f0c039ce85f647ed258eb7",
+      "target": "brian2-rust/python/brian2_rust/training_clock.metal",
+      "target_sha256": "131c9c805dcd825f15f8f59b3deae78e027fcb0ec5f0c039ce85f647ed258eb7",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_cuda.cu",
+      "source_sha256": "033f4078ef8a84cee355fc4606881be1db5e08f6bf4913b1046bfc92483e9260",
+      "target": "brian2-rust/python/brian2_rust/training_cuda.cu",
+      "target_sha256": "033f4078ef8a84cee355fc4606881be1db5e08f6bf4913b1046bfc92483e9260",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_cuda.py",
+      "source_sha256": "4f3ae0cb92f32d35d157ab7b5469d3e8ffb42cd3304e44241f39fcb8b5305d75",
+      "target": "brian2-rust/python/brian2_rust/training_cuda.py",
+      "target_sha256": "3482d5ad0da68d2c98a6eb8c1acb46b6473c606c84303773c1e28e68d5973a16",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_dynamic.metal",
+      "source_sha256": "bc03d0eff09ab8a4dee8171327ab07d2ee9ea8022e3cb6a79eebdb7a3ef32237",
+      "target": "brian2-rust/python/brian2_rust/training_dynamic.metal",
+      "target_sha256": "bc03d0eff09ab8a4dee8171327ab07d2ee9ea8022e3cb6a79eebdb7a3ef32237",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_dynamic.py",
+      "source_sha256": "523fadbaa760b4d2d2d46bea24e7e353ca17e4ad76a06b5ac14d854055474791",
+      "target": "brian2-rust/python/brian2_rust/training_dynamic.py",
+      "target_sha256": "523fadbaa760b4d2d2d46bea24e7e353ca17e4ad76a06b5ac14d854055474791",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_dynamic_mpi.metal",
+      "source_sha256": "521e8b0d59108b96a86a8196b6d8568bda149b10b0081809d2a49b28204d7f14",
+      "target": "brian2-rust/python/brian2_rust/training_dynamic_mpi.metal",
+      "target_sha256": "521e8b0d59108b96a86a8196b6d8568bda149b10b0081809d2a49b28204d7f14",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_effects.py",
+      "source_sha256": "db6f9594267ea8ca53f38a3f0154d7afee17a6ed2f99cb79ad37cbe15119aeea",
+      "target": "brian2-rust/python/brian2_rust/training_effects.py",
+      "target_sha256": "746bcb48fe36448f656863eb831631105ebaa98bd802a0784e6f3d5d4ff61645",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_equations.py",
+      "source_sha256": "305e48330b17d0b290bfddd2acb69c716007cfbc0df446736fbfec680b79dd8c",
+      "target": "brian2-rust/python/brian2_rust/training_equations.py",
+      "target_sha256": "305e48330b17d0b290bfddd2acb69c716007cfbc0df446736fbfec680b79dd8c",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_event_captures.py",
+      "source_sha256": "ef6cf7bfbbf43aaa1af015480ef06a2010874c4b013b5c1d6d9df7bd0aed9bf2",
+      "target": "brian2-rust/python/brian2_rust/training_event_captures.py",
+      "target_sha256": "c26ce2523a0cdf0402fab760f0821e7b36bc37a6cab86d530c4acfa67b4443c3",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_functions.py",
+      "source_sha256": "fa73df36b2f068c119a845d0d10165a4241fbdb3dd64df9d6fdeaf920de4ec31",
+      "target": "brian2-rust/python/brian2_rust/training_functions.py",
+      "target_sha256": "fa73df36b2f068c119a845d0d10165a4241fbdb3dd64df9d6fdeaf920de4ec31",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_graph.py",
+      "source_sha256": "6dbc4548ae4b9f6fd9120c385b7ec291e60c105737b079c8f4f9531a8b3f04fa",
+      "target": "brian2-rust/python/brian2_rust/training_graph.py",
+      "target_sha256": "6dbc4548ae4b9f6fd9120c385b7ec291e60c105737b079c8f4f9531a8b3f04fa",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_inputs.py",
+      "source_sha256": "9e78b4950231ea0637e83aa773dc1078226b971851b4c1a5dc4d244a41d86d75",
+      "target": "brian2-rust/python/brian2_rust/training_inputs.py",
+      "target_sha256": "9e78b4950231ea0637e83aa773dc1078226b971851b4c1a5dc4d244a41d86d75",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_metal.m",
+      "source_sha256": "d429f0ffa1d696c0bf32eb9eb009920c25687683c9b5e7b73f91001fef87ef8a",
+      "target": "brian2-rust/python/brian2_rust/training_metal.m",
+      "target_sha256": "d429f0ffa1d696c0bf32eb9eb009920c25687683c9b5e7b73f91001fef87ef8a",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_metal.metal",
+      "source_sha256": "dcefab5dbee0486766136e801e11b9094f7c1194c8e8c08d16a43135663747b6",
+      "target": "brian2-rust/python/brian2_rust/training_metal.metal",
+      "target_sha256": "dcefab5dbee0486766136e801e11b9094f7c1194c8e8c08d16a43135663747b6",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_metal.py",
+      "source_sha256": "c44724a9bea3359823474843596437f0d71b08b866669860ab31ffe90a517d16",
+      "target": "brian2-rust/python/brian2_rust/training_metal.py",
+      "target_sha256": "c44724a9bea3359823474843596437f0d71b08b866669860ab31ffe90a517d16",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_metal_mpi.metal",
+      "source_sha256": "893d50856a331ae5a53f06ce297fee6183df060913c8a622e17437eee876204e",
+      "target": "brian2-rust/python/brian2_rust/training_metal_mpi.metal",
+      "target_sha256": "893d50856a331ae5a53f06ce297fee6183df060913c8a622e17437eee876204e",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_mpi.c",
+      "source_sha256": "41071a545b8ee52be5160634fb7934f0adc4f9648421dd948bae559e9c1f7372",
+      "target": "brian2-rust/python/brian2_rust/training_mpi.c",
+      "target_sha256": "41071a545b8ee52be5160634fb7934f0adc4f9648421dd948bae559e9c1f7372",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_mpi.py",
+      "source_sha256": "a0cab46a5bc13b261346c5bc75a239b34716c40a310e9101533eed4624c1e2c7",
+      "target": "brian2-rust/python/brian2_rust/training_mpi.py",
+      "target_sha256": "a0cab46a5bc13b261346c5bc75a239b34716c40a310e9101533eed4624c1e2c7",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_poisson.metal",
+      "source_sha256": "4fd6e3b0d5824085e23958d1abc18ce26c74b5442f3228f8be593538a0a867b8",
+      "target": "brian2-rust/python/brian2_rust/training_poisson.metal",
+      "target_sha256": "4fd6e3b0d5824085e23958d1abc18ce26c74b5442f3228f8be593538a0a867b8",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_queue.py",
+      "source_sha256": "e1ad1060d997e4218a2611fc834c7341890ce22ca5a043aa7515927cf4c17ad0",
+      "target": "brian2-rust/python/brian2_rust/training_queue.py",
+      "target_sha256": "e1ad1060d997e4218a2611fc834c7341890ce22ca5a043aa7515927cf4c17ad0",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_state.metal",
+      "source_sha256": "6ceda45b2df977e218c0ef400d83171627705745c927d9da4ff67e0f866c2c66",
+      "target": "brian2-rust/python/brian2_rust/training_state.metal",
+      "target_sha256": "6ceda45b2df977e218c0ef400d83171627705745c927d9da4ff67e0f866c2c66",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/lib.rs",
+      "source_sha256": "61abbe11ef9262298568298847c29e06fa6d3bd4c9c4760817af9b96a589a787",
+      "target": "brian2-rust/src/lib.rs",
+      "target_sha256": "61abbe11ef9262298568298847c29e06fa6d3bd4c9c4760817af9b96a589a787",
+      "previous_target_sha256": "1bb7280f2b2841f65bc5653c4e8300524550475fa60e94644c049d4a1bf29164",
+      "stage": "p5-shared-exports"
+    },
+    {
+      "source": "brian2-rust/src/train_main.rs",
+      "source_sha256": "1ffb74f146d4bf8070a9f1cc8a513212deb026d41c876b19818f4b6d08b47bac",
+      "target": "brian2-rust/src/train_main.rs",
+      "target_sha256": "1ffb74f146d4bf8070a9f1cc8a513212deb026d41c876b19818f4b6d08b47bac",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training.rs",
+      "source_sha256": "937d3ea10eb67b0811af82ca0f09c51f8258358188cd90c0ce761104a35ba5d0",
+      "target": "brian2-rust/src/training.rs",
+      "target_sha256": "937d3ea10eb67b0811af82ca0f09c51f8258358188cd90c0ce761104a35ba5d0",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/clock.rs",
+      "source_sha256": "315da3c0414337b805710d37ddbbec2b370707638b3830b0e8f0eb4332971d55",
+      "target": "brian2-rust/src/training/clock.rs",
+      "target_sha256": "315da3c0414337b805710d37ddbbec2b370707638b3830b0e8f0eb4332971d55",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/clock_state.rs",
+      "source_sha256": "2c40f7a9f69b0a9fae5c3258d4c56dd22ae7fe6a1b00d61e109a80ceb063876c",
+      "target": "brian2-rust/src/training/clock_state.rs",
+      "target_sha256": "2c40f7a9f69b0a9fae5c3258d4c56dd22ae7fe6a1b00d61e109a80ceb063876c",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/delay.rs",
+      "source_sha256": "cf2ab95b17d840f04342f3145f29d32fc3ef021af65db43747ba0125d09ade9f",
+      "target": "brian2-rust/src/training/delay.rs",
+      "target_sha256": "cf2ab95b17d840f04342f3145f29d32fc3ef021af65db43747ba0125d09ade9f",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/delay/layout.rs",
+      "source_sha256": "91aa9d7385279a561842f9a2863416ff47bff24bb1c30646028d78157b7d28ff",
+      "target": "brian2-rust/src/training/delay/layout.rs",
+      "target_sha256": "91aa9d7385279a561842f9a2863416ff47bff24bb1c30646028d78157b7d28ff",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/delay/rebuild.rs",
+      "source_sha256": "037b869072f821e46341a40aef5ada611887ef8ffb2b119a70e80f9944ea5d86",
+      "target": "brian2-rust/src/training/delay/rebuild.rs",
+      "target_sha256": "037b869072f821e46341a40aef5ada611887ef8ffb2b119a70e80f9944ea5d86",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/dynamic.rs",
+      "source_sha256": "68d9469864afcbf99b7d70971ad36211a6b3985b814bec5e3e87c325bb67c6e6",
+      "target": "brian2-rust/src/training/dynamic.rs",
+      "target_sha256": "68d9469864afcbf99b7d70971ad36211a6b3985b814bec5e3e87c325bb67c6e6",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/dynamic_gpu.rs",
+      "source_sha256": "893fc79d55a58fb8317975fdc0275f3d683e6ce780e810afaccf2a52e22ecb84",
+      "target": "brian2-rust/src/training/dynamic_gpu.rs",
+      "target_sha256": "893fc79d55a58fb8317975fdc0275f3d683e6ce780e810afaccf2a52e22ecb84",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/equation.rs",
+      "source_sha256": "eb1e10baa795106c2460b819074a11f1d288d3339cd63753084b5afcc1575326",
+      "target": "brian2-rust/src/training/equation.rs",
+      "target_sha256": "eb1e10baa795106c2460b819074a11f1d288d3339cd63753084b5afcc1575326",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/gpu.rs",
+      "source_sha256": "eee68e57c29017b2a907159224aa21f30a6a21837696b3af18bbd0c670955639",
+      "target": "brian2-rust/src/training/gpu.rs",
+      "target_sha256": "eee68e57c29017b2a907159224aa21f30a6a21837696b3af18bbd0c670955639",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/indirect.rs",
+      "source_sha256": "ebd9680972dd6107cfc7ed4fa988fff3beaaf8113cc03f8078627ff3b0693804",
+      "target": "brian2-rust/src/training/indirect.rs",
+      "target_sha256": "ebd9680972dd6107cfc7ed4fa988fff3beaaf8113cc03f8078627ff3b0693804",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/itinerary.rs",
+      "source_sha256": "4705fe68907f171e7d75921327b9b642e60fd11717368df527126d7824f1bce1",
+      "target": "brian2-rust/src/training/itinerary.rs",
+      "target_sha256": "4705fe68907f171e7d75921327b9b642e60fd11717368df527126d7824f1bce1",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/math.rs",
+      "source_sha256": "247eaf17be6b6393f2a39a4d8f93b0b8e88471e66f55cced5abf48fd0ef0cfe5",
+      "target": "brian2-rust/src/training/math.rs",
+      "target_sha256": "247eaf17be6b6393f2a39a4d8f93b0b8e88471e66f55cced5abf48fd0ef0cfe5",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/migration.rs",
+      "source_sha256": "ab93e6f6aac8d4460a77f62a8d4f1cfe9c8fc42afa695d9eb2620a622c83ef48",
+      "target": "brian2-rust/src/training/migration.rs",
+      "target_sha256": "ab93e6f6aac8d4460a77f62a8d4f1cfe9c8fc42afa695d9eb2620a622c83ef48",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/mpi.rs",
+      "source_sha256": "8cb7ff9811bd9969e37abfa62c26a416faf1e450a11ec1a6c3149fa47cce08b6",
+      "target": "brian2-rust/src/training/mpi.rs",
+      "target_sha256": "8cb7ff9811bd9969e37abfa62c26a416faf1e450a11ec1a6c3149fa47cce08b6",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/mpi_unavailable.rs",
+      "source_sha256": "37ff2a9e59c701339a8754c7ddc559cacd4c972a6b2f7c0a216e32bf1015259b",
+      "target": "brian2-rust/src/training/mpi_unavailable.rs",
+      "target_sha256": "37ff2a9e59c701339a8754c7ddc559cacd4c972a6b2f7c0a216e32bf1015259b",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/multistate.rs",
+      "source_sha256": "802cf488d9615a1d83a01712eb41ae12e88ccae0e9171cfb48a443235e78ee9f",
+      "target": "brian2-rust/src/training/multistate.rs",
+      "target_sha256": "802cf488d9615a1d83a01712eb41ae12e88ccae0e9171cfb48a443235e78ee9f",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/noise.rs",
+      "source_sha256": "69609e250f5b96cbd7c967c411a49dbd261551742ba11b1097fe3a0de5bb3f69",
+      "target": "brian2-rust/src/training/noise.rs",
+      "target_sha256": "69609e250f5b96cbd7c967c411a49dbd261551742ba11b1097fe3a0de5bb3f69",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/poisson.rs",
+      "source_sha256": "32bccc30a22ed718f62fd528e86a26c435463fc6b8ed1e89cc9229e47972f023",
+      "target": "brian2-rust/src/training/poisson.rs",
+      "target_sha256": "32bccc30a22ed718f62fd528e86a26c435463fc6b8ed1e89cc9229e47972f023",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/poisson_cache.rs",
+      "source_sha256": "cbee1aab08de5115a78032f41c1e196b3de5a38d1df9a61138fe19d6cdec561e",
+      "target": "brian2-rust/src/training/poisson_cache.rs",
+      "target_sha256": "cbee1aab08de5115a78032f41c1e196b3de5a38d1df9a61138fe19d6cdec561e",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/poisson_gpu_cache.rs",
+      "source_sha256": "0b59a9a1341b2ab0df94f1204806f81359a77bd9459f4a1ac3f3df23cfc437bb",
+      "target": "brian2-rust/src/training/poisson_gpu_cache.rs",
+      "target_sha256": "0b59a9a1341b2ab0df94f1204806f81359a77bd9459f4a1ac3f3df23cfc437bb",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/poisson_gpu_validate.rs",
+      "source_sha256": "6b12487271cc5bfd66a92c979720ff680bdc52e7581fbe4f8a8ef62ca804e03e",
+      "target": "brian2-rust/src/training/poisson_gpu_validate.rs",
+      "target_sha256": "6b12487271cc5bfd66a92c979720ff680bdc52e7581fbe4f8a8ef62ca804e03e",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/poisson_ir.rs",
+      "source_sha256": "cc159a2771ba9dc6f2c650dfc1a905835914a40d6bd4dc6b5bfbf3f75e09e58b",
+      "target": "brian2-rust/src/training/poisson_ir.rs",
+      "target_sha256": "cc159a2771ba9dc6f2c650dfc1a905835914a40d6bd4dc6b5bfbf3f75e09e58b",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/poisson_retirement.rs",
+      "source_sha256": "401ebfcd659c28551a54b2e51d6d0c9daf66aa7a6c8256c49ac9cc177507c20b",
+      "target": "brian2-rust/src/training/poisson_retirement.rs",
+      "target_sha256": "401ebfcd659c28551a54b2e51d6d0c9daf66aa7a6c8256c49ac9cc177507c20b",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/scalar.rs",
+      "source_sha256": "2b15986f69e34462d6ea8f9b8cc7c9c2a2abb1dd6d5bac8229b7a12c66bfa691",
+      "target": "brian2-rust/src/training/scalar.rs",
+      "target_sha256": "2b15986f69e34462d6ea8f9b8cc7c9c2a2abb1dd6d5bac8229b7a12c66bfa691",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/static_poisson.rs",
+      "source_sha256": "1d14aac8e1e086649364d7db370b834fa03069c0b4bb91a2b0f87574595fa24f",
+      "target": "brian2-rust/src/training/static_poisson.rs",
+      "target_sha256": "1d14aac8e1e086649364d7db370b834fa03069c0b4bb91a2b0f87574595fa24f",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/static_poisson_gpu.rs",
+      "source_sha256": "4cb551af897f9eddea9ef735841e334007e840c4b3374a7ecb29bf428890ae88",
+      "target": "brian2-rust/src/training/static_poisson_gpu.rs",
+      "target_sha256": "4cb551af897f9eddea9ef735841e334007e840c4b3374a7ecb29bf428890ae88",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/src/training/timed_input.rs",
+      "source_sha256": "2998a4fbcbeb563f690e4e9c893b538e99aec8f8e0d66c4e123dcf92a6e448ef",
+      "target": "brian2-rust/src/training/timed_input.rs",
+      "target_sha256": "2998a4fbcbeb563f690e4e9c893b538e99aec8f8e0d66c4e123dcf92a6e448ef",
+      "previous_target_sha256": null,
+      "stage": "p5-training"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi.py",
+      "source_sha256": "06a69ea236e27ab9766ad4bc9dcf204505826b38d9248fd2ac60ec7b3b88a848",
+      "target": "brian2-rust/tests/test_mpi.py",
+      "target_sha256": "06a69ea236e27ab9766ad4bc9dcf204505826b38d9248fd2ac60ec7b3b88a848",
+      "previous_target_sha256": "06a69ea236e27ab9766ad4bc9dcf204505826b38d9248fd2ac60ec7b3b88a848",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_additive_ring.py",
+      "source_sha256": "c82486a62be182b0539c8aa601f122fc24b0da8108b989ed07d9c9b8ccdf0638",
+      "target": "brian2-rust/tests/test_mpi_additive_ring.py",
+      "target_sha256": "c82486a62be182b0539c8aa601f122fc24b0da8108b989ed07d9c9b8ccdf0638",
+      "previous_target_sha256": "c82486a62be182b0539c8aa601f122fc24b0da8108b989ed07d9c9b8ccdf0638",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_compact.py",
+      "source_sha256": "5a754ec24e53aca393fd35fa25c7a1aa58343e5acb4dca4b4c7992410424d525",
+      "target": "brian2-rust/tests/test_mpi_compact.py",
+      "target_sha256": "5a754ec24e53aca393fd35fa25c7a1aa58343e5acb4dca4b4c7992410424d525",
+      "previous_target_sha256": "5a754ec24e53aca393fd35fa25c7a1aa58343e5acb4dca4b4c7992410424d525",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_gpu.py",
+      "source_sha256": "bcae75e041e15031c711ef1611aa6a5efad2a6b3285868778873231fff394af4",
+      "target": "brian2-rust/tests/test_mpi_gpu.py",
+      "target_sha256": "bcae75e041e15031c711ef1611aa6a5efad2a6b3285868778873231fff394af4",
+      "previous_target_sha256": "bcae75e041e15031c711ef1611aa6a5efad2a6b3285868778873231fff394af4",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_multi_area_budget.py",
+      "source_sha256": "f409ea4c8b56a9b4ad9cc13fef3f7b8995c5f9719336f35fd31ce8d7799b4f2e",
+      "target": "brian2-rust/tests/test_mpi_multi_area_budget.py",
+      "target_sha256": "f409ea4c8b56a9b4ad9cc13fef3f7b8995c5f9719336f35fd31ce8d7799b4f2e",
+      "previous_target_sha256": "f409ea4c8b56a9b4ad9cc13fef3f7b8995c5f9719336f35fd31ce8d7799b4f2e",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_prebuild.py",
+      "source_sha256": "91fcbedcfc71bdca392f27a969023bbfe2a6ffddb29525d716d144458f87d53f",
+      "target": "brian2-rust/tests/test_mpi_prebuild.py",
+      "target_sha256": "91fcbedcfc71bdca392f27a969023bbfe2a6ffddb29525d716d144458f87d53f",
+      "previous_target_sha256": "91fcbedcfc71bdca392f27a969023bbfe2a6ffddb29525d716d144458f87d53f",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_queue_compact.py",
+      "source_sha256": "9881644307d82c5262803b05ed803d77807b33ae6d9572b5b87d41aa94ee2c31",
+      "target": "brian2-rust/tests/test_mpi_queue_compact.py",
+      "target_sha256": "9881644307d82c5262803b05ed803d77807b33ae6d9572b5b87d41aa94ee2c31",
+      "previous_target_sha256": "9881644307d82c5262803b05ed803d77807b33ae6d9572b5b87d41aa94ee2c31",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_report_batches.py",
+      "source_sha256": "8be24e9213370dad53c45475c15b9c08fcfdf4528c13533428e272efb858c423",
+      "target": "brian2-rust/tests/test_mpi_report_batches.py",
+      "target_sha256": "8be24e9213370dad53c45475c15b9c08fcfdf4528c13533428e272efb858c423",
+      "previous_target_sha256": "8be24e9213370dad53c45475c15b9c08fcfdf4528c13533428e272efb858c423",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_resource_guard.py",
+      "source_sha256": "9adc839e3ce623904b3a0b03757ea95f967a5957480678ff8f1d40138ef96a4d",
+      "target": "brian2-rust/tests/test_mpi_resource_guard.py",
+      "target_sha256": "9adc839e3ce623904b3a0b03757ea95f967a5957480678ff8f1d40138ef96a4d",
+      "previous_target_sha256": "9adc839e3ce623904b3a0b03757ea95f967a5957480678ff8f1d40138ef96a4d",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_spike_history.py",
+      "source_sha256": "8ae9734b7b84b5c5dd53c3c655774ba345086593e9effd966d4e727326432e71",
+      "target": "brian2-rust/tests/test_mpi_spike_history.py",
+      "target_sha256": "8ae9734b7b84b5c5dd53c3c655774ba345086593e9effd966d4e727326432e71",
+      "previous_target_sha256": "8ae9734b7b84b5c5dd53c3c655774ba345086593e9effd966d4e727326432e71",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_spike_output.py",
+      "source_sha256": "d3af4df185305af53dda519c994a97220e9b07dc2a05cda5db33e5b47773e0c3",
+      "target": "brian2-rust/tests/test_mpi_spike_output.py",
+      "target_sha256": "d3af4df185305af53dda519c994a97220e9b07dc2a05cda5db33e5b47773e0c3",
+      "previous_target_sha256": "d3af4df185305af53dda519c994a97220e9b07dc2a05cda5db33e5b47773e0c3",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_spike_spool.py",
+      "source_sha256": "9981182d93a6df4d4139a67aa4348062581d3bfc5c15003075f908a41edc7e44",
+      "target": "brian2-rust/tests/test_mpi_spike_spool.py",
+      "target_sha256": "9981182d93a6df4d4139a67aa4348062581d3bfc5c15003075f908a41edc7e44",
+      "previous_target_sha256": "9981182d93a6df4d4139a67aa4348062581d3bfc5c15003075f908a41edc7e44",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_teleport_launch.py",
+      "source_sha256": "68ada991154c70fbde954e74d8732e7ba21a1068ea2298d728906b94a87f6e93",
+      "target": "brian2-rust/tests/test_mpi_teleport_launch.py",
+      "target_sha256": "68ada991154c70fbde954e74d8732e7ba21a1068ea2298d728906b94a87f6e93",
+      "previous_target_sha256": "68ada991154c70fbde954e74d8732e7ba21a1068ea2298d728906b94a87f6e93",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_timing.py",
+      "source_sha256": "92dd86953e7266916dd4c592b6dd789eeda1ccb59ea6f9114c2f5b648066de38",
+      "target": "brian2-rust/tests/test_mpi_timing.py",
+      "target_sha256": "92dd86953e7266916dd4c592b6dd789eeda1ccb59ea6f9114c2f5b648066de38",
+      "previous_target_sha256": "92dd86953e7266916dd4c592b6dd789eeda1ccb59ea6f9114c2f5b648066de38",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_training.py",
+      "source_sha256": "df42c16a6ce2f3286854be042588302db497acee85eda367768431e3e88646ed",
+      "target": "brian2-rust/tests/test_mpi_training.py",
+      "target_sha256": "df42c16a6ce2f3286854be042588302db497acee85eda367768431e3e88646ed",
+      "previous_target_sha256": "df42c16a6ce2f3286854be042588302db497acee85eda367768431e3e88646ed",
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training.py",
+      "source_sha256": "c0ce01ae9879d00acbb3eb415d7e4e25d31d1d725cb8944935efb72752903a5a",
+      "target": "brian2-rust/tests/test_native_training.py",
+      "target_sha256": "050be32b4684b2eb400515b87cb11e83618bce2dccad141bc0621c5ee4c628b5",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training_cuda.py",
+      "source_sha256": "655f38b7e6cf178aca733fd08bf7c470c47a53f8508d7691206ade9588ea5fee",
+      "target": "brian2-rust/tests/test_native_training_cuda.py",
+      "target_sha256": "655f38b7e6cf178aca733fd08bf7c470c47a53f8508d7691206ade9588ea5fee",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training_equations.py",
+      "source_sha256": "f6800ef460c74d5cade3da12588f49cc531f52af4528f0c1c6c1116f70575a08",
+      "target": "brian2-rust/tests/test_native_training_equations.py",
+      "target_sha256": "f6800ef460c74d5cade3da12588f49cc531f52af4528f0c1c6c1116f70575a08",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training_gpu_mpi.py",
+      "source_sha256": "8167c35aeea800150b00088330e0a139ea1e720790100cff5e8d701c01827ac8",
+      "target": "brian2-rust/tests/test_native_training_gpu_mpi.py",
+      "target_sha256": "8167c35aeea800150b00088330e0a139ea1e720790100cff5e8d701c01827ac8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training_graph.py",
+      "source_sha256": "78b33ff8cf5448026697ca344fb619afc224232da1a431586ad202c4b68ec851",
+      "target": "brian2-rust/tests/test_native_training_graph.py",
+      "target_sha256": "78b33ff8cf5448026697ca344fb619afc224232da1a431586ad202c4b68ec851",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training_mpi.py",
+      "source_sha256": "d06d2ad22a4d0a91dc0a2c8a9ec2361306333c579bac262dfd2ae99961553fe5",
+      "target": "brian2-rust/tests/test_native_training_mpi.py",
+      "target_sha256": "d06d2ad22a4d0a91dc0a2c8a9ec2361306333c579bac262dfd2ae99961553fe5",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training_multistate.py",
+      "source_sha256": "109c8fa0c4c0c0b715669d156c4f39096e66bc1def93f914855e4e293c2908c9",
+      "target": "brian2-rust/tests/test_native_training_multistate.py",
+      "target_sha256": "109c8fa0c4c0c0b715669d156c4f39096e66bc1def93f914855e4e293c2908c9",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_native_training_multistate_gpu.py",
+      "source_sha256": "6968a509e1d9554a07446b0383ed75a09d5938fd0bdd73e608babf686ab3c0b6",
+      "target": "brian2-rust/tests/test_native_training_multistate_gpu.py",
+      "target_sha256": "6968a509e1d9554a07446b0383ed75a09d5938fd0bdd73e608babf686ab3c0b6",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_async_actions.py",
+      "source_sha256": "358b089c668be85f4b1dd9292a448bb87c53515ccad82b3ea04dba4506bb5278",
+      "target": "brian2-rust/tests/test_training_async_actions.py",
+      "target_sha256": "358b089c668be85f4b1dd9292a448bb87c53515ccad82b3ea04dba4506bb5278",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_event_captures.py",
+      "source_sha256": "25167634c7366dfeeaa9158dc6dac387c761b5e516419e3b059ab40198fa0757",
+      "target": "brian2-rust/tests/test_training_batch_event_captures.py",
+      "target_sha256": "25167634c7366dfeeaa9158dc6dac387c761b5e516419e3b059ab40198fa0757",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_external_inputs.py",
+      "source_sha256": "1d92575c90f3b339050f4136ff2ba1c8915af8c734866413a60af6d7326b319a",
+      "target": "brian2-rust/tests/test_training_batch_external_inputs.py",
+      "target_sha256": "1d92575c90f3b339050f4136ff2ba1c8915af8c734866413a60af6d7326b319a",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_private_readonly_captures.py",
+      "source_sha256": "01fa52b57a675329dca7f4f92e43882f892a9e72a3dc033a3436167b483f7c5d",
+      "target": "brian2-rust/tests/test_training_batch_private_readonly_captures.py",
+      "target_sha256": "01fa52b57a675329dca7f4f92e43882f892a9e72a3dc033a3436167b483f7c5d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_readonly_bank_carry.py",
+      "source_sha256": "f2b4669fa740675378ac11e43e8824074f2a973469419e8ae714061988ce71db",
+      "target": "brian2-rust/tests/test_training_batch_readonly_bank_carry.py",
+      "target_sha256": "f2b4669fa740675378ac11e43e8824074f2a973469419e8ae714061988ce71db",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_batch_readonly_captures.py",
+      "source_sha256": "212d89b9d263f380e68ba8377caaf7b8888e4895a4d024e49b3b9fdfda569d58",
+      "target": "brian2-rust/tests/test_training_batch_readonly_captures.py",
+      "target_sha256": "212d89b9d263f380e68ba8377caaf7b8888e4895a4d024e49b3b9fdfda569d58",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_boolean_thresholds.py",
+      "source_sha256": "bd8e42d826bd2b229f83535858cc02360fd921c0ee25ec6f0b13d6b14396d337",
+      "target": "brian2-rust/tests/test_training_boolean_thresholds.py",
+      "target_sha256": "bd8e42d826bd2b229f83535858cc02360fd921c0ee25ec6f0b13d6b14396d337",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_brian.py",
+      "source_sha256": "ffcbfc9d5390a375c0456c4f1dbafc17c31b067264ce2d34550cd046ea151f90",
+      "target": "brian2-rust/tests/test_training_brian.py",
+      "target_sha256": "ffcbfc9d5390a375c0456c4f1dbafc17c31b067264ce2d34550cd046ea151f90",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_brian_dynamic.py",
+      "source_sha256": "209ec67aa19fd1b5a2ec89bc5fcb8bf8eb00a947b65fee19ed15f9d1f5139be6",
+      "target": "brian2-rust/tests/test_training_brian_dynamic.py",
+      "target_sha256": "209ec67aa19fd1b5a2ec89bc5fcb8bf8eb00a947b65fee19ed15f9d1f5139be6",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_brian_integrators.py",
+      "source_sha256": "7defffc61a91df461a448fe6e073b67d0bffe289528b7a93a5694386fb6db1fb",
+      "target": "brian2-rust/tests/test_training_brian_integrators.py",
+      "target_sha256": "7defffc61a91df461a448fe6e073b67d0bffe289528b7a93a5694386fb6db1fb",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_brian_multistate.py",
+      "source_sha256": "f3b41becf8982ac6f2fffc52dbae96d5e46bf6213cdfb19103b158bd4f32c927",
+      "target": "brian2-rust/tests/test_training_brian_multistate.py",
+      "target_sha256": "f3b41becf8982ac6f2fffc52dbae96d5e46bf6213cdfb19103b158bd4f32c927",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_cached_noise.py",
+      "source_sha256": "5b7def76929d9475cf5fa3a3f696413de2cf0a27223edfe28c504669429fba03",
+      "target": "brian2-rust/tests/test_training_cached_noise.py",
+      "target_sha256": "5b7def76929d9475cf5fa3a3f696413de2cf0a27223edfe28c504669429fba03",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_cached_noise_edges.py",
+      "source_sha256": "9ce7f8f05042e532d62f7499b04526a57db1769c86662225fe5daf5747703b42",
+      "target": "brian2-rust/tests/test_training_cached_noise_edges.py",
+      "target_sha256": "9ce7f8f05042e532d62f7499b04526a57db1769c86662225fe5daf5747703b42",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_cached_weak_sde.py",
+      "source_sha256": "c6c1b6fdd6e2a47be5c378db4eff829dbb554a2a61da42e1ac0478f258c19b62",
+      "target": "brian2-rust/tests/test_training_cached_weak_sde.py",
+      "target_sha256": "c6c1b6fdd6e2a47be5c378db4eff829dbb554a2a61da42e1ac0478f258c19b62",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_callback_callables.py",
+      "source_sha256": "9c80f2372bc00786f776b38299c002d62e6d5fbf7b4161d7eb82f3a71abfa318",
+      "target": "brian2-rust/tests/test_training_callback_callables.py",
+      "target_sha256": "9c80f2372bc00786f776b38299c002d62e6d5fbf7b4161d7eb82f3a71abfa318",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_callback_effect_bounds.py",
+      "source_sha256": "1b18f46d6d49da3666c73f8729e5ca2dee6f2e2f4f65703780e4924718ad9bf7",
+      "target": "brian2-rust/tests/test_training_callback_effect_bounds.py",
+      "target_sha256": "1b18f46d6d49da3666c73f8729e5ca2dee6f2e2f4f65703780e4924718ad9bf7",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_callback_effect_vjps.py",
+      "source_sha256": "acd09e2d5822779fe5c0f3699e2776a175bfcb417724fbf1cb469febd353ca83",
+      "target": "brian2-rust/tests/test_training_callback_effect_vjps.py",
+      "target_sha256": "acd09e2d5822779fe5c0f3699e2776a175bfcb417724fbf1cb469febd353ca83",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_callback_effects.py",
+      "source_sha256": "41bfda58d422e4265b94a8e22104f06f7290444fde2d7e26510ca41421000caf",
+      "target": "brian2-rust/tests/test_training_callback_effects.py",
+      "target_sha256": "41bfda58d422e4265b94a8e22104f06f7290444fde2d7e26510ca41421000caf",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_capture_callbacks.py",
+      "source_sha256": "838802c9952d763a43ec69d0906653d8905f4a1cad1006e75bbc9298d3235ad1",
+      "target": "brian2-rust/tests/test_training_capture_callbacks.py",
+      "target_sha256": "838802c9952d763a43ec69d0906653d8905f4a1cad1006e75bbc9298d3235ad1",
+      "previous_target_sha256": null,
+      "stage": "captured-training-increment"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_capture_integrators.py",
+      "source_sha256": "722820a588e6e41ab0691ed85c0d46222e83a2b6bdc39c0a3cc23354e1dc6809",
+      "target": "brian2-rust/tests/test_training_capture_integrators.py",
+      "target_sha256": "722820a588e6e41ab0691ed85c0d46222e83a2b6bdc39c0a3cc23354e1dc6809",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_captured_constants.py",
+      "source_sha256": "f7da8333d2a4c2f7e42bfa361eeb66131c6e60cc87851012ad08ad738a28a4c3",
+      "target": "brian2-rust/tests/test_training_captured_constants.py",
+      "target_sha256": "f7da8333d2a4c2f7e42bfa361eeb66131c6e60cc87851012ad08ad738a28a4c3",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_captured_path_delays.py",
+      "source_sha256": "eaa87580cf00c1eab30ba4af350639ca8e82d151372dcc74c2297a4a396ecca2",
+      "target": "brian2-rust/tests/test_training_captured_path_delays.py",
+      "target_sha256": "eaa87580cf00c1eab30ba4af350639ca8e82d151372dcc74c2297a4a396ecca2",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_clock_checkpoint.py",
+      "source_sha256": "17b16285fb871abd0638289f7ca78c13f27b17f8b31366cda964a899c0192b25",
+      "target": "brian2-rust/tests/test_training_clock_checkpoint.py",
+      "target_sha256": "17b16285fb871abd0638289f7ca78c13f27b17f8b31366cda964a899c0192b25",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_clock_itinerary.py",
+      "source_sha256": "f911cf747ffd52701b3166fe595dcb65833ac79ae06c8c444e2aaf345dab8199",
+      "target": "brian2-rust/tests/test_training_clock_itinerary.py",
+      "target_sha256": "f911cf747ffd52701b3166fe595dcb65833ac79ae06c8c444e2aaf345dab8199",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_constant_equation_effects.py",
+      "source_sha256": "b963b6a88c2b43cb3b378ce3c90ac1959608e2a381cc809c19dd63b61b21a18e",
+      "target": "brian2-rust/tests/test_training_constant_equation_effects.py",
+      "target_sha256": "b963b6a88c2b43cb3b378ce3c90ac1959608e2a381cc809c19dd63b61b21a18e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_constant_links.py",
+      "source_sha256": "4ac99bc01604fe2b680eba8205bf99eee3cf0efc87b024bd2e6db63822327d3d",
+      "target": "brian2-rust/tests/test_training_constant_links.py",
+      "target_sha256": "4ac99bc01604fe2b680eba8205bf99eee3cf0efc87b024bd2e6db63822327d3d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_cross_linked.py",
+      "source_sha256": "590e4505b84b3ad8bd8dcd1324e7eff3e43979110dea762e0bfffc1ff49a771e",
+      "target": "brian2-rust/tests/test_training_cross_linked.py",
+      "target_sha256": "590e4505b84b3ad8bd8dcd1324e7eff3e43979110dea762e0bfffc1ff49a771e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_crosshost_evidence.py",
+      "source_sha256": "edf9575d6378668d079da8ff69ac8e97d40b6faf2a1874e1bdc4515a5f9e559f",
+      "target": "brian2-rust/tests/test_training_crosshost_evidence.py",
+      "target_sha256": "edf9575d6378668d079da8ff69ac8e97d40b6faf2a1874e1bdc4515a5f9e559f",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_delay_batch.py",
+      "source_sha256": "9a606ec6dad7644dc8c66019adc7e73339bd797913f1a56790968b1f46b2048d",
+      "target": "brian2-rust/tests/test_training_delay_batch.py",
+      "target_sha256": "9a606ec6dad7644dc8c66019adc7e73339bd797913f1a56790968b1f46b2048d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_delay_update.py",
+      "source_sha256": "9c8316f85a22915afc7141eeb969a352f6992e3a977aa2223abcf1bea7b770ab",
+      "target": "brian2-rust/tests/test_training_delay_update.py",
+      "target_sha256": "9c8316f85a22915afc7141eeb969a352f6992e3a977aa2223abcf1bea7b770ab",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_delays.py",
+      "source_sha256": "43cfbf68f1ce6753cc58d4d3ac0ee5ad8678edd9e05d6b47eda61feca1fce52b",
+      "target": "brian2-rust/tests/test_training_delays.py",
+      "target_sha256": "43cfbf68f1ce6753cc58d4d3ac0ee5ad8678edd9e05d6b47eda61feca1fce52b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_discrete_external_inputs.py",
+      "source_sha256": "62c50763031a2be5bb02d9b96f22f9551910d021bcd9e4bc1cb41c6eec1b71a6",
+      "target": "brian2-rust/tests/test_training_discrete_external_inputs.py",
+      "target_sha256": "62c50763031a2be5bb02d9b96f22f9551910d021bcd9e4bc1cb41c6eec1b71a6",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_discrete_frontend.py",
+      "source_sha256": "5d39e60164659df78f885f7af4e1808e3aec4a543542d848764d2d4c02e7f4e2",
+      "target": "brian2-rust/tests/test_training_discrete_frontend.py",
+      "target_sha256": "5d39e60164659df78f885f7af4e1808e3aec4a543542d848764d2d4c02e7f4e2",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_division.py",
+      "source_sha256": "528288e6170b9a5a91a4ffa2e6b970789bbdddd1942b27024d5b7be79d1690e3",
+      "target": "brian2-rust/tests/test_training_division.py",
+      "target_sha256": "528288e6170b9a5a91a4ffa2e6b970789bbdddd1942b27024d5b7be79d1690e3",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_dynamic.py",
+      "source_sha256": "ad66317c0417aa529d1809607712cdb796bdb71eb69f9642cb80e8077d98d037",
+      "target": "brian2-rust/tests/test_training_dynamic.py",
+      "target_sha256": "ad66317c0417aa529d1809607712cdb796bdb71eb69f9642cb80e8077d98d037",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_dynamic_clocks.py",
+      "source_sha256": "5a824d0fa2e52094e89ada066136359de12fb2bb33fd0539735b213a939df739",
+      "target": "brian2-rust/tests/test_training_dynamic_clocks.py",
+      "target_sha256": "5a824d0fa2e52094e89ada066136359de12fb2bb33fd0539735b213a939df739",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_dynamic_gpu.py",
+      "source_sha256": "2a52a3e0a45e4b162c4a1f5181113b9943c6f540ee28764d43f23d512257e6b7",
+      "target": "brian2-rust/tests/test_training_dynamic_gpu.py",
+      "target_sha256": "2a52a3e0a45e4b162c4a1f5181113b9943c6f540ee28764d43f23d512257e6b7",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_dynamic_gpu_mpi.py",
+      "source_sha256": "c8ec1493627fc76e85ca13aae4d91e3e83a7c59448e2b264d45a785a99fe3a6b",
+      "target": "brian2-rust/tests/test_training_dynamic_gpu_mpi.py",
+      "target_sha256": "c8ec1493627fc76e85ca13aae4d91e3e83a7c59448e2b264d45a785a99fe3a6b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_dynamic_refractory.py",
+      "source_sha256": "73f55d42c2f0869171ae76335aa9a0b442d0ae03c73e0e324870cdf505f8fd35",
+      "target": "brian2-rust/tests/test_training_dynamic_refractory.py",
+      "target_sha256": "73f55d42c2f0869171ae76335aa9a0b442d0ae03c73e0e324870cdf505f8fd35",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_dynamic_static_sde.py",
+      "source_sha256": "9421126d52506835c5c4ce2d8fabaf8149e7080ace66ab61e18c960d825a48dd",
+      "target": "brian2-rust/tests/test_training_dynamic_static_sde.py",
+      "target_sha256": "9421126d52506835c5c4ce2d8fabaf8149e7080ace66ab61e18c960d825a48dd",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_dynamic_thresholds.py",
+      "source_sha256": "699a3744ef42e1c91b78e0a6dc0f47b34f8dd678583e90a4188c980a5d3d51b8",
+      "target": "brian2-rust/tests/test_training_dynamic_thresholds.py",
+      "target_sha256": "699a3744ef42e1c91b78e0a6dc0f47b34f8dd678583e90a4188c980a5d3d51b8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_empty_reset_effects.py",
+      "source_sha256": "ce47d6448f91c04cf0bdbf9b71ab52514225c4e30d4ec51d7ea3f315a25a8055",
+      "target": "brian2-rust/tests/test_training_empty_reset_effects.py",
+      "target_sha256": "ce47d6448f91c04cf0bdbf9b71ab52514225c4e30d4ec51d7ea3f315a25a8055",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_empty_reset_poisson.py",
+      "source_sha256": "1470893e6c04a3091236e8de975c01e7328491099928f6a9ee5d384ec0c4db75",
+      "target": "brian2-rust/tests/test_training_empty_reset_poisson.py",
+      "target_sha256": "1470893e6c04a3091236e8de975c01e7328491099928f6a9ee5d384ec0c4db75",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_empty_synaptic_regular_effects.py",
+      "source_sha256": "d7401496f4e0ac5bf5fec5a65865957a2204b9b32d0d9b22b7edb00ffc0b0a7b",
+      "target": "brian2-rust/tests/test_training_empty_synaptic_regular_effects.py",
+      "target_sha256": "d7401496f4e0ac5bf5fec5a65865957a2204b9b32d0d9b22b7edb00ffc0b0a7b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_error_reports.py",
+      "source_sha256": "aa67f37af8ff50ec05d38eb1bfeabc00c5dc2c8cc85098d4180cbdbd0a8f63ee",
+      "target": "brian2-rust/tests/test_training_error_reports.py",
+      "target_sha256": "aa67f37af8ff50ec05d38eb1bfeabc00c5dc2c8cc85098d4180cbdbd0a8f63ee",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_callback_effects.py",
+      "source_sha256": "69b8ebc780c47df011ca4dfdb84e835bfea63a0266da8ac504383925cd23446c",
+      "target": "brian2-rust/tests/test_training_event_callback_effects.py",
+      "target_sha256": "69b8ebc780c47df011ca4dfdb84e835bfea63a0266da8ac504383925cd23446c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_captures.py",
+      "source_sha256": "35a3c7ef3049b83f396723c65f9930be8a1f8d80ab1c40d2f3ea73c900871deb",
+      "target": "brian2-rust/tests/test_training_event_captures.py",
+      "target_sha256": "35a3c7ef3049b83f396723c65f9930be8a1f8d80ab1c40d2f3ea73c900871deb",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_delay.py",
+      "source_sha256": "f688ee40a9b829657bc1d3eed30146ab78dfab9e9903b3a4cb6ad513d421dd95",
+      "target": "brian2-rust/tests/test_training_event_delay.py",
+      "target_sha256": "f688ee40a9b829657bc1d3eed30146ab78dfab9e9903b3a4cb6ad513d421dd95",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_delay_gradients.py",
+      "source_sha256": "02a00d32f056c8163f0916ba10a4952268899f63d0b834ec955a413be53c1198",
+      "target": "brian2-rust/tests/test_training_event_delay_gradients.py",
+      "target_sha256": "02a00d32f056c8163f0916ba10a4952268899f63d0b834ec955a413be53c1198",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_delay_integrations.py",
+      "source_sha256": "41e0703713f36a97cb28b7a50f7cf6d10e9a59f2e40d8e3976bceb4d6846a307",
+      "target": "brian2-rust/tests/test_training_event_delay_integrations.py",
+      "target_sha256": "41e0703713f36a97cb28b7a50f7cf6d10e9a59f2e40d8e3976bceb4d6846a307",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_noise.py",
+      "source_sha256": "2c6c11c3420ae21ae23daae4ec643344b4b809fa3b00306b64fee624fc865780",
+      "target": "brian2-rust/tests/test_training_event_noise.py",
+      "target_sha256": "2c6c11c3420ae21ae23daae4ec643344b4b809fa3b00306b64fee624fc865780",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_returned_constants.py",
+      "source_sha256": "7ac6fbe8ef67aae26347b3f02d1791bad4993bde8c98396b64ecd3975c9d6bbc",
+      "target": "brian2-rust/tests/test_training_event_returned_constants.py",
+      "target_sha256": "7ac6fbe8ef67aae26347b3f02d1791bad4993bde8c98396b64ecd3975c9d6bbc",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_staged_callbacks.py",
+      "source_sha256": "4151a4144178bdfc72bad29f1bbbd3a81af58727e4042b590346b71c84d73dcb",
+      "target": "brian2-rust/tests/test_training_event_staged_callbacks.py",
+      "target_sha256": "4151a4144178bdfc72bad29f1bbbd3a81af58727e4042b590346b71c84d73dcb",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_event_staged_delay.py",
+      "source_sha256": "ccad7d329c3a44f68bf0ecf184627f8c7b8d0f7035bc097c2f5de1c0385745aa",
+      "target": "brian2-rust/tests/test_training_event_staged_delay.py",
+      "target_sha256": "ccad7d329c3a44f68bf0ecf184627f8c7b8d0f7035bc097c2f5de1c0385745aa",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_external_neuron_links.py",
+      "source_sha256": "d7a3ba099d1fe35fa1ecb9a34641f8951ac3792bcf21633e135509f0a01bcd4a",
+      "target": "brian2-rust/tests/test_training_external_neuron_links.py",
+      "target_sha256": "d7a3ba099d1fe35fa1ecb9a34641f8951ac3792bcf21633e135509f0a01bcd4a",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_external_selector_roots.py",
+      "source_sha256": "589876a0e55523492bb0b1be800eecb193f9c6a12f1d7b60737dd9ac48af067e",
+      "target": "brian2-rust/tests/test_training_external_selector_roots.py",
+      "target_sha256": "589876a0e55523492bb0b1be800eecb193f9c6a12f1d7b60737dd9ac48af067e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_external_state_inputs.py",
+      "source_sha256": "2740510c2e3b85ce203cb17bc67fe8df7701ad43e7362ebc11882b1342c3a40e",
+      "target": "brian2-rust/tests/test_training_external_state_inputs.py",
+      "target_sha256": "2740510c2e3b85ce203cb17bc67fe8df7701ad43e7362ebc11882b1342c3a40e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_guarded_callback_effects.py",
+      "source_sha256": "f9ef8dee120117b25cf3150a0b09dce35642f430f258045d841515b4afff1ab5",
+      "target": "brian2-rust/tests/test_training_guarded_callback_effects.py",
+      "target_sha256": "f9ef8dee120117b25cf3150a0b09dce35642f430f258045d841515b4afff1ab5",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_guarded_event_effects.py",
+      "source_sha256": "c2535b6a7578d16571be2a40ae09430bc12970b184fa4d866c9a908d5fba439c",
+      "target": "brian2-rust/tests/test_training_guarded_event_effects.py",
+      "target_sha256": "c2535b6a7578d16571be2a40ae09430bc12970b184fa4d866c9a908d5fba439c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_guarded_integrator_effects.py",
+      "source_sha256": "c99105ae8de3514cda5013aa215cc17da68d7d9add30c0f07cb216100b24567c",
+      "target": "brian2-rust/tests/test_training_guarded_integrator_effects.py",
+      "target_sha256": "c99105ae8de3514cda5013aa215cc17da68d7d9add30c0f07cb216100b24567c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_guarded_scalar_captures.py",
+      "source_sha256": "edf7916cf3dac360b269c09b23a78e7c59a3116686f641983e1d662a83c29089",
+      "target": "brian2-rust/tests/test_training_guarded_scalar_captures.py",
+      "target_sha256": "1c2720a200da6138b337d39d55adbf6c772b3f67fdbcf4591386b7c8c98c110d",
+      "previous_target_sha256": null,
+      "stage": "captured-training-increment"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_heterogeneous.py",
+      "source_sha256": "38c056b705eae04fd60be1d80c1734bf17e34baf8ddf2b0c9f9aa07d60b25ef8",
+      "target": "brian2-rust/tests/test_training_heterogeneous.py",
+      "target_sha256": "38c056b705eae04fd60be1d80c1734bf17e34baf8ddf2b0c9f9aa07d60b25ef8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_implicit_refractory.py",
+      "source_sha256": "05b143b8cd2f3c70fbad281ac0f7361784a188d2a81889325cfde931bb7b8814",
+      "target": "brian2-rust/tests/test_training_implicit_refractory.py",
+      "target_sha256": "05b143b8cd2f3c70fbad281ac0f7361784a188d2a81889325cfde931bb7b8814",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_indexed_external_inputs.py",
+      "source_sha256": "cfe75a3d98ad9e5ba545cd6d4a6a9c479bb1a601933e8f4af3ad90d3b10272a3",
+      "target": "brian2-rust/tests/test_training_indexed_external_inputs.py",
+      "target_sha256": "cfe75a3d98ad9e5ba545cd6d4a6a9c479bb1a601933e8f4af3ad90d3b10272a3",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_indexed_regular_effects.py",
+      "source_sha256": "13ea8f1a814cd6c8df67cc9e52373839e9caaac2ac8a86a6097f5680e2a3d6b1",
+      "target": "brian2-rust/tests/test_training_indexed_regular_effects.py",
+      "target_sha256": "13ea8f1a814cd6c8df67cc9e52373839e9caaac2ac8a86a6097f5680e2a3d6b1",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_indirect.py",
+      "source_sha256": "fbb157b63f93b001ff0f573bbfc503edc0ab13b44d61f0fa5562a6bda428d0c4",
+      "target": "brian2-rust/tests/test_training_indirect.py",
+      "target_sha256": "fbb157b63f93b001ff0f573bbfc503edc0ab13b44d61f0fa5562a6bda428d0c4",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_indirect_frontend.py",
+      "source_sha256": "1abb1e7b1efee629b7d2e3e8428d26a2f187518ed91e05fabff3deb9f17372fb",
+      "target": "brian2-rust/tests/test_training_indirect_frontend.py",
+      "target_sha256": "1abb1e7b1efee629b7d2e3e8428d26a2f187518ed91e05fabff3deb9f17372fb",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_indirect_gpu.py",
+      "source_sha256": "734518eb21014a88b305616edaeb618fddfc2b48fdf62a60114f61b50e858781",
+      "target": "brian2-rust/tests/test_training_indirect_gpu.py",
+      "target_sha256": "734518eb21014a88b305616edaeb618fddfc2b48fdf62a60114f61b50e858781",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_indirect_migration.py",
+      "source_sha256": "d0fc1c23d18d6072a829e5c7c1173c2fb258b0162b12f1d340ee5c66c3ab9235",
+      "target": "brian2-rust/tests/test_training_indirect_migration.py",
+      "target_sha256": "d0fc1c23d18d6072a829e5c7c1173c2fb258b0162b12f1d340ee5c66c3ab9235",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_integer_bitwise.py",
+      "source_sha256": "35b2c61ae53b3eddae41e092922af9e53dca9819c6da4863475d99cb8046f8a2",
+      "target": "brian2-rust/tests/test_training_integer_bitwise.py",
+      "target_sha256": "35b2c61ae53b3eddae41e092922af9e53dca9819c6da4863475d99cb8046f8a2",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_integer_ir.py",
+      "source_sha256": "dd26b726090327f1e054a4a6532429678ecf55fc797252d81367ba81493aea8c",
+      "target": "brian2-rust/tests/test_training_integer_ir.py",
+      "target_sha256": "dd26b726090327f1e054a4a6532429678ecf55fc797252d81367ba81493aea8c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_integrator_callback_effects.py",
+      "source_sha256": "41bd09698aeafdc2b8bd5a7f0845a2ea42b661c1e8613b805fcab5629915e820",
+      "target": "brian2-rust/tests/test_training_integrator_callback_effects.py",
+      "target_sha256": "41bd09698aeafdc2b8bd5a7f0845a2ea42b661c1e8613b805fcab5629915e820",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_keyword_defaults.py",
+      "source_sha256": "adecb6b6111fa0319147b44511e4957fa6cdc2f1afe42684fec442d01133b7a3",
+      "target": "brian2-rust/tests/test_training_keyword_defaults.py",
+      "target_sha256": "adecb6b6111fa0319147b44511e4957fa6cdc2f1afe42684fec442d01133b7a3",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_linked.py",
+      "source_sha256": "2a18159a35580308c766d1d1a8c39feaedc312ddd15a24bdb0b112f897531c8d",
+      "target": "brian2-rust/tests/test_training_linked.py",
+      "target_sha256": "2a18159a35580308c766d1d1a8c39feaedc312ddd15a24bdb0b112f897531c8d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_math_sde.py",
+      "source_sha256": "4eae327d58e3e933ec999780fa5de3933fae5ac52a5eb292f7267c8b4d9e948c",
+      "target": "brian2-rust/tests/test_training_math_sde.py",
+      "target_sha256": "4eae327d58e3e933ec999780fa5de3933fae5ac52a5eb292f7267c8b4d9e948c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_migration.py",
+      "source_sha256": "86a2d87fb3586480ac9f5d31ccd02a49cbb3243eeb445c51e88520a3b0412156",
+      "target": "brian2-rust/tests/test_training_migration.py",
+      "target_sha256": "86a2d87fb3586480ac9f5d31ccd02a49cbb3243eeb445c51e88520a3b0412156",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_mixed_capture_domains.py",
+      "source_sha256": "aab3da2323a14121ce9a096810b307cf6193f35cdf59a30f414c8b671b078f68",
+      "target": "brian2-rust/tests/test_training_mixed_capture_domains.py",
+      "target_sha256": "aab3da2323a14121ce9a096810b307cf6193f35cdf59a30f414c8b671b078f68",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_mixed_capture_lengths.py",
+      "source_sha256": "83a6b55f3c7c571e3eeacca3bba05b82c87d5e2a98c8739251fed8509caab382",
+      "target": "brian2-rust/tests/test_training_mixed_capture_lengths.py",
+      "target_sha256": "83a6b55f3c7c571e3eeacca3bba05b82c87d5e2a98c8739251fed8509caab382",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_mixed_capture_vjps.py",
+      "source_sha256": "efaf6dcdd08e5623d286fb57a4871392443979f99c66ecf228411ee07d75fffe",
+      "target": "brian2-rust/tests/test_training_mixed_capture_vjps.py",
+      "target_sha256": "efaf6dcdd08e5623d286fb57a4871392443979f99c66ecf228411ee07d75fffe",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_multiclock_frontend.py",
+      "source_sha256": "7165cf82da6b072fbe25fca0bb4db3a5dabffda79611ce8796cab1dcd980c18a",
+      "target": "brian2-rust/tests/test_training_multiclock_frontend.py",
+      "target_sha256": "7165cf82da6b072fbe25fca0bb4db3a5dabffda79611ce8796cab1dcd980c18a",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_multiclock_synapses.py",
+      "source_sha256": "9945a9768cd8f33098c2eabf9119f645f7895cac6c0cfbc76bd0b27228d293d5",
+      "target": "brian2-rust/tests/test_training_multiclock_synapses.py",
+      "target_sha256": "9945a9768cd8f33098c2eabf9119f645f7895cac6c0cfbc76bd0b27228d293d5",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_multiclock_transitions.py",
+      "source_sha256": "21b19616755d07d4c7e873511b2d882dbcaf16e18e62599d4bd118c532dc5dd3",
+      "target": "brian2-rust/tests/test_training_multiclock_transitions.py",
+      "target_sha256": "21b19616755d07d4c7e873511b2d882dbcaf16e18e62599d4bd118c532dc5dd3",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_mutable_captures.py",
+      "source_sha256": "d8ff57c0a52dfb0cd14ad86eefcd755a6dbe3e6532e0755cb54cdcf68e21b907",
+      "target": "brian2-rust/tests/test_training_mutable_captures.py",
+      "target_sha256": "d8ff57c0a52dfb0cd14ad86eefcd755a6dbe3e6532e0755cb54cdcf68e21b907",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_mutable_constant_effects.py",
+      "source_sha256": "6ac27c33e068b8f7bec31eef00b9445f9a9dd5c30caf0863c5b3001073533902",
+      "target": "brian2-rust/tests/test_training_mutable_constant_effects.py",
+      "target_sha256": "6ac27c33e068b8f7bec31eef00b9445f9a9dd5c30caf0863c5b3001073533902",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_nested_parameter_frontend.py",
+      "source_sha256": "aee1b2243468edd22b1bbf61735e0ead083821f75ad30d7dab3578dc9aa62f22",
+      "target": "brian2-rust/tests/test_training_nested_parameter_frontend.py",
+      "target_sha256": "4996d2e8809071f94bad11b6fa670b0dfabf625e9ecbae720dd0541ec7046ac9",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_nested_regular_effects.py",
+      "source_sha256": "c2c75a8f71632f4799b178233f19ad8f62b41a455ac760f27cb9c5ba66a9077e",
+      "target": "brian2-rust/tests/test_training_nested_regular_effects.py",
+      "target_sha256": "c2c75a8f71632f4799b178233f19ad8f62b41a455ac760f27cb9c5ba66a9077e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_nested_synapse.py",
+      "source_sha256": "3d9be1ad7431ff2085b7aef23c2656f0122328bb881ca3108901f826dfc94daf",
+      "target": "brian2-rust/tests/test_training_nested_synapse.py",
+      "target_sha256": "3d9be1ad7431ff2085b7aef23c2656f0122328bb881ca3108901f826dfc94daf",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_nested_synapse_vjp.py",
+      "source_sha256": "9640f5ded2a2233fa0c67825bd671cc3a5309cda291f65c115206a1e1275dd81",
+      "target": "brian2-rust/tests/test_training_nested_synapse_vjp.py",
+      "target_sha256": "9640f5ded2a2233fa0c67825bd671cc3a5309cda291f65c115206a1e1275dd81",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_neuron_captures.py",
+      "source_sha256": "71dab549d30f7533f52f8e69644d4ee52b6e75615b79203376a709039710ba47",
+      "target": "brian2-rust/tests/test_training_neuron_captures.py",
+      "target_sha256": "71dab549d30f7533f52f8e69644d4ee52b6e75615b79203376a709039710ba47",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_neuron_noise.py",
+      "source_sha256": "68256a95ede8931419c745205b8c5564aeecdf41ab1a2cded021cf8a22a177c8",
+      "target": "brian2-rust/tests/test_training_neuron_noise.py",
+      "target_sha256": "68256a95ede8931419c745205b8c5564aeecdf41ab1a2cded021cf8a22a177c8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_neuron_shared_capture_domains.py",
+      "source_sha256": "6019ff31cc9c6161a418ebc20c4d3757b71be7a4e947a4d1507d681a5bee5a88",
+      "target": "brian2-rust/tests/test_training_neuron_shared_capture_domains.py",
+      "target_sha256": "6019ff31cc9c6161a418ebc20c4d3757b71be7a4e947a4d1507d681a5bee5a88",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_neuron_shared_capture_views.py",
+      "source_sha256": "6a4fad20eab6e354d5f84b117643f1413d907b2d66880ac88e442c55cbd1695a",
+      "target": "brian2-rust/tests/test_training_neuron_shared_capture_views.py",
+      "target_sha256": "6a4fad20eab6e354d5f84b117643f1413d907b2d66880ac88e442c55cbd1695a",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_neuron_shared_capture_vjps.py",
+      "source_sha256": "886820721607af995f183724e9fd424eb0f337da75fa61f2854754aac850b5bd",
+      "target": "brian2-rust/tests/test_training_neuron_shared_capture_vjps.py",
+      "target_sha256": "886820721607af995f183724e9fd424eb0f337da75fa61f2854754aac850b5bd",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_parameter_gather.py",
+      "source_sha256": "1cf1e69fa270f6927dc8e9d0a55b15a9628841257087a73b9fc8514973cfdcb8",
+      "target": "brian2-rust/tests/test_training_parameter_gather.py",
+      "target_sha256": "1cf1e69fa270f6927dc8e9d0a55b15a9628841257087a73b9fc8514973cfdcb8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_parameter_gather_frontend.py",
+      "source_sha256": "d313c9b7205789abbdcd967d06fb3550337304d35e9ac5edfd6d08b3732c96ba",
+      "target": "brian2-rust/tests/test_training_parameter_gather_frontend.py",
+      "target_sha256": "d313c9b7205789abbdcd967d06fb3550337304d35e9ac5edfd6d08b3732c96ba",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_partial_capture_aliases.py",
+      "source_sha256": "dab967f5c59365e6b28186a78bcbfe1a6254afa601d2881f7953e79668054cff",
+      "target": "brian2-rust/tests/test_training_partial_capture_aliases.py",
+      "target_sha256": "dab967f5c59365e6b28186a78bcbfe1a6254afa601d2881f7953e79668054cff",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_partial_capture_views.py",
+      "source_sha256": "b5179d457a9792964b722b50d8d3c7fb56a1f1d5fc3e14000e60ec175d33d578",
+      "target": "brian2-rust/tests/test_training_partial_capture_views.py",
+      "target_sha256": "b5179d457a9792964b722b50d8d3c7fb56a1f1d5fc3e14000e60ec175d33d578",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_partial_capture_vjps.py",
+      "source_sha256": "5c9e3e79b422133800e6c2ad98eb0009860845fec354d3100a656240b59a6b70",
+      "target": "brian2-rust/tests/test_training_partial_capture_vjps.py",
+      "target_sha256": "5c9e3e79b422133800e6c2ad98eb0009860845fec354d3100a656240b59a6b70",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_partial_overlap_vjps.py",
+      "source_sha256": "33b27ad192b473b435428e81680e416d99c465c4f7c0d27347114931ad3d8670",
+      "target": "brian2-rust/tests/test_training_partial_overlap_vjps.py",
+      "target_sha256": "33b27ad192b473b435428e81680e416d99c465c4f7c0d27347114931ad3d8670",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_partial_readonly_bank.py",
+      "source_sha256": "0b54e6f8c403446acac4db1f654dc1b5c872d6085854ae1554a40eed941949ef",
+      "target": "brian2-rust/tests/test_training_partial_readonly_bank.py",
+      "target_sha256": "0b54e6f8c403446acac4db1f654dc1b5c872d6085854ae1554a40eed941949ef",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_pathway_storage.py",
+      "source_sha256": "8926b7ba6a4ff1f04fa15ce558fb2bdaad56d48481b17bd702bfdb9579b7e345",
+      "target": "brian2-rust/tests/test_training_pathway_storage.py",
+      "target_sha256": "8926b7ba6a4ff1f04fa15ce558fb2bdaad56d48481b17bd702bfdb9579b7e345",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_brian.py",
+      "source_sha256": "3110a31405e8d28559b555c8bcda37cee900dc15fb29987864de93e232709a12",
+      "target": "brian2-rust/tests/test_training_poisson_brian.py",
+      "target_sha256": "3110a31405e8d28559b555c8bcda37cee900dc15fb29987864de93e232709a12",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_checkpoint_gpu.py",
+      "source_sha256": "567b3626115708123865018f5c6aaba6abe745ba621f229f0163f65e4aa460da",
+      "target": "brian2-rust/tests/test_training_poisson_checkpoint_gpu.py",
+      "target_sha256": "567b3626115708123865018f5c6aaba6abe745ba621f229f0163f65e4aa460da",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_core.py",
+      "source_sha256": "7a5cbc4d984b0dc1cacabdaf8951fda3590b281473cba4d92d765020c51cea7f",
+      "target": "brian2-rust/tests/test_training_poisson_core.py",
+      "target_sha256": "7a5cbc4d984b0dc1cacabdaf8951fda3590b281473cba4d92d765020c51cea7f",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_event_replay.py",
+      "source_sha256": "41cb049d075513424e7c7d7d46527cfe3a93c8bb53addf7408ce3113e25c135b",
+      "target": "brian2-rust/tests/test_training_poisson_event_replay.py",
+      "target_sha256": "41cb049d075513424e7c7d7d46527cfe3a93c8bb53addf7408ce3113e25c135b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_gpu.py",
+      "source_sha256": "0fd3738e2eceb54e4cb2f53176b2e844f8fe59256380a3e687f71e8c74a49f59",
+      "target": "brian2-rust/tests/test_training_poisson_gpu.py",
+      "target_sha256": "0fd3738e2eceb54e4cb2f53176b2e844f8fe59256380a3e687f71e8c74a49f59",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_gpu_boundary.py",
+      "source_sha256": "62f80a31f45c550c4f33a8013b6d0b62c750aee41c2a3f9e28356fa7765add32",
+      "target": "brian2-rust/tests/test_training_poisson_gpu_boundary.py",
+      "target_sha256": "62f80a31f45c550c4f33a8013b6d0b62c750aee41c2a3f9e28356fa7765add32",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_gpu_vjp.py",
+      "source_sha256": "aabdc20496d6712e75d8c7b1f1c5954e5ee012330ba313a5d01444168d6591da",
+      "target": "brian2-rust/tests/test_training_poisson_gpu_vjp.py",
+      "target_sha256": "aabdc20496d6712e75d8c7b1f1c5954e5ee012330ba313a5d01444168d6591da",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_retirement.py",
+      "source_sha256": "6fd56035159723c593df4620b3c82dbd08fb22adc75c6a912ccea1fb88d1778d",
+      "target": "brian2-rust/tests/test_training_poisson_retirement.py",
+      "target_sha256": "6fd56035159723c593df4620b3c82dbd08fb22adc75c6a912ccea1fb88d1778d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_shared.py",
+      "source_sha256": "56ea92c160e49673b1dd7a6d2f585e3a349c2b03bb724c85cc2a9a281615f5fe",
+      "target": "brian2-rust/tests/test_training_poisson_shared.py",
+      "target_sha256": "56ea92c160e49673b1dd7a6d2f585e3a349c2b03bb724c85cc2a9a281615f5fe",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_shared_gpu.py",
+      "source_sha256": "1a9925a5978d6a15e0767732205d8b92348788bfd44480da8c101002a1f3e9ea",
+      "target": "brian2-rust/tests/test_training_poisson_shared_gpu.py",
+      "target_sha256": "1a9925a5978d6a15e0767732205d8b92348788bfd44480da8c101002a1f3e9ea",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_ssa.py",
+      "source_sha256": "5a723b5dea97db93083d13e3b117ca46f5f1226ff3735d98ec75e8548f51557b",
+      "target": "brian2-rust/tests/test_training_poisson_ssa.py",
+      "target_sha256": "5a723b5dea97db93083d13e3b117ca46f5f1226ff3735d98ec75e8548f51557b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_static.py",
+      "source_sha256": "14e94ff514adb90e85f2d23f2c769f4dc0e1daadde9807b63fb82a34b45d0136",
+      "target": "brian2-rust/tests/test_training_poisson_static.py",
+      "target_sha256": "14e94ff514adb90e85f2d23f2c769f4dc0e1daadde9807b63fb82a34b45d0136",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_static_gpu.py",
+      "source_sha256": "6b01061b36b536af7097fb9e408ad6928f15e35c0460f77ad293959c05caf0ef",
+      "target": "brian2-rust/tests/test_training_poisson_static_gpu.py",
+      "target_sha256": "6b01061b36b536af7097fb9e408ad6928f15e35c0460f77ad293959c05caf0ef",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_zero.py",
+      "source_sha256": "52fb7bab91cf56bafb700447e121059f2cf30021952880a8167fd5b0d1bdb02e",
+      "target": "brian2-rust/tests/test_training_poisson_zero.py",
+      "target_sha256": "52fb7bab91cf56bafb700447e121059f2cf30021952880a8167fd5b0d1bdb02e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_poisson_zero_vjp.py",
+      "source_sha256": "96c58ff69bfd868cdd4b03f7067e863897e8d79ef0e97b8f7e59a78a0c12153f",
+      "target": "brian2-rust/tests/test_training_poisson_zero_vjp.py",
+      "target_sha256": "96c58ff69bfd868cdd4b03f7067e863897e8d79ef0e97b8f7e59a78a0c12153f",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_positional_only_callbacks.py",
+      "source_sha256": "614b86ba377b351b20aa25ae718a86b3f539584a4ac445a7528236b14109d383",
+      "target": "brian2-rust/tests/test_training_positional_only_callbacks.py",
+      "target_sha256": "614b86ba377b351b20aa25ae718a86b3f539584a4ac445a7528236b14109d383",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_precise_clock.py",
+      "source_sha256": "f5f90df98134b121c61f34477ff7f16652001036096dd59f1f17f12f01a9af00",
+      "target": "brian2-rust/tests/test_training_precise_clock.py",
+      "target_sha256": "f5f90df98134b121c61f34477ff7f16652001036096dd59f1f17f12f01a9af00",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_private_arrays.py",
+      "source_sha256": "182c219d19d5e02a4f3c2078ae8ef8d8b547becd220212114a884c7f9924cdbe",
+      "target": "brian2-rust/tests/test_training_private_arrays.py",
+      "target_sha256": "182c219d19d5e02a4f3c2078ae8ef8d8b547becd220212114a884c7f9924cdbe",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_pure_branches.py",
+      "source_sha256": "0e7ab4f55c9a46a8e11a511b1e4405e2b93e2fb41af104f609e0e8d38380614b",
+      "target": "brian2-rust/tests/test_training_pure_branches.py",
+      "target_sha256": "0e7ab4f55c9a46a8e11a511b1e4405e2b93e2fb41af104f609e0e8d38380614b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_pure_functions.py",
+      "source_sha256": "6d3525ba59d9b5a322ea627c46d0037e16ed2687d087075c6e1bd9ea12426814",
+      "target": "brian2-rust/tests/test_training_pure_functions.py",
+      "target_sha256": "6d3525ba59d9b5a322ea627c46d0037e16ed2687d087075c6e1bd9ea12426814",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_pure_loops.py",
+      "source_sha256": "9c60dbe614764317811c803bd39f5003894a18a4bed9543330c03597de7827b0",
+      "target": "brian2-rust/tests/test_training_pure_loops.py",
+      "target_sha256": "9c60dbe614764317811c803bd39f5003894a18a4bed9543330c03597de7827b0",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_pure_real_control.py",
+      "source_sha256": "5b7c512a4e04b5340acf89400a091f64ac625dbe3dfbde51e17481e4f427639e",
+      "target": "brian2-rust/tests/test_training_pure_real_control.py",
+      "target_sha256": "5b7c512a4e04b5340acf89400a091f64ac625dbe3dfbde51e17481e4f427639e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_pure_returns.py",
+      "source_sha256": "77ee6913ab0c188e8e0217ddf512fc1d8127992027fdceef58bdfbb28cae39b1",
+      "target": "brian2-rust/tests/test_training_pure_returns.py",
+      "target_sha256": "77ee6913ab0c188e8e0217ddf512fc1d8127992027fdceef58bdfbb28cae39b1",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_pure_statements.py",
+      "source_sha256": "f43d3a6d95a3cac0b52296cb5bf0b4c99a0205b2bb0a12f9fdc2f96189284be8",
+      "target": "brian2-rust/tests/test_training_pure_statements.py",
+      "target_sha256": "f43d3a6d95a3cac0b52296cb5bf0b4c99a0205b2bb0a12f9fdc2f96189284be8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_random_refractory.py",
+      "source_sha256": "2a1d2be71d2f25920a1e74a8beea090f09ab618ffa01fe1ddc7f30719b9edb39",
+      "target": "brian2-rust/tests/test_training_random_refractory.py",
+      "target_sha256": "2a1d2be71d2f25920a1e74a8beea090f09ab618ffa01fe1ddc7f30719b9edb39",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_readonly_capture_view_ownership.py",
+      "source_sha256": "7bf974cf9bd027934244b26bef26ce2c4bc1c56d5a4ef1d9b9a58da9267a95e7",
+      "target": "brian2-rust/tests/test_training_readonly_capture_view_ownership.py",
+      "target_sha256": "7bf974cf9bd027934244b26bef26ce2c4bc1c56d5a4ef1d9b9a58da9267a95e7",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_readonly_captures.py",
+      "source_sha256": "1f2e7c46fd380f29cb2aea5eb4b31baf31c63376a7ad9991d534d9c36b8bd3d4",
+      "target": "brian2-rust/tests/test_training_readonly_captures.py",
+      "target_sha256": "1f2e7c46fd380f29cb2aea5eb4b31baf31c63376a7ad9991d534d9c36b8bd3d4",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_refractory.py",
+      "source_sha256": "4b4a8a45790ffd3b3fdf4f8552b5e7f065feeb1057496ca1b22b2d11871dfd6d",
+      "target": "brian2-rust/tests/test_training_refractory.py",
+      "target_sha256": "4b4a8a45790ffd3b3fdf4f8552b5e7f065feeb1057496ca1b22b2d11871dfd6d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_regular.py",
+      "source_sha256": "e71f7ce4fe776dae40013f7ad3d2f8ab04762e758d5eb0abcb55c0b97a8fe23e",
+      "target": "brian2-rust/tests/test_training_regular.py",
+      "target_sha256": "e71f7ce4fe776dae40013f7ad3d2f8ab04762e758d5eb0abcb55c0b97a8fe23e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_regular_edges.py",
+      "source_sha256": "fba77c2d9fd85185ddd1ef7e62361efbc9ddb90b8a452f74d1093895f15f8348",
+      "target": "brian2-rust/tests/test_training_regular_edges.py",
+      "target_sha256": "fba77c2d9fd85185ddd1ef7e62361efbc9ddb90b8a452f74d1093895f15f8348",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_regular_ufunc_effects.py",
+      "source_sha256": "96de5784fe2fcce623ce1be39d84adb193470aaa21d1cecc889e0043cec092d2",
+      "target": "brian2-rust/tests/test_training_regular_ufunc_effects.py",
+      "target_sha256": "96de5784fe2fcce623ce1be39d84adb193470aaa21d1cecc889e0043cec092d2",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_repeated_capture_views.py",
+      "source_sha256": "51f92a69777f10802251757291f2dc87f8ca3fd1faa251ea4aff205a2434e5ca",
+      "target": "brian2-rust/tests/test_training_repeated_capture_views.py",
+      "target_sha256": "51f92a69777f10802251757291f2dc87f8ca3fd1faa251ea4aff205a2434e5ca",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_reset_callback_effects.py",
+      "source_sha256": "64d79f71320d60e7f92c871a264292cae2448fffde243271172adcb9497c2161",
+      "target": "brian2-rust/tests/test_training_reset_callback_effects.py",
+      "target_sha256": "64d79f71320d60e7f92c871a264292cae2448fffde243271172adcb9497c2161",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_reset_capture_alias_vjps.py",
+      "source_sha256": "094ff22a60e2efe95da1c1ef4c279fa82e11513475970f276f0d4c15a1502e5b",
+      "target": "brian2-rust/tests/test_training_reset_capture_alias_vjps.py",
+      "target_sha256": "094ff22a60e2efe95da1c1ef4c279fa82e11513475970f276f0d4c15a1502e5b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_reset_captures.py",
+      "source_sha256": "e02e7a45ccf1d1395cfc3f74b04189d5aad469e1558f0505c3b4b17f92e93c9e",
+      "target": "brian2-rust/tests/test_training_reset_captures.py",
+      "target_sha256": "e02e7a45ccf1d1395cfc3f74b04189d5aad469e1558f0505c3b4b17f92e93c9e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_reset_effect_bounds.py",
+      "source_sha256": "68b88d069d161e940db95beb374068ea2070a422222ae8b0857e216947b54534",
+      "target": "brian2-rust/tests/test_training_reset_effect_bounds.py",
+      "target_sha256": "68b88d069d161e940db95beb374068ea2070a422222ae8b0857e216947b54534",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_returned_captures.py",
+      "source_sha256": "ddfdf12d185b8ec6758b6cef0146fda8ac1f42e741193ad2400cd3662f2b83a3",
+      "target": "brian2-rust/tests/test_training_returned_captures.py",
+      "target_sha256": "ddfdf12d185b8ec6758b6cef0146fda8ac1f42e741193ad2400cd3662f2b83a3",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_rk_refractory.py",
+      "source_sha256": "f0d5bc8a1ba4ff9d56eb1e57991951f8c2208d35ca7ab78d1b0b55b1223f69e8",
+      "target": "brian2-rust/tests/test_training_rk_refractory.py",
+      "target_sha256": "f0d5bc8a1ba4ff9d56eb1e57991951f8c2208d35ca7ab78d1b0b55b1223f69e8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_runtime_refractory.py",
+      "source_sha256": "8554c08348cfb38fb9bdede2cb66cc25c512ba01c6889f79c428a6f5f658be60",
+      "target": "brian2-rust/tests/test_training_runtime_refractory.py",
+      "target_sha256": "8554c08348cfb38fb9bdede2cb66cc25c512ba01c6889f79c428a6f5f658be60",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_scalar_stochastic.py",
+      "source_sha256": "022a4f8c37649b6008ec3225f99ba4f57d3ddcd432b7cd515d9ba1dcfcf31b8b",
+      "target": "brian2-rust/tests/test_training_scalar_stochastic.py",
+      "target_sha256": "022a4f8c37649b6008ec3225f99ba4f57d3ddcd432b7cd515d9ba1dcfcf31b8b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_capture_mixing.py",
+      "source_sha256": "7138081bd7590d5dbf0951aca3281f02e866384b00d2a6db7e13b72b2297691c",
+      "target": "brian2-rust/tests/test_training_selected_capture_mixing.py",
+      "target_sha256": "7138081bd7590d5dbf0951aca3281f02e866384b00d2a6db7e13b72b2297691c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_capture_returns.py",
+      "source_sha256": "1a6942896c0bf906c8ebf1c882da83d862dc1606b348c3d723b688b7216b729b",
+      "target": "brian2-rust/tests/test_training_selected_capture_returns.py",
+      "target_sha256": "1a6942896c0bf906c8ebf1c882da83d862dc1606b348c3d723b688b7216b729b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_inplace_columns.py",
+      "source_sha256": "4f2fa2fb7e1d39b2ec89a58e7fa1faf2ece46d0e762535b6f8237152e55bfe23",
+      "target": "brian2-rust/tests/test_training_selected_inplace_columns.py",
+      "target_sha256": "4f2fa2fb7e1d39b2ec89a58e7fa1faf2ece46d0e762535b6f8237152e55bfe23",
+      "previous_target_sha256": null,
+      "stage": "captured-training-increment"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_multishape_captures.py",
+      "source_sha256": "38ac4eb638b2ef09352ee2d4bf49aa6cc72a464f65f8f6a55158d21bdd988c49",
+      "target": "brian2-rust/tests/test_training_selected_multishape_captures.py",
+      "target_sha256": "38ac4eb638b2ef09352ee2d4bf49aa6cc72a464f65f8f6a55158d21bdd988c49",
+      "previous_target_sha256": null,
+      "stage": "captured-training-increment"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_shared_capture_typed_views.py",
+      "source_sha256": "c9464b5a20823de4799c58d2caecb73a93d44bfca1d81ea6d79d7923abfcdb10",
+      "target": "brian2-rust/tests/test_training_shared_capture_typed_views.py",
+      "target_sha256": "c9464b5a20823de4799c58d2caecb73a93d44bfca1d81ea6d79d7923abfcdb10",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_shared_capture_views.py",
+      "source_sha256": "2cc7d52a2be8fa472f23d85579ab2f692655ca16fd2dde06171ee372a95a61aa",
+      "target": "brian2-rust/tests/test_training_shared_capture_views.py",
+      "target_sha256": "2cc7d52a2be8fa472f23d85579ab2f692655ca16fd2dde06171ee372a95a61aa",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_spike_buffers.py",
+      "source_sha256": "e0af4c0c9135665280d29b2c73806d25a2dff95845ecb256d7d42fd4b0006788",
+      "target": "brian2-rust/tests/test_training_spike_buffers.py",
+      "target_sha256": "e0af4c0c9135665280d29b2c73806d25a2dff95845ecb256d7d42fd4b0006788",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_standard_math.py",
+      "source_sha256": "5f5f9910455bf8f06c8a4ddc52238675f920ba0b3b2cbcb0efe10a1723c6bf44",
+      "target": "brian2-rust/tests/test_training_standard_math.py",
+      "target_sha256": "5f5f9910455bf8f06c8a4ddc52238675f920ba0b3b2cbcb0efe10a1723c6bf44",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_state_refractory.py",
+      "source_sha256": "fb823e005f95931c6aa2f1d00069df3682b3de14d4aea1f3f0dc06950a8743aa",
+      "target": "brian2-rust/tests/test_training_state_refractory.py",
+      "target_sha256": "fb823e005f95931c6aa2f1d00069df3682b3de14d4aea1f3f0dc06950a8743aa",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_static_control_sde.py",
+      "source_sha256": "33bfdb4fc530bf4e2bf3d27afd328456b50f637dec983c321466b9f77f35875c",
+      "target": "brian2-rust/tests/test_training_static_control_sde.py",
+      "target_sha256": "33bfdb4fc530bf4e2bf3d27afd328456b50f637dec983c321466b9f77f35875c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_static_timed_inputs.py",
+      "source_sha256": "93b1fc1a469dd6f390390ecdef3411ecebd29fc6131f02695e0355ff69b409cb",
+      "target": "brian2-rust/tests/test_training_static_timed_inputs.py",
+      "target_sha256": "93b1fc1a469dd6f390390ecdef3411ecebd29fc6131f02695e0355ff69b409cb",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_static_vjp_activity.py",
+      "source_sha256": "02efc6deb8f5fbf7d64c885f082d6d27919f3fdc8a62241d7c2ad951911a4612",
+      "target": "brian2-rust/tests/test_training_static_vjp_activity.py",
+      "target_sha256": "02efc6deb8f5fbf7d64c885f082d6d27919f3fdc8a62241d7c2ad951911a4612",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_stochastic.py",
+      "source_sha256": "ef69ddbfbb820795c7ee1f17a34c299810ad8a684ab4fb945972443a4a23daa1",
+      "target": "brian2-rust/tests/test_training_stochastic.py",
+      "target_sha256": "ef69ddbfbb820795c7ee1f17a34c299810ad8a684ab4fb945972443a4a23daa1",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_stochastic_refractory_combined.py",
+      "source_sha256": "64314fef526f2002abf93d49496ff437f5e0c2b2b1e3730aa5ef3fc18195951d",
+      "target": "brian2-rust/tests/test_training_stochastic_refractory_combined.py",
+      "target_sha256": "64314fef526f2002abf93d49496ff437f5e0c2b2b1e3730aa5ef3fc18195951d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_stochastic_refractory_vjp.py",
+      "source_sha256": "b591b5807fcaee66da554eb625f9950507b98eb9230632a6e8053fa4d51ea0df",
+      "target": "brian2-rust/tests/test_training_stochastic_refractory_vjp.py",
+      "target_sha256": "b591b5807fcaee66da554eb625f9950507b98eb9230632a6e8053fa4d51ea0df",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_stochastic_synaptic_endpoints.py",
+      "source_sha256": "c745250f6f4935f28a13b2c4157fe2cbfb8953d90f80bb21a9b7d5c8d6498d0e",
+      "target": "brian2-rust/tests/test_training_stochastic_synaptic_endpoints.py",
+      "target_sha256": "c745250f6f4935f28a13b2c4157fe2cbfb8953d90f80bb21a9b7d5c8d6498d0e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_strided_capture_banks.py",
+      "source_sha256": "8531223a1369ac21491cf139e06d60ad77186b59340d81e2d5c878f9ad4b7440",
+      "target": "brian2-rust/tests/test_training_strided_capture_banks.py",
+      "target_sha256": "8531223a1369ac21491cf139e06d60ad77186b59340d81e2d5c878f9ad4b7440",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_strided_capture_views.py",
+      "source_sha256": "e289b0439d1b77b174502a4a3a2b488b2fbdc0d317ffae0a7f222c0af7d5bf27",
+      "target": "brian2-rust/tests/test_training_strided_capture_views.py",
+      "target_sha256": "e289b0439d1b77b174502a4a3a2b488b2fbdc0d317ffae0a7f222c0af7d5bf27",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_strided_external_captures.py",
+      "source_sha256": "860a4b9b99c023cc930bf8dcb96a493f20e0b73fee7dd172f1580812d968133d",
+      "target": "brian2-rust/tests/test_training_strided_external_captures.py",
+      "target_sha256": "860a4b9b99c023cc930bf8dcb96a493f20e0b73fee7dd172f1580812d968133d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_subgroup.py",
+      "source_sha256": "6943f9b3d75cfe112ad00d5fd772f2d2fa665045a46715feed7eb5eef77ceded",
+      "target": "brian2-rust/tests/test_training_subgroup.py",
+      "target_sha256": "6943f9b3d75cfe112ad00d5fd772f2d2fa665045a46715feed7eb5eef77ceded",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_subgroup_callback_effects.py",
+      "source_sha256": "5897bcdf50c37a6a3c2ad0d27c79f8347c31efa10cd9175b488e96e66dfd80cc",
+      "target": "brian2-rust/tests/test_training_subgroup_callback_effects.py",
+      "target_sha256": "5897bcdf50c37a6a3c2ad0d27c79f8347c31efa10cd9175b488e96e66dfd80cc",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_subgroup_edges.py",
+      "source_sha256": "5a87b4bbd8d52e0b092718b6a0494accd2e8337560f8e2acc0039af17fcb027b",
+      "target": "brian2-rust/tests/test_training_subgroup_edges.py",
+      "target_sha256": "5a87b4bbd8d52e0b092718b6a0494accd2e8337560f8e2acc0039af17fcb027b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_subgroup_vjp.py",
+      "source_sha256": "b6be569331b049ca6348fb6c912b50a37888de7842db4c7fdf30c9df821c6862",
+      "target": "brian2-rust/tests/test_training_subgroup_vjp.py",
+      "target_sha256": "b6be569331b049ca6348fb6c912b50a37888de7842db4c7fdf30c9df821c6862",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_summed.py",
+      "source_sha256": "5bf9dc9183f05ab0330f96f69444a29d71db6afb409a76f0bb596ac1387f6b85",
+      "target": "brian2-rust/tests/test_training_summed.py",
+      "target_sha256": "5bf9dc9183f05ab0330f96f69444a29d71db6afb409a76f0bb596ac1387f6b85",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_synaptic_callback_callables.py",
+      "source_sha256": "82509023ed45546e6693605dee288fdc926d82a16d418f199a5eaf6c9d4299a7",
+      "target": "brian2-rust/tests/test_training_synaptic_callback_callables.py",
+      "target_sha256": "82509023ed45546e6693605dee288fdc926d82a16d418f199a5eaf6c9d4299a7",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_synaptic_callback_effects.py",
+      "source_sha256": "b8046995bbe77f42ef986c69bec03dc532a54d43586b8224a76ec9b19264df2d",
+      "target": "brian2-rust/tests/test_training_synaptic_callback_effects.py",
+      "target_sha256": "b8046995bbe77f42ef986c69bec03dc532a54d43586b8224a76ec9b19264df2d",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_synaptic_draws.py",
+      "source_sha256": "dc0659ffd1efc79dc86da3b095a3e6407b3d8392e710b93e1fe5b25d97f11bd8",
+      "target": "brian2-rust/tests/test_training_synaptic_draws.py",
+      "target_sha256": "dc0659ffd1efc79dc86da3b095a3e6407b3d8392e710b93e1fe5b25d97f11bd8",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_synaptic_endpoints.py",
+      "source_sha256": "15b699a87f1427df4df7a3006c8f17e9c223b4d4654576c191964affea14b2cb",
+      "target": "brian2-rust/tests/test_training_synaptic_endpoints.py",
+      "target_sha256": "15b699a87f1427df4df7a3006c8f17e9c223b4d4654576c191964affea14b2cb",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_synaptic_regular_effects.py",
+      "source_sha256": "b38f1e869fc4d5bf53bf51a936f95bbb51e50fc7ed1cdfef843cc9bdd599d07f",
+      "target": "brian2-rust/tests/test_training_synaptic_regular_effects.py",
+      "target_sha256": "b38f1e869fc4d5bf53bf51a936f95bbb51e50fc7ed1cdfef843cc9bdd599d07f",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_threshold_callback_effects.py",
+      "source_sha256": "74be731443d63edb70f6a9deeb4394b5bccc37e82155dbec7a0af0081651a862",
+      "target": "brian2-rust/tests/test_training_threshold_callback_effects.py",
+      "target_sha256": "74be731443d63edb70f6a9deeb4394b5bccc37e82155dbec7a0af0081651a862",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_threshold_effect_predicates.py",
+      "source_sha256": "c939602d795ee3ef488f72d1688b6eeb4ebb8e0c2f04fc09b736b8e12878f86b",
+      "target": "brian2-rust/tests/test_training_threshold_effect_predicates.py",
+      "target_sha256": "c939602d795ee3ef488f72d1688b6eeb4ebb8e0c2f04fc09b736b8e12878f86b",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_time.py",
+      "source_sha256": "b996680ad7eaeb2cd45019993aff0dc5d2183c1eea0251e59bbeb98545d19834",
+      "target": "brian2-rust/tests/test_training_time.py",
+      "target_sha256": "b996680ad7eaeb2cd45019993aff0dc5d2183c1eea0251e59bbeb98545d19834",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_timed_constant_effects.py",
+      "source_sha256": "0aea6dd33f8dbdd821289ae68253f319e7d5fd6d31cf7b754b0d680752cf3ba5",
+      "target": "brian2-rust/tests/test_training_timed_constant_effects.py",
+      "target_sha256": "0aea6dd33f8dbdd821289ae68253f319e7d5fd6d31cf7b754b0d680752cf3ba5",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_timed_inputs.py",
+      "source_sha256": "7a4245d6c2e2b3e998058cc7fcf8abd9b2936bbdcbb7331b029cafbf758e5d43",
+      "target": "brian2-rust/tests/test_training_timed_inputs.py",
+      "target_sha256": "7a4245d6c2e2b3e998058cc7fcf8abd9b2936bbdcbb7331b029cafbf758e5d43",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_typed_callback_effects.py",
+      "source_sha256": "564310c4c32ca5f37c737b332ae71ccf27719b2e183fe65d20a6f12704db88ec",
+      "target": "brian2-rust/tests/test_training_typed_callback_effects.py",
+      "target_sha256": "564310c4c32ca5f37c737b332ae71ccf27719b2e183fe65d20a6f12704db88ec",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_typed_effect_bounds.py",
+      "source_sha256": "52bb418497a54623323b73972be93bba5fcd85298ec5a689aef8dbbd4b994500",
+      "target": "brian2-rust/tests/test_training_typed_effect_bounds.py",
+      "target_sha256": "52bb418497a54623323b73972be93bba5fcd85298ec5a689aef8dbbd4b994500",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_typed_event_effects.py",
+      "source_sha256": "42ad97cc36320a566a674eeb56add8153a513087e54ababc5a5a6310fbba0fe4",
+      "target": "brian2-rust/tests/test_training_typed_event_effects.py",
+      "target_sha256": "42ad97cc36320a566a674eeb56add8153a513087e54ababc5a5a6310fbba0fe4",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_typed_event_replay.py",
+      "source_sha256": "ecb912db215e8e9e622325095f5703fc735188652765831924393cc4e8bbf901",
+      "target": "brian2-rust/tests/test_training_typed_event_replay.py",
+      "target_sha256": "ecb912db215e8e9e622325095f5703fc735188652765831924393cc4e8bbf901",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_typed_integrator_effects.py",
+      "source_sha256": "8314933ba2cdb5de0c7a86e2a9190d13ff27fa3976eb07fd2beebd6fe511c606",
+      "target": "brian2-rust/tests/test_training_typed_integrator_effects.py",
+      "target_sha256": "8314933ba2cdb5de0c7a86e2a9190d13ff27fa3976eb07fd2beebd6fe511c606",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_typed_synaptic_integrators.py",
+      "source_sha256": "d903b15c06f790557cdabbe073080744a42c30859b110017970af00d39ab123c",
+      "target": "brian2-rust/tests/test_training_typed_synaptic_integrators.py",
+      "target_sha256": "d903b15c06f790557cdabbe073080744a42c30859b110017970af00d39ab123c",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_typed_threshold_effects.py",
+      "source_sha256": "6edc0b2c005b8addcad8798060233fe7bed41b1b36c34a064a1ca2592c0fc989",
+      "target": "brian2-rust/tests/test_training_typed_threshold_effects.py",
+      "target_sha256": "6edc0b2c005b8addcad8798060233fe7bed41b1b36c34a064a1ca2592c0fc989",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_uniform.py",
+      "source_sha256": "e210d2466a0231caad3b9858ea30fc14523134306837d6cfdc5ce74698f601aa",
+      "target": "brian2-rust/tests/test_training_uniform.py",
+      "target_sha256": "e210d2466a0231caad3b9858ea30fc14523134306837d6cfdc5ce74698f601aa",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_vjp_activity.py",
+      "source_sha256": "86b14a730473d6bb23d0f8fad3b24a6e3a217e99b0a093af4fff00bc4044cf86",
+      "target": "brian2-rust/tests/test_training_vjp_activity.py",
+      "target_sha256": "86b14a730473d6bb23d0f8fad3b24a6e3a217e99b0a093af4fff00bc4044cf86",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_warm_functions.py",
+      "source_sha256": "25751b451a19a92ea5a423e2dbe9d5f77b001b8b35dd06d6cab724b74f0a239a",
+      "target": "brian2-rust/tests/test_training_warm_functions.py",
+      "target_sha256": "25751b451a19a92ea5a423e2dbe9d5f77b001b8b35dd06d6cab724b74f0a239a",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_whole_selected_captures.py",
+      "source_sha256": "ea93ca59bfdc105eafb343133c90bae969edacbf95a0e52f51c11a30347ce18b",
+      "target": "brian2-rust/tests/test_training_whole_selected_captures.py",
+      "target_sha256": "5552d393927db5bb8d5d5f3094b7947c4361717be385749a1082a044fe3d5c03",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_wrapper_bodies.py",
+      "source_sha256": "483c1cbbf8564f516922559484c1748eda9aafdaa698f5a5d26ba5260982e219",
+      "target": "brian2-rust/tests/test_training_wrapper_bodies.py",
+      "target_sha256": "483c1cbbf8564f516922559484c1748eda9aafdaa698f5a5d26ba5260982e219",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tools/mpi_resource_guard.py",
+      "source_sha256": "630fc35f0b38729fc202925b09b4eea55cc965cfeee396ace6085a3a98004014",
+      "target": "brian2-rust/tools/mpi_resource_guard.py",
+      "target_sha256": "630fc35f0b38729fc202925b09b4eea55cc965cfeee396ace6085a3a98004014",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tools/mpi_teleport_launch.py",
+      "source_sha256": "49ebcbbc17ccf96890d1975febbe0b4cf5566f4b6f0d70c55f4a5a96e3f6ef7e",
+      "target": "brian2-rust/tools/mpi_teleport_launch.py",
+      "target_sha256": "49ebcbbc17ccf96890d1975febbe0b4cf5566f4b6f0d70c55f4a5a96e3f6ef7e",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tools/verify_native_training.py",
+      "source_sha256": "e2647e098fb07755b693ed4458b2aed0a66bcda219eccf2ebd084ad8017a6ad0",
+      "target": "brian2-rust/tools/verify_native_training.py",
+      "target_sha256": "e2647e098fb07755b693ed4458b2aed0a66bcda219eccf2ebd084ad8017a6ad0",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    },
+    {
+      "source": "brian2-rust/tools/verify_native_training_mpi_bootstrap.py",
+      "source_sha256": "a825253ea1c05b922cd4bc0af736e69fd8f4eb157d05869d4a125c7ac27a90b4",
+      "target": "brian2-rust/tools/verify_native_training_mpi_bootstrap.py",
+      "target_sha256": "a825253ea1c05b922cd4bc0af736e69fd8f4eb157d05869d4a125c7ac27a90b4",
+      "previous_target_sha256": null,
+      "stage": "mpi-training-test-helper-closure"
+    }
+  ],
+  "captured_increments": [
+    {
+      "source": "brian2-rust/python/brian2_rust/training_brian_dynamic.py",
+      "target": "brian2-rust/python/brian2_rust/training_brian_dynamic.py",
+      "base_sha256": "ad06b30f66f8b16832f202c06cdec7cae0ad0bf895fa622755abd747d3584b01",
+      "target_sha256": "3667a5ebf0bb103d16339377652a57106c7f510f99774177840f72610a4a2f1d",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_effects.py",
+      "target": "brian2-rust/python/brian2_rust/training_effects.py",
+      "base_sha256": "db6f9594267ea8ca53f38a3f0154d7afee17a6ed2f99cb79ad37cbe15119aeea",
+      "target_sha256": "a8efeea095af235c834c9643764d997952f4ea03a63f8045e2d1d51f5cfd4f76",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/training_event_captures.py",
+      "target": "brian2-rust/python/brian2_rust/training_event_captures.py",
+      "base_sha256": "ef6cf7bfbbf43aaa1af015480ef06a2010874c4b013b5c1d6d9df7bd0aed9bf2",
+      "target_sha256": "c26ce2523a0cdf0402fab760f0821e7b36bc37a6cab86d530c4acfa67b4443c3",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_capture_callbacks.py",
+      "target": "brian2-rust/tests/test_training_capture_callbacks.py",
+      "base_sha256": null,
+      "target_sha256": "838802c9952d763a43ec69d0906653d8905f4a1cad1006e75bbc9298d3235ad1",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_guarded_scalar_captures.py",
+      "target": "brian2-rust/tests/test_training_guarded_scalar_captures.py",
+      "base_sha256": null,
+      "target_sha256": "edf7916cf3dac360b269c09b23a78e7c59a3116686f641983e1d662a83c29089",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_inplace_columns.py",
+      "target": "brian2-rust/tests/test_training_selected_inplace_columns.py",
+      "base_sha256": null,
+      "target_sha256": "4f2fa2fb7e1d39b2ec89a58e7fa1faf2ece46d0e762535b6f8237152e55bfe23",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_selected_multishape_captures.py",
+      "target": "brian2-rust/tests/test_training_selected_multishape_captures.py",
+      "base_sha256": null,
+      "target_sha256": "38ac4eb638b2ef09352ee2d4bf49aa6cc72a464f65f8f6a55158d21bdd988c49",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    },
+    {
+      "source": "brian2-rust/tests/test_training_whole_selected_captures.py",
+      "target": "brian2-rust/tests/test_training_whole_selected_captures.py",
+      "base_sha256": "ea93ca59bfdc105eafb343133c90bae969edacbf95a0e52f51c11a30347ce18b",
+      "target_sha256": "5552d393927db5bb8d5d5f3094b7947c4361717be385749a1082a044fe3d5c03",
+      "capture_archive_sha256": "7103cdc880fb34909c578a24c149f29d218728b03e52e0cc040ccaea6cee9d47"
+    }
+  ],
+  "repairs": [
+    "CUDA shader helper device qualifiers required by NVCC; generated numeric body unchanged.",
+    "Opt-in child-process timeout for heavily loaded validation hosts; default 60 seconds and all assertions preserved.",
+    "Newly captured one-line clock fixture correction already present in the concurrently developed original source."
+  ],
+  "validation": {
+    "local_core": {
+      "original_passed": 104,
+      "original_failed_resolved": 6,
+      "original_cuda_skips_resolved_by_separate_clock_acceptance": 12
+    },
+    "training_increments": {
+      "cpu_metal_local_mpi_passed": 276,
+      "cuda_variants_unexecuted": 138
+    },
+    "cuda_native": {
+      "selected_cases_passed": 18,
+      "scope": "16 VJP combinations, mask/fresh-process checkpoint and budget rejection; thirteen case PASS lines came from a bounded timeout run, five from a clean continuation run. Intermediate timeout is retained."
+    },
+    "cuda_clocks": {
+      "cases_passed": 12,
+      "scope": "Actual L4 clocks, carry/checkpoints and same-host MPI 2/8 ranks; PMIX_MCA_gds=hash required in Modal container."
+    },
+    "native_build": {
+      "all_source_hashes_match_installed_source_build": true,
+      "binary_sha256": {
+        "b2-runner": "4e51b378b908e5f2639c51cb9b1ca43d9b76aa35255a7fa37e8595eea9b55bb9",
+        "b2-train": "535b23e1ab21b86a4bd28d86b1de8e5670ad5efc295c693cf3d4a5befa6debfc"
+      }
+    },
+    "canonical_integration": {
+      "passed": 8,
+      "tests": [
+        "test_native_training.py::test_independent_surrogate_vjp",
+        "test_native_training.py::test_checkpoint_exact_optimizer_and_failure",
+        "test_training_clock_checkpoint.py::test_new_python_process_restores_run_clock_and_rng",
+        "test_native_training.py::test_real_metal_forward_vjp_training_checkpoint[subtract-True]",
+        "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cpu-None-False-True-True]"
+      ],
+      "training_runner_sha256": "535b23e1ab21b86a4bd28d86b1de8e5670ad5efc295c693cf3d4a5befa6debfc",
+      "metadata_sha256": "67466a3521c069351e1c33795cfe3e547567c10c601411edc442dfb675f46fd4",
+      "scope": "Independent VJP, fresh-process checkpoint and clocks, actual Metal checkpoint, and captured-array gradient in canonical tree; subsequent whitespace normalization preserved exact Python AST."
+    }
+  },
+  "evidence_sha256": {
+    "p5-core-failure-resolution.json": "923307a671ecee396ac8414343bf71a6f2bc1ef738adf8a67e3e7959456d8c4a",
+    "p5-captured-training-increment-resolution.json": "d6873f04b4671d328620816ed7579ae361164afd1721404aa9b3a1cf7144acfe",
+    "p8-cuda-helper-repair.json": "c7036ea3d5c93a9cb82b79441ccfbbd3e9d1b109f07b5fc175b22c3165c9cfd3",
+    "p8-cuda-training-acceptance.json": "3fc5fa5b3695e2b88a025b38b25f32b719e8aa082332a257033c914ff296ab16",
+    "p8-cuda-clock-acceptance.json": "ccf21f321570376fb25cc28ddd1be27ce4dc34c92a6840b32e7e37adc77a5ad7",
+    "p7-v3-installed-source.json": "8b8bffcd911dd1dee7e58b5d8b2e5b9673e47dd2b94eccaaa9209249f35d6eb5",
+    "p5-guarded-capture-clock-increment.json": "246f562164ff8a613f0451c88875ef9ff7ae5e62fa33cf7478a31d75ac4307d3"
+  },
+  "limits": [
+    "Representative numerical and checkpoint gates, not all training tests on every backend.",
+    "The 138 captured-increment CUDA variants were unexecuted at this stage; all were subsequently covered by cuda-cutoff-followup.json on the repaired source.",
+    "No multi-GPU or cross-host MPI acceptance claim.",
+    "Packaging/installation layout is a separately validated candidate and follows in its own port."
+  ],
+  "whitespace_only_repairs": [
+    {
+      "file": "brian2-rust/python/brian2_rust/training_effects.py",
+      "before_sha256": "a8efeea095af235c834c9643764d997952f4ea03a63f8045e2d1d51f5cfd4f76",
+      "after_sha256": "746bcb48fe36448f656863eb831631105ebaa98bd802a0784e6f3d5d4ff61645",
+      "python_ast_unchanged": true
+    },
+    {
+      "file": "brian2-rust/tests/test_training_nested_parameter_frontend.py",
+      "before_sha256": "aee1b2243468edd22b1bbf61735e0ead083821f75ad30d7dab3578dc9aa62f22",
+      "after_sha256": "4996d2e8809071f94bad11b6fa670b0dfabf625e9ecbae720dd0541ec7046ac9",
+      "python_ast_unchanged": true
+    }
+  ],
+  "cuda_followup": {
+    "status": "all recorded CUDA skips passed after targeted C ABI repair",
+    "historical_skip_count": 138,
+    "code_commit": "de36f5d6d1f822707d5036e14decefc58667c99f",
+    "record": "cuda-cutoff-followup.json",
+    "note": "Original stage counts remain historical; scopes overlap and must not be summed."
+  }
+}

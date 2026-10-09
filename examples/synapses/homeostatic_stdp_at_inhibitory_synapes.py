@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""
+r"""
 This script implements a homeostatic STDP rule for inhibitory
 synapses onto excitatory neurons presented in Zenke et al. (2015) and
 explained in detail in the accompanying supplementary information.

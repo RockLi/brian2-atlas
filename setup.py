@@ -7,7 +7,14 @@ Brian2 setup script
 
 import os
 import numpy
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
+# PEP 517 frontends need not put the source root on sys.path.
+import importlib.util
+from pathlib import Path
+_atlas_spec = importlib.util.spec_from_file_location("_atlas_build", Path(__file__).with_name("_atlas_build.py"))
+_atlas_build = importlib.util.module_from_spec(_atlas_spec)
+_atlas_spec.loader.exec_module(_atlas_build)
+AtlasBuildPy = _atlas_build.AtlasBuildPy
 from typing import List
 
 # A Helper function to require cython extension
@@ -50,4 +57,13 @@ dynamic_array_ext = require_cython_extension(
 extensions.append(dynamic_array_ext)
 
 
-setup(ext_modules=extensions)
+setup(
+    ext_modules=extensions,
+    packages=find_packages(include=["brian2", "brian2.*"])
+             + find_packages(where="brian2-rust/python"),
+    package_dir={"brian2_rust": "brian2-rust/python/brian2_rust",
+                 "brian2_atlas": "brian2-rust/python/brian2_atlas"},
+    package_data={"brian2_rust": ["*.c", "*.cu", "*.h", "*.m", "*.metal", "*.toml", "*.rs", "*.cpp",
+                                "metal_runtime/*", "mpi_runtime/*"]},
+    cmdclass={"build_py": AtlasBuildPy},
+)

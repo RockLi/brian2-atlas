@@ -1,81 +1,148 @@
-# Brian2
+# Brian2 Atlas
 
-*A clock-driven simulator for spiking neural networks*
+Brian2 Atlas combines the Brian2 modelling interface with native simulation,
+GPU/browser backends, distributed MPI execution and native training. This
+repository contains the product implementation and its regression tests.
+[The preprint repository](https://github.com/RockLi/brian2-atlas-preprint) contains
+the manuscript, historical experiments and reproduction materials.
 
-Brian is a free, open source simulator for spiking neural networks. It is written in the Python programming language and is available on almost all platforms. We believe that a simulator should not only save the time of processors, but also the time of scientists. Brian is therefore designed to be easy to learn and use, highly flexible and easily extensible.
+Atlas retains the upstream Brian2 Git history, author attribution and
+[CeCILL 2.1 licence](LICENSES/Brian2-LICENSE). Original Atlas engine code is
+licensed under [Apache-2.0](LICENSE); the combined checkout retains the upstream
+terms described in [license and repository scope](LICENSE_SCOPE.md). The migration baseline is Brian2 commit
+`27b5431168cf9959f0c27894cd4d92cdc6ad5c31`.
 
-Please report issues at the GitHub issue tracker (https://github.com/brian-team/brian2/issues) or in the Brian forum (https://brian.discourse.group).
+## Install from source
 
-Documentation for Brian 2 can be found at http://brian2.readthedocs.org
+This is research software version **0.1.0**, paired with the
+[bioRxiv v1 evidence archive](https://github.com/RockLi/brian2-atlas-preprint/tree/biorxiv-v1).
+Install the frozen source from tag `v0.1.0`; no PyPI publication is implied.
+`main` holds the release snapshot and `dev` is the development branch. The distribution name is `brian2-atlas`; use `brian2` for modelling
+and `brian2_atlas` for the Atlas backend. `brian2_rust` remains a compatibility
+import. The Brian compatibility version is
+`2.10.1.post241`, independent of the Atlas distribution version.
 
-Brian 2 is released under the terms of the [CeCILL 2.1 license](https://opensource.org/licenses/CECILL-2.1).
+Use Python 3.12 or newer, Rust/rustup and a working C/C++ compiler:
 
-If you use Brian for your published research, we kindly ask you to cite our article:
+```sh
+git clone --branch v0.1.0 https://github.com/RockLi/brian2-atlas.git
+cd brian2-atlas
+rustup toolchain install 1.98.1 --profile minimal
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+```
 
-> Stimberg, M, Brette, R, Goodman, DFM. “Brian 2, an Intuitive and Efficient Neural Simulator.” eLife 8 (2019): e47314. doi: [10.7554/eLife.47314](https://doi.org/10.7554/eLife.47314).
+A source install builds both `b2-runner` and `b2-train` with the locked Rust
+sources. Platform wheels contain these executables and all runtime source
+resources; installing a matching wheel does not rebuild them. Specialized AOT
+simulation still needs the pinned Rust compiler. CUDA needs the NVIDIA toolkit
+and CuPy; Metal needs the corresponding Apple compiler/runtime; MPI needs
+`mpicc` and `mpiexec`.
 
+The optional `brian2-rust/tools/install_user.sh` uses `uv` to create a coherent
+user installation and expose `brian2-atlas-python`, `brian2-atlas`, `b2-runner`
+and `b2-train`. Set `BRIAN2_ATLAS_HOME`, `BRIAN2_ATLAS_BIN` and
+`BRIAN2_ATLAS_PYTHON` to choose its locations and interpreter. It records source
+and binary provenance in `install.json` and refuses to overwrite unrelated
+commands. It installs a snapshot; rerun after source changes.
 
-[![PyPI version](https://img.shields.io/pypi/v/Brian2.svg)](https://pypi.python.org/pypi/Brian2)
-[![Conda version](https://img.shields.io/conda/vn/conda-forge/brian2.svg)](https://anaconda.org/conda-forge/brian2)
-[![Debian package](https://img.shields.io/debian/v/python3-brian/testing)](https://packages.debian.org/testing/python3-brian)
-[![Fedora package](https://img.shields.io/fedora/v/python3-brian2/f43)](https://packages.fedoraproject.org/pkgs/python-brian2/python3-brian2/)
-[![Spack](https://img.shields.io/spack/v/py-brian2)](https://packages.spack.io/package.html?name=py-brian2)
-[![AUR version](https://img.shields.io/aur/version/python-brian2)](https://aur.archlinux.org/packages/python-brian2)
-![Docker Image Version](https://img.shields.io/docker/v/briansimulator/brian?label=docker%20image)
+Builds and caches can live on external storage using `CARGO_TARGET_DIR`,
+`CARGO_HOME`, `UV_CACHE_DIR`, `PIP_CACHE_DIR`, `TMPDIR` and `XDG_CACHE_HOME`.
+Installed runtime output goes to temporary directories; set
+`BRIAN2_ATLAS_OUTPUT_DIR` to choose a persistent output parent. An explicit
+`B2_RUNNER` or `B2_TRAIN_RUNNER` overrides the bundled executable.
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/briansimulator/brian)](https://hub.docker.com/r/briansimulator/brian)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17833036.svg)](https://zenodo.org/doi/10.5281/zenodo.17833036)
-[![Software Heritage (repository)](https://archive.softwareheritage.org/badge/origin/https://github.com/brian-team/brian2/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/brian-team/brian2)
-[![Software Heritage (release)](https://archive.softwareheritage.org/badge/swh:1:rel:ba3061dfeb4e1a23791c063612f560990a0eea69/)](https://archive.softwareheritage.org/swh:1:rel:ba3061dfeb4e1a23791c063612f560990a0eea69;origin=https://github.com/brian-team/brian2;visit=swh:1:snp:bb8a53ef18202531e042a06297936bb230d4f6af)
+## First simulation
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
-[![Discourse topics](https://img.shields.io/discourse/topics?server=https%3A%2F%2Fbrian.discourse.group)](https://brian.discourse.group)
-[![Discourse chat](https://img.shields.io/badge/discourse-chat-4EC820?logo=discourse&link=https%3A%2F%2Fbrian.discourse.group%2Fchat)](https://brian.discourse.group/chat)
+```python
+import brian2 as b
+import brian2_atlas
 
-[![Neuromorphic Computing](https://img.shields.io/badge/Collaboration_Network-Open_Neuromorphic-blue)](https://open-neuromorphic.org/neuromorphic-computing/)
-[![PySimHub](https://pysimhub.io/badge.svg)](https://pysimhub.io/projects/brian2)
+b.set_device("atlas", engine="reference")
+group = b.NeuronGroup(
+    1, "dv/dt = (1.5-v)/(10*ms) : 1",
+    threshold="v>1", reset="v=0", method="euler", dt=0.1*b.ms,
+)
+spikes = b.SpikeMonitor(group)
+b.Network(group, spikes).run(100*b.ms)
+print(spikes.num_spikes)  # 9
+```
 
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![SPEC 0 — Minimum Supported Dependencies](https://img.shields.io/badge/SPEC-0-green?labelColor=%23004811&color=%235CA038)](https://scientific-python.org/specs/spec-0000/)
+`brian2_atlas.AtlasDevice` is the public Brian2 Device. Select `atlas` once,
+then choose the execution engine: `reference`, `aot`, `cuda`, `metal` or `mpi`.
+For CUDA/Metal, also specify `numeric_mode="float32"`. Browser execution uses
+the separate `export_wasm_bundle` API.
 
-## Quickstart
-Try out Brian on the [mybinder](https://mybinder.org/) service:
+Existing `import brian2_rust`, `RustStandaloneDevice` and
+`set_device("rust_standalone", ...)` remain compatible aliases of the same
+implementation and Device instance. Internal Rust module paths and native
+executable names are unchanged.
 
-[![mybinder](https://static.mybinder.org/badge.svg)](https://mybinder.org/v2/gh/brian-team/brian2-binder/master?filepath=index.ipynb)
+Use `engine="aot"` for model-specialized CPU execution. Backend capabilities
+are checked explicitly; unsupported model constructs raise a capability error.
+See [the backend guide](brian2-rust/README.md) for GPU, browser, MPI and training.
 
-## Dependencies
-The following packages need to be installed to use Brian 2 (cf. [`pyproject.toml`](pyproject.toml)):
+## Validation and support scope
 
-* Python >= 3.12
-* NumPy >= 2.0
-* SymPy >= 1.2
-* Cython >= 0.29.21
-* PyParsing >= 3
-* Jinja2 >= 2.7
-* setuptools >= 61
-* py-cpuinfo (only required on Windows)
-* packaging
+The migration has run on macOS arm64/Python 3.14 with actual CPU/AOT, Apple
+Metal and same-host MPI, and on a Modal NVIDIA L4 with CUDA simulation/training.
+Chrome WASM Workers and a non-fallback Apple WebGPU adapter were exercised.
+Source-directory, wheel and isolated-sdist installs passed representative
+simulation, training and fresh-process checkpoint checks on macOS arm64.
 
-For full functionality, you might also want to install:
+The [CUDA follow-up](migration/cuda-cutoff-followup.json) passed all 708 previously
+skipped cases from 15 modules plus one ABI regression on a Modal L4 (709 passed,
+zero failed or skipped), including two MPI ranks sharing that GPU.
 
-* GSL >=1.16
-* SciPy >=0.13.3
-* Matplotlib >= 2.0
+These results do not qualify every model, device, CUDA test variant, Windows,
+cross-host MPI or multiple GPUs. The hosted CI configuration covers Linux and
+macOS distribution builds; its results must be checked separately. Exact source
+identities, numerical gates, skipped cases and known validation limits are in
+[the migration records](migration/README.md).
 
-To build the documentation:
+```sh
+python -m pip install -e '.[test]' scipy pyarrow
+python dev/atlas/run_frontend.py
+python dev/atlas/run_backend.py --suite cpu --timeout 1200
+```
 
-* Sphinx >=7,<9
-* ipython >=5
-* sphinx-tabs
+Training source tests need a built `b2-train`; hardware suites are opt-in.
+`dev/atlas/check_installed.py --report /path/to/report.json` verifies an installed
+package, and `--metal` adds actual Metal training. Run it with an installed
+interpreter and without `PYTHONPATH`, `B2_RUNNER` or `B2_TRAIN_RUNNER` overrides.
 
-To run the test suite:
+## Upstream and research provenance
 
-* pytest >= 8
-* pytest-xdist (optional)
+The `dev` branch is the Atlas development branch. `upstream` points to
+[brian-team/brian2](https://github.com/brian-team/brian2); product ports retain
+source hashes and adaptation notes. Historical paper results remain tied to the
+source versions that produced them. The [PD14 reproduction](https://github.com/RockLi/brian2-atlas-preprint/tree/main/experiments/reproduction/pd14)
+pins Atlas commit `b769c21004a89e2a6f3a14521f23012db654aadd` and has passed its
+documented bounded build-to-simulation checks. Public package publication, a formal release
+and paper submission are separate steps.
 
-## Testing status for master branch
+## Optional dependencies
 
-[![Test status on GitHub Actions](https://github.com/brian-team/brian2/actions/workflows/testsuite.yml/badge.svg)](https://github.com/brian-team/brian2/actions/workflows/testsuite.yml)
-[![Publish status on GitHub Actions](https://github.com/brian-team/brian2/actions/workflows/publish.yml/badge.svg)](https://github.com/brian-team/brian2/actions/workflows/publish.yml)
-[![Test coverage](https://img.shields.io/coveralls/brian-team/brian2/master.svg)](https://coveralls.io/r/brian-team/brian2?branch=master)
-[![Documentation Status](https://readthedocs.org/projects/brian2/badge/?version=stable)](https://brian2.readthedocs.io/en/stable/?badge=stable)
+The `examples` extra retains the original joblib, noise, OpenCV, progressbar2 and SBI dependencies; the `cloud` extra installs the Modal SDK. From a checkout, install these as needed with `python -m pip install ".[examples]"` or `python -m pip install ".[cloud]"`. Core installation does not install either group. `uv.lock` retains the captured dependency versions with the Atlas distribution identity; use `uv sync --locked` and select extras explicitly when using uv. A resolved optional dependency is not a claim that its integration was exercised on every supported Python/platform combination.
+
+User simulation, training and MPI checkpoint commands are collected in the [source example guide](brian2-rust/examples/README.md). Run their bounded regression suite with `python dev/atlas/run_backend.py --suite examples`.
+
+## AtlasIR
+
+[AtlasIR](brian2-rust/AtlasIR.md) is the shared intermediate representation for Atlas execution. Brian2 is the current modeling frontend. Python integrity/serialization APIs are available through `brian2_atlas.ir`. Frozen `b2ir-*` wire and ABI identifiers remain compatible; public native-function registrations also accept `atlasir-*` names.
+
+## Citation
+
+Use [CITATION.cff](CITATION.cff) to cite Atlas, recording the exact commit used.
+The upstream Brian2 citation is retained in [UPSTREAM_CITATION.cff](UPSTREAM_CITATION.cff).
+
+## Public evidence exports
+
+Host-specific paths have been replaced with synthetic locations in the published
+history. Original evidence is privately preserved with its original checksums.
+The [redaction map](migration/public-path-redaction.json) binds original content
+hashes to the public export hashes; a redacted export is not byte-identical to
+the original measurement artifact. Configure actual input/output locations when
+running historical scripts. The [commit map](migration/public-commit-map.json)
+resolves original commit identities to the public history.

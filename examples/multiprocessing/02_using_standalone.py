@@ -2,7 +2,10 @@
 Parallel processes using standalone mode
 
 This example use multiprocessing to run several simulations in parallel.
-The code is using the C++ standalone mode to compile and execute the code.
+The code uses the C++ standalone mode by default. Optional standalone devices
+can be selected with the ``BRIAN2_STANDALONE_DEVICE`` environment variable. If
+the device is registered by an optional module, name it with
+``BRIAN2_STANDALONE_MODULE``; the module is imported in every worker.
 
 The generated code is stored in a ``standalone{pid}`` directory, with ``pid``
 being the id of each process.
@@ -44,16 +47,28 @@ complex code structures. If you run into `PicklingError` or `AttributeError` exc
 have to use the `pathos` (https://pypi.org/project/pathos) package instead, which can handle more complex
 code structures.
 """
-import os
+import importlib
 import multiprocessing
-from time import time as wall_time
+import os
 from os import system
+from time import time as wall_time
+
 from brian2 import *
+
+
+standalone_device = os.environ.get("BRIAN2_STANDALONE_DEVICE", "cpp_standalone")
+standalone_module = os.environ.get("BRIAN2_STANDALONE_MODULE")
+
 
 def run_sim(tau):
     pid = os.getpid()
     directory = f"standalone{pid}"
-    set_device('cpp_standalone', directory=directory)
+    # Import optional third-party devices in the worker. This is necessary for
+    # spawn-based multiprocessing and joblib/loky, where importing the parent
+    # module does not register the device in the worker interpreter.
+    if standalone_module:
+        importlib.import_module(standalone_module)
+    set_device(standalone_device, directory=directory)
     print(f'RUNNING {pid}')
 
     G = NeuronGroup(1, 'dv/dt = -v/tau : 1', method='euler')
@@ -74,8 +89,9 @@ def run_sim(tau):
 if __name__ == "__main__":
     start_time = wall_time()
 
-    num_proc = 4
-    tau_values = np.arange(10)*ms + 5*ms
+    num_proc = int(os.environ.get("BRIAN2_EXAMPLE_PROCESSES", "4"))
+    num_simulations = int(os.environ.get("BRIAN2_EXAMPLE_SIMULATIONS", "10"))
+    tau_values = np.arange(num_simulations)*ms + 5*ms
     with multiprocessing.Pool(num_proc) as p:
         results = p.map(run_sim, tau_values)
 

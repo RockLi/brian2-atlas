@@ -1,0 +1,51 @@
+<!doctype html><meta charset="utf-8"><link rel="icon" href="data:,">
+<title>WASM browser verification</title><h1>Browser Worker verification</h1>
+<button id="run">Run verification</button><pre id="report">Ready</pre>
+<script type="module">
+import { runBundle } from './runtime.js';
+const report = document.querySelector('#report');
+function assert(ok, text) { if (!ok) throw new Error(text); }
+async function rejected(promise, text) { try { await promise; } catch { return; } throw new Error(text); }
+function equal(actual, expected, name) {
+  assert(actual.length === expected.length, `${name}: length`);
+  assert(actual.every((b, i) => b === expected[i]), `${name}: content`);
+}
+document.querySelector('#run').onclick = async () => {
+  document.querySelector('#run').disabled = true;
+  const passed = [];
+  try {
+    const cases = await (await fetch('./checks/index.json')).json();
+    const bundles = [];
+    for (const name of cases) {
+      const bundle = await (await fetch(`./checks/${name}/bundle.json`)).json();
+      bundles.push(bundle);
+      const output = await runBundle(bundle, { batchTicks: 1 });
+      for (const key of ['results', 'events']) {
+        const expected = new Uint8Array(await (await fetch(`./checks/${name}/${key}.bin`)).arrayBuffer());
+        equal(output[key], expected, `${name}/${key}`);
+      }
+      assert(output.summary.plan_sha256 === bundle.plan_sha256, `${name}: identity`);
+      passed.push(name); report.textContent = `Passed: ${passed.join(', ')}`;
+    }
+    await rejected(runBundle({ schema: 'bad' }), 'invalid bundle accepted');
+    const bad = structuredClone(bundles[0]); bad.plan_sha256 = '0'.repeat(64);
+    await rejected(runBundle(bad), 'bundle hash drift accepted');
+    const drift = structuredClone(bundles[0]); const plan = JSON.parse(drift.plan_json);
+    plan.logical.nodes[0].reads.push('forged'); drift.plan_json = JSON.stringify(plan);
+    await rejected(runBundle(drift), 'logical plan drift accepted');
+    const controller = new AbortController(); let progress = 0;
+    await rejected(runBundle(bundles[0], { batchTicks: 1, signal: controller.signal,
+      onProgress() { progress++; controller.abort(); } }), 'cancelled execution completed');
+    assert(progress === 1, 'cancel did not occur during execution');
+    const stopped = new AbortController(); stopped.abort();
+    await rejected(runBundle(bundles[0], { signal: stopped.signal }), 'pre-aborted run completed');
+    const parallel = await Promise.all([runBundle(bundles[0]), runBundle(bundles.at(-1))]);
+    assert(parallel[0].summary.plan_sha256 === bundles[0].plan_sha256, 'first worker identity');
+    assert(parallel[1].summary.plan_sha256 === bundles.at(-1).plan_sha256, 'second worker identity');
+    report.textContent = JSON.stringify({ status: 'passed', cases: passed,
+      checks: ['byte parity with native-validated WASM corpus','plan drift','bundle drift','worker cancellation','pre-abort','concurrent isolation'] }, null, 2);
+    report.dataset.status = 'passed';
+  } catch (error) { report.textContent = String(error); report.dataset.status = 'failed'; }
+  finally { document.querySelector('#run').disabled = false; }
+};
+</script>

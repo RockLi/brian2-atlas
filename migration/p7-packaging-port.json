@@ -1,0 +1,200 @@
+{
+  "schema": "atlas-packaging-port-v1",
+  "parent": "67c1245bf58e09d45e7273406b76fabba1da84bc",
+  "changes": [
+    {
+      "file": ".github/workflows/atlas.yml",
+      "before_sha256": "eeb4015f626ae8583856450c48100a9efdd3735baf5d16c6fe8255584c710f10",
+      "after_sha256": "76716c0a136975a32529676b3f1944a44cf2d32c2bb3aac67e3da3c79e697243"
+    },
+    {
+      "file": ".gitignore",
+      "before_sha256": "f644ca15af65a304c83db40113a2d98eb7ca158c74e7f22b841349b98a35456e",
+      "after_sha256": "d6025a75998a0538b1d632b1ffd968f34873d212c35320ea81f9eb8011e76591"
+    },
+    {
+      "file": "MANIFEST.in",
+      "before_sha256": "33e8eb3f7086adcabee2312389fd55ed7b82e1bff769006b92e5eba3a90b527c",
+      "after_sha256": "f60666c39df770369026f1cb4ebf7416ff42b43ec631dd648e92655422a68ffb"
+    },
+    {
+      "file": "README.md",
+      "before_sha256": "5d1bd04c9e583dbcf134c5378b23f58b6e61692f97a2c1d05cb4d7e76d6eda07",
+      "after_sha256": "a2fbac65f7a8b9c9148f196e6f29bca3079c1cdc991d22b50393cffa4b461466"
+    },
+    {
+      "file": "_atlas_build.py",
+      "before_sha256": null,
+      "after_sha256": "e1c37c68408a41193b38f03acb6007337bef6924ec8deefcd82ddf71a32fbdfd"
+    },
+    {
+      "file": "brian2-rust/README.md",
+      "before_sha256": "98d2c82491784912bf27ab72f7add77500616c90885c134baba934a68124e5ae",
+      "after_sha256": "c0201636e4c5a1769115b3223c76205635df702aa07223791bcde6b702e60608"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/_cli.py",
+      "before_sha256": null,
+      "after_sha256": "215bc139365b98c922df58e2eaad7cc4b2e0eb63ac58e3586620a71218318df5"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/_runtime.py",
+      "before_sha256": null,
+      "after_sha256": "25493692406781e7bafd72ff3a94a6615d5de5f87dc8597b88581c56030fc021"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/_version.py",
+      "before_sha256": null,
+      "after_sha256": "7ee8ff76d5514d5fb7c4408ee3737022868baab13c18bdfe8f990271110c8188"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/device.py",
+      "before_sha256": "232ee6ca4679193389afd7c0d8e17a6f5be6d8ccda34ddca7b247f19c0db4382",
+      "after_sha256": "8dd9e0de6f33eebbfb6fb17ae694b983ab237488a1bf991f30aff96ab2ffc1f1"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/gpu_initialization.py",
+      "before_sha256": "db8615685488a3bd8dda05faf8a39cb8d5442713d96497140527cafc89e5d2ef",
+      "after_sha256": "58aac22a1b923c419527be792733fa692b43479b53c040d987dda24a49bafbb6"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/gpu_validation.py",
+      "before_sha256": "0784c1d67b91dd94300f91ac026118c1ad839406cb777a374658efad91bc224c",
+      "after_sha256": "647722275dd88dd7d579751d319df74d090a38962a88896f79108162e368e3a5"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/plan.py",
+      "before_sha256": "00f6a082493f452cae64fffd1cc81d4aac51511b8b1f159ffd4ca1c490f88846",
+      "after_sha256": "25b56b315729c1e87f59afc281a58b5eadcb9a7dd390918593a1e4502210e239"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/rust-toolchain.toml",
+      "before_sha256": null,
+      "after_sha256": "72da9f9e503464ba7393560f6f51a69fb06be72633d52ae7725fa0ba59dfda22"
+    },
+    {
+      "file": "brian2-rust/python/brian2_rust/training.py",
+      "before_sha256": "d03084741600e85be638854841405e06b3ad5995a5e4130224de58529b67ba5f",
+      "after_sha256": "be32079f5d8e173d852f9bd485f6c39a52c8297bde97393c5fb9cfb9905a871b"
+    },
+    {
+      "file": "brian2-rust/tools/install_user.sh",
+      "before_sha256": null,
+      "after_sha256": "330b6be9304e3168da00078258b5e9cb41e4e4f29d557dfa9fd9ea61bc52b047"
+    },
+    {
+      "file": "brian2/_version.py",
+      "before_sha256": null,
+      "after_sha256": "4dceb3930617045647d0e01b56017c91889d50147de8ab3ae68f66d76655758c"
+    },
+    {
+      "file": "dev/atlas/check_installed.py",
+      "before_sha256": null,
+      "after_sha256": "8b4a1e138e25d28f664c24327c6214d3104a1cf348267df3be2db3cb2e5b5c4b"
+    },
+    {
+      "file": "migration/README.md",
+      "before_sha256": "04788f28cdbad54e5d19b47e119b3a3268fb1b83a303fa560bd5a114c0b19408",
+      "after_sha256": "05aec2a958be7c566d50488f0be54d7d78e6eda28e2ee9bfb493e17388f5adc7"
+    },
+    {
+      "file": "pyproject.toml",
+      "before_sha256": "4e06f764bc362332bf45a306899ae38c806375902e7d6738e6eaa5080fd0f669",
+      "after_sha256": "2e1602cf34cb89e4b174cde1a0613f22c5a348b65bb78dc44590c9905c86ba3d"
+    },
+    {
+      "file": "setup.py",
+      "before_sha256": "262178c2933427faf1df962b6f303d77d09ff7eba3f814f42aa75453a9431644",
+      "after_sha256": "629078cb42260f8a45198745616b4bb533f799bd07b285d9d5e7e065891c7741"
+    }
+  ],
+  "distribution": "brian2-atlas 0.1.0.dev0",
+  "compatibility_version": "2.10.1.post241",
+  "installation_acceptance": {
+    "schema": "atlas-install-acceptance-v1",
+    "status": "passed on macOS arm64 Python 3.14.4",
+    "distribution": "brian2-atlas 0.1.0.dev0",
+    "compatibility": "brian2 2.10.1.post241",
+    "installation_methods": {
+      "wheel": {
+        "report": "p7-v3-installed-wheel.json",
+        "sha256": "f60e3490e01761b2ae9a53b1cda8d225c9adae7d8b1de59e81b211ddf912e32b",
+        "prefix": "/atlas-storage/0001/venvs/installed-wheel-v2",
+        "cpu_reference_aot": "passed",
+        "checkpoint_fresh_process": "passed",
+        "metal_training": "passed"
+      },
+      "sdist": {
+        "report": "p7-v3-installed-sdist.json",
+        "sha256": "793aac2ffe0e4cc62eaa7421cfd8d7fb1bd539b3cf1e0c9a65668d22bca971c7",
+        "prefix": "/atlas-storage/0001/venvs/installed-sdist-v3",
+        "cpu_reference_aot": "passed",
+        "checkpoint_fresh_process": "passed",
+        "metal_training": "passed"
+      },
+      "source": {
+        "report": "p7-v3-installed-source.json",
+        "sha256": "8b8bffcd911dd1dee7e58b5d8b2e5b9673e47dd2b94eccaaa9209249f35d6eb5",
+        "prefix": "/atlas-storage/0001/venvs/installed-source-v3",
+        "cpu_reference_aot": "passed",
+        "checkpoint_fresh_process": "passed",
+        "metal_training": "passed"
+      }
+    },
+    "limitations": [
+      "Candidate-only: packaging integration, CI and final-source reconciliation remain pending.",
+      "CUDA cloud validation used the frozen source tree, not this macOS wheel.",
+      "Linux and Windows distribution installs not yet qualified."
+    ],
+    "build_fixes": [
+      "External runtime/output discovery and bundled binaries/resources",
+      "CUDA helper device qualifier",
+      "PEP 517 local build helper import"
+    ]
+  },
+  "repairs": [
+    "Explicit package/runtime executable and writable-output discovery",
+    "Local build helper import works under isolated PEP 517",
+    "User installer installs one coherent distribution with both engines and avoids caller-source import shadowing"
+  ],
+  "validation_status": "Canonical wheel-from-sdist and source user installer runtime checks passed; earlier candidate isolated source/wheel/sdist checks retained separately.",
+  "hosted_ci": "Unauthenticated GitHub API returned 404; no hosted result claimed.",
+  "canonical_validation": {
+    "status": "passed on macOS arm64 Python 3.14.4",
+    "reports": {
+      "p7-v4-installed-wheel.json": {
+        "sha256": "86aa0b83028f3e46b8629ad259e4ba41d0b46f4a712e9da32c088251e54bc869",
+        "status": "passed",
+        "prefix": "/atlas-storage/0001/venvs/installed-wheel-v4",
+        "cpu_reference_aot": "passed",
+        "checkpoint_fresh_process": "passed",
+        "metal_training": "passed",
+        "installed_package_unchanged": true
+      },
+      "p7-v4-user-installed-runtime.json": {
+        "sha256": "282d6539bde53eb30d891482cacd5968a0b5248f0f7d72863c9e78636ab48c2d",
+        "status": "passed",
+        "prefix": "/atlas-storage/0001/output/user install v4/atlas-venv",
+        "cpu_reference_aot": "passed",
+        "checkpoint_fresh_process": "passed",
+        "metal_training": "passed",
+        "installed_package_unchanged": true
+      }
+    },
+    "wheel_sha256": "4e2094f8cf39b442cd06311b8e2fb8e1a465ca901d8399737515e034615eb9a8",
+    "sdist_sha256": "29fd4eea4b696b57ebdbbb33b80ef44885e2bec91587d845dc9470ef432209d9",
+    "build_report_sha256": "d0468766c5d51f459dc6d7df88f00e9b8a826a96b4704e4d2dafab2156aab55b",
+    "sdist_audit_sha256": "68733b0bafa0d5599bfdb639663dc1578713f5b20c8321e57cc8df8b79ef2709",
+    "methods": [
+      "Build wheel from audited canonical source archive; install into clean environment and execute real CPU/reference/AOT, fresh-process checkpoint and Metal training.",
+      "Install canonical source through the user installer with relative paths containing spaces; execute the same runtime checks through its wrapper."
+    ],
+    "archive_boundary": "Artifacts precede final migration provenance/documentation and egg-info ignore updates; runtime and native sources are unchanged.",
+    "limitations": [
+      "Earlier v3 candidate separately passed direct isolated source, wheel and sdist installs; v4 checks qualify the canonical wheel-from-sdist and source user installer.",
+      "Linux/Windows package installs and hosted CI execution remain unverified.",
+      "New concurrent training increment 2 and remaining user examples are not yet included.",
+      "No public package or release has been published."
+    ]
+  }
+}
