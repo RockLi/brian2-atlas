@@ -114,7 +114,7 @@ The `dev` branch is the Atlas development branch. `upstream` points to
 [brian-team/brian2](https://github.com/brian-team/brian2); product ports retain
 source hashes and adaptation notes. Historical paper results remain tied to the
 source versions that produced them. The [PD14 reproduction](https://github.com/RockLi/brian2-atlas-preprint/tree/main/experiments/reproduction/pd14)
-pins Atlas commit `bf1cf30af55a4a14ae42d0d75534728385b62d06` and has passed its
+pins Atlas commit `b769c21004a89e2a6f3a14521f23012db654aadd` and has passed its
 documented bounded build-to-simulation checks. Public package publication, a formal release
 and paper submission are separate steps.
 
@@ -132,3 +132,13 @@ User simulation, training and MPI checkpoint commands are collected in the [sour
 
 Use [CITATION.cff](CITATION.cff) to cite Atlas, recording the exact commit used.
 The upstream Brian2 citation is retained in [UPSTREAM_CITATION.cff](UPSTREAM_CITATION.cff).
+
+## Public evidence exports
+
+Host-specific paths have been replaced with synthetic locations in the published
+history. Original evidence is privately preserved with its original checksums.
+The [redaction map](migration/public-path-redaction.json) binds original content
+hashes to the public export hashes; a redacted export is not byte-identical to
+the original measurement artifact. Configure actual input/output locations when
+running historical scripts. The [commit map](migration/public-commit-map.json)
+resolves original commit identities to the public history.

@@ -1,69 +1,13 @@
 {
   "schema": "atlas-publication-audit-v1",
   "date": "2026-10-09",
-  "status": "needs-history-path-cleanup",
+  "status": "public-history-candidate-verified",
   "secrets": {
     "scanner": "Gitleaks 8.30.1",
     "official_archive_sha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5",
     "configuration": "Built-in rules, no project ignore file, ignore gitleaks:allow comments, full reachable history including merge diffs for engine, archive depth 4, redaction 100%.",
     "confirmed_credentials": 0,
     "limitations": "Pattern-based scanning is not proof of absence; unreachable server-side objects, hosting caches and reflogs are outside scope. No candidate credentials were tested against a service."
-  },
-  "repositories": {
-    "brian2-atlas": {
-      "audited_head": "a40a58bc8b664592bf19e3d2755627c96f7e3161",
-      "all_refs_object_scan": {
-        "commit": 7280,
-        "bytes_examined_including_archives": 456805016,
-        "tag": 50,
-        "tree": 26936,
-        "blob": 16598,
-        "archive_members": 109
-      },
-      "archive_scan_skips": [],
-      "gitleaks_raw_candidates": 0,
-      "redacted_gitleaks_report_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
-      "private_key_headers": 0,
-      "sensitive_filename_candidates": 0,
-      "absolute_path_object_versions": 143,
-      "home_or_volume_path_object_versions": 15,
-      "head_home_or_volume_path_blobs": 11,
-      "example_affected_files": [
-        "migration/FINAL_REPORT.md",
-        "migration/atlas-public-api.json",
-        "migration/completion-audit.json",
-        "migration/concurrent-training-increment-2.json",
-        "migration/concurrent-training-increment-3.json",
-        "migration/evidence/cuda-followup-20261009.tar.gz"
-      ]
-    },
-    "brian2-atlas-preprint": {
-      "audited_head": "78cfce5bf0967ce1a4800d99159e3428d8ca6f27",
-      "all_refs_object_scan": {
-        "commit": 25,
-        "bytes_examined_including_archives": 506021534,
-        "tree": 208,
-        "blob": 2128,
-        "gzip_streams": 3,
-        "archive_members": 4645
-      },
-      "archive_scan_skips": [],
-      "gitleaks_raw_candidates": 11,
-      "redacted_gitleaks_report_sha256": "fc7dee98e7a6d1c75688ecc0d1fb547c90e9284813d049e21d470515c9b5b76a",
-      "private_key_headers": 0,
-      "sensitive_filename_candidates": 0,
-      "absolute_path_object_versions": 225,
-      "home_or_volume_path_object_versions": 123,
-      "head_home_or_volume_path_blobs": 110,
-      "example_affected_files": [
-        "archives/catalog.jsonl",
-        "archives/concurrent-evidence-supplement.json",
-        "archives/historical-git.json",
-        "archives/index.json",
-        "archives/migration-cutoff-disposition.jsonl.gz",
-        "archives/review-source-overlay.json"
-      ]
-    }
   },
   "false_positive_review": [
     {
@@ -155,7 +99,18 @@
       "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
     }
   ],
-  "history_cleanup": "No history rewrite or force-push performed. A HEAD-only edit cannot remove earlier path strings. Cleaning published history requires a coordinated rewrite or a separate sanitized publication history, replacement of affected commit citations, and checksummed preservation of original evidence outside the public export.",
+  "history_cleanup": {
+    "status": "completed_in_isolated_candidate",
+    "user_authorized_force_push": true,
+    "originals": "Complete verified private Git bundles and preserved original checkouts; never part of public export",
+    "content_map": "public-path-redaction.json",
+    "commit_map": "public-commit-map.json",
+    "upstream_master_and_tags_unchanged": true,
+    "runtime_frontend_files_byte_identical": 428,
+    "mpi_launch_tests_passed": 75,
+    "artifact_integrity": "Paper build verifies unchanged originals or exact mapped public hashes/sizes; modified copies rejected. All 34 retained V3 files passed.",
+    "remote_limit": "Force-with-lease updates advertised refs; existing clones and inaccessible hosting caches are outside local deletion control."
+  },
   "license_decision": {
     "original_engine": "Apache-2.0",
     "original_evidence_code": "Apache-2.0",
@@ -188,5 +143,97 @@
     "candidate_paths": 13,
     "findings": 0,
     "scope": "All edited and added files in the final candidate, including generated QA bookkeeping; full reachable history scanned separately."
+  },
+  "before_redaction": {
+    "brian2-atlas": {
+      "audited_head": "a40a58bc8b664592bf19e3d2755627c96f7e3161",
+      "all_refs_object_scan": {
+        "commit": 7280,
+        "bytes_examined_including_archives": 456805016,
+        "tag": 50,
+        "tree": 26936,
+        "blob": 16598,
+        "archive_members": 109
+      },
+      "archive_scan_skips": [],
+      "gitleaks_raw_candidates": 0,
+      "redacted_gitleaks_report_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "private_key_headers": 0,
+      "sensitive_filename_candidates": 0,
+      "absolute_path_object_versions": 143,
+      "home_or_volume_path_object_versions": 15,
+      "head_home_or_volume_path_blobs": 11,
+      "example_affected_files": [
+        "migration/FINAL_REPORT.md",
+        "migration/atlas-public-api.json",
+        "migration/completion-audit.json",
+        "migration/concurrent-training-increment-2.json",
+        "migration/concurrent-training-increment-3.json",
+        "migration/evidence/cuda-followup-20261009.tar.gz"
+      ]
+    },
+    "brian2-atlas-preprint": {
+      "audited_head": "78cfce5bf0967ce1a4800d99159e3428d8ca6f27",
+      "all_refs_object_scan": {
+        "commit": 25,
+        "bytes_examined_including_archives": 506021534,
+        "tree": 208,
+        "blob": 2128,
+        "gzip_streams": 3,
+        "archive_members": 4645
+      },
+      "archive_scan_skips": [],
+      "gitleaks_raw_candidates": 11,
+      "redacted_gitleaks_report_sha256": "fc7dee98e7a6d1c75688ecc0d1fb547c90e9284813d049e21d470515c9b5b76a",
+      "private_key_headers": 0,
+      "sensitive_filename_candidates": 0,
+      "absolute_path_object_versions": 225,
+      "home_or_volume_path_object_versions": 123,
+      "head_home_or_volume_path_blobs": 110,
+      "example_affected_files": [
+        "archives/catalog.jsonl",
+        "archives/concurrent-evidence-supplement.json",
+        "archives/historical-git.json",
+        "archives/index.json",
+        "archives/migration-cutoff-disposition.jsonl.gz",
+        "archives/review-source-overlay.json"
+      ]
+    }
+  },
+  "after_redaction": {
+    "brian2-atlas": {
+      "audited_head": "1f7387b53cc258ca1b4aa5f39116c0269a462cfc",
+      "counts": {
+        "commit": 7281,
+        "bytes_examined_including_archives": 456844453,
+        "tag": 50,
+        "tree": 26940,
+        "blob": 16608,
+        "archive_members": 109
+      },
+      "archive_scan_skips": [],
+      "home_or_mounted_volume_path_records": 0,
+      "private_key_headers": 0,
+      "remaining_path_scope": "Unmodified upstream Brian2 examples only",
+      "confirmed_credentials": 0,
+      "gitleaks_raw_candidates": 0
+    },
+    "brian2-atlas-preprint": {
+      "audited_head": "e2a3b6c40fba3872a95f6e73c2082187988ce3c2",
+      "counts": {
+        "commit": 26,
+        "bytes_examined_including_archives": 509624797,
+        "tree": 216,
+        "blob": 2147,
+        "gzip_streams": 3,
+        "archive_members": 4645
+      },
+      "archive_scan_skips": [],
+      "home_or_mounted_volume_path_records": 0,
+      "private_key_headers": 0,
+      "remaining_path_scope": "No matched path patterns",
+      "confirmed_credentials": 0,
+      "gitleaks_raw_candidates": 11
+    }
   }
 }
