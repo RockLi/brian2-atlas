@@ -7,7 +7,7 @@ authors:
   - family-names: Li
     given-names: Xinjun
   - name: Brian contributors
-version: 0.1.0.dev0
+version: 0.1.0
 repository-code: https://github.com/RockLi/brian2-atlas
 license:
   - Apache-2.0

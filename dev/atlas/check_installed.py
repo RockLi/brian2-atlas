@@ -14,7 +14,7 @@ assert pathlib.Path(atlas.__file__).resolve().is_relative_to(prefix)
 assert atlas.AtlasDevice is implementation.RustStandaloneDevice
 assert pathlib.Path(b.__file__).resolve().is_relative_to(prefix)
 assert package.is_relative_to(prefix) and source_root() is None
-assert importlib.metadata.version('brian2-atlas')=='0.1.0.dev0'
+assert importlib.metadata.version('brian2-atlas')=='0.1.0'
 assert b.__version__=='2.10.1.post241'
 def inventory():
     return {str(p.relative_to(package)):hashlib.sha256(p.read_bytes()).hexdigest()

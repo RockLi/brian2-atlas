@@ -41,7 +41,7 @@ recorded separately in [`source-ignore-port.json`](source-ignore-port.json).
 
 [`p7-packaging-port.json`](p7-packaging-port.json) records the package/runtime
 layout, isolated-build repair, native-binary provenance and installed checks.
-The distribution is `brian2-atlas` version `0.1.0.dev0`; Python imports remain
+The migration validated `brian2-atlas` version `0.1.0.dev0`; Python imports remain
 `brian2` and `brian2_rust`. Source, wheel and sdist acceptance currently covers
 macOS arm64/Python 3.14. Hosted Linux/macOS CI is configured separately; no hosted
 pass or Windows distribution support is implied by these local results.

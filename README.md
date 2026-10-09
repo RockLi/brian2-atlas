@@ -14,8 +14,10 @@ terms described in [license and repository scope](LICENSE_SCOPE.md). The migrati
 
 ## Install from source
 
-This is development version **0.1.0.dev0**; a public package release has not been
-published. The distribution name is `brian2-atlas`; use `brian2` for modelling
+This is research software version **0.1.0**, paired with the
+[bioRxiv v1 evidence archive](https://github.com/RockLi/brian2-atlas-preprint/tree/biorxiv-v1).
+Install the frozen source from tag `v0.1.0`; no PyPI publication is implied.
+`main` holds the release snapshot and `dev` is the development branch. The distribution name is `brian2-atlas`; use `brian2` for modelling
 and `brian2_atlas` for the Atlas backend. `brian2_rust` remains a compatibility
 import. The Brian compatibility version is
 `2.10.1.post241`, independent of the Atlas distribution version.
@@ -23,6 +25,8 @@ import. The Brian compatibility version is
 Use Python 3.12 or newer, Rust/rustup and a working C/C++ compiler:
 
 ```sh
+git clone --branch v0.1.0 https://github.com/RockLi/brian2-atlas.git
+cd brian2-atlas
 rustup toolchain install 1.98.1 --profile minimal
 python -m venv .venv
 . .venv/bin/activate

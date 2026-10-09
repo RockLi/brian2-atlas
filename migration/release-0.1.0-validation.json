@@ -1,0 +1,62 @@
+{
+  "schema": "atlas-release-validation-v1",
+  "version": "0.1.0",
+  "tag": "v0.1.0",
+  "paired_evidence_tag": "biorxiv-v1",
+  "accepted_implementation_base": "e609068369a7ec370968cd885ef562c83e4daa03",
+  "change_scope": "Distribution version, release documentation and CI triggers only; scientific execution logic and locked dependency versions unchanged.",
+  "platform": "macOS arm64 / Python 3.14",
+  "sdist_to_wheel_build": "passed",
+  "license_and_native_provenance_checks": "passed",
+  "cff_schema_validation": "passed",
+  "installed_checks": {
+    "distribution": "0.1.0",
+    "compatibility_version": "2.10.1.post241",
+    "training_checkpoint_fresh_process": "passed",
+    "metal_training": "passed",
+    "installed_package_unchanged": true,
+    "status": "passed"
+  },
+  "simulation_checks": {
+    "reference": {
+      "spikes": [
+        10.9,
+        21.9,
+        32.9,
+        43.9,
+        54.900000000000006,
+        65.9,
+        76.9,
+        87.9,
+        98.9
+      ]
+    },
+    "aot": {
+      "spikes": [
+        10.9,
+        21.9,
+        32.9,
+        43.9,
+        54.900000000000006,
+        65.9,
+        76.9,
+        87.9,
+        98.9
+      ]
+    }
+  },
+  "artifacts": [
+    {
+      "name": "brian2_atlas-0.1.0-cp314-cp314-macosx_26_0_arm64.whl",
+      "sha256": "918458bba5788cd905185661b1a9a5373c2710afb72d38b4d0c8f33c98c466e3",
+      "bytes": 3644711
+    },
+    {
+      "name": "brian2_atlas-0.1.0.tar.gz",
+      "sha256": "952600338fb4d9d6773724e7ac9f58e889cbdb45cc82a888cd8cb692fe674f1a",
+      "bytes": 5175488
+    }
+  ],
+  "hardware_measurements_repeated": false,
+  "qualification_scope": "Existing CPU/GPU/MPI/browser acceptance retains measured revisions; this check qualifies local distribution installation, not all hosted CI platforms."
+}
