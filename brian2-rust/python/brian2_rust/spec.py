@@ -49,7 +49,7 @@ def dtype_name(dtype):
         return "u32"
     if dtype == np.dtype(np.uint64):
         return "u64"
-    raise NotImplementedError(f"Gate 0 capability: unsupported dtype {dtype}")
+    raise NotImplementedError(f"Atlas capability: unsupported dtype {dtype}")
 
 
 def _decode_bits(value):
@@ -234,7 +234,7 @@ def infer_dtype(expr, symbols, functions=None):
 
 def require(condition, message):
     if not condition:
-        raise NotImplementedError(f"Gate 0 capability: {message}")
+        raise NotImplementedError(f"Atlas capability: {message}")
 
 
 def bits(value):
@@ -488,7 +488,7 @@ def expression(source, allocate_random_stream=None, random_functions=None,
                 left, right = as_f64(left), as_f64(right)
             return {"op": comparisons[type(node.ops[0])], "left": left,
                     "right": right}
-        raise NotImplementedError(f"Gate 0 expression: {ast.dump(node)}")
+        raise NotImplementedError(f"Atlas expression: {ast.dump(node)}")
     return lower(ast.parse(source, mode="eval").body)
 
 
@@ -635,7 +635,7 @@ def portable_function_contract(name, function):
         if isinstance(portable_error, NotImplementedError):
             raise portable_error
         raise NotImplementedError(
-            f"Gate 0 capability: {name}: provide a portable expression or "
+            f"Atlas capability: {name}: provide a portable expression or "
             "b2ir-c-abi-v1 implementation") from portable_error
     implementations = {}
     if lowered is not None:

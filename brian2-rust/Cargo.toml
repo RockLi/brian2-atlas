@@ -3,7 +3,7 @@ name = "b2-runner"
 version = "0.0.1"
 edition = "2021"
 publish = false
-description = "Gate 0 experimental Brian2 reference standalone runner"
+description = "Atlas native simulation and training executors"
 default-run = "b2-runner"
 license = "CECILL-2.1"
 

@@ -1,4 +1,4 @@
-"""Opt-in Brian2 Device for the deliberately small Gate 0 Rust executor."""
+"""Brian2 Device for the Atlas execution backends."""
 
 import ast
 import copy
@@ -124,7 +124,7 @@ class _RestoreOnlySpikeQueue:
 
 
 class AtlasDevice(Device):
-    """Own frontend arrays and dispatch a whole supported model to Rust.
+    """Own frontend arrays and dispatch a supported model to the selected Atlas engine.
 
     Python arrays hold initial values and completed results. There is no Python
     simulation loop, runtime-device delegation, or target-language templating.
@@ -690,7 +690,7 @@ class AtlasDevice(Device):
                 return comparisons[type(node.ops[0])](
                     evaluate(node.left), evaluate(node.comparators[0]))
             raise NotImplementedError(
-                f"Gate 0 connect expression is unsupported: {ast.dump(node)}")
+                f"Atlas connect expression is unsupported: {ast.dump(node)}")
 
         return evaluate(ast.parse(expression, mode="eval").body)
 
@@ -1132,12 +1132,12 @@ class AtlasDevice(Device):
             # this Device's owned arrays and does not participate in simulation.
             return NumpyCodeObject
         raise NotImplementedError(
-            "Gate 0 Rust Device executes whole networks; custom CodeObjects and "
+            "Atlas Device executes whole networks; custom CodeObjects and "
             "runtime-generated model code are unsupported"
         )
 
     def insert_code(self, *args, **kwargs):
-        raise NotImplementedError("Gate 0 Rust Device does not support inserted native code")
+        raise NotImplementedError("Atlas Device does not support inserted native code")
 
     def build(self, directory=None, run=True, **kwargs):
         require(not kwargs,

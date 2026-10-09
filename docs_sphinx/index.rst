@@ -1,5 +1,16 @@
-Brian 2 documentation
-=====================
+Brian2 Atlas and Brian2 frontend documentation
+==============================================
+
+.. note::
+
+   This checkout distributes Brian2 Atlas. Start with the
+   `Atlas installation and backend guide <https://github.com/RockLi/brian2-atlas/blob/dev/README.md>`_
+   and select ``brian2_atlas`` / ``set_device("atlas", ...)``.
+   The Brian2 documentation below describes the retained modelling frontend
+   and upstream devices; its installation commands, support channels and
+   device capabilities do not by themselves describe Atlas qualification.
+   Atlas support and issues belong in the
+   `Atlas repository <https://github.com/RockLi/brian2-atlas/issues>`_.
 
 Brian is a simulator for spiking neural networks. It is written in the Python
 programming language and is available on almost all platforms. We believe

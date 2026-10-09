@@ -13,8 +13,9 @@ Atlas retains the upstream Brian2 Git history, author attribution and
 ## Install from source
 
 This is development version **0.1.0.dev0**; a public package release has not been
-published. The distribution name is `brian2-atlas`; existing Python imports stay
-`brian2` and `brian2_rust`. The Brian compatibility version is
+published. The distribution name is `brian2-atlas`; use `brian2` for modelling
+and `brian2_atlas` for the Atlas backend. `brian2_rust` remains a compatibility
+import. The Brian compatibility version is
 `2.10.1.post241`, independent of the Atlas distribution version.
 
 Use Python 3.12 or newer, Rust/rustup and a working C/C++ compiler:
@@ -84,6 +85,10 @@ Chrome WASM Workers and a non-fallback Apple WebGPU adapter were exercised.
 Source-directory, wheel and isolated-sdist installs passed representative
 simulation, training and fresh-process checkpoint checks on macOS arm64.
 
+The [CUDA follow-up](migration/cuda-cutoff-followup.json) passed all 708 previously
+skipped cases from 15 modules plus one ABI regression on a Modal L4 (709 passed,
+zero failed or skipped), including two MPI ranks sharing that GPU.
+
 These results do not qualify every model, device, CUDA test variant, Windows,
 cross-host MPI or multiple GPUs. The hosted CI configuration covers Linux and
 macOS distribution builds; its results must be checked separately. Exact source
@@ -107,7 +112,7 @@ The `dev` branch is the Atlas development branch. `upstream` points to
 [brian-team/brian2](https://github.com/brian-team/brian2); product ports retain
 source hashes and adaptation notes. Historical paper results remain tied to the
 source versions that produced them. The [PD14 reproduction](https://github.com/RockLi/brian2-atlas-preprint/tree/main/experiments/reproduction/pd14)
-pins Atlas commit `6677a5bafd3b703ab56b6ed176e9aad70f4638cd` and has passed its
+pins Atlas commit `bf1cf30af55a4a14ae42d0d75534728385b62d06` and has passed its
 documented bounded build-to-simulation checks. Public package publication, a formal release
 and paper submission are separate steps.
 

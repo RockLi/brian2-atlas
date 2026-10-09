@@ -1,0 +1,23 @@
+{
+  "schema": "atlas-stale-content-audit-v1",
+  "date": "2026-10-09",
+  "base_commit": "3db257b072fc142b2b268d872c4d7a8129daa248",
+  "scope": "All Git-tracked filenames and decodable text scanned; targeted manual review of current package metadata, runtime naming, entry-point documentation, workflows, manuscript and supplement. Not a line-by-line correctness or security audit.",
+  "tracked_files_scanned": 1212,
+  "text_files_scanned": 1186,
+  "markdown_rst_files_scanned": 80,
+  "current_document_missing_relative_links": [],
+  "remaining_old_marker_hits_in_current_text": [],
+  "historical_missing_relative_links": [],
+  "historical_policy": "Dated source/evidence, imported experiment reports, upstream release notes and prior drafts retain original identities and paths. Current navigation and manuscript links are repaired; archival paths are interpreted through archives/catalog.jsonl and restoration guides. Compatibility aliases and internal brian2_rust paths remain supported.",
+  "external_urls": "Network availability was not exhaustively checked; repository commit/path links are checked against local Git objects.",
+  "checks": "git diff --check; current local link resolution; manuscript and translation rebuild; targeted Atlas naming/capability regression.",
+  "targeted_tests": {
+    "passed": 10,
+    "deselected": 47,
+    "failures": 0,
+    "junit_sha256": "c05c56346c34717421ce5e173103cbd525282deec595995b799926f66b5e8ae8",
+    "scope": "Fresh import order and legacy serialization; both names on reference/AOT; unsupported configuration/model and capability failure before execution."
+  },
+  "runtime_change_scope": "Docstrings and diagnostic labels only; Cargo description and documentation updated. No numerical, lowering or execution logic changes."
+}
