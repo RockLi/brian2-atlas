@@ -7,7 +7,9 @@ repository contains the product implementation and its regression tests.
 the manuscript, historical experiments and reproduction materials.
 
 Atlas retains the upstream Brian2 Git history, author attribution and
-[CeCILL 2.1 licence](LICENSE). The migration baseline is Brian2 commit
+[CeCILL 2.1 licence](LICENSES/Brian2-LICENSE). Original Atlas engine code is
+licensed under [Apache-2.0](LICENSE); the combined checkout retains the upstream
+terms described in [license and repository scope](LICENSE_SCOPE.md). The migration baseline is Brian2 commit
 `27b5431168cf9959f0c27894cd4d92cdc6ad5c31`.
 
 ## Install from source
@@ -125,3 +127,8 @@ User simulation, training and MPI checkpoint commands are collected in the [sour
 ## AtlasIR
 
 [AtlasIR](brian2-rust/AtlasIR.md) is the shared intermediate representation for Atlas execution. Brian2 is the current modeling frontend. Python integrity/serialization APIs are available through `brian2_atlas.ir`. Frozen `b2ir-*` wire and ABI identifiers remain compatible; public native-function registrations also accept `atlasir-*` names.
+
+## Citation
+
+Use [CITATION.cff](CITATION.cff) to cite Atlas, recording the exact commit used.
+The upstream Brian2 citation is retained in [UPSTREAM_CITATION.cff](UPSTREAM_CITATION.cff).

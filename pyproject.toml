@@ -2,6 +2,7 @@
 name = "brian2-atlas"
 version = "0.1.0.dev0"
 authors = [
+    {name = 'Xinjun Li'},
     {name = 'Marcel Stimberg'},
     {name = 'Dan Goodman'},
     {name = 'Benjamin Evans'},
@@ -30,8 +31,8 @@ classifiers = [
     'Programming Language :: Python :: 3',
     'Topic :: Scientific/Engineering :: Bio-Informatics'
 ]
-license = 'CECILL-2.1'
-license-files = ["LICENSE", "AUTHORS", "CONTRIBUTORS"]
+license = 'CECILL-2.1 AND Apache-2.0'
+license-files = ["LICENSE", "LICENSES/*", "LICENSE_SCOPE.md", "NOTICE", "AUTHORS", "CONTRIBUTORS"]
 
 [project.optional-dependencies]
 cloud = ['modal>=1.5.5']

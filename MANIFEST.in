@@ -14,7 +14,8 @@ prune tutorials
 prune dev
 
 # Include license file in source tarball
-include LICENSE
+include LICENSE LICENSE_SCOPE.md NOTICE CITATION.cff UPSTREAM_CITATION.cff
+recursive-include LICENSES *
 
 # Exclude configuration files
 global-exclude .gitignore

@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 description = "Atlas native simulation and training executors"
 default-run = "b2-runner"
-license = "CECILL-2.1"
+license = "Apache-2.0"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

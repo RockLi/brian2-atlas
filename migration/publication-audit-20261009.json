@@ -1,0 +1,192 @@
+{
+  "schema": "atlas-publication-audit-v1",
+  "date": "2026-10-09",
+  "status": "needs-history-path-cleanup",
+  "secrets": {
+    "scanner": "Gitleaks 8.30.1",
+    "official_archive_sha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5",
+    "configuration": "Built-in rules, no project ignore file, ignore gitleaks:allow comments, full reachable history including merge diffs for engine, archive depth 4, redaction 100%.",
+    "confirmed_credentials": 0,
+    "limitations": "Pattern-based scanning is not proof of absence; unreachable server-side objects, hosting caches and reflogs are outside scope. No candidate credentials were tested against a service."
+  },
+  "repositories": {
+    "brian2-atlas": {
+      "audited_head": "a40a58bc8b664592bf19e3d2755627c96f7e3161",
+      "all_refs_object_scan": {
+        "commit": 7280,
+        "bytes_examined_including_archives": 456805016,
+        "tag": 50,
+        "tree": 26936,
+        "blob": 16598,
+        "archive_members": 109
+      },
+      "archive_scan_skips": [],
+      "gitleaks_raw_candidates": 0,
+      "redacted_gitleaks_report_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "private_key_headers": 0,
+      "sensitive_filename_candidates": 0,
+      "absolute_path_object_versions": 143,
+      "home_or_volume_path_object_versions": 15,
+      "head_home_or_volume_path_blobs": 11,
+      "example_affected_files": [
+        "migration/FINAL_REPORT.md",
+        "migration/atlas-public-api.json",
+        "migration/completion-audit.json",
+        "migration/concurrent-training-increment-2.json",
+        "migration/concurrent-training-increment-3.json",
+        "migration/evidence/cuda-followup-20261009.tar.gz"
+      ]
+    },
+    "brian2-atlas-preprint": {
+      "audited_head": "78cfce5bf0967ce1a4800d99159e3428d8ca6f27",
+      "all_refs_object_scan": {
+        "commit": 25,
+        "bytes_examined_including_archives": 506021534,
+        "tree": 208,
+        "blob": 2128,
+        "gzip_streams": 3,
+        "archive_members": 4645
+      },
+      "archive_scan_skips": [],
+      "gitleaks_raw_candidates": 11,
+      "redacted_gitleaks_report_sha256": "fc7dee98e7a6d1c75688ecc0d1fb547c90e9284813d049e21d470515c9b5b76a",
+      "private_key_headers": 0,
+      "sensitive_filename_candidates": 0,
+      "absolute_path_object_versions": 225,
+      "home_or_volume_path_object_versions": 123,
+      "head_home_or_volume_path_blobs": 110,
+      "example_affected_files": [
+        "archives/catalog.jsonl",
+        "archives/concurrent-evidence-supplement.json",
+        "archives/historical-git.json",
+        "archives/index.json",
+        "archives/migration-cutoff-disposition.jsonl.gz",
+        "archives/review-source-overlay.json"
+      ]
+    }
+  },
+  "false_positive_review": [
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/protocol/extended-followup-r2.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 290,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/protocol/extended-followup-arm64-r6.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 415,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/protocol/extended-followup-arm64-r5.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 415,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/sources/snapshot-manifest.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 735,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/protocol/extended-followup-r1.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 279,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/protocol/extended-followup-r3.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 331,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/protocol/extended-followup-arm64-r4.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 336,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "experiments/legacy/training-evaluation/sources/remote-bootstrap-source.tar.gz!sources/snapshot-manifest.json",
+      "commit": "edea16f9a60db02bb4a02ae0bc1c679d22fd740c",
+      "line": 735,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "paper/data/common_source/manifest.json",
+      "commit": "c50a033b00f1f6161fb0362749a398953a170d03",
+      "line": 302,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/brian2-rust/examples/contextual_dendritic_fig3_source_api_audit.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "paper/data/common_source/manifest.json",
+      "commit": "c50a033b00f1f6161fb0362749a398953a170d03",
+      "line": 614,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/brian2-rust/examples/modal_bitset_api_tests.py"
+    },
+    {
+      "rule": "generic-api-key",
+      "file": "paper/data/common_source/manifest.json",
+      "commit": "c50a033b00f1f6161fb0362749a398953a170d03",
+      "line": 929,
+      "classification": "false_positive_source_sha256",
+      "verified_source": "experiments/legacy/training-evaluation/frozen-sources.tar.gz!snapshot/brian2-rust/tests/test_gpu_bitset_api.py"
+    }
+  ],
+  "history_cleanup": "No history rewrite or force-push performed. A HEAD-only edit cannot remove earlier path strings. Cleaning published history requires a coordinated rewrite or a separate sanitized publication history, replacement of affected commit citations, and checksummed preservation of original evidence outside the public export.",
+  "license_decision": {
+    "original_engine": "Apache-2.0",
+    "original_evidence_code": "Apache-2.0",
+    "original_manuscript_data_figures": "CC-BY-4.0",
+    "upstream_brian2": "Existing CeCILL-2.1 and component notices retained verbatim; this combined engine checkout is not Apache-only.",
+    "cff_schema_validation": "Both files passed official CFF 1.2.0 JSON schema.",
+    "distribution_metadata": "Generated Python metadata includes CECILL-2.1 AND Apache-2.0 and all license/notice files."
+  },
+  "editorial_checks": {
+    "figure2": "Deleted redundant dated rerun sentence in English and Chinese; supplementary method retained without run-log details.",
+    "cgroup": "Verified 656.4363212585449 GiB peak at host index 5 against 660 GiB cap; added explicit English/Chinese clarification.",
+    "scientific_experiments_repeated": false,
+    "reason": "No runtime algorithm, numerical input or measured value changed.",
+    "pdfs": {
+      "en": {
+        "pages": 44,
+        "sha256": "74fb54e96908a0f1ed9d660e1afe5ea8589996881b639412f181419656644f1e",
+        "outside_page_characters": 0
+      },
+      "zh": {
+        "pages": 39,
+        "sha256": "783f6ddfd192e0a28e0774812a1aeddcd98df2cc4539d24b7ba8f4aa61d3dc31",
+        "outside_page_characters": 0
+      }
+    },
+    "translation_and_visual_qa": "passed"
+  },
+  "changed_file_scan": {
+    "scanner": "Gitleaks 8.30.1 dir",
+    "candidate_paths": 13,
+    "findings": 0,
+    "scope": "All edited and added files in the final candidate, including generated QA bookkeeping; full reachable history scanned separately."
+  }
+}
