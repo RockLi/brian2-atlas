@@ -2325,7 +2325,7 @@ class AtlasDevice(Device):
                 event_stream = population_results["event_streams"][pathway["event"]]
                 # Pre-threshold pathways sample each emission one endpoint tick
                 # later. The final emission is deferred to the next run; encode
-                # its arrivals as pending because frozen B2IR starts flags empty.
+                # its arrivals as pending because frozen AtlasIR starts flags empty.
                 spike_ticks = event_stream["ticks"] + sample_lags.get((synapse_index, pathway['name']), 0)
                 spike_indices = event_stream["indices"]
                 endpoint_start = definition[f"{endpoint}_start"]

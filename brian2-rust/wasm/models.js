@@ -1,5 +1,5 @@
 import {equationExamples} from './equation-library.js';
-// Model-specific controls and display metadata. Built-in exports and browser-authored equations share the validated B2IR executor.
+// Model-specific controls and display metadata. Built-in exports and browser-authored equations share the validated AtlasIR executor.
 const shared = {neurons:160,duration_ms:600,dt_ms:0.1,seed:42,synchronize:false};
 const field=(key,label,min,max,step=1,unit='')=>({key,label,min,max,step,unit});
 const lif={...shared,model:'adaptive_lif',drive:1.65,spread:.55,tau_ms:20,refractory_ms:2,adaptation:.06,tau_adapt_ms:120};
@@ -52,7 +52,7 @@ export const modelFor=config=>{const key=config.model??'adaptive_lif';return Obj
 const editableDefaults=(model,example)=>({...shared,neurons:160,model,...Object.fromEntries(Object.entries(example).filter(([k])=>k!=='label'))});
 const equationMeta={template:'editor-template.json',editable:true,scales:[160,1024,4096,8192],maxTicks:100000000,gpuScales:[160,1024,4096,8192,32768],gpuMaxTicks:400000000,dt:[.01,1],fields:[field('drive','Input drive',-10,40,.01,'model units'),field('spread','Drive heterogeneity',0,10,.01)],aux:['w'],auxUnit:'state / model units',voltageUnit:'v / model units',voltageRange:[-1,1],threshold:null,
   tag:'Editable equations',description:'Edit equations, parameters, initial values, threshold and reset. Compile and simulate entirely in your browser.',
-  equations:'Your equations → validated B2IR → WASM or WebGPU',reset:'Explicit Euler · 1–4 states · independent cells',
+  equations:'Your equations → validated AtlasIR → WASM or WebGPU',reset:'Explicit Euler · 1–4 states · independent cells',
   note:'Brian2-style equation subset, not Python. States use dimensionless numerical coordinates; ms and second carry time units. Parameters and initial values are numeric. Input drive varies across cells by the configured spread. Only explicitly marked states freeze during the fixed refractory period.',
   traceNote:'All declared states are recorded for up to 12 probes. Spikes are threshold events; choose a reset to avoid repeated events above threshold.',source:null};
 const adex=editableDefaults('adex',equationExamples.adex),qif=editableDefaults('quadratic_if',equationExamples.qif),custom=editableDefaults('custom',equationExamples.lif);

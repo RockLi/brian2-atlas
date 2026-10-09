@@ -1,4 +1,4 @@
-// Shared B2IR types, validation and native command-line adapter.
+// Shared AtlasIR types, validation and native command-line adapter.
 use compact_input::EncodedArray;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -3197,7 +3197,7 @@ impl Model {
                 && self.protocol.version.minor == 0
                 && self.protocol.canonical_encoding == "b2ir-canonical-json-v1"
                 && self.protocol.hash_algorithm == "sha256",
-            "unsupported B2IR protocol envelope",
+            "unsupported AtlasIR protocol envelope",
         )?;
         check(
             [
@@ -4601,7 +4601,7 @@ pub fn run_cli() -> Result<()> {
         if size >= 8 * 1024 * 1024 {
             let mut reader = BufReader::with_capacity(64 * 1024, input.take(max_ir_bytes + 1));
             if compact_input::validate(&mut reader).is_ok() && reader.get_ref().limit() > 0 {
-                println!("validated B2IR");
+                println!("validated AtlasIR");
                 return Ok(());
             }
         }
@@ -4642,7 +4642,7 @@ pub fn run_cli() -> Result<()> {
     model.validate()?;
     check(
         actual.as_ref() == Some(&expected),
-        "B2IR canonical layer hash mismatch",
+        "AtlasIR canonical layer hash mismatch",
     )?;
     if initialization {
         let budget: usize = args[4]
@@ -4654,7 +4654,7 @@ pub fn run_cli() -> Result<()> {
         println!("{}", serde_json::to_string(&expected["layers"])?);
         Ok(())
     } else if validate_only {
-        println!("validated B2IR");
+        println!("validated AtlasIR");
         Ok(())
     } else {
         executor::execute(model, directory)
@@ -4682,7 +4682,7 @@ fn canonical_hash(value: &serde_json::Value) -> Result<String> {
 }
 
 fn protocol_layers(value: &serde_json::Value) -> Result<serde_json::Value> {
-    let object = value.as_object().ok_or("B2IR root must be an object")?;
+    let object = value.as_object().ok_or("AtlasIR root must be an object")?;
     Ok(serde_json::json!({
         "definition": canonical_hash(object.get("definition").ok_or("missing definition")?)?,
         "instance": canonical_hash(object.get("instance").ok_or("missing instance")?)?,
@@ -4704,7 +4704,7 @@ fn prepare_protocol(value: &mut serde_json::Value) -> Result<()> {
     let schema = value
         .get("schema")
         .and_then(serde_json::Value::as_str)
-        .ok_or("missing B2IR schema")?
+        .ok_or("missing AtlasIR schema")?
         .to_owned();
     if matches!(
         schema.as_str(),
@@ -4718,14 +4718,14 @@ fn prepare_protocol(value: &mut serde_json::Value) -> Result<()> {
         } else {
             check(
                 value.get("protocol").is_none(),
-                "legacy B2IR has a protocol envelope",
+                "legacy AtlasIR has a protocol envelope",
             )?;
         }
         let populations = value
             .get_mut("definition")
             .and_then(|definition| definition.get_mut("populations"))
             .and_then(serde_json::Value::as_array_mut)
-            .ok_or("legacy B2IR has no population table")?;
+            .ok_or("legacy AtlasIR has no population table")?;
         for population in populations {
             population
                 .as_object_mut()
@@ -4737,7 +4737,7 @@ fn prepare_protocol(value: &mut serde_json::Value) -> Result<()> {
             .get_mut("definition")
             .and_then(|definition| definition.get_mut("functions"))
             .and_then(serde_json::Value::as_array_mut)
-            .ok_or("legacy B2IR has no Function table")?;
+            .ok_or("legacy AtlasIR has no Function table")?;
         for function in functions {
             let function = function
                 .as_object_mut()
@@ -4754,11 +4754,11 @@ fn prepare_protocol(value: &mut serde_json::Value) -> Result<()> {
         let protocol = expected_protocol(value)?;
         value
             .as_object_mut()
-            .ok_or("B2IR root must be an object")?
+            .ok_or("AtlasIR root must be an object")?
             .insert("protocol".into(), protocol);
         return Ok(());
     }
-    check(schema == "b2ir-v1", "unsupported B2IR schema")?;
+    check(schema == "b2ir-v1", "unsupported AtlasIR schema")?;
     Ok(())
 }
 
@@ -4768,7 +4768,7 @@ fn verify_protocol(value: &serde_json::Value) -> Result<()> {
         value
             .get("protocol")
             .is_some_and(|actual| actual == &expected),
-        "B2IR canonical layer hash mismatch",
+        "AtlasIR canonical layer hash mismatch",
     )
 }
 

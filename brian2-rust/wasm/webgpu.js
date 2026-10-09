@@ -69,7 +69,7 @@ export function compileWebGPU(model,input){
   if(monitors!==1||thresholds!==1)throw Error('WebGPU requires one state monitor and one threshold.');
   body+=`if(!(${states.map(s=>`abs(${symbols.get(s)})<=3.402823e38f`).join(' && ')})){failed=1.0f;break;}\n`;
   finish+=`state[${states.length*n}u+i]=f32(last);state[${(states.length+1)*n}u+i]=select(0.0f,1.0f,${refractory});state[${(states.length+2)*n}u+i]=failed;`;
-  const source=`// ${WEBGPU_PROFILE}: Brian2 B2IR expressions lowered to WGSL f32.
+  const source=`// ${WEBGPU_PROFILE}: Brian2 AtlasIR expressions lowered to WGSL f32.
 @group(0) @binding(0) var<storage,read_write> state: array<f32>;
 @group(0) @binding(1) var<storage,read> parameters: array<f32>;
 @group(0) @binding(2) var<storage,read_write> spikes: array<u32>;

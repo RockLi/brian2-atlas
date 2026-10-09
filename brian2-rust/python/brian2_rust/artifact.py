@@ -45,7 +45,7 @@ def write_compatible_instance(
 ) -> dict:
     """Write instance data after proving Definition, Run and code compatibility.
 
-    This permits hot replacement of values already represented in B2IR's
+    This permits hot replacement of values already represented in AtlasIR's
     instance layer. Definition/Run changes (including external C Function
     implementations) and changes to specialized Rust code are rejected.
     """

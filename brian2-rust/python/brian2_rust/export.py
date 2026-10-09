@@ -1,4 +1,4 @@
-"""Lower the checked Brian2 population/synapse subset into stable B2IR v1."""
+"""Lower the checked Brian2 population/synapse subset into stable AtlasIR v1."""
 
 import json
 import math
@@ -245,7 +245,7 @@ def _value_bits(value, dtype):
     if dtype == "f32":
         value = np.float32(value)
         if not np.isfinite(value):
-            raise ValueError("B2IR values must be finite")
+            raise ValueError("AtlasIR values must be finite")
         return struct.pack(">f", value).hex()
     if dtype == "bool":
         return "01" if bool(value) else "00"
@@ -355,7 +355,7 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
         elif equation.type == "subexpression":
             # Brian's state updater expands deterministic subexpressions into
             # its abstract code. They therefore need no runtime storage in
-            # B2IR, but accepting them is essential for HH alpha/beta rates.
+            # AtlasIR, but accepting them is essential for HH alpha/beta rates.
             require(not equation.flags or set(equation.flags) == {"shared"},
                     "subexpressions support only Brian's (shared) flag")
         else:
@@ -367,7 +367,7 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
             elif flags == {"shared"}:
                 # A Brian mutable shared parameter is assigned in the scalar
                 # part of a run_regularly CodeRunner and then read by its
-                # vector part.  B2IR stores a synchronized copy per neuron so
+                # vector part.  AtlasIR stores a synchronized copy per neuron so
                 # existing state persistence and monitor machinery can remain
                 # unchanged; the restrictions below prove every copy receives
                 # the same scalar value.
@@ -432,7 +432,7 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
                index_name.removeprefix("-").isdigit())):
             # Brian represents a scalar linked-variable broadcast by storing
             # the fixed source index directly in ``variables.indices``.  Keep
-            # the frozen B2IR schema and materialize that mapping as the
+            # the frozen AtlasIR schema and materialize that mapping as the
             # already-supported constant index form.
             source_index = int(index_name)
             require(0 <= source_index < len(source_group),
@@ -872,7 +872,7 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
         # white noise with dimensions time**-0.5.  It is a private Wiener
         # increment assigned as ``sqrt(dt) * randn()`` and therefore has
         # dimensions time**0.5.  Use that generated-code meaning for both
-        # Brian's statement unit check and B2IR dimension inference.
+        # Brian's statement unit check and AtlasIR dimension inference.
         for name in stochastic_names & set(variables):
             variables[name] = AuxiliaryVariable(
                 name, dimensions=(second**0.5).dim,
@@ -883,7 +883,7 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
         code_variables.update(variables)
         for name in (set(mutable_shared) & set(code_variables)) - written:
             variable = code_variables[name]
-            # B2IR represents mutable shared storage as synchronized neuron
+            # AtlasIR represents mutable shared storage as synchronized neuron
             # lanes. Code objects that only read it therefore lower the read
             # as a vector value instead of Brian's scalar-loop hoist. A scalar
             # run_regularly writer retains Brian's original scalar metadata.
@@ -894,7 +894,7 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
         # expands them into a numerical state updater. That generated code can
         # replace a dimensionful zero (for example ``0*mV`` in ``clip``) with
         # the polymorphic literal ``0``, which Brian's source-level checker no
-        # longer accepts. B2IR's own dimension inference below deliberately
+        # longer accepts. AtlasIR's own dimension inference below deliberately
         # preserves this zero-literal rule and validates every assignment.
         if kind not in {"state_update"}:
             check_units_statements(code, code_variables)
@@ -945,7 +945,7 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
                 f"{name}: declare per-neuron parameters in the equations")
         value = np.asarray(var.get_value()).reshape(-1)
         if name == "inf" and var is DEFAULT_CONSTANTS["inf"]:
-            # Public B2IR storage is finite-only. Generated state-updater code
+            # Public AtlasIR storage is finite-only. Generated state-updater code
             # nevertheless keeps Brian's ``inf*unit`` clip bound as a named
             # constant. Saturating that built-in constant to the largest f64
             # preserves the clip result for all representable model states.
@@ -2085,7 +2085,7 @@ def _lower_network(network, duration, namespace=None, rng_seed=0,
         synapse_specs = []
 
         def normalize_local_indices(variables):
-            """Keep B2IR i/j local while discarding Brian subgroup offset helpers."""
+            """Keep AtlasIR i/j local while discarding Brian subgroup offset helpers."""
             dependencies = set()
             for index_name in ("i", "j"):
                 variable = variables.get(index_name)
@@ -2211,7 +2211,7 @@ def _lower_network(network, duration, namespace=None, rng_seed=0,
             pathway_identifiers = get_identifiers(pathway_code)
             # Brian exposes an unqualified postsynaptic state name as well as
             # its explicit ``_post`` alias.  Canonicalise code that happens to
-            # use both spellings so B2IR has one storage alias per state.
+            # use both spellings so AtlasIR has one storage alias per state.
             duplicate_post_aliases = {
                 state: f"{state}_post" for state in target_states
                 if state in pathway_identifiers and
@@ -2538,7 +2538,7 @@ def _lower_network(network, duration, namespace=None, rng_seed=0,
 def lower_network(network, duration, namespace=None, rng_seed=0,
                   recording_window_steps=None,
                   _network_operations_prevalidated=False):
-    """Return B2IR or raise one structured model-wide capability error."""
+    """Return AtlasIR or raise one structured model-wide capability error."""
     report = collect_network_issues(
         network, duration,
         network_operations_prevalidated=_network_operations_prevalidated)

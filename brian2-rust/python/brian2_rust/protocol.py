@@ -1,4 +1,4 @@
-"""Canonical layer hashing and explicit probe-schema migrations for B2IR."""
+"""Canonical layer hashing and explicit probe-schema migrations for AtlasIR."""
 
 from __future__ import annotations
 
@@ -8,6 +8,9 @@ import json
 
 from .encoded_array import EncodedArray, IndexArray
 
+IR_NAME = "AtlasIR"
+# Frozen wire identifiers are compatibility contracts, not display names.
+# Keep them unchanged so model bytes, hashes and existing consumers agree.
 CURRENT_SCHEMA = "b2ir-v1"
 PREVIOUS_SCHEMAS = (
     "b2ir-gate0-probe-v34",
@@ -26,7 +29,7 @@ def _json_default(value):
 
 
 def canonical_bytes(value) -> bytes:
-    """Encode a B2IR value with the versioned canonical JSON profile."""
+    """Encode an AtlasIR value with the versioned canonical JSON profile."""
     return json.dumps(
         value,
         sort_keys=True,
@@ -112,9 +115,9 @@ def verify_protocol(model: dict) -> None:
             set(protocol) != {*expected_header, "layers"} or
             canonical_bytes({name: protocol.get(name) for name in expected_header})
             != canonical_bytes(expected_header)):
-        raise ValueError("invalid B2IR protocol envelope")
+        raise ValueError("invalid AtlasIR protocol envelope")
     if protocol.get("layers") != layer_hashes(model):
-        raise ValueError("B2IR canonical layer hash mismatch")
+        raise ValueError("AtlasIR canonical layer hash mismatch")
 
 
 def migrate_model(model: dict) -> dict:
@@ -124,7 +127,7 @@ def migrate_model(model: dict) -> dict:
     if schema in PREVIOUS_SCHEMAS:
         if schema == PREVIOUS_SCHEMAS[0]:
             if "protocol" in migrated:
-                raise ValueError("legacy B2IR has a protocol envelope")
+                raise ValueError("legacy AtlasIR has a protocol envelope")
         else:
             verify_protocol(migrated)
             migrated.pop("protocol")
@@ -136,6 +139,6 @@ def migrate_model(model: dict) -> dict:
         migrated["schema"] = CURRENT_SCHEMA
         return attach_protocol(migrated)
     if schema != CURRENT_SCHEMA:
-        raise ValueError(f"unsupported B2IR schema {schema!r}")
+        raise ValueError(f"unsupported AtlasIR schema {schema!r}")
     verify_protocol(migrated)
     return migrated

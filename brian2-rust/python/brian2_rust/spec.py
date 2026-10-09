@@ -200,7 +200,7 @@ def infer_dimensions(expr, symbols, functions=None):
 
 
 def infer_dtype(expr, symbols, functions=None):
-    """Infer the exact B2IR dtype used to insert explicit storage casts."""
+    """Infer the exact AtlasIR dtype used to insert explicit storage casts."""
     functions = {} if functions is None else functions
     op = expr["op"]
     if op in {"literal", "rand", "randn", "binomial", "poisson",
@@ -240,7 +240,7 @@ def require(condition, message):
 def bits(value):
     value = float(value)
     if not math.isfinite(value):
-        raise ValueError("B2IR values must be finite")
+        raise ValueError("AtlasIR values must be finite")
     return struct.pack(">d", value).hex()
 
 
@@ -493,10 +493,10 @@ def expression(source, allocate_random_stream=None, random_functions=None,
 
 
 def portable_function_contract(name, function):
-    """Build a deterministic B2IR contract for a Brian ``Function``.
+    """Build a deterministic AtlasIR contract for a Brian ``Function``.
 
     A restricted Python expression is the portable implementation.  An
-    explicitly registered ``b2ir-c-abi-v1`` implementation can additionally
+    explicitly registered ``atlasir-c-abi-v1`` implementation can additionally
     provide a content-addressed CPU implementation for AOT.  The latter is
     never inferred from Python and is compiled as a separate C translation
     unit, so its language boundary is a versioned C ABI rather than Rust's
@@ -611,6 +611,10 @@ def portable_function_contract(name, function):
         "b2ir-metal-v1": ("metal", "b2ir-metal-v1"),
         "b2ir-wgsl-v1": ("wgsl", "b2ir-wgsl-v1"),
     }
+    # AtlasIR is the public registration name. Stable v1 ABI strings remain
+    # byte-compatible with existing models and compiled artifact identities.
+    backend_targets.update({target.replace("b2ir-", "atlasir-", 1): descriptor
+                            for target, descriptor in list(backend_targets.items())})
     for target, (backend, abi) in backend_targets.items():
         if target not in function.implementations:
             continue
@@ -625,18 +629,22 @@ def portable_function_contract(name, function):
                 type(symbol_name) is str and symbol_name.isidentifier() and
                 symbol_name.isascii(),
                 f"{name}: invalid {backend} source or entry point")
-        backend_implementations[backend] = {
+        descriptor = {
             "abi": abi,
             "symbol": symbol_name,
             "source": source,
             "source_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
         }
+        require(backend not in backend_implementations or
+                backend_implementations[backend] == descriptor,
+                f"{name}: conflicting AtlasIR and legacy {backend} implementations")
+        backend_implementations[backend] = descriptor
     if lowered is None and not backend_implementations:
         if isinstance(portable_error, NotImplementedError):
             raise portable_error
         raise NotImplementedError(
             f"Atlas capability: {name}: provide a portable expression or "
-            "b2ir-c-abi-v1 implementation") from portable_error
+            "atlasir-c-abi-v1 implementation (legacy b2ir-c-abi-v1 is accepted)") from portable_error
     implementations = {}
     if lowered is not None:
         canonical_body = json.dumps(
@@ -687,7 +695,7 @@ def private_runtime_integer(source, constants):
     """Whether Brian emitted a bounded, non-model integer temporary.
 
     ``timestep(t, dt)`` and boolean ``int(...)`` are often hoisted into i64
-    scalar temporaries even when the user-visible destination is f64. B2IR
+    scalar temporaries even when the user-visible destination is f64. AtlasIR
     represents timestep results as logical ticks and makes any later f64
     conversion explicit; boolean integers remain exact 0/1 conversions.
     """
@@ -718,7 +726,7 @@ def private_runtime_integer(source, constants):
                 # Brian hoists both ``timestep(t-lastspike, dt)`` and
                 # ``timestep(duration_expression, dt)`` into private i64
                 # temporaries. The public operands remain unit-checked f64
-                # quantities; the result is a typed logical tick in B2IR.
+                # quantities; the result is a typed logical tick in AtlasIR.
                 return len(node.args) == 2 and not node.keywords
             if node.func.id == "int" and len(node.args) == 1 and not node.keywords:
                 return isinstance(node.args[0], (ast.Compare, ast.BoolOp))
@@ -760,7 +768,7 @@ def guard_private_temporaries(statements, model_inputs):
 
     Brian's C++ generator avoids calculating state-updater temporaries while an
     ``(unless refractory)`` state is frozen. Express the same data-flow fact
-    explicitly in B2IR so every executor gets identical work and semantics.
+    explicitly in AtlasIR so every executor gets identical work and semantics.
     """
     changed = True
     while changed:

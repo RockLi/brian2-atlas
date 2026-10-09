@@ -1,4 +1,4 @@
-"""Browser physical plans and self-contained B2IR/plan bundles.
+"""Browser physical plans and self-contained AtlasIR/plan bundles.
 
 Only portable reference semantics are selected. Browser-side Rust independently
 revalidates both the wire model and the entire logical/physical plan.

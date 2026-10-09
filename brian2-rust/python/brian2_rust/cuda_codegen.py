@@ -17,8 +17,8 @@ using uint = unsigned int;
 using ulong = unsigned long;
 using uchar = unsigned char;
 using atomic_uint = uint;
-static_assert(sizeof(long) == 8, "B2IR tick storage needs 64-bit long");
-static_assert(sizeof(ulong) == 8, "B2IR counters need 64-bit ulong");
+static_assert(sizeof(long) == 8, "AtlasIR tick storage needs 64-bit long");
+static_assert(sizeof(ulong) == 8, "AtlasIR counters need 64-bit ulong");
 template<class T, class U> __device__ inline T as_type(U bits) {
     static_assert(sizeof(T)==sizeof(U), "bit-cast width mismatch");
     T result; memcpy(&result, &bits, sizeof(T)); return result;

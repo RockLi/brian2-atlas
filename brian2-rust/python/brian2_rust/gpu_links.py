@@ -107,7 +107,7 @@ def serial_self_links(model,node):
 
 
 def self_link_kernel(model,logical,node,ordinal,population,types):
-    """Raw B2IR can express self mappings excluded by the Brian frontend.
+    """Raw AtlasIR can express self mappings excluded by the Brian frontend.
 
     Preserve reference batching: regular/threshold/update inputs are bound per
     256-neuron batch; resets bind/commit one fired neuron at a time. One GPU lane

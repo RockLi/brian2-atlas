@@ -1,4 +1,4 @@
-"""Reconstruct Brian2 read-only StateMonitor observables from B2IR samples.
+"""Reconstruct Brian2 read-only StateMonitor observables from AtlasIR samples.
 
 The runtime records physical state dependencies at the monitor's start slot.
 This adapter evaluates deterministic subexpressions in SI units and derives

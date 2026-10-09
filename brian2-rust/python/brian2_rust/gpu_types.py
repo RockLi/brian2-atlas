@@ -105,7 +105,7 @@ def integer_literal(value, dtype):
     return f'as_type<{CTYPES[dtype]}>({value})' if dtype.startswith('i') else value
 
 
-# B2IR integer casts truncate/wrap between widths. Signed arithmetic uses the
+# AtlasIR integer casts truncate/wrap between widths. Signed arithmetic uses the
 # corresponding unsigned word so C++ signed overflow cannot change semantics.
 def wrap(value, dtype):
     unsigned = 'uint' if dtype.endswith('32') else 'ulong'

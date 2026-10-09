@@ -1,4 +1,4 @@
-//! Cross-language contract for the browser physical plan. B2IR remains frozen.
+//! Cross-language contract for the browser physical plan. AtlasIR remains frozen.
 use super::*;
 
 // Browser input remains bounded independently of the native large-model limit.
@@ -122,7 +122,7 @@ fn validated_plan(value: serde_json::Value) -> Result<(Model, serde_json::Value)
     Ok((model, expected))
 }
 
-/// Authoring boundary: explicitly accept an edited B2IR draft, validate its
+/// Authoring boundary: explicitly accept an edited AtlasIR draft, validate its
 /// semantics and produce new wire hashes and a new browser execution plan.
 /// Loading an existing bundle still uses the strict constructor above.
 pub fn compile_browser_bundle(draft_json: &str) -> Result<String> {
@@ -131,7 +131,7 @@ pub fn compile_browser_bundle(draft_json: &str) -> Result<String> {
         "WASM model exceeds 128 MiB",
     )?;
     let mut value: serde_json::Value = serde_json::from_str(draft_json)?;
-    check(value["schema"] == "b2ir-v1", "authoring requires B2IR v1")?;
+    check(value["schema"] == "b2ir-v1", "authoring requires AtlasIR v1")?;
     value["protocol"] = expected_protocol(&value)?;
     let (_, plan) = validated_plan(value.clone())?;
     Ok(serde_json::to_string(&serde_json::json!({

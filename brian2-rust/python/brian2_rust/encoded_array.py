@@ -1,6 +1,6 @@
 """Immutable encoded scalars for the device's private, large-array IR.
 
-Public exports still use ordinary lists. This storage changes neither B2IR JSON
+Public exports still use ordinary lists. This storage changes neither AtlasIR JSON
 nor the binary instance format; it avoids one Python string per synaptic value.
 """
 from collections.abc import Sequence
@@ -48,9 +48,9 @@ class EncodedArray(Sequence):
             raise ValueError("invalid uniform encoded array")
         values = np.frombuffer(self._data, dtype=_DTYPES[self.dtype])
         if values.dtype.kind == "f" and not np.isfinite(values).all():
-            raise ValueError("B2IR values must be finite")
+            raise ValueError("AtlasIR values must be finite")
         if self.dtype == "bool" and np.any(np.frombuffer(self._data, dtype=np.uint8) > 1):
-            raise ValueError("B2IR bool values must be 00 or 01")
+            raise ValueError("AtlasIR bool values must be 00 or 01")
 
     @classmethod
     def from_values(cls, values, dtype):

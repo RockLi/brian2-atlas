@@ -1,6 +1,6 @@
-"""Versioned, immutable execution plans derived from validated B2IR.
+"""Versioned, immutable execution plans derived from validated AtlasIR.
 
-The plan is backend-private: it never changes the frozen B2IR document. JSON
+The plan is backend-private: it never changes the frozen AtlasIR document. JSON
 is an inspection format, not trusted executable input. The public builder
 uses the independent Rust validator before deriving a plan.
 """
@@ -296,7 +296,7 @@ def validate_model(model, *, runner=None):
     from ._runtime import executable_path
     executable = executable_path("b2-runner", runner)
     if not executable.is_file():
-        raise FileNotFoundError(f"build the Rust B2IR validator before planning: {executable}")
+        raise FileNotFoundError(f"build the Rust AtlasIR validator before planning: {executable}")
     with tempfile.TemporaryDirectory(prefix="b2-plan-validate-") as directory:
         path = Path(directory) / "model.json"
         path.write_bytes(canonical_bytes(current))
@@ -347,7 +347,7 @@ def build_execution_plan(model, *, runner=None, backend="cpu", numeric_mode=None
 def verify_execution_plan(plan, model, *, synapse_sparse=False, synapse_prefix=False, synapse_fusion=False):
     """Re-derive all choices as well as identity; hashes alone are not a proof.
 
-    The caller must use the independent B2IR validator at an external input
+    The caller must use the independent AtlasIR validator at an external input
     boundary. This verifier is also used inside the validated AOT pipeline.
     """
     from .metal import MetalPlan, _derive_metal_plan

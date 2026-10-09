@@ -6,6 +6,7 @@ Brian2 Atlas and Brian2 frontend documentation
    This checkout distributes Brian2 Atlas. Start with the
    `Atlas installation and backend guide <https://github.com/RockLi/brian2-atlas/blob/dev/README.md>`_
    and select ``brian2_atlas`` / ``set_device("atlas", ...)``.
+   The shared representation is `AtlasIR <https://github.com/RockLi/brian2-atlas/blob/dev/brian2-rust/AtlasIR.md>`_.
    The Brian2 documentation below describes the retained modelling frontend
    and upstream devices; its installation commands, support channels and
    device capabilities do not by themselves describe Atlas qualification.

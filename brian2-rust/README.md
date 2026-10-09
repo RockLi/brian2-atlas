@@ -40,3 +40,7 @@ Distributed planning, generated MPI projects, partitioning, collective transport
 `NativeLIFTrainer`, Brian network conversion, dynamic clocks, state/checkpoint continuation and native CPU/Metal/CUDA/MPI training are included. Build the training executable with `cargo +1.98.1 build --release --locked --bin b2-train --manifest-path brian2-rust/Cargo.toml`. Source-mode tests can select it with `B2_TRAIN_RUNNER`; installed users obtain the bundled executable automatically.
 
 The [initial training qualification](../migration/p5-native-training-port.json) records CPU/Metal numerical and checkpoint behavior, callback-training increments and the initial CUDA/MPI scope. The [CUDA follow-up](../migration/cuda-cutoff-followup.json) subsequently passed all 708 previously skipped cases from 15 modules plus one C ABI regression on a Modal NVIDIA L4: 709 passed, zero failed or skipped. It includes two same-host MPI ranks sharing one GPU; cross-host and multi-GPU training remain outside this qualification. The [public API qualification](../migration/atlas-public-api.json) covers Atlas aliases and installed-package CPU/AOT/Metal flows.
+
+## AtlasIR
+
+[AtlasIR](AtlasIR.md) is the shared intermediate representation for Atlas execution. Brian2 is the current modeling frontend. Python integrity/serialization APIs are available through `brian2_atlas.ir`. Frozen `b2ir-*` wire and ABI identifiers remain compatible; public native-function registrations also accept `atlasir-*` names.

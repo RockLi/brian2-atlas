@@ -1,4 +1,4 @@
-//! Validated B2IR execution shared by native and browser backends.
+//! Validated AtlasIR execution shared by native and browser backends.
 include!("model.rs");
 mod binary_topology;
 mod canonical;

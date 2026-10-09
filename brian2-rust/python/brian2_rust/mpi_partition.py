@@ -110,7 +110,7 @@ def write_shards(model, directory, plan):
                     total = info['edge_count']
                     explicit = False
                 else:
-                    # Explicit B2IR already contains endpoint lists; stable sort
+                    # Explicit AtlasIR already contains endpoint lists; stable sort
                     # retains original creation order within each source row.
                     sources, targets, rank_ids = explicit_cache[q]
                     total = len(targets)

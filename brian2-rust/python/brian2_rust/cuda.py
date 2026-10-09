@@ -2,7 +2,7 @@
 
 The current lowering shares the validated scalar schedule and storage layout
 with Metal. CUDA owns its plan identity, compiler settings, device allocations,
-stream and kernels. Unsupported B2IR features fail during planning.
+stream and kernels. Unsupported AtlasIR features fail during planning.
 """
 from dataclasses import asdict, dataclass, replace
 import ctypes

@@ -8,3 +8,7 @@ from brian2_rust import *  # noqa: F401,F403
 from brian2_rust import __all__ as _implementation_exports
 
 __all__ = list(_implementation_exports)
+
+from . import ir
+from .ir import IR_NAME
+__all__ += ["ir", "IR_NAME"]

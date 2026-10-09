@@ -1,6 +1,6 @@
 """CPU legality and cost policy, independent of source emission.
 
-Input models must have passed the B2IR semantic validator. This module never
+Input models must have passed the AtlasIR semantic validator. This module never
 emits Rust, mutates a model, compiles code or starts a simulation.
 """
 from __future__ import annotations
@@ -286,7 +286,7 @@ def _schedule_code_node(model, owner_kind, owner_index, item_index):
             node["item_index"] == item_index)
     ]
     if len(matches) != 1:
-        raise ValueError("B2IR schedule does not uniquely reference a code object")
+        raise ValueError("AtlasIR schedule does not uniquely reference a code object")
     return matches[0]
 
 
@@ -786,7 +786,7 @@ def general_cpu_choices(model):
 
 
 def compact_cpu_choices(model):
-    """Policies for the lossless v6 projection; the input remains B2IR v1."""
+    """Policies for the lossless v6 projection; the input remains AtlasIR v1."""
     d, inst = model["definition"], model["instance"]
     pop = d["populations"][0]
     synapse = d["synapses"][0] if d["synapses"] else None

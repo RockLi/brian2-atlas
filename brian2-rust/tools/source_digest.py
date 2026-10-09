@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compute a reproducible digest for the sources used by B2IR validation.
+"""Compute a reproducible digest for the sources used by AtlasIR validation.
 
 Build products, caches, benchmark output, native extension binaries, generated
 version metadata, and the freeze report itself are intentionally excluded. The
@@ -35,7 +35,7 @@ EXCLUDED_PARTS = {
     "output",
     "target",
 }
-EXCLUDED_NAMES = {"B2IR_FREEZE_REPORT.md", "_version.py"}
+EXCLUDED_NAMES = {"AtlasIR_FREEZE_REPORT.md", "_version.py"}
 
 
 def selected_files(repository_root: Path) -> list[Path]:

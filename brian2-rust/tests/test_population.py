@@ -32,7 +32,7 @@ PORTABLE_VOLTAGE_FUNCTION = b.Function(portable_voltage_rhs, stateless=True)
 
 
 @b.implementation(
-    "b2ir-c-abi-v1",
+    "atlasir-c-abi-v1",
     """
     #include <math.h>
     double b2_native_voltage_rhs(double x, double tau, double scale) {
@@ -48,7 +48,7 @@ def native_voltage_rhs(x, tau, scale):
 
 
 @b.implementation(
-    "b2ir-c-abi-v1",
+    "atlasir-c-abi-v1",
     """
     #include <stdint.h>
     uint8_t b2_native_odd(int64_t x) { return (uint8_t)((x % 2) != 0); }
@@ -62,7 +62,7 @@ def native_odd(x):
 
 
 @b.implementation(
-    "b2ir-metal-v1",
+    "atlasir-metal-v1",
     "inline double b2_metal_identity(double x) { return x; }",
     name="b2_metal_identity",
 )
@@ -75,7 +75,7 @@ PORTABLE_CAPTURE = 0.25
 
 
 @b.implementation(
-    "b2ir-c-abi-v1",
+    "atlasir-c-abi-v1",
     "double b2_native_captured(double x) { return x + 0.25; }",
     name="b2_native_captured",
 )

@@ -1,7 +1,7 @@
 """Native CPU/Metal/CUDA LIF training; Python transports plans and snapshots.
 
 No Python tensor/autodiff runtime performs the forward, backward or optimizer.
-The v1 dense and v2 projection plans are independent of the B2IR simulation ABI.
+The v1 dense and v2 projection plans are independent of the AtlasIR simulation ABI.
 """
 import copy
 from contextlib import contextmanager

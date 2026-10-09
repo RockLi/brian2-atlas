@@ -1,4 +1,4 @@
-"""GPU counter RNG: B2IR counters with an explicit 24-bit uniform projection.
+"""GPU counter RNG: AtlasIR counters with an explicit 24-bit uniform projection.
 
 The helpers run on the GPU; no host-side sample table or mutable RNG state is
 used. Continuous distributions follow the GPU f32 arithmetic contract. Binomial

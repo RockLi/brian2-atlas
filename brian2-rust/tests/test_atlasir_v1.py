@@ -1,4 +1,4 @@
-"""Frozen B2IR v1 byte, migration and cross-language conformance vectors."""
+"""Frozen AtlasIR v1 byte, migration and cross-language conformance vectors."""
 
 from __future__ import annotations
 

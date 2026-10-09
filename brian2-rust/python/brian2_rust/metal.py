@@ -1,7 +1,7 @@
 """Opt-in float32 Metal execution with validated backend-private plans.
 
 Independent populations fuse all ticks per lane. Coupled models use the bounded
-canonical DAG in metal_dag, with explicit cross-lane synchronization. B2IR stays
+canonical DAG in metal_dag, with explicit cross-lane synchronization. AtlasIR stays
 reference-f64; float32 is an explicitly approximate execution contract.
 """
 from __future__ import annotations
@@ -202,7 +202,7 @@ class _Expressions:
                                          "right":{"op":"load","name":"lastspike"}}):
                 return self.refractory_elapsed
             value = f"b2_timestep(float({self.expr(node['time'])}), float({self.expr(node['dt'])}), &{self.math_error})"
-            # B2IR eagerly evaluates logical operands, but a statement's mask
+            # AtlasIR eagerly evaluates logical operands, but a statement's mask
             # suppresses its entire RHS. Sequence checked calls accordingly.
             return self.checked(value, "long")
         if op == "tick_offset":
@@ -310,7 +310,7 @@ inline long b2_timestep(float value, float dt, thread bool *fault) {
     return long(steps);
 }
 inline long b2_tick_offset(long tick, long offset, thread bool *fault) {
-    // Frozen B2IR evaluates logical ticks as f64. The boundary ties
+    // Frozen AtlasIR evaluates logical ticks as f64. The boundary ties
     // +(2^53+1) and -(2^53+1) round to +/-2^53 and are accepted there.
     // Check before addition so even invalid inputs cannot overflow int64.
     const long limit = 9007199254740992l;
@@ -327,7 +327,7 @@ inline float b2_finite(float value, thread bool *error) {
     return value;
 }
 inline float b2_clip(float value, float lo, float hi) {
-    // B2IR defines ordered max/min even when bounds are reversed. std::clamp
+    // AtlasIR defines ordered max/min even when bounds are reversed. std::clamp
     // has a precondition lo <= hi and is not this operation.
     return fmin(fmax(value,lo),hi);
 }

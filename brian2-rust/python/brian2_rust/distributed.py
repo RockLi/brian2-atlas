@@ -1,4 +1,4 @@
-"""Experimental MPI planning and AOT launch, outside the frozen B2IR ABI.
+"""Experimental MPI planning and AOT launch, outside the frozen AtlasIR ABI.
 
 Partitions mutable state, incoming CSR and input files while retaining global
 identities. Read-only presynaptic replicas and final rank-zero output remain.
@@ -318,7 +318,7 @@ def _derive_distributed_plan(model, ranks, population_owners=None, rank_backends
 
 def build_distributed_plan(model, *, ranks=2, runner=None, population_owners=None,
                            rank_backends=None, numeric_mode="reference-f64"):
-    """Independently validate B2IR, then derive the complete MPI v1 contract."""
+    """Independently validate AtlasIR, then derive the complete MPI v1 contract."""
     return _derive_distributed_plan(validate_model(model, runner=runner), ranks, population_owners, rank_backends, numeric_mode)
 
 

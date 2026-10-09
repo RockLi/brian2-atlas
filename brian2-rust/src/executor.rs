@@ -5292,7 +5292,7 @@ impl Program {
             }
             // Validated boolean/logical registers have exact f64
             // representations in the reference executor. Conversion nodes
-            // remain explicit in B2IR and compile away only after validation.
+            // remain explicit in AtlasIR and compile away only after validation.
             BoolToF64 { arg } | IndexToF64 { arg } | TickToF64 { arg } | F32ToF64 { arg } => {
                 return self.expression(arg, guard, ops);
             }

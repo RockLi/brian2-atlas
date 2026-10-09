@@ -54,7 +54,7 @@ def test_live_locals_endpoint_reads_and_pending_do_not_cross(device,tmp_path,haz
     refresh_code(model,code)
     assert prefix_length(model,syn,code,path)==0
     if hazard=='condition':
-        # Frozen B2IR only permits its declared refractory guards. The raw
+        # Frozen AtlasIR only permits its declared refractory guards. The raw
         # liveness check also stays conservative for this unsupported guard.
         from brian2_rust.plan import PlanValidationError
         with pytest.raises(PlanValidationError,match='conditional write does not match refractory definition'):

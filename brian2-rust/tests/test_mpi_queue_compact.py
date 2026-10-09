@@ -32,7 +32,7 @@ def test_narrow_restored_pending_matches_reference(tmp_path, uniform):
     model = lower_network(b.Network(source,target,synapses), 17*clock.dt)
     for syn in model['instance']['synapses']:
         path = syn['pathways'][0]
-        # B2IR admits only arrivals in this activation; Device keeps later
+        # AtlasIR admits only arrivals in this activation; Device keeps later
         # events in its continuation state for future segments.
         path['pending'] = [dict(delivery_tick=2, item=0), dict(delivery_tick=6, item=1)]
     attach_protocol(model)

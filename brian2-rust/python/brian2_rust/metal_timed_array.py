@@ -55,7 +55,7 @@ inline float b2_timed_array(device const float *values, ulong offset,
     }
     float raw=(time/epsilon+0.5f)/upsampling;
     // Saturate before converting to an integer, including +/-infinity and NaN.
-    // B2IR's saturating conversion maps NaN/negative time to the first row.
+    // AtlasIR's saturating conversion maps NaN/negative time to the first row.
     uint row=!(raw>0.0f) ? 0u : (raw>=float(rows-1) ? rows-1 : uint(raw));
     return values[offset+ulong(row)*width+uint(column)];
 }

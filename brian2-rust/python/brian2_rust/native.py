@@ -1,4 +1,4 @@
-"""Generate a model-specialized, std-only Rust executable from validated B2IR."""
+"""Generate a model-specialized, std-only Rust executable from validated AtlasIR."""
 
 from __future__ import annotations
 

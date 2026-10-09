@@ -1,4 +1,4 @@
-"""Canonical whole-model schedule and effect graph for stable B2IR v1."""
+"""Canonical whole-model schedule and effect graph for stable AtlasIR v1."""
 
 
 DEFAULT_BASE_SLOTS = (

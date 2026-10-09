@@ -115,8 +115,8 @@ def test_native_invalid_signature_source_and_result_fail(device,tmp_path,backend
     assert not (tmp_path/backend/'transport/summary.json').exists()
 
 
-@b.implementation('b2ir-metal-v1', 'long typed_step(long x, bool active) { return active ? x+1 : x; }', name='typed_step')
-@b.implementation('b2ir-cuda-device-v1', '__device__ long typed_step(long x, bool active) { return active ? x+1 : x; }', name='typed_step')
+@b.implementation('atlasir-metal-v1', 'long typed_step(long x, bool active) { return active ? x+1 : x; }', name='typed_step')
+@b.implementation('atlasir-cuda-device-v1', '__device__ long typed_step(long x, bool active) { return active ? x+1 : x; }', name='typed_step')
 @b.check_units(x=1, active=1, result=1)
 @b.declare_types(x='integer', active='boolean', result='integer')
 def typed_step(x, active):
@@ -125,8 +125,8 @@ def typed_step(x, active):
     return x
 
 
-@b.implementation('b2ir-metal-v1', 'bool typed_odd(long x) { return (x%2)!=0; }', name='typed_odd')
-@b.implementation('b2ir-cuda-device-v1', '__device__ bool typed_odd(long x) { return (x%2)!=0; }', name='typed_odd')
+@b.implementation('atlasir-metal-v1', 'bool typed_odd(long x) { return (x%2)!=0; }', name='typed_odd')
+@b.implementation('atlasir-cuda-device-v1', '__device__ bool typed_odd(long x) { return (x%2)!=0; }', name='typed_odd')
 @b.check_units(x=1, result=bool)
 @b.declare_types(x='integer', result='boolean')
 def typed_odd(x):

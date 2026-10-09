@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class ClippedNormal:
     """A deterministic normal draw rejected outside optional inclusive bounds.
 
-    Values retain Brian2 units until B2IR export, where they are checked against
+    Values retain Brian2 units until AtlasIR export, where they are checked against
     the destination variable (or delay) and converted to SI float64 values.
     """
 

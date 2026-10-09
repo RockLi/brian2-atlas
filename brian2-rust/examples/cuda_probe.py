@@ -24,8 +24,8 @@ using uint = unsigned int;
 using ulong = unsigned long;
 using uchar = unsigned char;
 using atomic_uint = uint;
-static_assert(sizeof(long) == 8, "B2IR tick storage needs 64-bit long");
-static_assert(sizeof(ulong) == 8, "B2IR counters need 64-bit ulong");
+static_assert(sizeof(long) == 8, "AtlasIR tick storage needs 64-bit long");
+static_assert(sizeof(ulong) == 8, "AtlasIR counters need 64-bit ulong");
 template<class T> __device__ inline T as_type(uint bits);
 template<> __device__ inline float as_type<float>(uint bits) { return __uint_as_float(bits); }
 __device__ inline float clamp(float x, float lo, float hi) { return fminf(fmaxf(x,lo),hi); }
@@ -57,7 +57,7 @@ def cuda_source(kernel):
 
 
 def make_bundle(model_path, directory, *, route="scan", runner=None, max_bytes=256*1024**2):
-    """Rust-validate B2IR, prepare storage, and execute the same-f32 CPU control."""
+    """Rust-validate AtlasIR, prepare storage, and execute the same-f32 CPU control."""
     from brian2_rust.metal import (MetalExecutor, _derive_metal_plan, population_arrays)
     from brian2_rust.metal_dag import _prepare_dag_storage, _cpu_dag
     from brian2_rust.plan import validate_model

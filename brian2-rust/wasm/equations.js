@@ -1,5 +1,5 @@
 // Small, explicit expression language. Never evaluates JavaScript or Python.
-// Brian2 checks the resulting typed, dimensioned B2IR again inside WASM.
+// Brian2 checks the resulting typed, dimensioned AtlasIR again inside WASM.
 import {bits} from './experiment.js';
 const dim=[0,0,0,0,0,0,0],time=[0,0,1,0,0,0,0];
 const literal=x=>({op:'literal',bits:bits(x)}),load=name=>({op:'load',name}),binary=(op,left,right)=>({op,left,right});

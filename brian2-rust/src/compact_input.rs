@@ -382,7 +382,7 @@ pub(crate) fn validate(reader: impl Read) -> Result<()> {
         "layers":{"definition":canonical_hash(&doc.definition)?,"instance":instance_hash(&doc.instance)?,"run":canonical_hash(&doc.run)?}});
     check(
         expected == doc.protocol,
-        "B2IR canonical layer hash mismatch",
+        "AtlasIR canonical layer hash mismatch",
     )?;
     let model = Model {
         schema: doc.schema,
