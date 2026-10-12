@@ -435,6 +435,7 @@ kernel void atlas_dynamic_bptt(
    if(!atlas_dynamic_active(m,t,a))continue;
    ulong cid=m[m[31]+a];float time=p[clock+cid];ulong exact_time=m[29]?m[m[29]+t*m[23]+cid]:0;
    ulong h=m[13]+16*a,c=m[h+1],r=m[h+2],w=m[h+3],wr=m[h+4],at=(ulong(b)*T+t)*Q+m[h];
+   if((m[h+9]&2)&&!m[9])continue;
    float context[64],out[64],gstate[64];
    atlas_dynamic_gather(m,h,live,base,tape,at,context);for(ulong j=0;j<c;j++)gstate[j]=0;
    if(m[h+6]){
@@ -467,6 +468,7 @@ kernel void atlas_dynamic_bptt(
    if(!atlas_dynamic_active(m,t,a))continue;
    ulong cid=m[m[31]+a];float time=p[clock+cid];ulong exact_time=m[29]?m[m[29]+t*m[23]+cid]:0;
    ulong h=m[13]+16*a,c=m[h+1],r=m[h+2],w=m[h+3],wr=m[h+4],at=(ulong(b)*T+t)*Q+m[h];
+   if(m[h+9]&2)continue;
    float context[64],gstate[64],old_gradient[64];
    for(ulong j=0;j<c;j++){context[j]=tape[at+j];gstate[j]=0;}
    if(m[h+6]){

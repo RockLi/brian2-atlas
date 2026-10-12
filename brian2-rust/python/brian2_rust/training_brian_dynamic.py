@@ -81,7 +81,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
     def require(ok, code, owner, message):
         if not ok: raise TrainingConversionError(code, owner, message)
     layers=list(layers);groups=[input_group,*layers]
-    require(not {'_defer_synapses','_input_registry','_mutable_constant_ids','_mutable_capture_inputs','_readonly_capture_inputs','_capture_constant_ids','dynamic'}&options.keys(),'options',network,'reserved conversion option')
+    require(not {'_defer_synapses','_input_registry','_mutable_constant_ids','_mutable_capture_inputs','_readonly_capture_inputs','_capture_constant_ids','_deferred_neuron_functions','dynamic'}&options.keys(),'options',network,'reserved conversion option')
     external_sources={};sample_count=None
     require(external_state_inputs is None or isinstance(external_state_inputs,Mapping),
             'input',input_group,'external_state_inputs must map input-group field names to TimedArrays')
@@ -171,8 +171,21 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         if isinstance(group,Synapses):
             from brian2.codegen.translation import analyse_identifiers
             for path in group._pathways:
-                _,known,unknown=analyse_identifiers(path.code,group.variables,recursive=True)
-                variables={**group.variables,**group.resolve_all(sorted(known|unknown),run_namespace=probe_namespace)}
+                for node in ast.walk(ast.parse(path.code)):
+                    if isinstance(node,ast.Name) and isinstance(node.ctx,ast.Store):
+                        require(node.id=='delay' or node.id not in path.variables or node.id in group.variables,
+                                'pathway',path,f'event writes to pathway-owned storage {node.id} require runtime lowering')
+                        if node.id=='delay':
+                            require(not path.variables['delay'].scalar,'pathway',path,
+                                    'Brian event pathways cannot write scalar/shared delay storage')
+                # Pathway-owned storage (e.g. delay) is part of event code.
+                variables={**group.variables,**path.variables}
+                try:
+                    _,known,unknown=analyse_identifiers(path.code,variables,recursive=True)
+                except SyntaxError as error:
+                    raise TrainingConversionError('pathway',path,str(error)) from error
+                variables.update(group.resolve_all(sorted((known|unknown)-set(variables)),
+                                                   run_namespace=probe_namespace))
                 functions={}
                 for name,value in variables.items():
                     if type(value) is not Function or name in DEFAULT_FUNCTIONS:continue
@@ -211,7 +224,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
     captured_delay_ids.update(mutable_constant_ids & delay_variables.keys())
     mutable_constant_ids.difference_update(delay_variables)
     capture_constant_ids.difference_update(delay_variables)
-    neuron_capture_inputs={};readonly_capture_inputs={};capture_identities={}
+    neuron_capture_inputs={};readonly_capture_inputs={};capture_identities={};whole_neuron_thresholds={};whole_neuron_updates={};whole_neuron_resets={};deferred_neuron_functions={}
     for group in layers:
         codes=[expression.code for _,expression in group.equations.get_substituted_expressions()]+[group.events['spike'],group.event_codes['spike']]
         called={node.func.id for code in codes for node in ast.walk(ast.parse(code)) if isinstance(node,ast.Call) and isinstance(node.func,ast.Name)}
@@ -221,6 +234,15 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             if type(variable) is not Function:continue
             try:descriptor=lower_state_effect_function(variable)
             except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
+            if any(array.size!=len(group) for _,array in descriptor.captured_arrays):
+                phases={'update':[expression.code for _,expression in group.equations.get_substituted_expressions()],
+                        'threshold':[group.events['spike']], 'reset':[group.event_codes['spike']]}
+                calls={phase:{node.func.id for code in codes for node in ast.walk(ast.parse(code)) if isinstance(node,ast.Call) and isinstance(node.func,ast.Name)} for phase,codes in phases.items()}
+                if function_name in calls['reset']:whole_neuron_resets.setdefault(group.name,set()).add(function_name)
+                if function_name in calls['threshold']:whole_neuron_thresholds.setdefault(group.name,set()).add(function_name)
+                if function_name in calls['update']:whole_neuron_updates.setdefault(group.name,set()).add(function_name)
+                deferred_neuron_functions.setdefault(group.name,set()).add(function_name)
+                continue
             for name,array in descriptor.captured_arrays:
                 require(array.size==len(group),'function',group,'mutable capture columns must match whole-array neuron population')
                 require(not array.flags.writeable or array.size==1 or array.strides[0]!=0,
@@ -236,7 +258,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         neuron_capture_inputs[group.name]=fields;readonly_capture_inputs[group.name]=readonly
     bundle=lower_brian_training(network,input_group=input_group,layers=layers,
                                 run_namespace=run_namespace,external_state_inputs=external_state_inputs,
-                                _defer_synapses=True,_input_registry=input_registry,_mutable_constant_ids=mutable_constant_ids,_mutable_capture_inputs=neuron_capture_inputs,_readonly_capture_inputs=readonly_capture_inputs,_capture_constant_ids=capture_constant_ids,**options)
+                                _defer_synapses=True,_input_registry=input_registry,_mutable_constant_ids=mutable_constant_ids,_mutable_capture_inputs=neuron_capture_inputs,_readonly_capture_inputs=readonly_capture_inputs,_capture_constant_ids=capture_constant_ids,_deferred_neuron_functions=deferred_neuron_functions,**options)
     plan=bundle.plan;weights=bundle.weights;provenance=bundle.provenance
     objects={o.name:o for o in [*layers,*network.sorted_objects]}
     constant_banks={id(objects[e['object']].variables[e['variable']]):e['bank'] for e in provenance.get('constant_sources',[])}
@@ -753,6 +775,9 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         ownership_fields={name:k for k,name in enumerate(ownership_names)}
         ownership=Effects(ownership_fields,{},array_states=set(ownership_fields),writable_states=set(ownership_fields),eager_limit=128,
                           state_types={slot:_state_dtype(syn.variables[name]) for name,slot in ownership_fields.items()})
+        # Ownership probes interpret authenticated random bodies symbolically;
+        # real sampler lifting remains in the execution-specific caller below.
+        ownership.callback_random_planning=True
         def bind_probe_captures(descriptor,engine):
             bindings={}
             for k,(name,array) in enumerate(descriptor.captured_arrays):
@@ -793,6 +818,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 descriptor=lower_state_effect_function(function)
                                 slots={name:i for i,name in enumerate(descriptor.arguments)}
                                 symbolic=Effects(slots,{},array_states=set(slots),writable_states=set(slots),eager_limit=128)
+                                symbolic.callback_random_planning=True
                                 symbolic.call(bind_probe_captures(descriptor,symbolic),[symbolic.environment[name] for name in descriptor.arguments])
                                 modified=tuple(sorted(slot for slot in symbolic.effect_writes if slot>=0))
                             except (ValueError,TypeError,OSError,SyntaxError,RecursionError) as error:
@@ -837,6 +863,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                         args=[ast.Constant(1 if node.func.id=='poisson' else 1.)],keywords=[])
                     return self.generic_visit(node)
             block='\n'.join(f'{s.var} {"=" if s.op==":=" else s.op} {s.expr}' for s in [*spec['scalar'],*spec['vector']])
+            engine.callback_random_planning=True
             engine.functions={name:bind_probe_captures(function,engine) for name,function in functions.items()}
             try:engine.transform(ast.unparse(DrawPlaceholder().visit(ast.parse(block))))
             except (ValueError,TypeError,SyntaxError,RecursionError) as error:raise TrainingConversionError('function',syn,str(error)) from error
@@ -1180,6 +1207,12 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
     batch_compacted_random={}
     batch_caller_locals={}
     batch_whole_locals={}
+    batch_effect_functions={}
+    def effect_function(path,name):
+        if name in batch_effect_functions.get(path,{}):return batch_effect_functions[path][name]
+        return lower_state_effect_function(next(info['path_variables'][path][name] for info in syn_info.values() if path in info['path_variables']))
+
+    synaptic_integrator_shared_cells={}
 
     def build_synaptic(syn,edge,code,*,trigger=None,streams=(),owner=None,pathway=None,
                        noise_domain=None,event_noise=None):
@@ -1231,9 +1264,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         trigger=trigger,detach_trigger=True,mask=edge_mask(info,edge))
             if random_batch is not None:
                 action.update(noise_domain=scheduled_noise_domains[pathway],noise_entity=edge,
-                              noise_streams=len(random_batch['draws']),event_noise=dict(event_noise))
+                              noise_streams=max(draw['stream']+1 for draw in random_batch['draws']),event_noise=dict(event_noise))
             if trigger is not None and trigger.get('state'):action['reads'].append(trigger['index'])
             actions.append(action);return actions[-1]
+        integrator_callback_draws=[]
         tree=ast.parse(code,mode='exec');used_names={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}
         written_names={n.id for n in ast.walk(tree) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}
         synaptic_dt=float(syn.clock.dt_)
@@ -1318,6 +1352,14 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                 bind_condition(guard,resolved_conditions[condition.name],condition_indices[condition.name])
             guards[names[name]]=names[guard]
             if guard==condition.name:mutable_guards.add(names[guard])
+        scope_guard=caller_spec.get('poisson_guard_target')
+        if scope_guard is not None:
+            condition=getattr(syn.variables.get(scope_guard),'conditional_write',None)
+            require(condition is not None,'refractory',syn,'Poisson scope guard requires a conditional source')
+            guard='_b2_guard_poisson_scope'
+            bind_condition(guard,condition,scope_guard)
+            for name in caller_spec['writes']:
+                if name in names and name==caller_spec.get('poisson_scope_target'):guards[names[name]]=names[guard]
         for name,(values,bank) in info['params'].items():
             index=0 if len(values)==1 else edge
             parameters[name]=(int(values[index]) if _state_dtype(syn.variables[name])=='integer' else bool(values[index]) if _state_dtype(syn.variables[name])=='boolean' else float(values[index])) if bank is None else typed_parameter(bank,index,_state_dtype(syn.variables[name]))
@@ -1395,10 +1437,13 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             function,capture=entry
             hidden='_b2_carry_function_'+function
             require(hidden not in used_names,'function',syn,'reserved physical caller function name')
-            parameters[hidden]=lower_state_effect_function(info['path_variables'][original_pathway][function])
+            parameters[hidden]=effect_function(original_pathway,function)
             parameters[local]=0.
             carry_functions[local]=(hidden,capture)
+        parameters.update({name:value for name,value in batch_effect_functions.get(original_pathway,{}).items() if name in used_names})
         needed={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}-names.keys()-parameters.keys()-locals_
+        if whole_local_inputs or whole_local_outputs:needed.discard('_b2_scalar_value')
+        if caller_spec.get('scalar_callback_rng'):needed.discard('_b2_scalar_rate')
         # Non-scalar neuron constants retain any optimizer bindings from the base lowerer.
         for name in sorted(needed):
             try:variable=syn.resolve_all({name},run_namespace=namespace)[name]
@@ -1476,13 +1521,16 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         for local,token in whole_local_outputs.items():
             source,field=buffers[token];capture_fields[source]=field;whole_output_fields[local]=source
         try:
-            if any(type(value) is StateEffectFunction for value in parameters.values()) or whole_local_fields or whole_output_fields:
+            if any(type(value) is StateEffectFunction for value in parameters.values()) or whole_local_fields or whole_output_fields or caller_spec.get('scalar_poisson_sample') or caller_spec.get('scalar_callback_rng'):
                 if pathway is not None:
                     spec=event_effect_modes[pathway]
                     guard_slots=set(guards.values())
                     require(not mutable_guards and not indexed,
                             'function',syn,'event callback arrays require fixed addresses and detached refractory guards')
                     array_names={name for name,slot in names.items() if slot not in guard_slots} if spec['mode']!='scalar' else set()
+                    if caller_batch is not None and caller_batch['trace'].get('scalar_normal_sites'):
+                        local_tokens={**caller_spec.get('local_inputs',{}),**caller_spec.get('local_outputs',{})}
+                        array_names-={name for name,token in local_tokens.items() if name!='_b2poisson_anchor' and (not caller_batch['trace']['tokens'][token]['array'] or caller_batch['trace']['tokens'][token]['zero_dim'])}
                     parameter_arrays={name for name in parameters if spec['mode']!='scalar' and name in syn.variables
                                       and hasattr(syn.variables[name],'scalar') and not syn.variables[name].scalar}
                     require(all(np.dtype(syn.variables[name].dtype).kind in 'fb' or np.dtype(syn.variables[name].dtype)==np.dtype('int32') for name in parameter_arrays),
@@ -1490,12 +1538,14 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     draws={name for name,value in parameters.items() if spec['mode']!='scalar' and type(value) in (NormalNoise,UniformNoise)}
                     guard_names={next(name for name,slot in names.items() if slot==target):next(name for name,slot in names.items() if slot==gate)
                                  for target,gate in guards.items()}
+                    scalar_statement_guards={number:guard_names[target] for number,target in caller_spec.get('scalar_statement_guard_targets',{}).items() if target in guard_names}
                     created=({node.id for node in ast.walk(tree) if isinstance(node,ast.Name) and isinstance(node.ctx,ast.Store)}-set(names))&set(spec['indexed_locals'])
                     if capture_fields and spec['mode']!='scalar':
                         require(pathway in batch_capture_gates and not spec.get('replay_fields')
-                                and not draws and not replay_noise and not any(type(value) is PoissonNoise for value in parameters.values()),
+                                and not draws and (caller_spec.get('projected_poisson') or not replay_noise and not any(type(value) is PoissonNoise for value in parameters.values())),
                                 'function',syn,'batch captures require independent non-replayed statements')
-                        require(not guard_names or len(tree.body)==1 and len(set(guard_names.values()))==1,
+                        anchor_statement=(len(tree.body)==2 and isinstance(tree.body[0],ast.Assign) and ast.unparse(tree.body[0])=='_b2poisson_anchor = _b2poisson_anchor' and '_b2poisson_anchor' in guard_names)
+                        require(not guard_names or (len(tree.body)==1 or anchor_statement) and len(set(guard_names.values()))==1,
                                 'function',syn,'masked batch captures require one statement selection')
                         # Whole capture writes precede the selected actions.
                         # Accumulators read their live physical destination;
@@ -1520,13 +1570,14 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         selected_ordinals=None;selected_count=None
                         call_presence=None
                         if guard_names:
-                            target=next(iter(guard_names));condition=syn.variables[target].conditional_write
+                            target=next(iter(guard_names));condition=syn.variables[scope_guard or target].conditional_write
                             if pathway not in batch_filtered_rows:
                                 controls=[]
                                 check_budget((2*len(rows)+1)*64)
                                 require(len(initial)+2*len(rows)+1<=1_000_000,'budget',syn,'filtered callback state budget exceeded')
                                 for row in rows:
-                                    cell=address(syn,condition_indices[condition.name],row['edge'],table=condition_storage[id(resolved_conditions[condition.name])])
+                                    control=condition if scope_guard is not None else resolved_conditions[condition.name]
+                                    cell=address(syn,condition_indices.get(condition.name,scope_guard),row['edge'],table=condition_storage[id(control)])
                                     require(isinstance(cell,int),'function',syn,'masked callback operands require fixed refractory addresses')
                                     effective=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(True);binary_states.append(effective)
                                     prefix=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(True)
@@ -1561,7 +1612,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 and type(parameters.get(call.func.id)) is StateEffectFunction
                                 for argument in call.args for item in ast.walk(argument) if isinstance(item,ast.Name)}
                             actual_callback_operands=set(callback_operands)
-                            if random_batch is not None:
+                            if random_batch is not None or whole_local_fields or whole_output_fields:
                                 # A whole returned expression can consume a
                                 # cached draw outside the callback arguments.
                                 callback_operands.update(item.id for item in ast.walk(tree) if isinstance(item,ast.Name) and isinstance(item.ctx,ast.Load))
@@ -1569,6 +1620,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 callback_operands.update(item.id for item in ast.walk(tree) if isinstance(item,ast.Name) and isinstance(item.ctx,ast.Load))
                             for operand in sorted((array_names|parameter_arrays)&callback_operands):
                                 if operand not in syn.variables and (random_batch is None or operand not in random_batch['rows'][key]) and operand not in caller_spec.get('local_inputs',{}):continue
+                                scalar_draws={draw['name'] for draw in random_batch['draws'] if draw.get('scalar_callback')} if random_batch is not None else set()
+                                if caller_batch is not None:scalar_draws.update(caller_batch['trace'].get('scalar_poisson_caches',()))
+                                source_token=caller_spec.get('local_inputs',{}).get(operand)
+                                scalar_noise=operand in scalar_draws or (caller_batch is not None and source_token is not None and (caller_batch['trace']['tokens'][source_token]['source'] in scalar_draws or source_token in caller_batch['trace'].get('scalar_poisson_cache_tokens',())))
                                 lane_values=[]
                                 for lane,row in enumerate(rows):
                                     source='_b2_event_operand_'+operand+'_'+str(lane)
@@ -1598,12 +1653,12 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 for column in range(size):
                                     # A single selected row broadcasts; otherwise
                                     # compact the actual arrival lanes by ordinal.
-                                    wanted=ast.IfExp(test=ast.Compare(left=copy.deepcopy(count),ops=[ast.Eq()],comparators=[ast.Constant(1)]),body=ast.Constant(0),orelse=ast.Constant(column))
+                                    wanted=ast.Constant(0) if scalar_noise else ast.IfExp(test=ast.Compare(left=copy.deepcopy(count),ops=[ast.Eq()],comparators=[ast.Constant(1)]),body=ast.Constant(0),orelse=ast.Constant(column))
                                     value=ast.Name(id=operand,ctx=ast.Load())
                                     for lane in reversed(range(len(rows))):
                                         condition=ast.BoolOp(op=ast.And(),values=[
-                                            copy.deepcopy(selected_rows[lane]) if isinstance(selected_rows[lane],ast.expr) else ast.Name(id=selected_rows[lane],ctx=ast.Load()),
-                                            ast.Compare(left=copy.deepcopy(selected_ordinals[lane]) if selected_ordinals is not None else row_sum(selected_rows[:lane]),ops=[ast.Eq()],comparators=[copy.deepcopy(wanted)])])
+                                            ast.Name(id=row_names[lane],ctx=ast.Load()) if scalar_noise else copy.deepcopy(selected_rows[lane]) if isinstance(selected_rows[lane],ast.expr) else ast.Name(id=selected_rows[lane],ctx=ast.Load()),
+                                            ast.Compare(left=row_sum(row_names[:lane]) if scalar_noise else copy.deepcopy(selected_ordinals[lane]) if selected_ordinals is not None else row_sum(selected_rows[:lane]),ops=[ast.Eq()],comparators=[copy.deepcopy(wanted)])])
                                         value=ast.IfExp(test=condition,body=copy.deepcopy(lane_values[lane]),orelse=value)
                                     columns.append(ast.Call(func=ast.Name(id='_b2_where',ctx=ast.Load()),args=[ast.Constant(1.),value,copy.deepcopy(value)],keywords=[]))
                                 if random_batch is not None:
@@ -1616,7 +1671,8 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                         program=_compile_training_ast(expression,parameters=bindings,states=['v'],typed=True,allow_select=True,deduplicate=True)
                                         check_budget(64);target=len(initial)
                                         require(target<1_000_000,'budget',syn,'compacted random state budget exceeded')
-                                        dtype=_state_dtype(syn.variables[operand]) if operand in syn.variables else 'float'
+                                        dtype=(_state_dtype(syn.variables[operand]) if operand in syn.variables else
+                                               vector_types.get(vector_names.get(operand),'float'))
                                         initial.append(0.);initial_parameters.append(None);detached.append(dtype!='float')
                                         if dtype=='integer':integer_states.add(target)
                                         if dtype=='boolean':binary_states.append(target)
@@ -1641,8 +1697,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                             selected_output=(copy.deepcopy(selected_ordinals[selected_row]) if selected_ordinals is not None else row_sum(selected_rows[:selected_row]),copy.deepcopy(selected_count) if selected_count is not None else row_sum(selected_rows)),selected_vector_factory=selected_vector_factory,
                             selected_accumulators=set(spec['accum'])&array_names if spec['mode']=='vectorised' else (),
                             selected_guards=guard_names,selected_call_presence=call_presence,selected_row_operands=row_operands,
-                            copied_array_aliases=local_aliases,retained_copied_outputs=caller_spec.get('retained_local_outputs',()),
-                            whole_local_inputs=whole_local_fields,whole_local_outputs=whole_output_fields)
+                            copied_array_aliases=local_aliases,retained_copied_outputs=tuple(name for name in caller_spec.get('retained_local_outputs',()) if name in array_names),
+                            whole_local_inputs=whole_local_fields,whole_local_outputs=whole_output_fields,
+                            projected_poisson=caller_spec.get('projected_poisson',False),
+                            masked_array_reads=set(caller_spec.get('masked_array_reads',()))&(array_names|parameter_arrays))
                         require(not any(length>1 for length in transform['selected_output_lengths']) or original_pathway not in info['path_runtime'],
                                 'function',syn,'multi-column event returns require fixed delay routing')
                         if transform['unconditional_checks'] and pathway not in batch_capture_checks:
@@ -1655,7 +1713,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         from .training_event_captures import compile_scalar_event_captures
                         transform,names,event_capture_slots=compile_scalar_event_captures(ast.unparse(tree),names,reads,parameters,capture_fields,
                             state_types={slot:'integer' if index in integer_states else 'boolean' if index in binary_states else 'float' for slot,index in enumerate(reads)},
-                            typed_parameter=typed_parameter,write_guards=guard_names)
+                            typed_parameter=typed_parameter,write_guards=guard_names,scalar_statement_guards=scalar_statement_guards)
                     else:transform=compile_state_effect_transform(ast.unparse(tree),states=names,parameters=parameters,
                         array_states=array_names,writable_states=array_names,
                         state_types={slot:'integer' if index in integer_states else 'boolean' if index in binary_states else 'float' for slot,index in enumerate(reads)},
@@ -1663,7 +1721,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         array_callables={name for name,value in parameters.items() if type(value) is PoissonNoise and spec['mode']!='scalar'},
                         parameter_types={**{name:_state_dtype(syn.variables[name]) for name in parameter_arrays},**replay_parameter_types},
                         copied_array_states=array_names,reload_arrays_each_statement=spec['mode']=='vectorised',eager_limit=128,
-                        write_guards=guard_names,scalar_write_guards=spec['mode']=='scalar',
+                        write_guards=guard_names,scalar_write_guards=spec['mode']=='scalar',scalar_statement_guards=scalar_statement_guards,
                         indexed_guard_reads=(array_names|parameter_arrays|draws|replay_parameter_arrays|created) if spec['mode']!='scalar' else ())
                 else:
                     require(pathway is None and trigger is None and bool(info['continuous'])
@@ -1674,7 +1732,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                             'function',syn,'synaptic integrator callback effects require unguarded canonical own arrays')
                     canonical={};physical_slots={slot:canonical.setdefault(cell,slot) for slot,cell in enumerate(reads)}
                     programs,effect_writes=_compile_effect_integrator(ast.unparse(tree),syn,list(names),parameters,
-                        info['integrator_variables'],noise_names=streams,state_types=[capture_fields[name][1] if name in capture_fields else _state_dtype(syn.variables[name]) for name in names],physical_slots=physical_slots)
+                        info['integrator_variables'],noise_names=streams,state_types=[capture_fields[name][1] if name in capture_fields else _state_dtype(syn.variables[name]) for name in names],physical_slots=physical_slots,
+                        callback_draws=integrator_callback_draws,callback_stream_offset=len(streams)+len(explicit_streams))
+                    if edge==0 and integrator_callback_draws:
+                        provenance.setdefault('synaptic_integrator_draws',{})[syn.name]=list(integrator_callback_draws)
                     locals_.update(effect_writes)
                     output_slots=[names[name] for name in effect_writes]
                     transform=dict(writes=output_slots,programs=[programs[slot] for slot in output_slots],context_size=len(reads))
@@ -1706,7 +1767,49 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             output_targets={slot:caller_destination(name) for name,slot in names.items() if caller_destination(name) is not None}
             outputs=[(slot,program) for slot,program in zip(transform['writes'],transform['programs']) if winners[output_targets.get(slot,reads[slot])]==slot]
         transform['writes']=[slot for slot,_ in outputs];transform['programs']=[program for _,program in outputs]
+        shared_integrator_draws=[record for record in integrator_callback_draws if record.get('scalar',False)]
+        if shared_integrator_draws:
+            from .training_threshold_noise import bind_shared_threshold_noise
+            if syn.name not in synaptic_integrator_shared_cells:
+                cached_cells={}
+                for record in shared_integrator_draws:
+                    check_budget(64);cell=len(initial);cached_cells[record['stream']]=cell
+                    initial.append(0.);initial_parameters.append(None);detached.append(True)
+                    if record['kind']=='poisson':integer_states.add(cell)
+                synaptic_integrator_shared_cells[syn.name]=cached_cells
+                for record in shared_integrator_draws:
+                    cell=cached_cells[record['stream']];sampler_indexed={}
+                    if record['kind']=='poisson':
+                        sampler_reads=list(reads);sampler_indexed=dict(indexed);slots={}
+                        for stream,cached in cached_cells.items():slots[stream]=len(sampler_reads);sampler_reads.append(cached)
+                        rate=bind_shared_threshold_noise(record['rate_program'],slots)
+                        rate.append(dict(op='poisson',rate=len(rate)-1,stream=record['stream']))
+                        sampler_programs=resolve_parameters([rate],edge,sampler_reads,sampler_indexed)
+                    else:
+                        sampler_reads=[cell]
+                        sampler_programs=[[dict(op='noise' if record['kind']=='randn' else 'uniform_noise',stream=record['stream'])]]
+                    require(len(sampler_reads)<=64,'budget',syn,'shared synaptic sampler exceeds64 context slots')
+                    sampler_action=dict(owner=endpoint_owner(info['target_group'],post),reads=sampler_reads,writes=[cell],
+                        program_set=program_set(sampler_programs),threshold=None,trigger=None,parameter_index=edge,
+                        noise_domain=info['domain'],noise_entity=0,noise_streams=record['stream']+1)
+                    actions.append(attach_indices(sampler_action,sampler_indexed,[sampler_reads.index(cell)],{}))
+                provenance.setdefault('synaptic_integrator_shared_draw_layout',{})[syn.name]=dict(cached_cells)
+            shared_slots={}
+            for stream,cell in synaptic_integrator_shared_cells[syn.name].items():shared_slots[stream]=len(reads);reads.append(cell)
+            transform['programs']=[bind_shared_threshold_noise(program,shared_slots) for program in transform['programs']]
         transform['programs']=resolve_parameters(transform['programs'],edge,reads,indexed)
+        if caller_spec.get('scalar_poisson_sample'):
+            from .training_callback_poisson import guard_first_arrival
+            # These are the raw FIFO presence flags. Refractory filtering does
+            # not suppress an ordinary Python scalar draw inside a callback.
+            rows=batch_arrival_rows[original_pathway]
+            key=('pending',event_noise['pending']) if event_noise and 'pending' in event_noise else ('new',edge)
+            selected_row=next(i for i,row in enumerate(rows) if row['key']==key)
+            prior_slots=[]
+            for row in rows[:selected_row]:
+                if row['cell'] not in reads:reads.append(row['cell'])
+                prior_slots.append(reads.index(row['cell']))
+            transform['programs']=[guard_first_arrival(program,prior_slots) for program in transform['programs']]
         transform['context_size']=len(reads)
         mask=edge_mask(info,edge)
         action=dynamic_action(transform,reads,owner=endpoint_owner(info['target_group'],post) if owner is None else owner,
@@ -1714,7 +1817,8 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                       parameter_index=edge,
                                       noise_domain=(noise_domain if noise_domain is not None else scheduled_noise_domains.get(original_pathway,info['domain'])) if explicit_streams or replay_noise else info['domain'],
                                       noise_entity=edge,noise_streams=max(event_effect_modes.get(pathway,{}).get('stream_offset',0)+len(streams)+len(explicit_streams) if explicit_streams or streams else 0,
-                                          max((draw['stream']+1 for draw in replay_noise.values()),default=0)),mask=mask)
+                                          max((draw['stream']+1 for draw in replay_noise.values()),default=0),
+                                          max((draw['stream']+1 for draw in integrator_callback_draws),default=0)),mask=mask)
         if caller_row is not None:
             for k,slot in enumerate(transform['writes']):
                 target=output_targets.get(slot,action['writes'][k]);action['writes'][k]=target
@@ -1877,13 +1981,30 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         if spec['state_effects']:
             regular_layout[runner.name]['numpy_write_order']={key:list(value) for key,value in spec['numpy_write_order'].items()}
 
+        whole_rng=False
+        if spec['vector'] and not scalar_vector:
+            from .training_callback_vector import lower_vector_callback_draws
+            vector_code='\n'.join(f'{s.var} {"=" if s.op==":=" else s.op} {s.expr}' for s in spec['vector'])
+            functions={}
+            for node in ast.walk(ast.parse(vector_code)):
+                if not isinstance(node,ast.Call) or not isinstance(node.func,ast.Name):continue
+                variable=variables.get(node.func.id)
+                if type(variable) is not Function or node.func.id in DEFAULT_FUNCTIONS:continue
+                try:descriptor=lower_state_effect_function(variable)
+                except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
+                if descriptor.random_sites:functions[node.func.id]=descriptor
+            if functions:
+                try:_,_,records,_,_=lower_vector_callback_draws(vector_code,functions,variables,mode=spec.get('numpy_mode','array'),allow_scalar=True,return_trace=True)
+                except (ValueError,TypeError,SyntaxError,RecursionError) as error:raise TrainingConversionError('function',runner,str(error)) from error
+                whole_rng=any(row['scalar'] or row['length'] is not None for row in records)
         capture_functions={};capture_fields={}
+        scalar_callback_names={node.func.id for statement in spec['scalar'] for node in ast.walk(ast.parse(statement.expr)) if isinstance(node,ast.Call) and isinstance(node.func,ast.Name)}
         for function_name,variable in list(variables.items()):
             if type(variable) is not Function or function_name in DEFAULT_FUNCTIONS:continue
             try:descriptor=lower_state_effect_function(variable)
             except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
             if not descriptor.captured_arrays:continue
-            capture_functions[function_name],fields=register_mutable_captures(descriptor,group,runner,function_name)
+            capture_functions[function_name],fields=register_mutable_captures(descriptor,group,runner,function_name,whole_event=whole_rng or scalar_vector or function_name in scalar_callback_names)
             capture_fields.update(fields)
             for name,field in fields.items():
                 if field[0] is None:variables[name]=field[3]
@@ -1892,7 +2013,11 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             if name in capture_functions:return None,capture_functions[name]
             if name in capture_fields:
                 field=capture_fields[name]
-                return (None,typed_parameter(field[2],field[4][j] if len(field)>4 else j,field[1])) if field[0] is None else (field[0][j],None)
+                # Scalar callbacks retain the whole closure buffer, whose
+                # length is independent of the number of synapse rows. The
+                # capture compiler below supplies every actual column.
+                column=0 if scalar_vector else j
+                return (None,typed_parameter(field[2],field[4][column] if len(field)>4 else column,field[1])) if field[0] is None else (field[0][column],None)
             variable=variables[name]
             if id(variable) in external_sources:return None,external_parameter(group,name,j)
             if name in DEFAULT_FUNCTIONS:
@@ -1956,15 +2081,34 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             return index_name,frozen
 
         def emit(code,j,local,*,destinations=None,writeback=False,stream_offset=0,vector=False,empty_vector=False,staged=None):
+            generated={};callback_draws=[]
+            if not writeback and destinations is None:
+                functions={}
+                for call in ast.walk(ast.parse(code)):
+                    if not isinstance(call,ast.Call) or not isinstance(call.func,ast.Name):continue
+                    name=call.func.id;variable=variables.get(name)
+                    if type(variable) is not Function or name in DEFAULT_FUNCTIONS:continue
+                    try:descriptor=capture_functions.get(name) or lower_state_effect_function(variable)
+                    except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
+                    if descriptor.random_sites:functions[name]=descriptor
+                if functions:
+                    from .training_callback_scalar import lower_scalar_callback_draws
+                    from .training_callback_vector import lower_vector_callback_draws
+                    lower=lower_vector_callback_draws if vector and not scalar_vector else lower_scalar_callback_draws
+                    try:code,generated,callback_draws,_=lower(code,functions,variables,stream_offset=stream_offset,**({'mode':spec.get('numpy_mode','array')} if vector and not scalar_vector else {}))
+                    except (ValueError,TypeError,SyntaxError,RecursionError) as error:raise TrainingConversionError('function',runner,str(error)) from error
+                    if j==0:
+                        regular_layout[runner.name].setdefault('callback_draws',{}).setdefault('vector' if vector else 'scalar',[]).extend(callback_draws)
             tree=ast.parse(code);used={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}
             written={n.id for n in ast.walk(tree) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}
             guards={name:flag for name,flag in spec['guards'].items() if name in written and not writeback}
             if staged is not None:guards.update(staged.get('guard_targets',{}))
             used.update(guards.values())
             for name in tuple(used):
-                if name in capture_functions:
-                    require(vector and not scalar_vector and not empty_vector,'function',runner,'mutable captures require whole-array vector execution')
-                    used.update(source for _,source in capture_functions[name].capture_bindings)
+                descriptor=generated.get(name,capture_functions.get(name))
+                if type(descriptor) is StateEffectFunction and descriptor.captured_arrays:
+                    require(callback_draws or vector and not scalar_vector and not empty_vector,'function',runner,'mutable captures require whole-array execution')
+                    used.update(source for _,source in descriptor.capture_bindings)
             if scalar_vector and vector:
                 # Scalar NumPy fallback loads the complete index chain once
                 # per row; writeback uses its final local, possibly reassigned.
@@ -1973,7 +2117,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     while index_name not in ('_idx','0') and index_name not in used:
                         if not variables[index_name].constant:used.add(index_name)
                         index_name=spec['indices'][index_name]
-            reads=[];names={};indexed={};parameters={};dtypes={}
+            reads=[];names={};indexed={};parameters=dict(generated);dtypes={}
             for name in sorted(used):
                 if (empty_vector and name in variables and isinstance(variables[name],ArrayVariable)
                         and not variables[name].scalar):
@@ -2012,7 +2156,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             guard_slots={names[name]:names[flag] for name,flag in guards.items()}
             mutable={names[flag] for flag in guards.values() if flag in written}
             try:
-                if any(isinstance(value,StateEffectFunction) for value in parameters.values()) or staged is not None and staged.get('force_effect'):
+                if any(isinstance(value,StateEffectFunction) for value in parameters.values()) or callback_draws or staged is not None and staged.get('force_effect'):
                     require((parent is not None or info is not None)
                             and (not indexed or scalar_vector and vector) and destinations is None and not writeback,
                             'function',runner,'callback state effects require a selected group with fixed physical addresses')
@@ -2040,6 +2184,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     # only explicit array assignments write physical storage.
                     writable.update(copied_arrays)
                     temporary_parameters={name for name in streams if vector and not scalar_vector}
+                    if vector and not scalar_vector:temporary_parameters.update(site['name'] for site in callback_draws)
                     physical=None;write_order=()
                     if vector and not scalar_vector:
                         canonical={}
@@ -2059,7 +2204,14 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         write_guards=guards,indexed_guard_reads=set() if scalar_vector and vector else array_names|array_parameters|(set(temporary)&set(names)),
                         scalar_write_guards=scalar_vector and vector,
                         scalar_eager=empty_vector,empty_vector=empty_vector)
-                    transform=compile_state_effect_transform(ast.unparse(tree),**effect_args)
+                    if callback_draws and capture_fields and (not vector or scalar_vector):
+                        from .training_event_captures import compile_scalar_event_captures
+                        require(not indexed or scalar_vector and vector,'function',runner,'scalar regular captures require fixed or per-row physical addresses')
+                        transform,names,capture_slots=compile_scalar_event_captures(ast.unparse(tree),names,reads,parameters,capture_fields,
+                            state_types=dtypes,typed_parameter=typed_parameter,write_guards=guards)
+                        transform['effect_writes']=set(capture_slots)&set(transform['writes'])
+                        dtypes.update({slot:'integer' if cell in integer_states else 'boolean' if cell in binary_states else 'float' for slot,cell in enumerate(reads)})
+                    else:transform=compile_state_effect_transform(ast.unparse(tree),**effect_args)
                     if staged is not None:
                         changed=False
                         for name in staged.get('fresh_targets',[]):
@@ -2088,13 +2240,15 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     actions.append(dict(owner=owner,reads=eager_reads,writes=[sink],
                         program_set=program_set(resolved),threshold=None,trigger=None,
                         parameter_index=0,noise_domain=domain,noise_entity=0,
-                        noise_streams=stream_offset+len(streams) if streams else 0))
+                        noise_streams=max(stream_offset+len(streams) if streams else 0,max((site['stream']+1 for site in callback_draws),default=0))))
                 return
             by_slot=dict(zip(transform['writes'],transform['programs']))
             output=ordered_outputs(names,written,reads,indexed)
             if scalar_vector and vector:
                 order=[name for name in spec['numpy_write_order']['vector'] if name in written and name in names]
-                order+=sorted((written&names.keys())-set(order))
+                # Closure effects occur inside the callback, before NumPy's
+                # explicit scalar-local writeback (including indexed aliases).
+                order=sorted((written&names.keys())-set(order))+order
                 ordered=[names[name] for name in order if names[name] in by_slot]
                 winners={reads[slot]:slot for slot in ordered if slot not in indexed}
                 output=[slot for slot in ordered if slot in indexed or winners[reads[slot]]==slot]
@@ -2104,7 +2258,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
             entity_owner=owner+j if parent is not None else endpoint_owner(info['target_group'],int(info['target'][j]) if len(group) else 0)
             action=dynamic_action(transform,reads,owner=owner if destinations is not None or writeback else entity_owner,
                 program_set=program_set(transform['programs']),parameter_index=j,
-                noise_domain=domain,noise_entity=j,noise_streams=stream_offset+len(streams) if streams else 0,
+                noise_domain=domain,noise_entity=j,noise_streams=max(stream_offset+len(streams) if streams else 0,max((site['stream']+1 for site in callback_draws),default=0)),
                 mask=edge_mask(info,j) if vector and info is not None else None)
             if staged is not None:
                 staged['aliases']={name:(next((key for key,value in names.items() if value==slot),None) if slot is not None else None)
@@ -2139,6 +2293,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                 require(len(action['reads'])<=64,'budget',runner,'regular writeback exceeds context budget')
                 if 'indirect' in action:action['indirect'].pop('writes',None)
             actions.append(action)
+            return max(stream_offset+len(streams),max((site['stream']+1 for site in callback_draws),default=stream_offset))
 
         # All scalar array reads happen before scalar assignments. Each alias
         # has its own scratch cell, including aliases of the same shared array.
@@ -2189,6 +2344,119 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                 reads.append(guard);action['trigger']=dict(external=False,state=True,index=guard);action['detach_trigger']=True
             actions.append(action)
 
+        def build_whole(code,offset,rows=None,*,result=None):
+            from .training_callback_vector import lower_vector_callback_draws
+            from .training_regular_whole import compile_whole_regular,cached_poisson_code
+            from .training_equations import compile_training_equation
+            functions={}
+            for node in ast.walk(ast.parse(code)):
+                if not isinstance(node,ast.Call) or not isinstance(node.func,ast.Name):continue
+                variable=variables.get(node.func.id)
+                if type(variable) is not Function or node.func.id in DEFAULT_FUNCTIONS:continue
+                descriptor=capture_functions.get(node.func.id)
+                if descriptor is None:
+                    try:descriptor=lower_state_effect_function(variable)
+                    except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
+                if descriptor.random_sites:functions[node.func.id]=descriptor
+            try:rewritten,params,records,_,trace=lower_vector_callback_draws(code,functions,variables,stream_offset=offset,mode=spec.get('numpy_mode','array'),allow_scalar=True,return_trace=True)
+            except (ValueError,TypeError,SyntaxError,RecursionError) as error:raise TrainingConversionError('function',runner,str(error)) from error
+            regular_layout[runner.name].setdefault('whole_callback_blocks',[]).append(dict(code=rewritten,draws=records,rows=len(group)))
+            used={node.id for node in ast.walk(ast.parse(rewritten)) if isinstance(node,ast.Name)}
+            used.update(source for value in params.values() for _,source in getattr(value,'capture_bindings',()))
+            fields={};destinations={};scalar_local={**scratch}
+            def binding(name,values,dtype,array,writable=False):
+                fields[name]=dict(values=values,dtype=dtype,array=array,writable=writable)
+            for name in sorted(used):
+                if name in capture_fields:
+                    field=capture_fields[name]
+                    values=list(field[0]) if field[0] is not None else [('parameter',typed_parameter(field[2],j,field[1])) for j in range(len(field[3].get_value()))]
+                    binding(name,values,field[1],True,field[0] is not None);continue
+                if name in scalar_local:
+                    cell=scalar_local[name];binding(name,[cell],_state_dtype(variables[name]) if name in variables else types[name],False);continue
+                if rows is not None and all(name in row['captures'] for row in rows):
+                    values=[row['captures'][name] for row in rows]
+                    array=name in variables and not variables[name].scalar or name in rows[0].get('array_locals',())
+                    binding(name,values if array else values[:1],'integer' if values[0] in integer_states else 'boolean' if values[0] in binary_states else 'float',array,True)
+                    continue
+                if name not in variables:continue
+                variable=variables[name]
+                if isinstance(variable,Function):
+                    if name not in params:
+                        _,parameter=resolve(name,0)
+                        if parameter is not None:params[name]=parameter
+                    continue
+                array=hasattr(variable,'scalar') and not variable.scalar
+                values=[];targets=[]
+                for j in range(len(group) if array else 1):
+                    cell,parameter=resolve(name,j)
+                    require(not isinstance(cell,dict),'linked',runner,'whole callback requires staged indexed operands')
+                    values.append(('parameter',parameter) if cell is None else cell);targets.append(cell)
+                writable=hasattr(variable,'read_only') and not variable.read_only and (not variable.constant or id(variable) in mutable_constant_ids)
+                if array and rows is None and name in spec['vector_writes']:
+                    copies=[]
+                    for j,cell in enumerate(values):
+                        cache=allocate(_state_dtype(variable));alias='__regular_whole_snapshot_'+name
+                        emit(alias+' = '+name,j,{alias:cache},writeback=True,vector=True);copies.append(cache)
+                    values=copies;destinations[name]=targets
+                binding(name,values,_state_dtype(variable),array,writable)
+            if result is not None:
+                token=trace['tokens'][trace['final'][result]];dtype=token['dtype'];array=token['array'] and not token['zero_dim']
+                values=[row['result_cell'] for row in rows];values=values if array else values[:1]
+                for cell in values:
+                    integer_states.discard(cell)
+                    if cell in binary_states:binary_states.remove(cell)
+                    if dtype=='integer':integer_states.add(cell)
+                    elif dtype=='boolean':binary_states.append(cell)
+                    detached[cell]=dtype!='float'
+                binding(result,values,dtype,array,True)
+            for record in records:
+                count=1 if record['scalar'] else record['length'] if record['length'] is not None else len(group)
+                dtype='integer' if record['kind']=='poisson' else 'float';cells=[allocate(dtype) for _ in range(count)]
+                record['cache_name']='__regular_whole_draw_'+str(record['stream'])
+                binding(record['cache_name'] if record['kind']=='poisson' else record['name'],cells,dtype,not record['scalar'],True)
+                if record['kind']!='poisson':
+                    params.pop(record['name'])
+                    for j,cell in enumerate(cells):
+                        noise=NormalNoise(record['stream']) if record['kind']=='randn' else UniformNoise(record['stream'])
+                        program=compile_training_equation('draw',parameters={'draw':noise})
+                        actions.append(dict(owner=owner,reads=[cell],writes=[cell],program_set=program_set([program]),threshold=None,trigger=None,noise_domain=domain,noise_entity=j,noise_streams=record['stream']+1))
+                else:params.pop(record['name'])
+            rewritten,prefixes=cached_poisson_code(rewritten,records)
+            rate_cell=allocate('float');binding('__regular_whole_rate',[rate_cell],'float',False,True)
+            def compiled(text,column):
+                try:return compile_whole_regular(text,fields,params,column=column,write_order=spec['numpy_write_order']['vector'])
+                except (ValueError,TypeError,RecursionError) as error:raise TrainingConversionError('expression',runner,str(error)) from error
+            for record,prefix in prefixes:
+                for j,cell in enumerate(fields[record['cache_name']]['values']):
+                    t=compiled(prefix,j);slot=t['names']['__regular_whole_rate'];program=t['programs'][slot]
+                    program=[*program,dict(op='poisson',rate=len(program)-1,stream=record['stream'])]
+                    require(len(program)<=128,'budget',runner,'whole scheduled Poisson rate exceeds128 nodes')
+                    reads=t['reads'];reads.extend([cell] if cell not in reads else [])
+                    actions.append(dict(owner=owner,reads=reads,writes=[cell],program_set=program_set([program]),threshold=None,trigger=None,noise_domain=domain,noise_entity=j,noise_streams=record['stream']+1))
+            outputs={};priorities={}
+            columns=max([len(group),*[len(field['values']) for field in fields.values() if field['array']]])
+            for j in range(columns):
+                t=compiled(rewritten,j)
+                for slot,program in t['programs'].items():
+                    name=next((name for name,value in t['names'].items() if value==slot and name in fields),None)
+                    target=t['reads'][slot]
+                    if name in destinations:target=destinations[name][min(j,len(destinations[name])-1)]
+                    if rows is not None and j<len(rows) and name in rows[j]['origins']:
+                        target=allocate(fields[name]['dtype']);rows[j]['outputs'][name]=target
+                    elif rows is not None and j<len(rows) and name==result:rows[j].setdefault('direct_outputs',{})[result]=target
+                    priority=int(name in destinations)
+                    if priority>=priorities.get(target,-1):
+                        outputs[target]=(t['reads'],program);priorities[target]=priority
+                if rows is not None and j<len(rows):
+                    rows[j]['aliases']={};rows[j]['arrays']=[result] if result is not None and fields[result]['array'] else []
+            if outputs:
+                reads=list(next(iter(outputs.values()))[0])
+                require(all(context==reads for context,program in outputs.values()),'function',runner,'whole callback columns require one common input snapshot')
+                targets=list(outputs);reads.extend(target for target in targets if target not in reads)
+                require(len(reads)<=64,'budget',runner,'whole callback writeback exceeds64 context slots')
+                actions.append(dict(owner=owner,reads=reads,writes=targets,program_set=program_set([program for context,program in outputs.values()]),threshold=None,trigger=None))
+            return max((row['stream']+1 for row in records),default=offset)
+
         def build_vectorised(offset):
             # NumPy vectorise_code loads and writes each statement separately.
             # Locals retain references to either live physical arrays or their
@@ -2231,11 +2499,12 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         flag=spec['guards'][original];row['scatter_guard']=flag
                         row['guard_targets']={result:flag};row['array_locals'].add(result)
                         row['origins'][result]=row['result_cell'];row['write_order']=[result]
+                next_offset=build_whole(code,offset,stage['rows'],result=result if fresh else None) if whole_rng else offset
                 for j,row in enumerate(stage['rows']):
                     local={**scratch,**row['captures']}
                     if fresh:local[result]=row['result_cell']
                     elif not physical and original in bindings[j]:local[original]=row['captures'][original]
-                    emit(code,j,local,stream_offset=offset,vector=True,staged=row)
+                    if not whole_rng:next_offset=max(next_offset,emit(code,j,local,stream_offset=offset,vector=True,staged=row))
                     row['array_locals']=sorted(row['array_locals'])
                     if accumulate:
                         # The ufunc operand is evaluated independently of the
@@ -2260,8 +2529,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                 if physical:
                     for j,row in enumerate(stage['rows']):
                         if original in row['outputs']:scatter(original,row,j,operation=statement.op if accumulate else None)
-                offset+=sum(isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id in ('randn','rand','poisson')
-                            for node in ast.walk(ast.parse(statement.expr)))
+                offset=next_offset
             regular_layout[runner.name]['vectorised_locals']=bindings
         if spec['scalar']:emit(source(spec['scalar']),0,scratch)
         # Sorted Cython array writeback, leaving all scalar locals intact for
@@ -2284,6 +2552,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                for k,name in enumerate(sorted(spec['vector_scalar_reads']))),0,reloads,writeback=True)
             offset=sum(isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id in ('randn','rand','poisson')
                        for node in ast.walk(ast.parse(source(spec['scalar']))))
+            offset=max(offset,max((site['stream']+1 for site in regular_layout[runner.name].get('callback_draws',{}).get('scalar',[])),default=0))
             if not len(group) and spec['state_effects']:
                 emit(source(spec['vector']),0,{**scratch,**temporary},stream_offset=offset,vector=True,empty_vector=True)
             staged_names={name for statement in spec['vector'] for name in
@@ -2307,8 +2576,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         alias='__regular_capture_'+name
                         emit(alias+' = '+name,j,{alias:cache},writeback=True,vector=True)
                 regular_layout[runner.name]['staged']=rows
-                for j,row in enumerate(rows):
-                    emit(source(spec['vector']),j,{**scratch,**temporary,**row['captures']},stream_offset=offset,vector=True,staged=row)
+                if whole_rng:build_whole(source(spec['vector']),offset,rows)
+                else:
+                    for j,row in enumerate(rows):
+                        emit(source(spec['vector']),j,{**scratch,**temporary,**row['captures']},stream_offset=offset,vector=True,staged=row)
                 explicit=list(spec['numpy_write_order']['vector'])
                 hidden=sorted({name for row in rows for name in row['outputs']} - set(explicit))
                 for name in [*hidden,*explicit]:
@@ -2316,7 +2587,9 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         if name not in row['outputs']:continue
                         scatter(name,row,j)
             else:
-                for j in range(len(group)):emit(source(spec['vector']),j,{**scratch,**temporary},stream_offset=offset,vector=True)
+                if whole_rng:build_whole(source(spec['vector']),offset)
+                else:
+                    for j in range(len(group)):emit(source(spec['vector']),j,{**scratch,**temporary},stream_offset=offset,vector=True)
 
     def history(length, pending=False):
         require(length<=1_000_000-len(initial),'budget',network,'delay history exceeds state budget')
@@ -2372,6 +2645,407 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         if isinstance(r,dict):indexed[slot]=r
         reads.extend([refractory_age[group.name][j],refractory_lastspike[group.name][j],*[row[j] for row in refractory_words[group.name]]])
 
+    from .training_threshold_noise import bind_shared_threshold_noise
+
+    def emit_shared_neuron_draws(group,layer,shared_draws,phase):
+        shared_cells={}
+        if shared_draws:
+            from .training_threshold_noise import bind_shared_threshold_noise
+            state_names=provenance['state_names'][layer]
+            for record in shared_draws:
+                check_budget(64);cell=len(initial);shared_cells[record['stream']]=cell
+                initial.append(0.);initial_parameters.append(None);detached.append(True)
+                if record['kind']=='poisson':integer_states.add(cell)
+            for record in shared_draws:
+                cell=shared_cells[record['stream']];indexed={}
+                if record['kind']=='poisson':
+                    reads=[cells[group.name,name][0] for name in state_names]
+                    if refractory_expressions[layer] is not None:append_refractory_context(group,0,phase,reads,indexed)
+                    slots={}
+                    for stream,cached in shared_cells.items():slots[stream]=len(reads);reads.append(cached)
+                    rate=bind_shared_threshold_noise(record['rate_program'],slots)
+                    rate.append(dict(op='poisson',rate=len(rate)-1,stream=record['stream']))
+                    expanded=external_neuron_programs([rate],group,0)
+                    code=resolve_parameters(expanded,0,reads,indexed)
+                else:
+                    reads=[cell]
+                    code=[[dict(op='noise' if record['kind']=='randn' else 'uniform_noise',stream=record['stream'])]]
+                require(len(reads)<=64,'budget',group,'shared threshold sampler exceeds64 context slots')
+                action=dict(owner=neuron_offsets[group.name],reads=reads,writes=[cell],program_set=program_set(code),
+                    threshold=None,trigger=None,parameter_index=0,noise_domain=layer,noise_entity=0,
+                    noise_streams=record['stream']+1)
+                actions.append(attach_indices(action,indexed,[reads.index(cell)],{}))
+        return shared_cells
+
+    # Named xi and ordinary callbacks already occupy the skeleton's streams.
+    # Complete-column callbacks reserve additional streams in schedule order.
+    whole_neuron_next_stream=[len(names) for names in provenance['noise_names']]
+
+    def bind_whole_neuron_block(group,code,extra_fields=None):
+        used={node.id for node in ast.walk(ast.parse(code)) if isinstance(node,ast.Name)}
+        locals_={node.id for node in ast.walk(ast.parse(code)) if isinstance(node,ast.Name) and isinstance(node.ctx,ast.Store)}
+        needed=used-locals_-set(extra_fields or {})-{'_b2_where','_b2_logical_and','_b2_logical_or','_b2_logical_not'}
+        variables={**DEFAULT_FUNCTIONS,**group.variables,**group.resolve_all(needed-set(group.variables)-set(DEFAULT_FUNCTIONS),run_namespace=namespace)}
+        fields={};parameters={};functions={}
+        for name in sorted(used):
+            if name not in variables or name in (extra_fields or {}):continue
+            variable=variables[name]
+            if isinstance(variable,Function):
+                if name in DEFAULT_FUNCTIONS:
+                    require(variable is DEFAULT_FUNCTIONS[name],'function',group,'custom function replacements are unsupported');continue
+                try:descriptor=lower_state_effect_function(variable)
+                except ValueError:parameters[name]=lower_pure_function(variable);continue
+                descriptor,captures=register_mutable_captures(descriptor,group,group,name,whole_event=True)
+                functions[name]=descriptor
+                if not descriptor.random_sites:parameters[name]=descriptor
+                for source,field in captures.items():
+                    values=list(field[0]) if field[0] is not None else [('parameter',typed_parameter(field[2],field[4][j] if len(field)>4 else j,field[1])) for j in range(len(field[3].get_value()))]
+                    fields[source]=dict(values=values,dtype=field[1],array=True,writable=field[0] is not None)
+                continue
+            if isinstance(variable,TimedArray):parameters[name]=input_registry.resolve(variable,group,name,input_bank,max_values=plan['max_tape_bytes']//48);continue
+            if name in ('t','dt'):parameters[name]=ClockTime(clock_dts.index(float(group.clock.dt_))) if name=='t' else float(group.clock.dt_);continue
+            array=hasattr(variable,'scalar') and not variable.scalar;values=[]
+            for j in range(len(group) if array else 1):
+                if id(variable) in condition_storage:
+                    cell=address(group,name,j,table=condition_storage[id(variable)])
+                    require(isinstance(cell,int),'linked',group,'whole refractory conditions require canonical indices');values.append(cell)
+                elif id(variable) in storage:
+                    cell=address(group,name,j);require(isinstance(cell,int),'linked',group,'whole neuron block requires canonical indices');values.append(cell)
+                elif id(variable) in external_sources:values.append(('parameter',external_parameter(group,name,j)))
+                elif id(variable) in constant_banks:values.append(('parameter',constant_parameter(group,name,j)))
+                else:
+                    binding=next((binding for binding in bindings if binding['object']==group.name and name in binding['variables']),None)
+                    if binding is not None:
+                        index=j if binding['kind']=='neuron_array' else binding['variables'].index(name)
+                        values.append(('parameter',typed_parameter(binding['bank'],index,_state_dtype(variable))))
+                    else:
+                        require(hasattr(variable,'get_value') and variable.constant,'coefficient',group,'whole neuron block requires bound storage')
+                        data=np.asarray(variable.get_value()).reshape(-1);values.append(('parameter',data[j if array else 0].item()))
+            fields[name]=dict(values=values,dtype=_state_dtype(variable),array=array,writable=id(variable) in storage and not variable.read_only)
+        if extra_fields:
+            from brian2.devices.device import get_device
+            fields.update(extra_fields)
+            for name,field in extra_fields.items():
+                if isinstance(variables.get(name),ArrayVariable):continue
+                dtype={'float':np.float64,'integer':np.int32,'boolean':np.bool_}[field['dtype']]
+                variables[name]=ArrayVariable(name,owner=group,size=len(field['values']),device=get_device(),dtype=dtype,scalar=not field['array'])
+        return variables,functions,fields,parameters
+
+    def emit_whole_neuron_block(group,layer,code,*,phase,extra_fields=None,write_order=(),float_result=None,stream_offset=None,write_targets=None,return_context=False,selected_length=None,selected_detached=False,selected_counterfactual=False,predicate_result=None):
+        from .training_neuron_whole import compile_whole_neuron_block
+        variables,functions,fields,parameters=bind_whole_neuron_block(group,code,extra_fields)
+        def allocate(dtype):
+            check_budget(64);cell=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(dtype!='float')
+            if dtype=='integer':integer_states.add(cell)
+            elif dtype=='boolean':binary_states.append(cell)
+            return cell
+        try:compiled=compile_whole_neuron_block(code,variables,functions,fields,parameters,rows=len(group),allocate=allocate,
+            stream_offset=whole_neuron_next_stream[layer] if stream_offset is None else stream_offset,float_result=float_result,write_order=write_order,return_context=return_context,selected_length=selected_length,selected_detached=selected_detached,selected_counterfactual=selected_counterfactual,predicate_result=predicate_result)
+        except (ValueError,TypeError,RecursionError) as error:raise TrainingConversionError(phase,group,str(error)) from error
+        blocks,records,rewritten=compiled[:3]
+        execution_context=compiled[3] if return_context else None
+        whole_neuron_next_stream[layer]=max([whole_neuron_next_stream[layer],*[row['stream']+1 for row in records]])
+        for block in blocks:
+            programs=block.pop('programs')
+            if write_targets:
+                block['writes']=[write_targets.get(cell,cell) for cell in block['writes']]
+                block['reads'].extend(cell for cell in block['writes'] if cell not in block['reads'])
+                require(len(block['reads'])<=64,'budget',group,'whole redirected outputs exceed64 slots')
+            actions.append({**dict(owner=neuron_offsets[group.name],program_set=program_set(programs),threshold=None,trigger=None,
+                                noise_domain=layer),**block})
+        return (records,rewritten,execution_context) if return_context else (records,rewritten)
+
+    def emit_whole_neuron_threshold(group,layer):
+        threshold=ast.parse(group.events['spike'],mode='eval').body
+        result='_b2_effect_threshold_margin'
+        class NumpyBoolean(ast.NodeTransformer):
+            def visit_BoolOp(self,node):
+                values=[self.visit(value) for value in node.values];value=values[0]
+                for right in values[1:]:
+                    value=ast.Call(func=ast.Name(id='_b2_logical_and' if isinstance(node.op,ast.And) else '_b2_logical_or',ctx=ast.Load()),args=[value,right],keywords=[])
+                return value
+            def visit_UnaryOp(self,node):
+                if isinstance(node.op,ast.Not):return ast.Call(func=ast.Name(id='_b2_logical_not',ctx=ast.Load()),args=[self.visit(node.operand)],keywords=[])
+                return self.generic_visit(node)
+        # Compile the original typed comparison instead of subtracting its
+        # operands. Integer order remains exact and detached; floating order
+        # retains its surrogate step, including inclusive comparisons.
+        difference=ast.unparse(ast.fix_missing_locations(NumpyBoolean().visit(threshold)))
+        code=f'{result}={difference}'
+        margins=[]
+        for _ in range(len(group)):
+            check_budget(64);margins.append(len(initial));initial.append(0.);initial_parameters.append(None);detached.append(False)
+        binary_states.extend(margins)
+        records,rewritten=emit_whole_neuron_block(group,layer,code,phase='threshold',predicate_result=(result,plan['surrogate']['slope'],plan['surrogate']['scale']),
+            extra_fields={result:dict(values=margins,dtype='float',array=True,writable=True)})
+        # Native threshold validation records the producing neuron's owner.
+        # The whole block computes all margins simultaneously; per-row identity
+        # bindings establish ownership without repeating callback evaluation.
+        for j,cell in enumerate(margins):
+            actions.append(dict(owner=neuron_offsets[group.name]+j,reads=[cell],writes=[cell],
+                program_set=program_set([[dict(op='state',index=0)]]),threshold=None,trigger=None))
+        provenance['threshold_margins'][layer]=dict(expression=difference,predicate=True,
+            inclusive=False,dimensions=provenance['threshold_margins'][layer]['dimensions'],whole_block=True)
+        provenance.setdefault('whole_neuron_threshold_layout',{})[group.name]=dict(margins=margins,draws=records,code=rewritten)
+        return margins
+
+    def emit_whole_neuron_update(group,layer):
+        spec=plan.get('refractory',[None]*len(layers))[layer]
+        expression_ref=refractory_expressions[layer]
+        if spec is not None:
+            state_names=provenance['state_names'][layer];counter=len(state_names)-1
+            # Evaluate the same hard control before any stage or closure write.
+            # Counter/elapsed progression and reset remain the existing native
+            # controls; only the complete-column integrator consumes the flag.
+            for j in range(len(group)):
+                reads=[cells[group.name,name][j] for name in state_names]
+                indexed=descriptors(group,state_names,j)
+                if expression_ref is not None:append_refractory_context(group,j,'update',reads,indexed)
+                else:
+                    target=address(group,neuron_condition_indices[group.name]['update'],j,table=activity[group.name])
+                    require(isinstance(target,int),'linked',group,'whole refractory controls require canonical indices')
+                    reads.append(target)
+                decrement=[dict(op='state',index=counter),dict(op='constant',value=1.),dict(op='sub',left=0,right=1),dict(op='constant',value=0.),dict(op='max',left=2,right=3)]
+                gate=[dict(op='refractory_active',index=counter)]
+                code=[decrement,gate];outputs=[counter,len(state_names)]
+                if expression_ref is not None:
+                    code=[_with_refractory_gate(program,expression_ref['program']) for program in code]
+                    code.append([dict(op='integer_state',index=len(state_names)+1),dict(op='integer_constant',value=2**31-2),dict(op='integer_binary',kind='min',left=0,right=1),dict(op='integer_constant',value=1),dict(op='integer_binary',kind='add',left=2,right=3)])
+                    outputs.append(len(state_names)+1)
+                code=resolve_parameters(external_neuron_programs(code,group,j),j,reads,indexed)
+                action=dict(owner=neuron_offsets[group.name]+j,reads=reads,writes=[reads[s] for s in outputs],program_set=program_set(code),threshold=None,trigger=None,parameter_index=j)
+                actions.append(attach_indices(action,indexed,outputs,{name:s for s,name in enumerate(state_names)}))
+        variables={**DEFAULT_FUNCTIONS,**group.variables,**group.resolve_all(group.equations.identifiers-set(group.variables),run_namespace=namespace)}
+        generated=_INTEGRATORS[group.state_updater.method_choice](group.equations,variables=variables)
+        scalar,vector=make_statements(generated,{**DEFAULT_FUNCTIONS,**variables},np.float64,optimise=True)
+        # NumPy executes stage assignments in order. Materialize their actual
+        # scalar/array temporaries, so later stages observe closure writes but
+        # retain already computed arrays. This also bounds each native DAG.
+        from brian2.codegen.generators.numpy_generator import NumpyCodeGenerator
+        from brian2.codegen.runtime.numpy_rt import NumpyCodeObject
+        generator=NumpyCodeGenerator({**DEFAULT_FUNCTIONS,**variables},group.variables.indices,group,{'_idx'},NumpyCodeObject,group.state_updater.name,'stateupdate')
+        reads,writes,_,conditions=generator.arrays_helper(vector)
+        fields={};offset=whole_neuron_next_stream[layer];blocks=[];draws=[];destinations={};loaded=False
+        named_noise=sorted(group.equations.stochastic_variables)
+        for statement in [*scalar,*vector]:
+            if not statement.scalar and not loaded:
+                loaded=True
+                # NumPy copies every array that is both read and written at
+                # vector-block entry. Closure buffers remain live physical
+                # arrays; an explicit state writeback happens after all stages.
+                for key in writes:
+                    require(group.variables.indices[key]=='_idx','linked',group,'whole neuron writeback requires canonical indices')
+                    destinations[key]=[address(group,key,j) for j in range(len(group))]
+                    require(all(isinstance(cell,int) for cell in destinations[key]),'linked',group,'whole neuron writes require fixed physical cells')
+                    slots=[]
+                    for j,source in enumerate(destinations[key]):
+                        check_budget(64);cell=len(initial);slots.append(cell);initial.append(0.);initial_parameters.append(None);detached.append(False)
+                        if key in reads:
+                            actions.append(dict(owner=neuron_offsets[group.name]+j,reads=[source,cell],writes=[cell],
+                                program_set=program_set([[dict(op='state',index=0)]]),threshold=None,trigger=None))
+                    fields[key]=dict(values=slots,dtype='float',array=True,writable=True)
+
+            name=statement.var
+            if name in named_noise or not isinstance(group.variables.get(name),ArrayVariable):
+                dtype=np.dtype(statement.dtype)
+                require(dtype.kind in 'fb' or dtype==np.dtype('int32'),'state',group,'whole neuron stage requires float, Boolean or int32 temporaries')
+                kind='float' if dtype.kind=='f' else 'boolean' if dtype.kind=='b' else 'integer'
+                slots=[]
+                for _ in range(1 if statement.scalar else len(group)):
+                    check_budget(64);cell=len(initial);slots.append(cell);initial.append(0.);initial_parameters.append(None);detached.append(kind!='float')
+                    if kind=='integer':integer_states.add(cell)
+                    elif kind=='boolean':binary_states.append(cell)
+                fields[name]=dict(values=slots,dtype=kind,array=not statement.scalar,writable=True)
+            if name in named_noise:
+                from .training_equations import StateSlot,compile_training_equation
+                tree=ast.parse(statement.expr,mode='eval');sites=[]
+                class Draw(ast.NodeTransformer):
+                    def visit_Call(self,node):
+                        require(isinstance(node.func,ast.Name) and node.func.id=='randn' and not node.args and not node.keywords,
+                                'noise',group,'unexpected named whole neuron noise expression')
+                        sites.append(node);return ast.copy_location(ast.Name(id='_b2_named_draw',ctx=ast.Load()),node)
+                tree=Draw().visit(tree)
+                require(len(sites)==1,'noise',group,'named whole neuron noise requires one standard draw')
+                stream=provenance['noise_names'][layer].index(name)
+                operands={node.id for node in ast.walk(tree) if isinstance(node,ast.Name)}-{'_b2_named_draw'}
+                for j,cell in enumerate(fields[name]['values']):
+                    context=[];parameters={'_b2_named_draw':NormalNoise(stream),'dt':float(group.clock.dt_)}
+                    for operand in sorted(operands-{'dt'}):
+                        require(operand in fields and fields[operand]['dtype']=='float','noise',group,'named noise scale requires a float stage buffer')
+                        values=fields[operand]['values'];source=values[j if fields[operand]['array'] else 0]
+                        parameters[operand]=StateSlot(len(context));context.append(source)
+                    context.extend([cell] if cell not in context else [])
+                    program=compile_training_equation(ast.unparse(tree),parameters=parameters,
+                        states=['v'],state_types=['float'])
+                    actions.append(dict(owner=neuron_offsets[group.name]+j,reads=context,writes=[cell],program_set=program_set([program]),
+                        threshold=None,trigger=None,noise_domain=layer,noise_entity=j,noise_streams=stream+1))
+                record=dict(name=name,kind='randn',stream=stream,scalar=False,length=len(group),named=True)
+                draws.append(record);blocks.append(dict(target=name,code=statement.expr,draws=[record]));continue
+            expression=statement.expr
+            if (statement.used_boolean_variables is not None and len(statement.used_boolean_variables)==1
+                    and np.dtype(statement.dtype).kind=='f' and statement.complexity_std>sum(statement.complexities.values())):
+                branches={assignments[0][1]:expr for assignments,expr in statement.boolean_simplified_expressions.items()}
+                expression=f'_b2_where({statement.used_boolean_variables[0]}, {branches[True]}, {branches[False]})'
+            op='=' if statement.op==':=' else statement.op
+            if name in conditions:
+                # Generated final assignments read already materialized stage
+                # arrays. Preserve the current caller copy in inactive rows.
+                require(op=='=','refractory',group,'conditional whole stages require assignment')
+                expression=f'_b2_where({conditions[name]}, {expression}, {name})'
+            code=f'{name} {op} {expression}'
+            records,rewritten=emit_whole_neuron_block(group,layer,code,phase='update',extra_fields=fields,
+                write_order=(name,) if not statement.scalar else (),stream_offset=offset)
+            offset=max((row['stream']+1 for row in records),default=offset);draws.extend(records)
+            blocks.append(dict(target=name,code=rewritten,draws=records))
+        for name in writes:
+            for j,(source,target) in enumerate(zip(fields[name]['values'],destinations[name])):
+                actions.append(dict(owner=neuron_offsets[group.name]+j,reads=[source,target],writes=[target],
+                    program_set=program_set([[dict(op='state',index=0)]]),threshold=None,trigger=None))
+        provenance.setdefault('whole_neuron_update_layout',{})[group.name]=dict(draws=draws,blocks=blocks,temporary=fields,write_order=list(writes),destinations=destinations)
+
+    def emit_whole_neuron_reset(group,layer):
+        from .training_equations import StateSlot,_compile_training_ast
+        from brian2.codegen.generators.numpy_generator import NumpyCodeGenerator
+        from brian2.codegen.runtime.numpy_rt import NumpyCodeObject
+        raw=group.event_codes['spike']
+        require(not any(node.id in {'__reset_ordinal','__reset_candidate'} for node in ast.walk(ast.parse(raw)) if isinstance(node,ast.Name)),'reset',group,'reserved whole reset name collision')
+        variables={**DEFAULT_FUNCTIONS,**group.variables,**group.resolve_all(get_identifiers_recursively([raw],group.variables)-set(group.variables)-set(DEFAULT_FUNCTIONS),run_namespace=namespace)}
+        scalar,vector=make_statements(raw,variables,np.float64,optimise=True)
+        generator=NumpyCodeGenerator(variables,group.variables.indices,group,{'_idx'},NumpyCodeObject,group.resetter['spike'].name,'reset',override_conditional_write=['not_refractory'])
+        _,writes,_,_=generator.arrays_helper(vector)
+        def allocate(kind):
+            check_budget(64);cell=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(kind!='float')
+            if kind=='integer':integer_states.add(cell)
+            elif kind=='boolean':binary_states.append(cell)
+            return cell
+        def statement_source(statement):return f'{statement.var} {"=" if statement.op==":=" else statement.op} {statement.expr}'
+        fields={}
+        for statement in scalar:
+            if not isinstance(variables.get(statement.var),ArrayVariable):
+                dtype=np.dtype(statement.dtype);kind='float' if dtype.kind=='f' else 'boolean' if dtype.kind=='b' else 'integer'
+                fields[statement.var]=dict(values=[allocate(kind)],dtype=kind,array=False,writable=True)
+            emit_whole_neuron_block(group,layer,statement_source(statement),phase='reset',extra_fields=fields)
+        code='\n'.join(statement_source(statement) for statement in vector)
+        variables,functions,bound,parameters=bind_whole_neuron_block(group,code,fields)
+        markers=[allocate('boolean') for _ in range(len(group))]
+        for j,cell in enumerate(markers):
+            owner=neuron_offsets[group.name]+j
+            for value,trigger in [(0.,None),(1.,dict(external=False,index=owner))]:
+                actions.append(dict(owner=owner,reads=[cell],writes=[cell],program_set=program_set([[dict(op='constant',value=value)]]),threshold=None,trigger=trigger,detach_trigger=True))
+        prefix=[allocate('integer') for _ in range(len(group))];count=allocate('integer')
+        for j,target in enumerate([*prefix,count]):
+            context=[*markers,target];params={f'm_{k}':StateSlot(k,'boolean') for k in range(len(markers))}
+            expression='+'.join(f'int(m_{k})' for k in range(j)) or '0'
+            program=_compile_training_ast(ast.parse(expression,mode='eval').body,parameters=params,states=['v'],typed=True,deduplicate=True)
+            actions.append(dict(owner=neuron_offsets[group.name],reads=context,writes=[target],program_set=program_set([program]),threshold=None,trigger=None))
+        # Keep the pre-callback physical closure snapshot for candidate VJPs.
+        # Actual closure outputs write their canonical destinations; these
+        # snapshots consequently remain unchanged when the real block commits.
+        capture_sources={source for descriptor in functions.values() for _,source in descriptor.capture_bindings}
+        write_targets={};snapshot_cells={}
+        for name in capture_sources:
+            field=bound[name];values=[]
+            for source in field['values']:
+                if type(source) is not int:values.append(source);continue
+                if source not in snapshot_cells:
+                    target=allocate(field['dtype']);snapshot_cells[source]=target
+                    op='integer_state' if field['dtype']=='integer' else 'state'
+                    actions.append(dict(owner=neuron_offsets[group.name],reads=[source,target],writes=[target],program_set=program_set([[dict(op=op,index=0)]]),threshold=None,trigger=None))
+                target=snapshot_cells[source];values.append(target);write_targets[target]=source
+            fields[name]={**field,'values':values}
+        caller={name:field for name,field in bound.items() if name in group.variables and field['array']}
+        destinations={name:field['values'] for name,field in caller.items() if name in writes}
+        require(all(all(type(cell) is int for cell in values) for values in destinations.values()),'state',group,'whole reset writes require runtime cells')
+        def pack(forced=None):
+            length=count
+            if forced is not None:
+                length=allocate('integer');context=[count,markers[forced],length]
+                params={'count':StateSlot(0,'integer'),'fired':StateSlot(1,'boolean')}
+                program=_compile_training_ast(ast.parse('count+int(not fired)',mode='eval').body,parameters=params,states=['v'],typed=True,deduplicate=True)
+                actions.append(dict(owner=neuron_offsets[group.name],reads=context,writes=[length],program_set=program_set([program]),threshold=None,trigger=None))
+            packed={}
+            for name,field in caller.items():
+                require(group.variables.indices[name]=='_idx' and len(field['values'])==len(group),'linked',group,'whole reset requires canonical caller columns')
+                values=[]
+                for q in range(len(group)):
+                    target=allocate(field['dtype']);values.append(target);context=[*markers,*prefix,target];params={}
+                    for j in range(len(group)):
+                        params[f'm_{j}']=StateSlot(j,'boolean');params[f'p_{j}']=StateSlot(len(group)+j,'integer')
+                    params['old']=StateSlot(2*len(group),field['dtype']);expression=ast.Name(id='old',ctx=ast.Load())
+                    for j,value in reversed(list(enumerate(field['values']))):
+                        symbol=f'x_{j}'
+                        if type(value) is int:params[symbol]=StateSlot(len(context),field['dtype']);context.append(value)
+                        else:params[symbol]=value[1] if type(value) is tuple and value[0]=='parameter' else value
+                        presence=ast.Constant(True) if forced==j else ast.Name(id=f'm_{j}',ctx=ast.Load())
+                        ordinal=ast.Name(id=f'p_{j}',ctx=ast.Load())
+                        if forced is not None and j>forced:
+                            ordinal=ast.BinOp(left=ordinal,op=ast.Add(),right=ast.Call(func=ast.Name(id='int',ctx=ast.Load()),args=[ast.UnaryOp(op=ast.Not(),operand=ast.Name(id=f'm_{forced}',ctx=ast.Load()))],keywords=[]))
+                        condition=ast.BoolOp(op=ast.And(),values=[presence,ast.Compare(left=ordinal,ops=[ast.Eq()],comparators=[ast.Constant(q)])])
+                        expression=ast.IfExp(test=condition,body=ast.Name(id=symbol,ctx=ast.Load()),orelse=expression)
+                    program=_compile_training_ast(expression,parameters=params,states=['v'],typed=True,allow_select=True,deduplicate=True)
+                    actions.append(dict(owner=neuron_offsets[group.name],reads=context,writes=[target],program_set=program_set([program]),threshold=None,trigger=None))
+                packed[name]=dict(values=values,dtype=field['dtype'],array=True,writable=True,length=length)
+            return packed
+        compact=pack();alternates=[pack(j) for j in range(len(group))]
+        fields.update(compact)
+        records,rewritten,execution_context=emit_whole_neuron_block(group,layer,code,phase='reset',extra_fields=fields,write_order=tuple(writes),write_targets=write_targets,return_context=True,selected_length=count,selected_detached=plan['detach_reset'],selected_counterfactual=True)
+        from .training_regular_whole import compile_whole_regular
+        # False-event surrogate candidates have no actual Poisson observation.
+        # Materialize their complete compact draw array during forward only;
+        # native candidate actions bypass checkpoint/score ownership and reverse.
+        candidate_caches={}
+        selected_poisson=[(record,prefix_code) for record,prefix_code in execution_context['poisson_prefixes'] if record.get('selected_cache')]
+        if selected_poisson and not plan['detach_reset']:
+            for j in range(len(group)):
+                candidate_fields={**execution_context['fields'],**alternates[j]}
+                length=next(iter(alternates[j].values()))['length'];chosen={}
+                for record,prefix_code in selected_poisson:
+                    cache=record['cache_name'];actual=execution_context['fields'][cache];slots=[]
+                    for q,real in enumerate(actual['values']):
+                        cell=allocate('integer');guard=allocate('boolean');target=allocate('integer');slots.append(target)
+                        params={'fired':StateSlot(0,'boolean'),'length':StateSlot(1,'integer')}
+                        condition=_compile_training_ast(ast.parse(f'not fired and {q}<length',mode='eval').body,parameters=params,states=['v'],typed=True,deduplicate=True)
+                        actions.append(dict(owner=neuron_offsets[group.name]+j,reads=[markers[j],length,guard],writes=[guard],program_set=program_set([condition]),threshold=None,trigger=None))
+                        result=compile_whole_regular(prefix_code,candidate_fields,execution_context['parameters'],column=q,write_order=tuple(writes),compact_eager_roots=True)
+                        code=result['programs'][result['names']['__regular_whole_rate']]
+                        code=[*code,dict(op='poisson',rate=len(code)-1,stream=record['stream'])]
+                        # Keep this sampler set distinct from actual observations.
+                        # Integer padding is exact and native admission prevents
+                        # a candidate set being shared with observed samplers.
+                        code=[*code,dict(op='integer_constant',value=0),dict(op='integer_binary',kind='add',left=len(code)-1,right=len(code))]
+                        require(len(code)<=128,'budget',group,'candidate Poisson prefix exceeds128 nodes')
+                        reads=result['reads'];reads.extend(k for k in (cell,guard) if k not in reads)
+                        require(len(reads)<=64,'budget',group,'candidate Poisson context exceeds64 slots')
+                        actions.append(dict(owner=neuron_offsets[group.name]+j,reads=reads,writes=[cell],program_set=program_set([code]),threshold=None,
+                            trigger=dict(external=False,state=True,index=guard),detach_trigger=True,poisson_candidate=True,
+                            noise_domain=layer,noise_entity=q,noise_streams=record['stream']+1))
+                        choose=[dict(op='state',index=0),dict(op='integer_state',index=1),dict(op='integer_state',index=2),dict(op='integer_select',condition=0,yes=1,no=2)]
+                        actions.append(dict(owner=neuron_offsets[group.name]+j,reads=[markers[j],real,cell,target],writes=[target],program_set=program_set([choose]),threshold=None,trigger=None))
+                    field={**actual,'values':slots,'length':length}
+                    chosen[cache]=field;candidate_fields[cache]=field
+                candidate_caches[j]=chosen
+        for name in writes:
+            require(name in destinations,'reset',group,'whole reset requires vector runtime writeback')
+            for j,target in enumerate(destinations[name]):
+                candidate_fields={**execution_context['fields'],**alternates[j],**candidate_caches.get(j,{})}
+                for cache in execution_context['selected_cache_fields']:
+                    candidate_fields[cache]={**candidate_fields[cache],'length':next(iter(alternates[j].values()))['length']}
+                candidate_fields['__reset_ordinal']=dict(values=[prefix[j]],dtype='integer',array=False,writable=False)
+                candidate_fields['__reset_candidate']=dict(values=[target],dtype=compact[name]['dtype'],array=True,writable=True)
+                # Force this row into the structural selection, but reuse the
+                # real block's cached draws. The result is evaluated lazily by
+                # the native trigger VJP, including a currently false event.
+                candidate_code=rewritten+'\n__reset_candidate = '+name+'[__reset_ordinal]'
+                result=compile_whole_regular(candidate_code,candidate_fields,execution_context['parameters'],column=0,write_order=tuple(writes),compact_eager_roots=True,separate_whole_eager=True)
+                slot=result['names']['__reset_candidate'];program=result['programs'][slot];context=result['reads']
+                context.extend([target] if target not in context else [])
+                actions.append(dict(owner=neuron_offsets[group.name]+j,reads=context,writes=[target],program_set=program_set([program]),threshold=None,trigger=dict(external=False,index=neuron_offsets[group.name]+j),detach_trigger=plan['detach_reset']))
+        spec=plan.get('refractory',[None]*len(layers))[layer]
+        if spec is not None:
+            for j,target in enumerate(cells[group.name,'__refractory_ticks']):
+                actions.append(dict(owner=neuron_offsets[group.name]+j,reads=[target],writes=[target],program_set=program_set([[dict(op='constant',value=float(max(spec['steps']-1,0)))]]),threshold=None,trigger=dict(external=False,index=neuron_offsets[group.name]+j),detach_trigger=True))
+        provenance.setdefault('whole_neuron_reset_layout',{})[group.name]=dict(markers=markers,prefix=prefix,count=count,compact=compact,destinations=destinations,draws=records,code=rewritten,candidate_caches=candidate_caches)
+
     for obj in network.sorted_objects:
         actions.clock=clock_dts.index(float(obj.clock.dt_))
         if obj.name in regular:
@@ -2380,8 +3054,17 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
         handled=False
         for layer,group in enumerate(layers):
             if obj is group.state_updater or obj is group.resetter['spike']:
-                reset=obj is group.resetter['spike'];key='state_resets' if reset else 'state_equations'
+                reset=obj is group.resetter['spike']
+                if reset and group.name in whole_neuron_resets:
+                    emit_whole_neuron_reset(group,layer);handled=True;break
+                if not reset and group.name in whole_neuron_updates:
+                    emit_whole_neuron_update(group,layer);handled=True;break
+                key='state_resets' if reset else 'state_equations'
                 state_names=provenance['state_names'][layer];code=copy.deepcopy(plan[key][layer])
+                shared_phase='reset' if reset else 'update'
+                shared_update_draws=[row for row in provenance['neuron_draws'][layer][shared_phase] if row.get('scalar',False)]
+                shared_update_cells=emit_shared_neuron_draws(group,layer,shared_update_draws,shared_phase)
+                if shared_update_cells:provenance.setdefault('reset_shared_draw_layout' if reset else 'integrator_shared_draw_layout',{})[group.name]=dict(shared_update_cells)
                 capture_programs=provenance.get('reset_capture_programs',[{} for _ in layers])[layer] if reset else {}
                 capture_snapshots={}
                 if capture_programs:
@@ -2405,7 +3088,12 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         if alias is not None:capture_snapshots[name]=capture_snapshots[alias]
                     for j in range(len(group)):
                         reads=[capture_snapshots.get(name,cells[group.name,name])[j] for name in state_names];indexed={}
-                        expanded=external_neuron_programs(list(capture_programs.values()),group,j)
+                        capture_codes=list(capture_programs.values())
+                        if shared_update_cells:
+                            slots={}
+                            for stream,cell in shared_update_cells.items():slots[stream]=len(reads);reads.append(cell)
+                            capture_codes=[bind_shared_threshold_noise(program,slots) for program in capture_codes]
+                        expanded=external_neuron_programs(capture_codes,group,j)
                         ps=program_set(resolve_parameters(expanded,j,reads,indexed))
                         writes=[cells[group.name,name][j] for name in capture_programs]
                         reads.extend(cell for cell in writes if cell not in reads)
@@ -2440,6 +3128,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                             trigger=dict(external=False,index=neuron_offsets[group.name]+j),detach_trigger=True))
                     for program in scalar_programs:
                         reads=[scratch,empty];indexed={}
+                        if shared_update_cells:
+                            slots={}
+                            for stream,cell in shared_update_cells.items():slots[stream]=len(reads);reads.append(cell)
+                            program=bind_shared_threshold_noise(program,slots)
                         expanded=external_neuron_programs([program],group,0)
                         resolved=resolve_parameters(expanded,0,reads,indexed)
                         actions.append(dict(owner=owner,reads=reads,writes=[scratch],program_set=program_set(resolved),
@@ -2495,7 +3187,13 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     if spec is not None and not reset:outputs.append(len(state_names))
                     if expression_ref is not None and not reset:outputs.append(len(state_names)+1)
                     if not outputs:continue
-                    expanded=external_neuron_programs([code[s] for s in outputs],group,j)
+                    update_programs=[code[s] for s in outputs]
+                    if shared_update_cells:
+                        from .training_threshold_noise import bind_shared_threshold_noise
+                        shared_slots={}
+                        for stream,cell in shared_update_cells.items():shared_slots[stream]=len(reads);reads.append(cell)
+                        update_programs=[bind_shared_threshold_noise(program,shared_slots) for program in update_programs]
+                    expanded=external_neuron_programs(update_programs,group,j)
                     ps=program_set(resolve_parameters(expanded,j,reads,indexed))
                     action=dict(owner=owner,reads=reads,writes=[reads[s] for s in outputs],program_set=ps,threshold=None,
                         trigger=dict(external=False,index=owner) if reset else None,detach_trigger=plan['detach_reset'] if reset else False,
@@ -2507,20 +3205,32 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                     actions.append(attach_indices(action,indexed,outputs,names))
                 handled=True;break
             if obj is group.thresholder['spike']:
+                whole_margins=emit_whole_neuron_threshold(group,layer) if group.name in whole_neuron_thresholds else None
+                margin=provenance['threshold_margins'][layer]
+                shared_draws=margin.get('shared_draws',[]) if margin is not None else []
+                shared_cells=emit_shared_neuron_draws(group,layer,shared_draws,'threshold')
+                if shared_cells:provenance.setdefault('threshold_shared_draw_layout',{})[group.name]=dict(shared_cells)
                 for j in range(len(group)):
                     owner=neuron_offsets[group.name]+j
                     margin=provenance['threshold_margins'][layer]
-                    if margin is not None:
+                    if whole_margins is not None:
+                        index=whole_margins[j];reads=[index]
+                        provenance.setdefault('threshold_margin_layout',{}).setdefault(group.name,[]).append(index)
+                    elif margin is not None:
                         check_budget(64);index=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(False)
                         state_names=provenance['state_names'][layer];indexed=descriptors(group,state_names,j)
                         context=[cells[group.name,name][j] for name in state_names]
                         if refractory_expressions[layer] is not None:append_refractory_context(group,j,'threshold',context,indexed)
                         context.append(index);output_slot=len(context)-1
+                        shared_slots={}
+                        for stream,cell in shared_cells.items():shared_slots[stream]=len(context);context.append(cell)
                         effects=margin.get('effect_outputs',[])
                         winners={context[row['state']]:k for k,row in enumerate(effects)}
                         effects=[row for k,row in enumerate(effects) if winners[context[row['state']]]==k]
                         outputs=[row['state'] for row in effects]+[output_slot]
-                        expanded=external_neuron_programs([row['program'] for row in effects]+[margin['program']],group,j)
+                        threshold_programs=[row['program'] for row in effects]+[margin['program']]
+                        if shared_slots:threshold_programs=[bind_shared_threshold_noise(program,shared_slots) for program in threshold_programs]
+                        expanded=external_neuron_programs(threshold_programs,group,j)
                         resolved=resolve_parameters(expanded,j,context,indexed)
                         action=dict(owner=owner,reads=context,writes=[context[s] for s in outputs],program_set=program_set(resolved),
                             threshold=None,trigger=None,parameter_index=j,noise_domain=layer,noise_entity=j,
@@ -2583,6 +3293,32 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                 except (ValueError,TypeError,SyntaxError,RecursionError) as error:raise TrainingConversionError('function',obj,str(error)) from error
                 stage_specs=effect_spec['stages'] if effect_spec is not None else [None]
                 called={node.func.id for node in ast.walk(ast.parse(code)) if isinstance(node,ast.Call) and isinstance(node.func,ast.Name)}
+                if effect_spec is not None and effect_spec['mode']=='scalar':
+                    scalar_functions={}
+                    for name in called:
+                        variable=info['path_variables'][obj.name].get(name)
+                        if isinstance(variable,Function):
+                            try:descriptor=lower_state_effect_function(variable)
+                            except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
+                            if descriptor.random_sites:scalar_functions[name]=descriptor
+                    if scalar_functions:
+                        require(len(stage_specs)==1 and not stage_specs[0].get('replay_fields'),'function',obj,'scalar callback randomness requires one FIFO statement scope')
+                        from .training_callback_noise import lift_callback_noise
+                        from .training_batch_random import cached_batch_draws
+                        try:
+                            original_statements=ast.parse(stage_specs[0]['code']).body
+                            lifted,helpers,sites,scalar_groups=lift_callback_noise(stage_specs[0]['code'],scalar_functions,scalar_call=True)
+                            normal={name:site for name,site in sites.items() if site['kind']!='poisson'}
+                            poisson={};rewritten,draws=cached_batch_draws(lifted,
+                                {**info['path_variables'][obj.name],**{name:DEFAULT_FUNCTIONS[site['kind']] for name,site in sites.items()}},
+                                poisson_sites=poisson,callback_poisson_names={name for name,site in sites.items() if site['kind']=='poisson'},callback_normal_sites=normal)
+                        except (ValueError,TypeError,SyntaxError,RecursionError) as error:raise TrainingConversionError('function',obj,str(error)) from error
+                        batch_effect_functions[obj.name]=helpers
+                        replay={**poisson,**{draw['name']:dict(kind=draw['kind'],stream=draw['stream']) for draw in draws}}
+                        group_targets=[statement.targets[0].id if isinstance(statement,ast.Assign) else statement.target.id for statement in original_statements]
+                        scalar_guards={number:group_targets[group] for number,group in enumerate(scalar_groups)
+                            if group_targets[group] in stage_specs[0]['guarded_writes'] and getattr(syn.variables.get(group_targets[group]),'conditional_write',None) is not None}
+                        stage_specs=[dict(stage_specs[0],code=rewritten,replay_noise=replay,scalar_callback_rng=True,scalar_statement_guard_targets=scalar_guards)]
                 captured_batch=False;captured_functions=set()
                 if effect_spec is not None and effect_spec['mode']!='scalar':
                     for name in called:
@@ -2590,12 +3326,13 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         if isinstance(variable,Function):
                             try:descriptor=lower_state_effect_function(variable)
                             except (ValueError,TypeError,OSError,SyntaxError,RecursionError):continue
-                            if descriptor.captured_arrays:captured_batch=True;captured_functions.add(name)
+                            if descriptor.captured_arrays or descriptor.random_sites:captured_batch=True;captured_functions.add(name)
                 if captured_batch:
                     caller_trace=None
                     grouped_caller=False
                     materialise_locals=any(part.get('indexed_locals') for part in stage_specs)
-                    plan_locals=materialise_locals or effect_spec['mode']=='array'
+                    poisson_batch='poisson' in called or any(effect_function(obj.name,name).random_sites for name in captured_functions)
+                    plan_locals=materialise_locals or effect_spec['mode']=='array' or poisson_batch
                     if plan_locals:
                         template=dict(stage_specs[0],code=effect_spec['code'],writes=effect_spec['writes'],accum=effect_spec['accum'],
                                       replay_fields={},replay_noise={},replay_guards={},stream_offset=0,
@@ -2603,16 +3340,79 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         stage_specs=[template]
                     require(len(stage_specs)==1,'function',obj,'batch capture replay stages require persistent temporaries')
                     from .training_batch_random import cached_batch_draws
-                    try:rewritten,random_draws=cached_batch_draws(stage_specs[0]['code'],info['path_variables'][obj.name])
+                    poisson_sites={};poisson_groups=[];poisson_scopes={};callback_poisson_names=set();callback_normal_sites={};callback_groups=None
+                    callback_functions={name:effect_function(obj.name,name) for name in captured_functions}
+                    if any(value.random_sites for value in callback_functions.values()):
+                        from .training_callback_noise import lift_callback_noise
+                        original=stage_specs[0]['code']
+                        lifted,getters,callback_sites,callback_groups=lift_callback_noise(original,callback_functions)
+                        callback_poisson_names={name for name,site in callback_sites.items() if site['kind']=='poisson'}
+                        callback_normal_sites={name:site for name,site in callback_sites.items() if site['kind']!='poisson'}
+                        batch_effect_functions[obj.name]=getters
+                        stage_specs=[dict(stage_specs[0],code=lifted)]
+                        lifted_called={n.func.id for n in ast.walk(ast.parse(lifted)) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name)}
+                        captured_functions=(lifted_called&getters.keys())|{name for name in lifted_called&callback_functions.keys() if not callback_functions[name].random_sites}
+                        poisson_batch=True
+                    caller_variables={**info['path_variables'][obj.name],**{name:DEFAULT_FUNCTIONS['poisson'] for name in callback_poisson_names},**{name:DEFAULT_FUNCTIONS[site['kind']] for name,site in callback_normal_sites.items()}}
+                    if poisson_batch:
+                        for number,statement in enumerate(ast.parse(original if callback_groups is not None else stage_specs[0]['code']).body):
+                            target=statement.targets[0].id if isinstance(statement,ast.Assign) else statement.target.id
+                            if getattr(syn.variables.get(target),'conditional_write',None) is not None:poisson_scopes[number]=target
+                    try:
+                        batch_code=stage_specs[0]['code']
+                        if poisson_batch:
+                            from .training_batch_poisson import stage_batch_poisson
+                            batch_code=stage_batch_poisson(batch_code,statement_groups=poisson_groups,input_statement_groups=callback_groups,poisson_names={'poisson',*callback_poisson_names})
+                        rewritten,random_draws=cached_batch_draws(batch_code,caller_variables,poisson_sites=poisson_sites if poisson_batch else None,callback_poisson_names=callback_poisson_names,callback_normal_sites=callback_normal_sites)
                     except ValueError as error:raise TrainingConversionError('noise',obj,str(error)) from error
-                    if random_draws:stage_specs=[dict(stage_specs[0],code=rewritten)]
+                    if random_draws or poisson_sites:stage_specs=[dict(stage_specs[0],code=rewritten)]
                     if plan_locals:
                         from .training_batch_locals import batch_local_lifetimes,whole_capture_carry_groups
-                        caller_functions={name:lower_state_effect_function(info['path_variables'][obj.name][name]) for name in captured_functions}
-                        try:caller_trace=batch_local_lifetimes(stage_specs[0]['code'],info['path_variables'][obj.name],caller_functions,
-                                mode=effect_spec['mode'],synthetic_types={draw['name']:'float' for draw in random_draws})
+                        caller_functions={name:effect_function(obj.name,name) for name in captured_functions}
+                        caller_functions.update({name:PoissonNoise(site['stream']) for name,site in poisson_sites.items()})
+                        try:caller_trace=batch_local_lifetimes(stage_specs[0]['code'],caller_variables,caller_functions,
+                                mode=effect_spec['mode'],synthetic_types={draw['name']:'float' for draw in random_draws},
+                                statement_groups=poisson_groups if poisson_sites or callback_groups is not None else None,
+                                masked_statement_groups=poisson_scopes if poisson_sites or callback_groups is not None else (),
+                                normal_domains={draw['name']:draw['callback_domain'] for draw in random_draws if 'callback_domain' in draw},callback_poisson_names={name for name,site in poisson_sites.items() if site.get('callback')})
                         except (ValueError,TypeError,RecursionError) as error:raise TrainingConversionError('function',obj,str(error)) from error
-                        if any(token['whole_capture'] for token in caller_trace['tokens']):
+                        if caller_trace.get('scalar_poisson_sites'):
+                            from .training_callback_poisson import split_scalar_callback_poisson
+                            try:
+                                rewritten,poisson_groups,helpers,domains,caches=split_scalar_callback_poisson(stage_specs[0]['code'],set(caller_trace['scalar_poisson_sites']),poisson_groups)
+                                batch_effect_functions[obj.name].update(helpers);caller_functions.update(helpers)
+                                stage_specs=[dict(stage_specs[0],code=rewritten)]
+                                caller_trace=batch_local_lifetimes(rewritten,caller_variables,caller_functions,
+                                    mode=effect_spec['mode'],synthetic_types={draw['name']:'float' for draw in random_draws},statement_groups=poisson_groups,
+                                    masked_statement_groups=poisson_scopes,normal_domains={**{draw['name']:draw['callback_domain'] for draw in random_draws if 'callback_domain' in draw},**domains},
+                                    callback_poisson_names={name for name,site in poisson_sites.items() if site.get('callback')})
+                            except (ValueError,TypeError,RecursionError) as error:raise TrainingConversionError('function',obj,str(error)) from error
+                            caller_trace['scalar_poisson_caches']=sorted(caches)
+                            caller_trace['scalar_poisson_cache_tokens']=sorted({stage['outputs'][stage['target']] for stage in caller_trace['stages'] if stage['target'] in caches})
+                        for draw in random_draws:
+                            if draw['name'] in caller_trace.get('scalar_normal_sites',()):draw['scalar_callback']=True
+                        for stage in caller_trace['stages']:
+                            site_names={n.id for n in ast.walk(ast.parse(stage['code'])) if isinstance(n,ast.Name)}
+                            if any(poisson_sites[name].get('callback') and name not in caller_trace.get('scalar_poisson_sites',()) for name in site_names&poisson_sites.keys()):
+                                inputs=[caller_trace['tokens'][token] for name,token in stage['inputs'].items() if name!=stage['target']]
+                                require(any(token['array'] and token['selection_shape'] for token in inputs) and not any(token['array'] and not token['selection_shape'] for token in inputs),'function',obj,'callback Poisson currently requires selected array rates')
+                        if (poisson_sites or callback_groups is not None) and (caller_trace.get('scalar_normal_sites') or any(token['whole_capture'] for token in caller_trace['tokens'])):
+                            from .training_batch_locals import poisson_whole_local_stages
+                            stages,whole_tokens,whole_dummies=poisson_whole_local_stages(caller_trace)
+                            caller_trace=dict(caller_trace,stages=stages,whole_dummy_tokens=sorted(whole_dummies))
+                            buffers={}
+                            for token in sorted(whole_tokens):
+                                descriptor=caller_trace['tokens'][token];length=descriptor['length'] if descriptor['array'] else 1
+                                require(1<=length<=64,'budget',obj,'whole Poisson rate exceeds 64 columns')
+                                require(len(initial)+length<=1_000_000,'budget',obj,'whole Poisson state budget exceeded')
+                                check_budget(length*64);slots=[]
+                                for column in range(length):
+                                    cell=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(descriptor['dtype']!='float');slots.append(cell)
+                                    if descriptor['dtype']=='integer':integer_states.add(cell)
+                                    if descriptor['dtype']=='boolean':binary_states.append(cell)
+                                buffers[token]=('_b2_poisson_whole_'+str(len(batch_whole_locals))+'_'+str(token),(slots,descriptor['dtype']))
+                            if buffers:batch_whole_locals[obj.name]=buffers
+                        if not poisson_sites and callback_groups is None and any(token['whole_capture'] for token in caller_trace['tokens']):
                             grouped=([dict(code=stage_specs[0]['code'],whole_local_inputs={})] if effect_spec['mode']=='array'
                                      else whole_capture_carry_groups(caller_trace,syn.variables))
                             require(grouped is not None,'function',obj,
@@ -2623,14 +3423,20 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 buffers={}
                                 for token in sorted(tokens):
                                     descriptor=caller_trace['tokens'][token];length=descriptor['length']
+                                    dynamic_length=length is None and descriptor['selection_shape']
+                                    if dynamic_length:length=len(syn)+sum(map(len,info['path_pending'][obj.name]))
                                     require(1<=length<=64,'budget',obj,'whole caller vector exceeds 64 columns')
-                                    require(len(initial)+length<=1_000_000,'budget',obj,'whole caller state budget exceeded')
+                                    require(len(initial)+length+int(dynamic_length)<=1_000_000,'budget',obj,'whole caller state budget exceeded')
                                     check_budget(length*64);slots=[]
                                     for column in range(length):
                                         cell=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(descriptor['dtype']!='float');slots.append(cell)
                                         if descriptor['dtype']=='integer':integer_states.add(cell)
                                         if descriptor['dtype']=='boolean':binary_states.append(cell)
-                                    buffers[token]=('_b2_whole_local_'+str(len(batch_whole_locals))+'_'+str(token),(slots,descriptor['dtype']))
+                                    field=(slots,descriptor['dtype'])
+                                    if dynamic_length:
+                                        cell=len(initial);initial.append(0.);initial_parameters.append(None);detached.append(True);integer_states.add(cell)
+                                        field=(*field,cell)
+                                    buffers[token]=('_b2_whole_local_'+str(len(batch_whole_locals))+'_'+str(token),field)
                                 if buffers:batch_whole_locals[obj.name]=buffers
                                 for group in grouped:
                                     part_code=group['code']
@@ -2645,14 +3451,23 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 if effect_spec['mode']=='array' and len(parts)>1:
                                     stage_specs.append(dict(template,code='',writes=(),accum=(),guarded_writes=(),publish_array_locals=True))
                             if effect_spec['mode']=='array':stage_specs=[dict(template,code=grouped[0]['code'])]
-                        elif not materialise_locals:caller_trace=None
+                        elif not materialise_locals and not poisson_sites and callback_groups is None:caller_trace=None
                     if caller_trace is not None:
                         require(obj.name not in info['path_runtime'],'function',obj,'caller local arrays require fixed delay routing')
                         template=stage_specs[0];parts=[]
-                        for stage in caller_trace['stages']:
+                        for number,stage in enumerate(caller_trace['stages']):
                             writes=tuple(stage['outputs'])
+                            site_names={n.id for n in ast.walk(ast.parse(stage['code'])) if isinstance(n,ast.Name)}
                             parts.append(dict(template,code=stage['code'],writes=writes,local_inputs=stage['inputs'],local_outputs=stage['outputs'],
-                                local_physical_outputs=tuple(name for name in writes if name in syn.variables) if effect_spec['mode']=='vectorised' else (),
+                                replay_noise={name:site for name,site in poisson_sites.items() if name in site_names},
+                                scalar_poisson_sample=bool(site_names&set(caller_trace.get('scalar_poisson_sites',()))),
+                                projected_poisson=bool(poisson_sites and site_names&poisson_sites.keys() and stage.get('whole_local_inputs')),
+                                whole_local_inputs=stage.get('whole_local_inputs',{}),
+                                whole_local_outputs=stage.get('whole_local_outputs',{}),
+                                poisson_guard_target=poisson_scopes.get(poisson_groups[number]) if (poisson_sites or callback_groups is not None) and stage['target']!=poisson_scopes.get(poisson_groups[number]) and not site_names&set(caller_trace.get('scalar_poisson_sites',())) else None,
+                                poisson_scope_target=stage['target'] if stage['target'] in writes else '_b2poisson_anchor',
+                                masked_array_reads=stage.get('masked_reads',()),
+                                local_physical_outputs=tuple(name for name in writes if name in syn.variables and (not poisson_sites or name==stage['target'])) if effect_spec['mode']=='vectorised' else (),
                                 retained_local_outputs=tuple(name for name in writes if name!=stage['target']),
                                 accum=tuple(name for name in template['accum'] if name==stage['target']),
                                 guarded_writes=tuple(name for name in template['guarded_writes'] if name==stage['target'])))
@@ -2707,10 +3522,10 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                         local_rows={};copies_by_stage={};seeded=set()
                         for row in rows:
                             local_rows[row['key']]=[]
-                            for token in caller_trace['tokens']:
+                            for token_index,token in enumerate(caller_trace['tokens']):
                                 check_budget(64);cell=len(initial)
                                 require(cell<1_000_000,'budget',obj,'caller local state budget exceeded')
-                                initial.append(0.);initial_parameters.append(None);detached.append(token['dtype']!='float')
+                                initial.append(0.);initial_parameters.append(None);detached.append(token['dtype']!='float' or token_index in caller_trace.get('whole_dummy_tokens',()))
                                 if token['dtype']=='integer':integer_states.add(cell)
                                 if token['dtype']=='boolean':binary_states.append(cell)
                                 local_rows[row['key']].append(cell)
@@ -2723,6 +3538,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                 seeded.add(token)
                                 for row in rows:
                                     cell=local_rows[row['key']][token];variable=syn.variables.get(caller_source)
+                                    if variable is None:variable=info['path_variables'][obj.name].get(caller_source)
                                     if caller_source in {draw['name'] for draw in random_draws}:origin=random_rows[row['key']][caller_source]
                                     elif variable is not None and id(variable) in storage:origin=address(syn,caller_source,row['edge'])
                                     else:origin=None
@@ -2960,7 +3776,7 @@ def lower_brian_dynamic_training(network, *, input_group, layers,
                                      for path,spec in batch_random_fields.items()},
         event_callback_caller_locals={path:dict(trace=spec['trace'],rows=[dict(key=list(key),fields=fields) for key,fields in spec['rows'].items()])
                                      for path,spec in batch_caller_locals.items()},
-        event_callback_whole_locals={path:{str(token):dict(name=source,cells=field[0],dtype=field[1]) for token,(source,field) in fields.items()}
+        event_callback_whole_locals={path:{str(token):dict(name=source,cells=field[0],dtype=field[1],**({'length_cell':field[2]} if len(field)==3 else {})) for token,(source,field) in fields.items()}
                                     for path,fields in batch_whole_locals.items()},
         phased_event_gradient='surrogate-through-operational-NumPy-stage-order-and-row-gates' if event_stage_groups else None)
     provenance.pop('snapshot_sha256',None)

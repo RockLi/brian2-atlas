@@ -6,7 +6,12 @@ import textwrap
 from dataclasses import dataclass
 from types import FunctionType
 import math
+import builtins
 import numpy as np
+
+_NP_POISSON=np.random.poisson
+_NP_CALLBACK_RANDOM=dict(poisson=_NP_POISSON,randn=np.random.randn,rand=np.random.rand,normal=np.random.normal,uniform=np.random.uniform)
+_NP_RANDOM_MODULE=np.random
 from brian2.core.functions import Function, FunctionImplementationContainer
 from .training_functions import (_verify_loaded_body, _automatic_numpy_function,
                                  _UNIT_CHECK_WRAPPER_CODE, _numpy_array_contract)
@@ -22,6 +27,9 @@ class StateEffectFunction:
     captured_arrays: tuple = ()
     capture_bindings: tuple = ()
     parameter_captures: tuple = ()
+    random_sites: tuple = ()
+    random_domains: tuple = ()
+    random_argument_orders: tuple = ()
 
 
 def _bounded_tree(tree):
@@ -32,7 +40,7 @@ def _bounded_tree(tree):
 
 
 def lower_state_effect_function(function):
-    """Inspect a deterministic local body; never invoke it or metadata hooks."""
+    """Authenticate a bounded local body; never invoke it or metadata hooks."""
     scalarize_arguments,array_return=_numpy_array_contract(function)
     if type(function) is Function:
         if (type(function.stateless) not in (bool,np.bool_) or
@@ -58,12 +66,99 @@ def lower_state_effect_function(function):
     tree=ast.parse(source)
     if len(tree.body)!=1 or not isinstance(tree.body[0],ast.FunctionDef):raise ValueError('state effect requires one definition')
     definition=tree.body[0];_verify_loaded_body(definition,function);signature=definition.args
+    if any(isinstance(node,ast.Name) and node.id in ('_b2_full_slice','_b2_fixed_shape') for node in ast.walk(definition)):raise ValueError('reserved state effect full-slice name')
     if signature.vararg or signature.kwarg or signature.kwonlyargs or signature.defaults:
         raise ValueError('state effects currently require fixed positional signatures')
     arguments=tuple(a.arg for a in signature.posonlyargs+signature.args)
     if not 0<=len(arguments)<=16 or not 1<=len(definition.body)<=65:raise ValueError('state effect body exceeds argument/statement budget')
     local=set(arguments)|{n.id for n in ast.walk(definition) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}
-    scope=inspect.getclosurevars(function);values={**scope.globals,**scope.nonlocals};constants={};captured_arrays={}
+    scope=inspect.getclosurevars(function);values={**scope.globals,**scope.nonlocals};constants={};captured_arrays={};random_sites=[];random_domains=[];random_argument_orders=[]
+    class RandomSites(ast.NodeTransformer):
+        def visit_Call(self,node):
+            target=node.func
+            kind=None
+            if isinstance(target,ast.Name) and target.id not in local:
+                binding=values.get(target.id)
+                kind=next((name for name,sampler in _NP_CALLBACK_RANDOM.items() if binding is sampler),None)
+            elif isinstance(target,ast.Attribute) and target.attr in _NP_CALLBACK_RANDOM:
+                owner=target.value
+                if (isinstance(owner,ast.Name) and owner.id not in local
+                        and values.get(owner.id) is _NP_RANDOM_MODULE):
+                    kind=target.attr
+                elif (isinstance(owner,ast.Attribute) and owner.attr=='random'
+                        and isinstance(owner.value,ast.Name) and owner.value.id not in local
+                        and values.get(owner.value.id) is np):
+                    kind=target.attr
+            if kind is not None:
+                if np.random is not _NP_RANDOM_MODULE or getattr(_NP_RANDOM_MODULE,kind) is not _NP_CALLBACK_RANDOM[kind]:raise ValueError('custom callback random functions are unsupported')
+                domain=None;order=None
+                if kind in ('normal','uniform'):
+                    labels=('loc','scale','size') if kind=='normal' else ('low','high','size')
+                    defaults=(0.,1.);provided={};ordered=[]
+                    if len(node.args)>3:raise ValueError('callback affine random has too many arguments')
+                    for label,value in zip(labels,node.args):provided[label]=value;ordered.append(label)
+                    for keyword in node.keywords:
+                        if keyword.arg not in labels or keyword.arg in provided:raise ValueError('invalid callback affine random keyword')
+                        provided[keyword.arg]=keyword.value;ordered.append(keyword.arg)
+                    inferred_size = 'size' not in provided or isinstance(provided['size'], ast.Constant) and provided['size'].value is None
+                    if inferred_size:
+                        provided.pop('size', None)
+                        ordered = [label for label in ordered if label != 'size']
+                    for label,value in zip(labels,defaults):
+                        if label not in provided:provided[label]=ast.Constant(value);ordered.append(label)
+                    size=None if inferred_size else provided['size'];order=tuple(ordered)
+                    node.args=[provided[label] for label in ordered];node.keywords=[]
+                elif kind in ('rand','randn') and not node.args and not node.keywords:
+                    kind='normal' if kind=='randn' else 'uniform'
+                    order=('loc','scale') if kind=='normal' else ('low','high')
+                    node.args=[ast.Constant(0.),ast.Constant(1.)];size=None
+                elif kind=='poisson':
+                    if len(node.args)>2:raise ValueError('callback Poisson has too many arguments')
+                    provided=dict(zip(('lam','size'),node.args))
+                    for keyword in node.keywords:
+                        if keyword.arg not in ('lam','size') or keyword.arg in provided:raise ValueError('invalid callback Poisson keyword')
+                        provided[keyword.arg]=keyword.value
+                    if 'lam' not in provided:provided['lam']=ast.Constant(1.)
+                    size=provided.get('size')
+                    if size is not None and not (isinstance(size,ast.Constant) and size.value is None):
+                        if isinstance(size,ast.Constant) and type(size.value) is int and 0<=size.value<=4096:
+                            replacement=ast.Call(func=ast.Name(id='_b2_fixed_shape',ctx=ast.Load()),args=[size],keywords=[])
+                        elif (isinstance(size,ast.Call) and isinstance(size.func,ast.Name) and size.func.id=='len'
+                                and len(size.args)==1 and not size.keywords and isinstance(size.args[0],ast.Name)
+                                and 'len' not in local and values.get('len',builtins.len) is builtins.len):
+                            domain=size.args[0].id;replacement=size.args[0]
+                        else:raise ValueError('callback Poisson size requires standard len(array) or literal integer in 0..4096')
+                        order=tuple(provided)
+                        provided['size']=replacement;node.args=[provided[label] for label in order]
+                    else:node.args=[provided['lam']]
+                    node.keywords=[]
+                else:
+                    if len(node.args)!=1 or node.keywords:raise ValueError('callback random requires one array rate or len(array) size')
+                    size=node.args[0]
+                if kind!='poisson' and (order is None or 'size' in order):
+                    if isinstance(size,ast.Constant) and type(size.value) is int and 0<=size.value<=4096:
+                        replacement=ast.Call(func=ast.Name(id='_b2_fixed_shape',ctx=ast.Load()),args=[size],keywords=[])
+                    elif (isinstance(size,ast.Call) and isinstance(size.func,ast.Name) and size.func.id=='len'
+                            and len(size.args)==1 and not size.keywords and isinstance(size.args[0],ast.Name)
+                            and 'len' not in local and values.get('len',builtins.len) is builtins.len):
+                        domain=size.args[0].id;replacement=size.args[0]
+                    else:raise ValueError('callback Normal/Uniform size requires standard len(array) or literal integer in 0..4096')
+                    if order is None and isinstance(size,ast.Constant):
+                        kind='normal' if kind=='randn' else 'uniform'
+                        order=('loc','scale','size') if kind=='normal' else ('low','high','size')
+                        node.args=[ast.Constant(0.),ast.Constant(1.),replacement]
+                    elif order is None:node.args=[replacement]
+                    else:node.args[order.index('size')]=replacement
+                node=self.generic_visit(node);name='_b2_callback_'+kind+'_'+str(len(random_sites))
+                if name in local or name in values:raise ValueError('reserved callback random name collision')
+                random_sites.append((name,kind))
+                if domain is not None:random_domains.append((name,domain))
+                if order is not None:random_argument_orders.append((name,order))
+                node.func=ast.Name(id=name,ctx=ast.Load());return node
+            return self.generic_visit(node)
+    definition=RandomSites().visit(definition)
+    local.update(name for name,kind in random_sites)
+    local.add('_b2_fixed_shape')
     for name in {n.id for statement in definition.body for n in ast.walk(statement) if isinstance(n,ast.Name)}-local:
         value=values.get(name)
         if type(value) is np.ndarray:
@@ -78,9 +173,26 @@ def lower_state_effect_function(function):
                 or type(value) is float and not math.isfinite(value)):
             raise ValueError('state effect captures must be finite immutable builtin scalars')
         constants[name]=value
-    if not any(isinstance(n,ast.AugAssign) for n in ast.walk(definition)):
+    if not random_sites and not any(isinstance(n,ast.AugAssign) for n in ast.walk(definition)):
         raise ValueError('state effect body does not contain an explicit local augmented write')
-    return StateEffectFunction(arguments,'\n'.join(ast.unparse(n) for n in definition.body),tuple(sorted(constants.items())),scalarize_arguments,array_return,tuple(sorted(captured_arrays.items())))
+    class FullSliceAugment(ast.NodeTransformer):
+        def visit_AugAssign(self,node):
+            target=node.target
+            # Captures are authenticated ordinary one-dimensional ndarrays.
+            # A complete view has the same physical mutation as its root;
+            # normalizing after closure discovery avoids classifying a direct
+            # capture write as a Python local binding.
+            if (isinstance(target,ast.Subscript) and isinstance(target.value,ast.Name)
+                    and isinstance(target.slice,ast.Slice) and target.slice.lower is None
+                    and target.slice.upper is None and target.slice.step is None):
+                name=target.value.id
+                node.target=ast.copy_location(ast.Name(id=name,ctx=ast.Store()),target)
+                check=ast.Assign(targets=[ast.Name(id=name,ctx=ast.Store())],value=ast.Call(
+                    func=ast.Name(id='_b2_full_slice',ctx=ast.Load()),args=[ast.Name(id=name,ctx=ast.Load())],keywords=[]))
+                return [ast.copy_location(check,node),node]
+            return node
+    definition=FullSliceAugment().visit(definition)
+    return StateEffectFunction(arguments,'\n'.join(ast.unparse(n) for n in definition.body),tuple(sorted(constants.items())),scalarize_arguments,array_return,tuple(sorted(captured_arrays.items())),random_sites=tuple(random_sites),random_domains=tuple(random_domains),random_argument_orders=tuple(random_argument_orders))
 
 
 def bind_state_effect_captures(function, bindings, *, readonly=()):
@@ -136,6 +248,7 @@ def mutated_state_effect_captures(function):
     bound=bind_state_effect_captures(function,bindings)
     protected={bindings[name] for name,array in function.captured_arrays if not array.flags.writeable}
     engine=Effects(states,{},array_states=set(states),writable_states=set(states)-protected,state_types=types,eager_limit=128)
+    engine.callback_random_planning=True;engine.capture_probe=True
     engine.call(bound,[engine.environment[name] for name in function.arguments])
     return {name for name,source in bindings.items() if states[source] in engine.effect_writes}
 
@@ -171,6 +284,7 @@ def mutated_state_effect_caller_captures(statements,functions,variables,*,scalar
             bindings[capture]=captures[key]
         bound[name]=bind_state_effect_captures(function,bindings)
     engine=Effects(states,bound,array_states=arrays,writable_states=arrays-protected,state_types=types,eager_limit=128)
+    engine.callback_random_planning=True
     for name in persistent:engine.environment[name].origin=None
     for statement in tree.body:
         if reload:
@@ -194,6 +308,7 @@ class ArrayCell:
     columns: tuple | None = None
     column: int = 0
     selection_shape: bool = False
+    length_expr: ast.expr | None = None
 
 
 class Effects:
@@ -239,6 +354,7 @@ class Effects:
         self.selected_call_presence=None
         self.selected_write_scope=False
         self.selected_operand_copies=set()
+        self.projected_poisson=False
 
     def materialize(self,value):
         if isinstance(value,ArrayCell) and value.columns is not None:value=value.columns[value.column]
@@ -248,15 +364,25 @@ class Effects:
     def element(self,value,column):
         if not isinstance(value,ArrayCell) or value.columns is None:return value
         part=value.columns[0 if len(value.columns)==1 else column]
-        return ArrayCell(self.materialize(part),dtype=value.dtype,zero_dim=True,selection_shape=value.selection_shape)
+        expression=self.materialize(part)
+        if value.length_expr is not None and column:
+            expression=ast.IfExp(test=ast.Compare(left=copy.deepcopy(value.length_expr),ops=[ast.Eq()],comparators=[ast.Constant(1)]),
+                                body=self.materialize(value.columns[0]),orelse=expression)
+        return ArrayCell(expression,dtype=value.dtype,zero_dim=True,selection_shape=value.selection_shape)
 
     def vector_expression(self,node,values,environment):
         """Compose an elementwise expression for every actual capture cell."""
-        self.broadcast_length(values)
+        semantic_length=self.broadcast_length(values)
         vectors=[v for v in values if isinstance(v,ArrayCell) and v.columns is not None]
         whole_vectors=[v for v in vectors if not v.selection_shape]
         fixed_vectors=[v for v in whole_vectors if len(v.columns)>1]
         count=max(len(v.columns) for v in (fixed_vectors or vectors));column=next(v.column for v in (fixed_vectors or vectors) if len(v.columns)==count)
+        dynamic_lengths=[v.length_expr for v in vectors if v.length_expr is not None]
+        result_length=copy.deepcopy(dynamic_lengths[0]) if dynamic_lengths else None
+        for length in dynamic_lengths[1:]:
+            result_length=ast.IfExp(test=ast.Compare(left=copy.deepcopy(result_length),ops=[ast.Eq()],comparators=[ast.Constant(1)]),body=copy.deepcopy(length),orelse=result_length)
+        if result_length is not None and fixed_vectors:
+            result_length=ast.Constant(count)
         whole_selection=any(isinstance(value,ArrayCell) and value.selection_shape or any(
             ast.dump(item,include_attributes=False) in self.whole_selection_keys for item in ast.walk(self.materialize(value))) for value in values)
         expressions=[]
@@ -269,7 +395,18 @@ class Effects:
             elif isinstance(node,ast.Compare):part=ast.Compare(left=names[0],ops=copy.deepcopy(node.ops),comparators=[names[1]])
             else:part=ast.Call(func=copy.deepcopy(node.func),args=names,keywords=[])
             previous=self.vector_record_guard
-            if self.selected_vector_output is not None and whole_selection:
+            if result_length is not None:
+                checks=[]
+                for length in dynamic_lengths:
+                    checks.append(ast.BoolOp(op=ast.Or(),values=[
+                        ast.Compare(left=copy.deepcopy(length),ops=[ast.Eq()],comparators=[ast.Constant(1)]),
+                        ast.Compare(left=copy.deepcopy(length),ops=[ast.Eq()],comparators=[copy.deepcopy(result_length)])]))
+                valid=checks[0] if len(checks)==1 else ast.BoolOp(op=ast.And(),values=checks)
+                check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(test=valid,body=ast.Constant(1.),orelse=ast.Constant(0.)))
+                condition=ast.Compare(left=ast.Constant(j),ops=[ast.Lt()],comparators=[copy.deepcopy(result_length)])
+                if self.selected_call_presence is not None:condition=ast.BoolOp(op=ast.And(),values=[copy.deepcopy(self.selected_call_presence),condition])
+                self.vector_record_guard=(condition,check,True)
+            if result_length is None and self.selected_vector_output is not None and whole_selection:
                 ordinal,selected_count=self.selected_vector_output
                 nonempty=ast.Compare(left=copy.deepcopy(selected_count),ops=[ast.Gt()],comparators=[ast.Constant(0)])
                 if fixed_vectors:
@@ -303,7 +440,7 @@ class Effects:
             finally:self.vector_record_guard=previous
         dtype=self.dtype(expressions[column]);parts=tuple(ArrayCell(self.materialize(v),dtype=dtype,zero_dim=True) for v in expressions)
         selection_shape=any(v.selection_shape for v in vectors) and all(v.selection_shape or len(v.columns)==1 for v in vectors)
-        return ArrayCell(self.materialize(parts[column]),dtype=dtype,length=count,columns=parts,column=column,selection_shape=selection_shape)
+        return ArrayCell(self.materialize(parts[column]),dtype=dtype,length=0 if semantic_length==0 else count,columns=parts,column=column,selection_shape=selection_shape,length_expr=result_length)
 
     def broadcast_length(self,values):
         arrays=[value for value in values if isinstance(value,ArrayCell) and not value.zero_dim]
@@ -395,6 +532,7 @@ class Effects:
         if isinstance(value,ast.Call) and isinstance(value.func,ast.Name):
             if value.func.id in ('bool','_b2_logical_and','_b2_logical_or','_b2_logical_not'):return 'boolean'
             if value.func.id=='int':return 'integer'
+            if value.func.id=='_b2_shape_noise':return self.dtype(value.args[2])
         return 'float'
 
     def promote(self,values):
@@ -404,6 +542,42 @@ class Effects:
         if (isinstance(node,ast.Call) and isinstance(node.func,ast.Name)
                 and node.func.id in environment and type(environment[node.func.id]) not in self.callable_types):
             raise ValueError('state effect call is shadowed by a local value: '+node.func.id)
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='_b2_full_slice':
+            if len(node.args)!=1 or node.keywords:raise ValueError('full array slice requires one operand')
+            source=self.expression(node.args[0],environment)
+            if not isinstance(source,ArrayCell) or source.zero_dim:raise ValueError('full array slice requires a one-dimensional array')
+            return source
+        if isinstance(node,ast.Subscript):
+            source=self.expression(node.value,environment);index=self.expression(node.slice,environment)
+            if not isinstance(source,ArrayCell) or source.zero_dim or self.dtype(index)!='integer' and not getattr(self,'capture_probe',False):
+                raise ValueError('whole array gather requires integer indices')
+            array_index=isinstance(index,ArrayCell) and not index.zero_dim
+            if source.columns is None:
+                if not getattr(self,'callback_random_planning',False):raise ValueError('whole array gather requires complete physical columns')
+                expression=ast.Subscript(value=self.materialize(source),slice=self.materialize(index),ctx=ast.Load())
+                return ArrayCell(expression,dtype=source.dtype,zero_dim=not array_index,length=index.length if array_index else None,selection_shape=array_index and index.selection_shape)
+            if array_index and index.columns is None:raise ValueError('whole array gather requires complete index columns')
+            count=len(source.columns);indices=index.columns if array_index else (index,);parts=[]
+            for column,operand in enumerate(indices):
+                raw=self.materialize(operand)
+                normalized=ast.IfExp(test=ast.Compare(left=copy.deepcopy(raw),ops=[ast.Lt()],comparators=[ast.Constant(0)]),
+                    body=ast.BinOp(left=copy.deepcopy(raw),op=ast.Add(),right=ast.Constant(count)),orelse=copy.deepcopy(raw))
+                valid=ast.BoolOp(op=ast.And(),values=[ast.Compare(left=copy.deepcopy(normalized),ops=[ast.GtE()],comparators=[ast.Constant(0)]),
+                    ast.Compare(left=copy.deepcopy(normalized),ops=[ast.Lt()],comparators=[ast.Constant(count)])])
+                check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(test=valid,body=ast.Constant(1.),orelse=ast.Constant(0.)))
+                if array_index and index.length_expr is not None:
+                    present=ast.Compare(left=ast.Constant(column),ops=[ast.Lt()],comparators=[copy.deepcopy(index.length_expr)])
+                    check=ast.IfExp(test=present,body=check,orelse=ast.Constant(0.))
+                self.record(check)
+                value=self.materialize(source.columns[-1])
+                for row in reversed(range(count-1)):
+                    value=ast.IfExp(test=ast.Compare(left=copy.deepcopy(normalized),ops=[ast.Eq()],comparators=[ast.Constant(row)]),
+                        body=self.materialize(source.columns[row]),orelse=value)
+                parts.append(ArrayCell(value,dtype=source.dtype,zero_dim=True))
+            if not array_index:return parts[0]
+            chosen=min(index.column,len(parts)-1)
+            return ArrayCell(self.materialize(parts[chosen]),dtype=source.dtype,length=index.length,columns=tuple(parts),column=chosen,
+                selection_shape=index.selection_shape,length_expr=copy.deepcopy(index.length_expr))
         if isinstance(node,ast.Constant) and type(node.value) in (bool,int,float):return copy.deepcopy(node)
         if isinstance(node,ast.Name):
             if node.id not in environment:raise ValueError('unknown effect name: '+node.id)
@@ -436,6 +610,72 @@ class Effects:
             expression=ast.Compare(left=self.materialize(left),ops=copy.deepcopy(node.ops),comparators=[self.materialize(right)])
             self.record(expression)
             return ArrayCell(expression,dtype='boolean',length=length) if any(isinstance(v,ArrayCell) and not v.zero_dim for v in (left,right)) else expression
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='_b2_rate_size_element':
+            if len(node.args)!=2 or node.keywords:raise ValueError('invalid explicit Poisson rate element')
+            return self.expression(node.args[0],environment)
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='_b2_size_rate':
+            if len(node.args)!=2 or node.keywords:raise ValueError('invalid explicit Poisson size')
+            rate=self.expression(node.args[0],environment);domain=self.expression(node.args[1],environment)
+            if not isinstance(domain,ArrayCell) or domain.zero_dim:raise ValueError('Poisson size requires a one-dimensional array')
+            def length(value):
+                if value.length_expr is not None:return copy.deepcopy(value.length_expr)
+                if value.selection_shape and self.selected_vector_output is not None:return copy.deepcopy(self.selected_vector_output[1])
+                return ast.Constant(value.length) if value.length is not None else None
+            if isinstance(rate,ArrayCell) and not rate.zero_dim:
+                rate_length=length(rate);target_length=length(domain)
+                if rate_length is not None and target_length is not None:
+                    valid=ast.BoolOp(op=ast.Or(),values=[ast.Compare(left=rate_length,ops=[ast.Eq()],comparators=[ast.Constant(1)]),
+                        ast.Compare(left=copy.deepcopy(rate_length),ops=[ast.Eq()],comparators=[target_length])])
+                    self.record(ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(test=valid,body=ast.Constant(1.),orelse=ast.Constant(0.))))
+                if rate.length not in (None,1) and domain.length is not None and not rate.selection_shape and not domain.selection_shape and rate.length!=domain.length:
+                    raise ValueError('Poisson rate cannot broadcast to explicit size')
+            else:
+                # NumPy validates scalar lambda even for an empty output.
+                self.record(ast.Call(func=ast.Name(id='sqrt',ctx=ast.Load()),args=[self.materialize(rate)],keywords=[]))
+                maximum=float(np.iinfo(np.int64).max)
+                maximum-=10.*np.sqrt(maximum)
+                self.record(ast.Call(func=ast.Name(id='sqrt',ctx=ast.Load()),args=[
+                    ast.BinOp(left=ast.Constant(float(maximum)),op=ast.Sub(),right=self.materialize(rate))],keywords=[]))
+            if any(isinstance(v,ArrayCell) and v.columns is not None for v in (rate,domain)):
+                result=self.vector_expression(ast.Call(func=ast.Name(id='_b2_rate_size_element',ctx=ast.Load()),args=[],keywords=[]),(rate,domain),environment)
+                result.selection_shape=domain.selection_shape;result.length_expr=copy.deepcopy(domain.length_expr)
+                return result
+            return ArrayCell(self.materialize(rate),writable=False,dtype=self.dtype(rate),length=domain.length,selection_shape=domain.selection_shape)
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='_b2_fixed_shape':
+            if (len(node.args)!=1 or node.keywords or not isinstance(node.args[0],ast.Constant)
+                    or type(node.args[0].value) is not int or not 0<=node.args[0].value<=4096):
+                raise ValueError('invalid internal fixed callback shape')
+            size=node.args[0].value
+            return ArrayCell(ast.Constant(0.),writable=False,length=size,
+                             columns=tuple(ast.Constant(0.) for _ in range(max(size,1))),
+                             length_expr=ast.Constant(size) if size==0 else None)
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='_b2_scalar_value':
+            if len(node.args)!=1 or node.keywords:raise ValueError('invalid internal scalar callback storage')
+            value=self.expression(node.args[0],environment)
+            if not isinstance(value,ArrayCell) or value.columns is None or len(value.columns)!=1:raise ValueError('scalar callback storage requires one physical column')
+            expression=self.materialize(value.columns[0]);self.record(expression);return expression
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id in ('_b2_scalar_noise','_b2_scalar_rate'):
+            count=3 if node.func.id=='_b2_scalar_noise' else 1
+            if len(node.args)!=count or node.keywords:raise ValueError('invalid internal scalar random arguments')
+            values=[self.expression(arg,environment) for arg in node.args]
+            if any(isinstance(value,ArrayCell) and not value.zero_dim for value in values):
+                raise ValueError('scalar callback array random parameters require whole-array sampling')
+            expression=self.materialize(values[-1]);self.record(expression);return expression
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='_b2_scheduled_poisson':
+            if not getattr(self,'scheduled_scalar_noise',False) or len(node.args)!=2 or node.keywords:raise ValueError('invalid scheduled Poisson cache')
+            self.expression(node.args[0],environment)
+            return self.expression(node.args[1],environment)
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='_b2_shape_noise':
+            if len(node.args)!=3 or node.keywords:raise ValueError('invalid internal callback noise shape')
+            first,second,noise=[self.expression(arg,environment) for arg in node.args]
+            if any(isinstance(value,ArrayCell) and not value.zero_dim for value in (first,second)):return noise
+            if not isinstance(noise,ArrayCell):
+                if getattr(self,'scheduled_scalar_noise',False):return noise
+                raise ValueError('callback scalar draw requires arrival cache')
+            if noise.columns is None:
+                if not getattr(self,'callback_random_planning',False):raise ValueError('callback scalar draw requires compacted arrival cache')
+                return ast.Call(func=copy.deepcopy(node.func),args=[self.materialize(value) for value in (first,second,noise)],keywords=[])
+            expression=self.materialize(noise.columns[0]);self.record(expression);return expression
         if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and type(environment.get(node.func.id)) in self.callable_types:
             if node.keywords:raise ValueError('effect descriptor calls require positional arguments')
             function=environment[node.func.id]
@@ -451,7 +691,35 @@ class Effects:
                 maximum-=10.*np.sqrt(maximum)
                 self.record(ast.Call(func=ast.Name(id='sqrt',ctx=ast.Load()),
                     args=[ast.BinOp(left=ast.Constant(float(maximum)),op=ast.Sub(),right=self.materialize(arguments[0]))],keywords=[]))
+            if type(function) is PoissonNoise and self.projected_poisson and len(arguments)==1 and isinstance(arguments[0],ArrayCell) and arguments[0].columns is not None:
+                rate=arguments[0];ordinal,count=self.selected_vector_output;size=len(rate.columns)
+                length=copy.deepcopy(rate.length_expr) if rate.length_expr is not None else ast.Constant(size)
+                valid=ast.BoolOp(op=ast.Or(),values=[ast.Compare(left=copy.deepcopy(length),ops=[ast.Eq()],comparators=[ast.Constant(1)]),
+                    ast.Compare(left=copy.deepcopy(length),ops=[ast.Eq()],comparators=[copy.deepcopy(count)])])
+                check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(test=valid,body=ast.Constant(1.),orelse=ast.Constant(0.)))
+                previous=self.vector_record_guard
+                presence=copy.deepcopy(self.selected_call_presence) if self.selected_call_presence is not None else ast.Compare(left=copy.deepcopy(count),ops=[ast.Gt()],comparators=[ast.Constant(0)])
+                self.vector_record_guard=(presence,ast.Constant(1.),True)
+                try:
+                    self.record(check)
+                    for column,part in enumerate(rate.columns):
+                        value=self.materialize(part)
+                        self.record(ast.Call(func=ast.Name(id='sqrt',ctx=ast.Load()),args=[value],keywords=[]))
+                        self.record(ast.Call(func=ast.Name(id='sqrt',ctx=ast.Load()),args=[ast.BinOp(left=ast.Constant(2147483647.),op=ast.Sub(),right=copy.deepcopy(value))],keywords=[]))
+                finally:self.vector_record_guard=previous
+                value=self.materialize(rate.columns[-1])
+                for column in reversed(range(size-1)):
+                    value=ast.IfExp(test=ast.Compare(left=copy.deepcopy(ordinal),ops=[ast.Eq()],comparators=[ast.Constant(column)]),body=self.materialize(rate.columns[column]),orelse=value)
+                if rate.length_expr is not None:
+                    value=ast.IfExp(test=ast.Compare(left=copy.deepcopy(length),ops=[ast.Eq()],comparators=[ast.Constant(1)]),body=self.materialize(rate.columns[0]),orelse=value)
+                expression=ast.Call(func=copy.deepcopy(node.func),args=[value],keywords=[])
+                self.selected_vector_keys.add(ast.dump(expression,include_attributes=False));self.record(expression)
+                return ArrayCell(expression,dtype='integer',selection_shape=True)
             expression=ast.Call(func=copy.deepcopy(node.func),args=[self.materialize(v) for v in arguments],keywords=[])
+            if type(function) is PoissonNoise and self.projected_poisson:
+                # A callback scalar-rate draw still belongs to an actual
+                # arrival action, never to the synthetic whole-array owner.
+                self.selected_vector_keys.add(ast.dump(expression,include_attributes=False))
             self.record(expression)
             array=node.func.id in self.array_callables or any(isinstance(v,ArrayCell) and not v.zero_dim for v in arguments)
             return ArrayCell(expression,dtype='integer' if type(function) is PoissonNoise else 'float',length=self.broadcast_length(arguments)) if array else expression
@@ -523,7 +791,14 @@ class Effects:
                         or type(item[1]) is int and not -2**31<=item[1]<2**31
                         or type(item[1]) is float and not math.isfinite(item[1])):
                     raise ValueError('invalid state effect scalar capture')
+            if function.random_sites and not getattr(self,'callback_random_planning',False):raise ValueError('callback random sites require lifted selection-aware caller scope')
             environment={name:ast.Constant(value=value) for name,value in function.constants}
+            from .training_equations import PoissonNoise,PureFunction
+            if type(function.random_sites) is not tuple:raise ValueError('invalid callback random descriptor')
+            for index,(name,kind) in enumerate(function.random_sites):
+                if kind not in ('poisson','randn','rand','normal','uniform') or type(name) is not str or not name.isidentifier():raise ValueError('invalid callback random descriptor')
+                order=dict(function.random_argument_orders).get(name)
+                environment[name]=PoissonNoise(index) if kind=='poisson' else PureFunction(arguments=order or ('domain',),expression=('loc' if kind=='normal' else 'low') if order else '0.')
             if type(function.captured_arrays) is not tuple or type(function.capture_bindings) is not tuple or type(function.parameter_captures) is not tuple:
                 raise ValueError('invalid mutable capture descriptor')
             captures=dict(function.captured_arrays);bindings=dict(function.capture_bindings)
@@ -548,6 +823,16 @@ class Effects:
                 environment[name]=value
             environment.update(zip(function.arguments,arguments))
             tree=_bounded_tree(ast.parse(function.body))
+            size_sites={name:order for name,order in function.random_argument_orders if dict(function.random_sites).get(name)=='poisson' and 'size' in order}
+            if size_sites:
+                class SizePoisson(ast.NodeTransformer):
+                    def visit_Call(self,node):
+                        node=self.generic_visit(node)
+                        if isinstance(node.func,ast.Name) and node.func.id in size_sites:
+                            values=dict(zip(size_sites[node.func.id],node.args))
+                            node.args=[ast.Call(func=ast.Name(id='_b2_size_rate',ctx=ast.Load()),args=[values['lam'],values['size']],keywords=[])]
+                        return node
+                tree=SizePoisson().visit(tree)
             if not 1<=len(tree.body)<=65:raise ValueError('state effect body exceeds statement budget')
             locals_={node.id for node in ast.walk(tree) if isinstance(node,ast.Name) and isinstance(node.ctx,ast.Store)}|set(function.arguments)
             for node in ast.walk(tree):
@@ -585,7 +870,9 @@ class Effects:
                 dynamic_shape=None
                 if self.selected_vector_output is not None and isinstance(value,ArrayCell):
                     count=self.selected_vector_output[1]
-                    if left.selection_shape and not value.selection_shape and value.columns is not None:
+                    if left.length_expr is not None and value.length_expr is not None:
+                        dynamic_shape=ast.Compare(left=copy.deepcopy(left.length_expr),ops=[ast.Eq()],comparators=[copy.deepcopy(value.length_expr)])
+                    elif left.selection_shape and not value.selection_shape and value.columns is not None:
                         dynamic_shape=ast.Compare(left=copy.deepcopy(count),ops=[ast.Eq()],comparators=[ast.Constant(len(value.columns))])
                     elif not left.selection_shape and value.selection_shape and left.length is not None:
                         dynamic_shape=ast.BoolOp(op=ast.Or(),values=[
@@ -604,7 +891,9 @@ class Effects:
                     for j,target in enumerate(left.columns):
                         if value.columns is not None and j>=len(value.columns):continue
                         while target.source is not None:target=target.source
-                        target.value=self.materialize(self.element(value,j))
+                        old=self.materialize(target);target.value=self.materialize(self.element(value,j))
+                        if left.length_expr is not None:
+                            target.value=ast.IfExp(test=ast.Compare(left=ast.Constant(j),ops=[ast.Lt()],comparators=[copy.deepcopy(left.length_expr)]),body=target.value,orelse=old)
                         if target.origin is not None:self.effect_writes.add(target.origin)
                 else:
                     left.value=self.materialize(value)
@@ -616,6 +905,7 @@ class Effects:
                         left.column=value.column
                         left.length=value.length
                         left.selection_shape=value.selection_shape
+                        left.length_expr=value.length_expr
                     if left.origin is not None:self.effect_writes.add(left.origin)
             else:
                 # Scalar += array creates a new array. Its subsequent aliases
@@ -635,12 +925,21 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                                    writable_states, state_types=None,array_parameters=(),temporary_parameters=(),
                                    physical_slots=None, writeback_order=(), eager_limit=64,
                                    copied_array_states=(), reload_arrays_each_statement=False,array_callables=(),
-                                   write_guards=None,indexed_guard_reads=(),scalar_write_guards=False,parameter_types=None,
+                                   write_guards=None,indexed_guard_reads=(),scalar_write_guards=False,scalar_statement_guards=None,parameter_types=None,
                                    predicate_outputs=None,scalar_eager=False,eager_guard=None,empty_vector=False,
-                                   unconditional_states=(),retained_array_states=(),unconditional_parameters=(),whole_eager=False,array_aliases=None,capture_vectors=None,selected_output=None,copied_array_sources=None,selected_vectors=None,selected_accumulators=(),separate_whole_eager=False,selected_call_presence=None,selected_guards=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=(),whole_array_locals=()):
+                                   unconditional_states=(),retained_array_states=(),unconditional_parameters=(),whole_eager=False,array_aliases=None,capture_vectors=None,selected_output=None,copied_array_sources=None,selected_vectors=None,selected_accumulators=(),separate_whole_eager=False,selected_call_presence=None,selected_guards=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=(),whole_array_locals=(),whole_array_lengths=None,whole_array_outputs=None,whole_length_outputs=None,projected_poisson=False,masked_array_reads=(),scheduled_scalar_noise=False,whole_writeback=(),compact_eager_roots=False):
     """Compose state-effect callbacks into the existing native action ABI."""
     from .training_equations import StateSlot, RefractoryActive, _compile_training_ast
+    if type(compact_eager_roots) is not bool:raise ValueError('eager root compaction requires a boolean flag')
     states=dict(states);parameters=dict(parameters);types={} if state_types is None else dict(state_types)
+    whole_array_lengths={} if whole_array_lengths is None else dict(whole_array_lengths)
+    whole_array_outputs={} if whole_array_outputs is None else dict(whole_array_outputs)
+    whole_length_outputs={} if whole_length_outputs is None else dict(whole_length_outputs)
+    if (not set(whole_array_lengths)<=set(whole_array_locals)
+            or not set(whole_array_outputs)<=set(unconditional_states)
+            or not set(whole_length_outputs)<=set(unconditional_states)
+            or any(type(column) is not int or column<0 for column in whole_array_outputs.values())):
+        raise ValueError('invalid whole caller length or column binding')
     copied_array_sources={} if copied_array_sources is None else dict(copied_array_sources)
     selected_accumulators=set(selected_accumulators)
     selected_guards={} if selected_guards is None else dict(selected_guards)
@@ -669,7 +968,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         raise ValueError('whole parameter arrays require readonly bindings')
     if type(whole_eager) is not bool or whole_eager and not (unconditional_states or unconditional_parameters):
         raise ValueError('whole eager validation requires whole arrays')
-    if type(separate_whole_eager) is not bool or separate_whole_eager and selected_output is None:
+    if type(separate_whole_eager) is not bool or separate_whole_eager and selected_output is None and not whole_array_locals:
         raise ValueError('separate whole checks require a selected batch output')
     if type(scalar_eager) is not bool:raise ValueError('invalid scalar eager contract')
     if type(empty_vector) is not bool or empty_vector and not scalar_eager:
@@ -680,6 +979,11 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
            for slot,coefficients in predicate_outputs.items()):
         raise ValueError('invalid effect predicate output contract')
     write_guards={} if write_guards is None else dict(write_guards)
+    scalar_statement_guards={} if scalar_statement_guards is None else dict(scalar_statement_guards)
+    if scalar_statement_guards and (not scalar_write_guards or reload_arrays_each_statement or
+            any(type(index) is not int or not 0<=index<256 or not (gate in states and types.get(states[gate])=='boolean' or type(parameters.get(gate)) is RefractoryActive)
+                for index,gate in scalar_statement_guards.items())):
+        raise ValueError('invalid scalar statement guard contract')
     if type(scalar_write_guards) is not bool or scalar_write_guards and (indexed_guard_reads or copied_array_states or set(write_guards or ())&set(array_states)):
         raise ValueError('scalar conditional writes require scalar operands')
     locals_={node.id for node in ast.walk(_bounded_tree(ast.parse(statements))) if isinstance(node,ast.Name) and isinstance(node.ctx,ast.Store)} if write_guards or indexed_guard_reads else set()
@@ -716,6 +1020,10 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                    state_types=types,parameter_types=parameter_types)
     engine.validate_empty_arrays=scalar_eager
     engine.selected_vector_inputs=(set(array_states)|set(array_parameters))-(set(unconditional_states)|set(unconditional_parameters))
+    if type(projected_poisson) is not bool or projected_poisson and selected_output is None:raise ValueError('projected Poisson requires actual arrival metadata')
+    engine.projected_poisson=projected_poisson
+    if not set(masked_array_reads)<=set(copied_array_states)|set(temporary_parameters):raise ValueError('masked caller reads require copied arrays')
+    engine.selected_operand_copies=set(masked_array_reads)
     engine.selected_vector_output=selected_output
     engine.selected_call_presence=selected_call_presence
     physical=None
@@ -750,6 +1058,8 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                 engine.roots[name]=engine.environment[name]=cell
             else:
                 engine.roots[name]=engine.environment[name]=ArrayCell(engine.materialize(cell),False,origin,dtype=cell.dtype,source=cell)
+    if type(scheduled_scalar_noise) is not bool:raise ValueError('invalid scheduled noise contract')
+    engine.scheduled_scalar_noise=scheduled_scalar_noise
     vectors={} if capture_vectors is None else dict(capture_vectors)
     for name,group in vectors.items():
         if (type(group) is not tuple or not group or name not in group or len(set(group))!=len(group)
@@ -762,7 +1072,12 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
     for name in whole_array_locals:
         value=engine.environment[name];columns,column=engine.capture_vectors[name]
         engine.environment[name]=ArrayCell(engine.materialize(value),value.writable,value.origin,dtype=value.dtype,
-                                          length=len(columns),columns=columns,column=column)
+                                          length=len(columns),columns=columns,column=column,
+                                          selection_shape=name in whole_array_lengths,
+                                          length_expr=ast.Name(id=whole_array_lengths[name],ctx=ast.Load()) if name in whole_array_lengths else None)
+    for name in set(whole_array_lengths.values())|set(whole_length_outputs):
+        if name not in states or types.get(states[name])!='integer':raise ValueError('whole array lengths require int32 state')
+        engine.environment[name].zero_dim=True
     selected_vectors={} if selected_vectors is None else dict(selected_vectors)
     if not set(selected_row_operands)<=set(selected_vectors) or selected_row_operands and not selected_guards:
         raise ValueError('row operands require masked compact batch vectors')
@@ -772,11 +1087,21 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             raise ValueError('whole selected operands require copied state columns')
         root=engine.environment[name]
         parts=tuple(ArrayCell(copy.deepcopy(value),dtype=root.dtype,zero_dim=True) for value in expressions)
-        engine.environment[name]=ArrayCell(engine.materialize(parts[0]),dtype=root.dtype,length=len(parts),columns=parts,selection_shape=True)
+        engine.environment[name]=ArrayCell(engine.materialize(parts[0]),dtype=root.dtype,length=len(parts),columns=parts,selection_shape=True,
+                                          length_expr=copy.deepcopy(selected_output[1]) if whole_array_lengths or whole_length_outputs else None)
         engine.whole_selection_keys.update(ast.dump(value,include_attributes=False) for value in expressions)
     for name,source in copied_array_aliases.items():engine.environment[name]=engine.environment[source]
     guarded_prefix=[];assignment_types={};projected_keys=set();selected_output_lengths=set()
     def output_value(name,value):
+        if name in whole_length_outputs:
+            source=engine.environment[whole_length_outputs[name]]
+            length=source.length_expr if isinstance(source,ArrayCell) else None
+            return copy.deepcopy(length) if length is not None else ast.Constant(source.length)
+        if name in whole_array_outputs and isinstance(value,ArrayCell) and value.columns is not None:
+            column=whole_array_outputs[name];result=engine.materialize(engine.element(value,column))
+            if value.length_expr is not None:
+                result=ast.IfExp(test=ast.Compare(left=ast.Constant(column),ops=[ast.Lt()],comparators=[copy.deepcopy(value.length_expr)]),body=result,orelse=ast.Name(id=name,ctx=ast.Load()))
+            return result
         if selected_output is None or name not in copied_array_states or not isinstance(value,ArrayCell) or value.columns is None:
             return engine.materialize(value)
         ordinal,count=selected_output;size=len(value.columns)
@@ -786,7 +1111,14 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             result=ast.IfExp(test=ast.Compare(left=copy.deepcopy(ordinal),ops=[ast.Eq()],comparators=[ast.Constant(column)]),
                              body=engine.materialize(value.columns[column]),orelse=result)
         check=ast.Constant(1.)
-        if size>1:
+        if value.length_expr is not None:
+            valid=ast.BoolOp(op=ast.Or(),values=[
+                ast.Compare(left=copy.deepcopy(count),ops=[ast.Eq()],comparators=[ast.Constant(0)]),
+                ast.Compare(left=copy.deepcopy(value.length_expr),ops=[ast.Eq()],comparators=[ast.Constant(1)]),
+                ast.Compare(left=copy.deepcopy(count),ops=[ast.Eq()],comparators=[copy.deepcopy(value.length_expr)])])
+            check=ast.BinOp(left=ast.Constant(1.),op=ast.Div(),right=ast.IfExp(test=valid,body=ast.Constant(1.),orelse=ast.Constant(0.)))
+            result=ast.IfExp(test=ast.Compare(left=copy.deepcopy(value.length_expr),ops=[ast.Eq()],comparators=[ast.Constant(1)]),body=engine.materialize(value.columns[0]),orelse=result)
+        elif size>1:
             # Empty pathways skip writeback; otherwise NumPy indexed assignment
             # requires matching rows. Keep the checked expression in the typed
             # result, including integer/Boolean outputs, without float coercion.
@@ -806,9 +1138,9 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         result=ast.Call(func=ast.Name(id='_b2_where',ctx=ast.Load()),args=[check,result,copy.deepcopy(result)],keywords=[])
         projected_keys.add(ast.dump(result,include_attributes=False))
         return result
-    def statement_effect(statement):
+    def statement_effect(statement,statement_number=None):
         target=statement.targets[0].id if isinstance(statement,ast.Assign) and len(statement.targets)==1 and isinstance(statement.targets[0],ast.Name) else statement.target.id if isinstance(statement,ast.AugAssign) and isinstance(statement.target,ast.Name) else None
-        gate=write_guards.get(target)
+        gate=scalar_statement_guards.get(statement_number,write_guards.get(target))
         first=len(engine.executed)
         if gate is None:
             if selected_guards and isinstance(statement,ast.AugAssign) and target in copied_array_states:
@@ -839,7 +1171,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             if write_guards:
                 guarded_prefix.extend(engine.executed[first:]);del engine.executed[first:]
             return
-        left=engine.environment[target]
+        left=engine.environment.get(target,ast.Constant(0.))
         if scalar_write_guards:
             # NumPy's repeated-index fallback emits an ordinary Python if.
             # It skips the whole callback on a false gate, including physical
@@ -858,8 +1190,8 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                 if ast.dump(previous,include_attributes=False)!=ast.dump(current,include_attributes=False):
                     cell.value=ast.IfExp(test=copy.deepcopy(gate_expr),body=current,orelse=previous)
             if isinstance(engine.environment[target],ArrayCell) and not engine.environment[target].zero_dim:
-                raise ValueError('scalar event writeback cannot store a whole captured array')
-            engine.environment[target]=ast.IfExp(test=gate_expr,body=engine.materialize(engine.environment[target]),orelse=old)
+                if target in states:raise ValueError('scalar event writeback cannot store a whole captured array')
+            else:engine.environment[target]=ast.IfExp(test=gate_expr,body=engine.materialize(engine.environment[target]),orelse=old)
             return
         if not isinstance(left,ArrayCell) or left.zero_dim:
             raise ValueError('NumPy conditional target requires a vector array')
@@ -933,23 +1265,24 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                 if name in physical_vectors and name not in selected_accumulators:physical_vectors[name]=copy.deepcopy(engine.environment[name])
                 value=output_value(name,engine.environment[name])
                 physical_values[name]=engine.physical_cast(value,types.get(states[name],'float')) if types else value
-        outputs={name:ast.unparse(output_value(name,engine.environment[name]) if name in retained_array_states or name not in array_states else physical_values[name]) for name in states}
+        outputs={name:ast.unparse(output_value(name,engine.environment[name]) if name in retained_array_states or name in retained_copied_outputs or name not in array_states else physical_values[name]) for name in states}
     elif write_guards:
         tree=_bounded_tree(ast.parse(statements))
         if type(statements) is not str or len(statements)>16384 or len(tree.body)>256:
             raise ValueError('state effect statements exceed budget')
-        for statement in tree.body:statement_effect(statement)
+        for number,statement in enumerate(tree.body):statement_effect(statement,number)
         outputs={name:ast.unparse(output_value(name,engine.environment[name])) for name in states}
     else:
         tree=_bounded_tree(ast.parse(statements))
         if type(statements) is not str or len(statements)>16384 or len(tree.body)>256:
             raise ValueError('state effect statements exceed budget')
-        for statement in tree.body:statement_effect(statement)
+        for number,statement in enumerate(tree.body):statement_effect(statement,number)
         outputs={name:ast.unparse(output_value(name,engine.environment[name])) for name in states}
     # Whole caller bindings are local references. Assignment rebinds that
     # reference; only an in-place mutation recorded in effect_writes updates
     # its physical vector. It must not overwrite a previously borrowed array.
-    explicit=({n.id for n in ast.walk(ast.parse(statements)) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}&set(states))-whole_array_locals
+    if not set(whole_writeback)<=whole_array_locals:raise ValueError('invalid whole scheduled writeback names')
+    explicit=({n.id for n in ast.walk(ast.parse(statements)) if isinstance(n,ast.Name) and isinstance(n.ctx,ast.Store)}&set(states))-(whole_array_locals-set(whole_writeback))
     if physical is not None:
         if set(writeback_order)!=explicit&set(array_states):
             raise ValueError('NumPy writeback order must cover all explicit array writes')
@@ -1011,13 +1344,42 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
                 if key not in interned:interned[key]=len(nodes);nodes.append(node)
                 remap[local]=interned[key]
             ends.append(remap[len(group)-1])
+        if compact_eager_roots and len(nodes)+len(ends)-1>128:
+            # A prefix root already unconditionally evaluated by a later root
+            # needs no separate Sequence node. Retain the entire SSA node list,
+            # including unused checks. Never cover a root through a branch or
+            # through a Poisson rate, which a cached alias may skip.
+            memo={}
+            def unconditional(index):
+                if index in memo:return memo[index]
+                node=nodes[index];op=node['op'];covered={index}
+                keys=(('condition',) if op in ('select','integer_select') else
+                      ('left',) if op in ('boolean_and','boolean_or') else
+                      () if op=='poisson' else
+                      ('arg','left','right','low','high','condition','yes','no','rate','slope','scale'))
+                for key in keys:
+                    if key in node:covered.update(unconditional(node[key]))
+                if op in ('timed_parameter','parameter_gather','integer_parameter_gather'):
+                    covered.update(unconditional(node['index']))
+                    if op=='timed_parameter':covered.update(unconditional(node['time']))
+                memo[index]=covered;return covered
+            kept=[];covered=set()
+            for index in reversed(ends):
+                if not kept or index not in covered:
+                    kept.append(index);covered.update(unconditional(index))
+            ends=list(reversed(kept))
         result=ends[-1]
         integer_ops={'poisson','integer_constant','integer_state','integer_parameter','integer_neuron_parameter','integer_mapped_parameter',
                      'integer_parameter_gather','integer_cast','integer_binary','integer_select','integer_neg','integer_sequence','_deferred_integer_parameter','_sample_index'}
         def sequence(left,right):
             if nodes[right]['op'] in integer_ops:nodes.append(dict(op='integer_sequence',left=left,right=right))
-            else:nodes.append(dict(op='sequence',left=left,right=right,boolean=nodes[right]['op'] in
-                                   {'boolean_cast','boolean_and','boolean_or','boolean_not','eager_boolean_and','eager_boolean_or','integer_compare'}))
+            else:
+                node=nodes[right]
+                boolean=(node['op'] in {'boolean_cast','boolean_and','boolean_or','boolean_not','eager_boolean_and','eager_boolean_or',
+                                       'surrogate_step','equality','integer_compare','discrete_compare','elapsed_compare'}
+                         or node['op'] in ('select','sequence') and node.get('boolean',False)
+                         or node['op']=='constant' and node['value'] in (0.,1.))
+                nodes.append(dict(op='sequence',left=left,right=right,boolean=boolean))
             return len(nodes)-1
         lazy={'poisson','select','integer_select','boolean_and','boolean_or'}
         if any(node['op'] in lazy for node in nodes):
@@ -1031,7 +1393,7 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
             sequence(len(nodes)-1,result)
         if len(nodes)>128:raise ValueError('state effect program exceeds128 native nodes')
         return nodes
-    winners={states[name]:name for name in sorted(explicit)}
+    winners={states[name]:name for name in sorted(set(retained_copied_outputs)|explicit)}
     targets=sorted(written);programs=[];unconditional_programs={}
     full_names=set(unconditional_states)|set(unconditional_parameters)
     singleton_names={name for name,group in vectors.items() if len(group)==1}
@@ -1075,9 +1437,9 @@ def compile_state_effect_transform(statements, *, states, parameters, array_stat
         if slot in {states[name] for name in unconditional_states}:
             if dependencies(value)&selected_names:
                 raise ValueError('whole reset captures cannot depend on event-selected arrays')
-            unconditional_programs[slot]=joined(expression,roots=[] if separate_whole_eager else full_prefix)
+            unconditional_programs[slot]=joined(expression,predicate_outputs.get(slot),roots=[] if separate_whole_eager else full_prefix)
         else:
-            if dependencies(value)&full_names and not (selected_output is not None and dependencies(value)&full_names<=singleton_names):
+            if dependencies(value)&full_names and not scheduled_scalar_noise and not (selected_output is not None and dependencies(value)&full_names<=singleton_names):
                 raise ValueError('reset output cannot broadcast a whole capture into an event selection')
             name=next((name for name,gate in selected_guards.items() if states[name]==slot),None)
             expression=row_expression(expression)

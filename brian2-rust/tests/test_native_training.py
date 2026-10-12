@@ -236,8 +236,7 @@ t.step(x,[0,0,1,1])
 print(json.dumps(t.state))
 '''
     fresh=subprocess.run([sys.executable,'-c',script,str(path),json.dumps(gpu.plan)],
-                         check=True,capture_output=True,text=True,
-                         timeout=float(os.environ.get('B2_TEST_CHILD_TIMEOUT', '60')))
+                         check=True,capture_output=True,text=True,timeout=60)
     assert json.loads(fresh.stdout)==expected
     gpu._metal_library.write_bytes(b'broken')
     with pytest.raises(ValueError,match='library integrity'): gpu.step(inputs,labels)

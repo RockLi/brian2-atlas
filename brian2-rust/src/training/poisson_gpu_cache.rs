@@ -12,6 +12,7 @@ impl Layout {
         let mut per_step=0usize;
         for a in &spec.actions {
             let mut mask=0u16;
+            if a.poisson_candidate {streams.push(mask);continue;}
             if let Some(programs)=a.program_set.map(|i|&spec.program_sets[i]) {
                 for node in programs.iter().flatten(){if let equation::Node::Poisson{stream,..}=node{mask|=1<<stream;}}
             }

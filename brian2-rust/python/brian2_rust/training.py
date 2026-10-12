@@ -223,8 +223,9 @@ class NativeLIFTrainer:
         if operation=='train' and 'updated_dynamic' in result:
             candidate=copy.deepcopy(self.plan);candidate['dynamic']=result['updated_dynamic']
             contract=self._topology_identity(candidate)
-        self.state=result['state']; self.last_result=result
+        self.last_result=result
         if operation=='train':
+            self.state=result['state']
             if candidate is not None:self.plan=candidate;self._topology_contract=contract
             self.neuron_state=result.get('final_state',result['final_membrane'])
             self.elapsed_ticks+=len(request['inputs'][0])

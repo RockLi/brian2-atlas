@@ -122,6 +122,16 @@ def test_capture_binding_dtype_ownership_and_shared_identity(dtype):
 
 @pytest.mark.parametrize('array',[np.array([np.nan]),np.zeros((1,2)),np.array([1],dtype='int64'),np.arange(4.)[::2]])
 def test_invalid_capture_storage_refused_without_execution(array):
+    # Aligned strided views are supported now. Retain the original array3
+    # input and prove authentication keeps its storage without executing it.
+    if array.ndim == 1 and array.strides == (2 * array.dtype.itemsize,):
+        before = array.copy()
+        descriptor = lower_state_effect_function(callback(array))
+        assert dict(descriptor.captured_arrays)['array'] is array
+        np.testing.assert_array_equal(array, before)
+        # A byte stride that splits elements is still invalid capture storage.
+        array = np.ndarray((2,), dtype='float64', buffer=bytearray(16), strides=(1,))
+        assert array.strides[0] % array.dtype.itemsize != 0
     with pytest.raises(ValueError,match='captures require'):lower_state_effect_function(callback(array))
 
 

@@ -50,6 +50,7 @@ kernel void atlas_dynamic_mpi_phase(
  ulong nt=(ulong(b)*T+t)*N,clock=m[22]+t*m[23],noise=m[24]+(ulong(b)*T+t)*m[25]+m[h+12];
  ulong cid=m[m[31]+a];float time=p[clock+cid];ulong exact_time=m[29]?m[m[29]+t*m[23]+cid]:0;float context[64],gstate[64];
  if(phase==1||phase==5)for(ulong j=0;j<D;j++)delta[db+j]=0;
+ if((m[h+9]&2)&&(!m[9]||phase==5||phase==6))return;
  if(!atlas_dynamic_active(m,t,a)){
   return;
  }

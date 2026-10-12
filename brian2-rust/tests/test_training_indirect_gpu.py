@@ -180,7 +180,7 @@ def test_metal_index_loader_rejects_previous_abi(tmp_path,monkeypatch):
     if os.environ.get('B2_TEST_GPU')!='1':pytest.skip('actual Metal setup required')
     # This library intentionally only exports the previous ABI. It must never
     # be called for an indexed plan, even though it would return success.
-    source=tmp_path/'old.c';source.write_text('int b2_train_metal_v5r4(void){return 0;}\n')
+    source=tmp_path/'old.c';source.write_text('#include <stdint.h>\nuint64_t b2_train_math_v1(void){return 1;}\nuint64_t b2_train_vjp_activity_v1(void){return 1;}\nint b2_train_metal_v5r4(void){return 0;}\n')
     library=tmp_path/'old.dylib'
     subprocess.run(['clang','-dynamiclib',str(source),'-o',str(library)],check=True,capture_output=True,text=True)
     monkeypatch.setattr(training_metal,'build',lambda directory:library)

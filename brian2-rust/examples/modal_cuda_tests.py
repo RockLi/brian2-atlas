@@ -77,7 +77,7 @@ def run_tests(test_paths=None,dag_benchmark=False,chunk_benchmark=False):
 def native_image():
     import modal
     ignore=["**/__pycache__/**","**/*.pyc","**/*.so","**/*.dylib"]
-    frontend_files=[ROOT.parent/name for name in ("setup.py","pyproject.toml","README.md","LICENSE","AUTHORS","CONTRIBUTORS")]
+    frontend_files=[ROOT.parent/name for name in ("setup.py","pyproject.toml","_atlas_build.py","README.md","LICENSE","LICENSE_SCOPE.md","NOTICE","AUTHORS","CONTRIBUTORS")]
     image=(modal.Image.from_registry("nvidia/cuda:12.8.1-devel-ubuntu24.04",add_python="3.12")
            .entrypoint([]).apt_install("curl","clang","build-essential")
            .run_commands("curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.98.1")
@@ -94,7 +94,10 @@ def native_image():
     # This Brian checkout requires Cython extensions; compile the exact uploaded
     # frontend source for Linux instead of copying macOS binaries or substituting
     # a released Brian version for our source tree.
-    image=image.add_local_dir(ROOT.parent/"brian2","/workspace/brian2",ignore=ignore,copy=True)
+    image=(image.add_local_dir(ROOT.parent/"brian2","/workspace/brian2",ignore=ignore,copy=True)
+           .add_local_dir(ROOT/"python","/workspace/brian2-rust/python",ignore=ignore,copy=True)
+           .add_local_dir(ROOT.parent/"LICENSES","/workspace/LICENSES",copy=True)
+           .add_local_file(ROOT/"rust-toolchain.toml","/workspace/brian2-rust/rust-toolchain.toml",copy=True))
     for path in frontend_files:
         image=image.add_local_file(path,"/workspace/"+path.name,copy=True)
     import brian2
@@ -122,7 +125,7 @@ def main():
     hashes={str(p.relative_to(ROOT.parent)):hashlib.sha256(p.read_bytes()).hexdigest()
             for folder in source_dirs for p in sorted(folder.rglob("*"))
             if p.is_file() and "__pycache__" not in p.parts and p.suffix not in {".pyc",".so",".dylib"}}
-    frontend_files=[ROOT.parent/name for name in ("setup.py","pyproject.toml","README.md","LICENSE","AUTHORS","CONTRIBUTORS")]
+    frontend_files=[ROOT.parent/name for name in ("setup.py","pyproject.toml","_atlas_build.py","README.md","LICENSE","LICENSE_SCOPE.md","NOTICE","AUTHORS","CONTRIBUTORS")]
     for p in (ROOT/"Cargo.toml",ROOT/"Cargo.lock",Path(__file__),ROOT/"examples/gpu_baseline.py",ROOT/"examples/cuda_dag_benchmark.py",ROOT/"examples/gpu_recurrent.py",ROOT/"examples/cuda_chunk_benchmark.py",*frontend_files):
         hashes[str(p.relative_to(ROOT.parent))]=hashlib.sha256(p.read_bytes()).hexdigest()
     (args.output/"source-hashes.json").write_text(json.dumps(hashes,sort_keys=True,indent=2)+"\n")

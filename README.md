@@ -114,13 +114,19 @@ interpreter and without `PYTHONPATH`, `B2_RUNNER` or `B2_TRAIN_RUNNER` overrides
 
 ## Upstream and research provenance
 
-The `dev` branch is the Atlas development branch. `upstream` points to
+The `dev` branch is the Atlas development branch. The upstream project is
 [brian-team/brian2](https://github.com/brian-team/brian2); product ports retain
 source hashes and adaptation notes. Historical paper results remain tied to the
 source versions that produced them. The [PD14 reproduction](https://github.com/RockLi/brian2-atlas-preprint/tree/main/experiments/reproduction/pd14)
 pins Atlas commit `b769c21004a89e2a6f3a14521f23012db654aadd` and has passed its
-documented bounded build-to-simulation checks. Public package publication, a formal release
-and paper submission are separate steps.
+documented bounded build-to-simulation checks. The `v0.1.0` release is frozen;
+development changes and their acceptance records do not alter that release or
+the paper's measured implementation identities.
+
+The current `dev` training increment extends stochastic callback and whole-neuron
+lowering, selected Poisson semantics and read-only state handling. See the
+[training guide](brian2-rust/TRAINING.md) and the
+[incremental acceptance records](https://github.com/RockLi/brian2-atlas-preprint/tree/dev/validation/training-port-f73).
 
 ## Optional dependencies
 

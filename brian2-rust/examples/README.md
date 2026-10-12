@@ -33,3 +33,5 @@ python brian2-rust/examples/mpi_training.py --directory output/mpi-resume --chec
 This requires a working local MPI toolchain/runtime. `mpi_cuba.py`, `mpi_procedural.py` and `mpi_heterogeneous.py` provide further distributed examples. FlyWire import/device examples require their explicitly supplied circuit data; the repository's bounded FlyWire WASM/native regression uses its retained circuit subset.
 
 Run the bounded source example gate with `python dev/atlas/run_backend.py --suite examples`. Install joblib, progressbar2 and OpenCV to execute their cases. SBI is optional and its case skips if absent. Browser/FlyWire WASM tests additionally need the built WASM package and Node; they are validated separately. No result here claims full-scale paper reproduction.
+
+For stochastic callbacks, dynamic synapse lowering and read-only state semantics, see the [native training guide](../TRAINING.md). Incremental hardware acceptance is maintained in the [preprint validation directory](https://github.com/RockLi/brian2-atlas-preprint/tree/dev/validation/training-port-f73).

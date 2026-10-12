@@ -264,3 +264,4 @@ extern "C" int b2_train_cuda_poisson_validate_v1(uint64_t n,const uint64_t* keys
 }
 
 extern "C" uint64_t b2_train_poisson_persistent_v1(void){return 1;}
+extern "C" uint64_t b2_train_poisson_candidate_v1(void){return 1;}

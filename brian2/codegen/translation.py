@@ -255,7 +255,10 @@ def make_statements(code, variables, dtype, optimise=True, blockname=""):
                         use_dtype = dtype
                     new_var = AuxiliaryVariable(var, dtype=use_dtype, scalar=is_scalar)
                     variables[var] = new_var
-            elif not variables[var].is_boolean:
+            elif not variables[var].is_boolean and var in get_identifiers(expr):
+                # A self-reference is necessary for rewriting x = ... as
+                # x += ... or x *= .... Avoid expensive symbolic collection
+                # for large feed-forward assignments that cannot use it.
                 sympy_expr = str_to_sympy(expr, variables)
                 if variables[var].is_integer:
                     sympy_var = sympy.Symbol(var, integer=True)

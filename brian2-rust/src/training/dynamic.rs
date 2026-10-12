@@ -34,6 +34,8 @@ pub struct Action {
     pub trigger: Option<Trigger>,
     #[serde(default)]
     pub detach_trigger: bool,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub poisson_candidate: bool,
     #[serde(default)]
     pub parameter_index: usize,
     #[serde(default)]
@@ -150,6 +152,7 @@ impl Spec {
         let mut prepared_boolean = vec![false; width];
         let mut thresholds = vec![false; neurons];
         let mut used = vec![false; self.program_sets.len()];
+        let mut candidate_sets = vec![None; self.program_sets.len()];
         for action in &self.actions {
             if let Some(sample) = &self.sample_index {
                 ensure(!action.writes.contains(&sample.slot) && action.indirect.as_ref().is_none_or(|a|
@@ -198,6 +201,15 @@ impl Spec {
                 ensure(id < self.program_sets.len(), "dynamic program set outside domain")?;
                 used[id] = true;
                 let programs = &self.program_sets[id];
+                ensure(candidate_sets[id].is_none_or(|flag| flag == action.poisson_candidate),
+                    "candidate Poisson program set cannot be shared with observations")?;
+                candidate_sets[id] = Some(action.poisson_candidate);
+                if action.poisson_candidate {
+                    ensure(action.detach_trigger && action.indirect.is_none() && action.event_noise.is_none()
+                        && !action.writes.is_empty() && action.writes.iter().all(|k| integers.contains(k))
+                        && programs.iter().all(|p| p.iter().any(|n| matches!(n,equation::Node::Poisson{..}))),
+                        "candidate Poisson action requires detached integer sampler outputs")?;
+                }
                 let unique: std::collections::HashSet<_> = action.writes.iter().collect();
                 ensure(!programs.is_empty() && programs.len() <= 64 && programs.len() == action.writes.len()
                     // Indexed execution already tapes all destinations and
@@ -255,8 +267,15 @@ impl Spec {
                     for index in action.possible_writes() { prepared[index] = usize::MAX; prepared_boolean[index] = false; }
                     continue;
                 }
+                // Programs in one action read the same pre-write context. An
+                // identity copy can retain a proved Boolean result without a
+                // BooleanCast, which would detach its surrogate derivative.
+                let boolean_inputs = action.reads.iter().map(|k|
+                    binary.contains(k) && prepared_boolean[*k]).collect::<Vec<_>>();
                 for (&index, program) in action.writes.iter().zip(programs) {
-                    prepared_boolean[index] = equation::boolean_node(program.last().unwrap());
+                    prepared_boolean[index] = equation::boolean_node(program.last().unwrap())
+                        || matches!(program.last().unwrap(), equation::Node::State { index: slot }
+                            if boolean_inputs[*slot]);
                     // A stochastic unconditional write prepares the margin just as a
                     // deterministic one does; its draw is replayed for the VJP.
                     prepared_clock[index]=action_clock;
@@ -394,7 +413,7 @@ fn execute_inner(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], labels
             let nt = (b * visits + visit) * n;
             let clock_row = itinerary.row(visit);
             for (i, action) in spec.actions.iter().enumerate() {
-                if !itinerary.enabled(visit,action) {continue;}
+                if !itinerary.enabled(visit,action) || operation == "evaluate" && action.poisson_candidate {continue;}
                 let timestamp=clock_row[action.clock.unwrap_or(0)];
                 let noise_tick=itinerary.tick(visit,action);
                 let at = (b * visits + visit) * context_width + context_offsets[i];
@@ -477,7 +496,7 @@ fn execute_inner(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], labels
                 let mut spike_adjoints = vec![0.0; n];
                 if frame.is_some() || !spec.spike_buffers.is_empty() {spike_adjoints[output_start..].copy_from_slice(&seeds[b]);}
                 for (i, action) in spec.actions.iter().enumerate().rev() {
-                    if !itinerary.enabled(visit,action) {continue;}
+                    if !itinerary.enabled(visit,action) || action.poisson_candidate {continue;}
                     let timestamp=clock_row[action.clock.unwrap_or(0)];
                     let noise_tick=itinerary.tick(visit,action);
                     let at = (b * visits + visit) * context_width + context_offsets[i];

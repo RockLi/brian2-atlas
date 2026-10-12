@@ -91,12 +91,15 @@ def reference(data,weights,initial=None,anchors=None,window=None):
             old=anchors['margins'][tick];event=anchors['hard'][tick]+p['surrogate']['scale']/(1+p['surrogate']['slope']*abs(old))**2*(margin-old)
         spikes.append(event.copy());arrival=tick-delay;selected=[0,1] if arrival==0 else [0] if arrival==2 else []
         for k,path in enumerate(stages):
+            for snapshot in bundle.provenance['event_callback_snapshots'].get(path,[]):
+                z[snapshot['cache']]=z[snapshot['source']]
             rows=bundle.provenance['delay_queues'][path]['new'];old=z[h].copy()
             if selected and (len(stages)==1 or k==mutable_stage):z[cap]*=.8
             for edge in range(2):
                 gate=z[rows[edge]['states'][0]] if delay else x[0,tick,edge]
                 if len(stages)==1 or k<2:z[h[edge]]+=gate*((.49 if len(stages)==1 else .7)*old[edge]-z[h[edge]])
-                elif k==2:z[v[targets[edge]]]+=gate*.11*old[edge]
+                elif 'v_post' in bundle.provenance['event_callback_modes'][path]['accum']:
+                    z[v[targets[edge]]]+=gate*.11*old[edge]
         for path in bundle.provenance['delay_queues'].values():
             for row in path['new']:
                 if row['states']:

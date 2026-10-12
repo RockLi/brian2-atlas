@@ -30,7 +30,7 @@ from .training_effects import StateEffectFunction, lower_state_effect_function, 
 from .protocol import canonical_bytes
 from .training import lif_training_plan
 from .training_brian_regular import is_regular, regular_children
-from .training_equations import compile_training_equation, compile_training_predicate, neuron_parameter_bank, _compile_training_ast, NeuronParameter, SimulationTime, NormalNoise, UniformNoise, PoissonNoise, _MappedParameter, _DeferredParameter, coerce_state_expression, StateSlot
+from .training_equations import compile_training_equation, compile_training_predicate, neuron_parameter_bank, _compile_training_ast, NeuronParameter, SimulationTime, NormalNoise, UniformNoise, PoissonNoise, _MappedParameter, _DeferredParameter, coerce_state_expression, StateSlot, PureFunction
 
 _INTEGRATORS={'euler':euler,'rk2':rk2,'rk4':rk4,'heun':heun,'milstein':milstein}
 
@@ -161,7 +161,7 @@ def lower_brian_training(network, *, input_group, layers, trainable_neuron_param
                          run_namespace=None, backend='cpu', mpi_ranks=None,
                          detach_reset=True, dynamic=False, trainable_synapse_parameters=None,
                          external_state_inputs=None,
-                         _defer_synapses=False, _input_registry=None, _mutable_constant_ids=(), _mutable_capture_inputs=None, _readonly_capture_inputs=None, _capture_constant_ids=(), **training_options):
+                         _defer_synapses=False, _input_registry=None, _mutable_constant_ids=(), _mutable_capture_inputs=None, _readonly_capture_inputs=None, _capture_constant_ids=(), _deferred_neuron_functions=None, **training_options):
     """Snapshot an explicit deterministic or stochastic Network to a v3/v4 plan.
 
     ``layers`` orders all non-input NeuronGroups; the last supplies class logits.
@@ -282,15 +282,21 @@ def lower_brian_training(network, *, input_group, layers, trainable_neuron_param
                 and ast.dump(statement.value)==ast.dump(threshold.comparators[0])):return 'subtract'
         return None
     kinds=[scalar_reset_kind(g) for g in layers]
-    def has_timed_input(group):
+    def has_temporal_function(group):
         codes=[eq.expr.code for eq in group.equations.values() if eq.expr is not None]
         codes += [group.events.get('spike','False'),group.event_codes.get('spike','')]
         calls={node.func.id for code in codes for node in ast.walk(ast.parse(code))
                if isinstance(node,ast.Call) and isinstance(node.func,ast.Name)}
         try:resolved=group.resolve_all(calls,run_namespace=namespace)
         except Exception:return False # Preserve the later coefficient/unit diagnostics.
-        return any(isinstance(value,TimedArray) for value in resolved.values())
-    temporal=any(has_timed_input(g) or g.equations.is_stochastic or {'rand','randn','poisson'} & g.equations.identifiers or
+        if any(isinstance(value,TimedArray) for value in resolved.values()):return True
+        for value in resolved.values():
+            if type(value) is not Function:continue
+            try:
+                if lower_state_effect_function(value).random_sites:return True
+            except (ValueError,TypeError,OSError,SyntaxError,RecursionError):pass
+        return False
+    temporal=any(has_temporal_function(g) or g.equations.is_stochastic or {'rand','randn','poisson'} & g.equations.identifiers or
                  any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id in ('rand','randn','poisson')
                      for code in [g.events.get('spike','False'),g.event_codes.get('spike','')] for n in ast.walk(ast.parse(code))) or 't' in g.equations.identifiers or
                  any(isinstance(n,ast.Name) and n.id=='t' for n in ast.walk(ast.parse(g.event_codes.get('spike',''))))
@@ -548,6 +554,13 @@ def lower_brian_training(network, *, input_group, layers, trainable_neuron_param
                 require(var is DEFAULT_FUNCTIONS[name],'function',group,'custom function replacements are unsupported')
                 continue
             if isinstance(var,Function):
+                if name in (_deferred_neuron_functions or {}).get(group.name,()):
+                    # Allocation/unit-check skeleton only. Dynamic lowering must
+                    # replace the complete block before returning an executable plan.
+                    descriptor=lower_state_effect_function(var)
+                    placeholder='False' if var._returns_bool or var._return_type=='boolean' else '0' if var._return_type=='integer' else '0.'
+                    parameters[name]=PureFunction(descriptor.arguments,placeholder)
+                    continue
                 try:parameters[name]=lower_pure_function(var)
                 except ValueError as error:
                     try:
@@ -653,9 +666,14 @@ def lower_brian_training(network, *, input_group, layers, trainable_neuron_param
             else:expression=threshold_text
             try:
                 if threshold_effect:
+                    callback_records=[]
                     program,effect_outputs=_compile_effect_threshold(threshold,group,names_of_states,parameters,
                         {**group.variables,**resolved},types,predicate=not ordered,
-                        slope=training_options.get('surrogate_slope',5.),scale=training_options.get('surrogate_scale',1.),physical_slots=state_aliases)
+                        slope=training_options.get('surrogate_slope',5.),scale=training_options.get('surrogate_scale',1.),physical_slots=state_aliases,
+                        callback_draws=callback_records,callback_stream_offset=len(noise_names[-1]))
+                    for record in callback_records:
+                        noise_names[-1].append('_b2_threshold_callback_'+str(record['stream']))
+                        calls['threshold'].append(dict(record))
                 else:
                     program=compile_training_equation(expression,parameters=parameters,states=names_of_states,state_types=typed_types) if ordered else compile_training_predicate(
                         expression,parameters=parameters,states=names_of_states,
@@ -667,7 +685,10 @@ def lower_brian_training(network, *, input_group, layers, trainable_neuron_param
                     slope=training_options.get('surrogate_slope',5.),scale=training_options.get('surrogate_scale',1.))
             margin=dict(program=program,expression=expression,dimensions=threshold_dimensions,
                         inclusive=ordered and isinstance(threshold.ops[0],(ast.GtE,ast.LtE)),predicate=not ordered)
-            if threshold_effect:margin['effect_outputs']=effect_outputs
+            if threshold_effect:
+                margin['effect_outputs']=effect_outputs
+                shared_draws=[row for row in callback_records if row.get('scalar',False)]
+                if shared_draws:margin['shared_draws']=shared_draws
             if not ordered:margin['gradient']=('numpy-eager-product-equality-and-integer-detached' if threshold_effect
                                               else 'short-circuit-product-neutral-skipped-equality-detached')
             thresholds.append(1.);threshold_refs.append(None);threshold_indexed.append(False);threshold_mappings.append(None)
@@ -699,9 +720,14 @@ def lower_brian_training(network, *, input_group, layers, trainable_neuron_param
                                     for name in names_of_states),
                             'function',group,'integrator callback effects require canonical neuron arrays')
                     integration=bind_draws(ast.parse(_INTEGRATORS[method](group.equations,variables={**group.variables,**resolved})),'update')
+                    callback_records=[]
                     effect_programs,effect_writes=_compile_effect_integrator(ast.unparse(ast.fix_missing_locations(integration)),
                         group,names_of_states,parameters,{**group.variables,**resolved},noise_names=streams,state_types=types,
-                        refractory_index=len(names_of_states) if spec is not None else None,physical_slots=state_aliases)
+                        refractory_index=len(names_of_states) if spec is not None else None,physical_slots=state_aliases,
+                        callback_draws=callback_records,callback_stream_offset=len(noise_names[-1]))
+                    for record in callback_records:
+                        noise_names[-1].append('_b2_integrator_callback_'+str(record['stream']))
+                        calls['update'].append(dict(record))
                     vector_programs.append(effect_programs);integrator_effect_writes[layer-1]=effect_writes
                 elif method=='euler' and not streams:
                     vector_programs.append([_compile_training_ast(
@@ -719,11 +745,16 @@ def lower_brian_training(network, *, input_group, layers, trainable_neuron_param
                 reset=bind_draws(ast.parse(reset_code),'reset').body
                 if _uses_state_effect(reset_code,parameters):
                     require(_defer_synapses,'function',group,'reset callback effects require dynamic training')
+                    callback_records=[]
                     effect_programs,effect_writes,scalar_programs,capture_programs=_compile_effect_reset(
                         ast.unparse(ast.Module(body=reset,type_ignores=[])),group,names_of_states,
                         parameters,{**group.variables,**resolved},types,
                         gate_index=len(names_of_states)+(1 if spec is not None else 0)+(5 if variable_ref is not None else 0),
-                        capture_states=set(capture_inputs),physical_slots=state_aliases)
+                        capture_states=set(capture_inputs),physical_slots=state_aliases,
+                        callback_draws=callback_records,callback_stream_offset=len(noise_names[-1]))
+                    for record in callback_records:
+                        noise_names[-1].append('_b2_reset_callback_'+str(record['stream']))
+                        calls['reset'].append(dict(record))
                     vector_resets.append(effect_programs);reset_effect_writes[layer-1]=effect_writes
                     reset_scalar_programs[layer-1]=scalar_programs
                     reset_capture_programs[layer-1]=capture_programs
@@ -796,7 +827,7 @@ def _uses_state_effect(code,parameters):
                for node in ast.walk(ast.parse(code)))
 
 
-def _compile_effect_threshold(threshold,group,states,parameters,variables,state_types,predicate=False,slope=5.,scale=1.,physical_slots=None):
+def _compile_effect_threshold(threshold,group,states,parameters,variables,state_types,predicate=False,slope=5.,scale=1.,physical_slots=None,callback_draws=None,callback_stream_offset=None):
     """Threshold loads borrow full arrays; comparison operands retain order."""
     if any(name in group.variables and (group.variables[name].scalar or group.variables.indices[name]!='_idx') for name in states):
         raise ValueError('threshold callback effects require canonical neuron arrays')
@@ -804,7 +835,6 @@ def _compile_effect_threshold(threshold,group,states,parameters,variables,state_
             and not variables[name].scalar}
     if any(group.variables.indices[name]!='_idx' for name in arrays):
         raise ValueError('threshold callback coefficients require canonical indices')
-    draws={name for name,value in parameters.items() if type(value) in (NormalNoise,UniformNoise)}
     # Never reverse evaluation of lhs/rhs for <. A returned array alias on
     # the left still observes mutation while evaluating the right operand.
     result='_b2_effect_threshold_margin'
@@ -824,20 +854,45 @@ def _compile_effect_threshold(threshold,group,states,parameters,variables,state_
         left,right=ast.unparse(threshold.left),ast.unparse(threshold.comparators[0])
         difference='_b2_threshold_left-_b2_threshold_right' if isinstance(threshold.ops[0],(ast.Gt,ast.GtE)) else '_b2_threshold_right-_b2_threshold_left'
         code=f'_b2_threshold_left={left}\n_b2_threshold_right={right}\n{result}={difference}'
+    parameters=dict(parameters)
+    records=[]
+    callbacks={name:value for name,value in parameters.items()
+               if type(value) is StateEffectFunction and value.random_sites}
+    if callbacks:
+        from brian2.core.variables import ArrayVariable
+        from brian2.devices.device import get_device
+        from .training_callback_vector import lower_vector_callback_draws
+        shape_variables=dict(variables)
+        for name,value in parameters.items():
+            if type(value) in (NormalNoise,UniformNoise):
+                shape_variables[name]=ArrayVariable(name,owner=group,size=len(group),device=get_device(),dtype=np.float64,scalar=False)
+        offset=max((value.stream+1 for value in parameters.values()
+                    if type(value) in (NormalNoise,UniformNoise,PoissonNoise)),default=0)
+        if callback_stream_offset is not None:offset=max(offset,callback_stream_offset)
+        code,lifted,records,_,trace=lower_vector_callback_draws(code,callbacks,shape_variables,stream_offset=offset,
+            allow_scalar=True,return_trace=True)
+        parameters.update(lifted)
+    scalar={row['name'] for row in records if row.get('scalar',False)}
+    draws={name for name,value in parameters.items() if type(value) in (NormalNoise,UniformNoise) and name not in scalar}
     names={name:i for i,name in enumerate(states)};names[result]=len(states)
     transform=compile_state_effect_transform(code,states=names,parameters=parameters,
         state_types={**dict(enumerate(state_types)),len(states):'float'},
         array_states=set(states),writable_states=set(states),
         array_parameters=arrays|draws,temporary_parameters=draws,
         parameter_types={name:_state_dtype(variables[name]) for name in arrays},
-        array_callables={name for name,value in parameters.items() if type(value) is PoissonNoise},
+        array_callables={name for name,value in parameters.items() if type(value) is PoissonNoise and name not in scalar},
+        scheduled_scalar_noise=bool(scalar),
         predicate_outputs={len(states):(slope,scale)} if predicate else None,
         physical_slots={**physical_slots,len(states):len(states)} if physical_slots is not None else None)
     compiled=dict(zip(transform['writes'],transform['programs']))
+    if callback_draws is not None:
+        from .training_threshold_noise import shared_threshold_records
+        shared={row['stream']:row for row in shared_threshold_records(list(compiled.values()),records)}
+        callback_draws.extend(shared.get(row['stream'],dict(name=row['name'],kind=row['kind'],stream=row['stream'])) for row in records)
     return compiled.pop(len(states)),[dict(state=slot,program=program) for slot,program in compiled.items()]
 
 
-def _compile_effect_reset(code,group,states,parameters,variables,state_types,gate_index=None,capture_states=(),physical_slots=None):
+def _compile_effect_reset(code,group,states,parameters,variables,state_types,gate_index=None,capture_states=(),physical_slots=None,callback_draws=None,callback_stream_offset=None):
     """Reset reads are advanced-index copies, including read-only coefficients."""
     from brian2.codegen.generators.numpy_generator import NumpyCodeGenerator
     from brian2.codegen.runtime.numpy_rt import NumpyCodeObject
@@ -856,17 +911,41 @@ def _compile_effect_reset(code,group,states,parameters,variables,state_types,gat
             and not variables[name].scalar}
     if any(group.variables.indices[name]!='_idx' for name in arrays):
         raise ValueError('reset callback coefficients require canonical indices')
-    draws={name for name,value in parameters.items() if type(value) in (NormalNoise,UniformNoise)}
     code='\n'.join(f'{s.var} {"=" if s.op==":=" else s.op} {s.expr}' for s in [*scalar,*vector])
+    records=[]
+    callbacks={name:value for name,value in parameters.items()
+               if type(value) is StateEffectFunction and value.random_sites}
+    if callbacks:
+        from brian2.core.variables import ArrayVariable
+        from brian2.devices.device import get_device
+        from .training_callback_vector import lower_vector_callback_draws
+        shape_variables=dict(variables)
+        for name,value in parameters.items():
+            if type(value) in (NormalNoise,UniformNoise):
+                shape_variables[name]=ArrayVariable(name,owner=group,size=len(group),device=get_device(),dtype=np.float64,scalar=False)
+        offset=max((value.stream+1 for value in parameters.values()
+                    if type(value) in (NormalNoise,UniformNoise,PoissonNoise)),default=0)
+        if callback_stream_offset is not None:offset=max(offset,callback_stream_offset)
+        code,lifted,records,_,trace=lower_vector_callback_draws(code,callbacks,shape_variables,stream_offset=offset,
+            allow_scalar=True,return_trace=True)
+        parameters.update(lifted)
+    scalar={row['name'] for row in records if row.get('scalar',False)}
+    draws={name for name,value in parameters.items() if type(value) in (NormalNoise,UniformNoise) and name not in scalar}
     transform=compile_state_effect_transform(code,states={name:i for i,name in enumerate(states)},
         parameters=parameters,state_types=dict(enumerate(state_types)),array_states=set(states),
         writable_states=set(states),copied_array_states=set(states)-set(capture_states),
         array_parameters=arrays|draws,temporary_parameters=arrays|draws,
         parameter_types={name:_state_dtype(variables[name]) for name in arrays},
-        array_callables={name for name,value in parameters.items() if type(value) is PoissonNoise},scalar_eager=True,eager_guard=guard,
+        array_callables={name for name,value in parameters.items() if type(value) is PoissonNoise and name not in scalar},
+        scheduled_scalar_noise=bool(scalar),scalar_eager=True,eager_guard=guard,
         unconditional_states=capture_states,array_aliases={name:next(other for other in states if other in capture_states
             and physical_slots[states.index(other)]==physical_slots[states.index(name)]) for name in capture_states} if physical_slots is not None else None)
     compiled=dict(zip(transform['writes'],transform['programs']))
+    if callback_draws is not None:
+        from .training_threshold_noise import shared_threshold_records
+        programs=[*compiled.values(),*transform['scalar_programs'],*transform['unconditional_programs'].values()]
+        shared={row['stream']:row for row in shared_threshold_records(programs,records)}
+        callback_draws.extend(shared.get(row['stream'],dict(name=row['name'],kind=row['kind'],stream=row['stream'])) for row in records)
     if not set(transform['writes'])<={states.index(name) for name in writes if name in states}:
         raise ValueError('reset callback attempted a write outside explicit NumPy writeback')
     return ([compiled.get(i,[dict(op='integer_state' if dtype=='integer' else 'state',index=i)])
@@ -874,7 +953,7 @@ def _compile_effect_reset(code,group,states,parameters,variables,state_types,gat
              {states[i]:program for i,program in transform['unconditional_programs'].items()})
 
 
-def _compile_effect_integrator(code, group, states, parameters, variables, noise_names=(), state_types=None,refractory_index=None,physical_slots=None):
+def _compile_effect_integrator(code, group, states, parameters, variables, noise_names=(), state_types=None,refractory_index=None,physical_slots=None,callback_draws=None,callback_stream_offset=None):
     """Keep the generated NumPy integration block's copies and live references."""
     from brian2.codegen.generators.cython_generator import CythonCodeGenerator
     from brian2.codegen.runtime.cython_rt import CythonCodeObject
@@ -920,8 +999,26 @@ def _compile_effect_integrator(code, group, states, parameters, variables, noise
                 node.value=Normal().visit(node.value)
             return node
     tree=Draw().visit(tree)
+    records=[]
+    callbacks={name:value for name,value in parameters.items()
+               if type(value) is StateEffectFunction and value.random_sites}
+    if callbacks:
+        from brian2.core.variables import ArrayVariable
+        from brian2.devices.device import get_device
+        from .training_callback_vector import lower_vector_callback_draws
+        shape_variables=dict(variables)
+        for name,value in parameters.items():
+            if type(value) in (NormalNoise,UniformNoise):
+                shape_variables[name]=ArrayVariable(name,owner=group,size=len(group),device=get_device(),dtype=np.float64,scalar=False)
+        offset=max((value.stream+1 for value in parameters.values()
+                    if type(value) in (NormalNoise,UniformNoise,PoissonNoise)),default=0)
+        if callback_stream_offset is not None:offset=max(offset,callback_stream_offset)
+        rewritten,lifted,records,_,trace=lower_vector_callback_draws(ast.unparse(tree),callbacks,shape_variables,stream_offset=offset,
+            allow_scalar=True,return_trace=True)
+        tree=ast.parse(rewritten);parameters.update(lifted)
+    scalar={row['name'] for row in records if row.get('scalar',False)}
     draws=list(dict.fromkeys([*draws,*[name for name,value in parameters.items()
-                                     if type(value) in (NormalNoise,UniformNoise)]]))
+                                     if type(value) in (NormalNoise,UniformNoise) and name not in scalar]]))
     arrays={name for name in parameters if name in variables and hasattr(variables[name],'scalar') and not variables[name].scalar and name not in guards.values()}
     if any(group.variables.indices[name]!='_idx' for name in arrays):
         raise ValueError('integrator callback effects require canonical array coefficients')
@@ -929,10 +1026,16 @@ def _compile_effect_integrator(code, group, states, parameters, variables, noise
         parameters=parameters,array_states=set(states),writable_states=set(states),state_types=dict(enumerate(state_types)),
         array_parameters=arrays|set(draws),temporary_parameters=set(draws),
         parameter_types={name:_state_dtype(variables[name]) for name in arrays},
-        array_callables={name for name,value in parameters.items() if type(value) is PoissonNoise},
+        array_callables={name for name,value in parameters.items() if type(value) is PoissonNoise and name not in scalar},
+        scheduled_scalar_noise=bool(scalar),
         physical_slots=physical_slots if physical_slots is not None else {i:i for i in range(len(states))},writeback_order=tuple(writes),eager_limit=128,
+        compact_eager_roots=bool(callbacks),
         write_guards=guards,indexed_guard_reads=(set(states)|arrays|{s.var for s in vector if s.op==':='}) if guards else ())
     compiled=dict(zip(transform['writes'],transform['programs']))
+    if callback_draws is not None:
+        from .training_threshold_noise import shared_threshold_records
+        shared={row['stream']:row for row in shared_threshold_records(list(compiled.values()),records)}
+        callback_draws.extend(shared.get(row['stream'],dict(name=row['name'],kind=row['kind'],stream=row['stream'])) for row in records)
     return ([compiled.get(i,[dict(op='integer_state' if state_types[i]=='integer' else 'state',index=i)]) for i in range(len(states))],
             [states[i] for i in transform['writes']])
 

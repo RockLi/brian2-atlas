@@ -41,6 +41,25 @@ Distributed planning, generated MPI projects, partitioning, collective transport
 
 The [initial training qualification](../migration/p5-native-training-port.json) records CPU/Metal numerical and checkpoint behavior, callback-training increments and the initial CUDA/MPI scope. The [CUDA follow-up](../migration/cuda-cutoff-followup.json) subsequently passed all 708 previously skipped cases from 15 modules plus one C ABI regression on a Modal NVIDIA L4: 709 passed, zero failed or skipped. It includes two same-host MPI ranks sharing one GPU; cross-host and multi-GPU training remain outside this qualification. The [public API qualification](../migration/atlas-public-api.json) covers Atlas aliases and installed-package CPU/AOT/Metal flows.
 
+### Stochastic and callback training on `dev`
+
+The development branch includes addressed uniform/normal/Poisson random streams
+in supported Brian callbacks, whole-neuron integrator/threshold/reset phases and
+scheduled updates. Dynamic synapse lowering preserves selected-event identity,
+captured state, ordered effects and checkpoint continuation. Read-only evaluation
+and gradient calls do not commit optimizer or physical state; selected Poisson
+candidate domains are checked before committing a training step.
+
+This is a bounded lowering contract, not arbitrary Python autodiff. Use
+`from brian2_atlas import NativeLIFTrainer, lower_brian_dynamic_training` for the
+public API. The implementation package and frozen wire identifiers retain their
+compatibility names. See the [training guide](TRAINING.md) for usage and limits.
+
+Incremental acceptance scripts, exact test selections and result records are
+maintained in the [preprint validation directory](https://github.com/RockLi/brian2-atlas-preprint/tree/dev/validation/training-port-f73).
+They distinguish the current Atlas port from historical training receipts.
+The `v0.1.0` release remains frozen; use `dev` to obtain this increment.
+
 ## AtlasIR
 
 [AtlasIR](AtlasIR.md) is the shared intermediate representation for Atlas execution. Brian2 is the current modeling frontend. Python integrity/serialization APIs are available through `brian2_atlas.ir`. Frozen `b2ir-*` wire and ABI identifiers remain compatible; public native-function registrations also accept `atlasir-*` names.

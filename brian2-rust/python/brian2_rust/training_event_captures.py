@@ -31,7 +31,7 @@ def _columns(fields,names,reads,parameters,state_types,typed_parameter,kind):
 
 
 def compile_scalar_event_captures(code,names,reads,parameters,fields,*,
-                                  state_types,typed_parameter,write_guards=None):
+                                  state_types,typed_parameter,write_guards=None,scalar_statement_guards=None):
     """One FIFO event calls Python once, updating every captured column.
 
     Ordinary pathway locals remain scalar copies. Closure arrays are physical
@@ -56,7 +56,7 @@ def compile_scalar_event_captures(code,names,reads,parameters,fields,*,
             array_states=arrays,writable_states=arrays,state_types=state_types,
             array_parameters=parameter_arrays,
             parameter_types=parameter_types,eager_limit=128,array_aliases=aliases,capture_vectors=vectors,
-            write_guards=write_guards,scalar_write_guards=bool(write_guards))
+            write_guards=write_guards,scalar_write_guards=bool(write_guards),scalar_statement_guards=scalar_statement_guards)
         if any(name not in arrays for name in transform['output_arrays']):
             raise ValueError('scalar event writeback cannot store a whole captured array')
         eager.extend(transform['programs'])
@@ -81,6 +81,58 @@ def compile_scalar_event_captures(code,names,reads,parameters,fields,*,
                 if key not in interned:interned[key]=len(nodes);nodes.append(node)
                 remap[i]=interned[key]
             ends.append(remap[len(group)-1])
+        # Flatten only unconditional outer Sequence trees. Keep sequences
+        # inside selects/short-circuit nodes intact, so their effects stay lazy.
+        # Each original eager root still executes, in its first-observed order.
+        # Sharing one forest avoids copying its sequence spine per output.
+        def leaves(index):
+            if nodes[index]['op'] in ('sequence','integer_sequence'):
+                return leaves(nodes[index]['left'])+leaves(nodes[index]['right'])
+            return [index]
+        final=leaves(ends[-1])[-1]
+        forest=list(dict.fromkeys(index for end in ends for index in leaves(end)))
+        references=('arg','left','right','low','high','condition','yes','no','rate','slope','scale')
+        protected=set()
+        def protect(index):
+            if index in protected:return
+            protected.add(index)
+            for key in references:
+                if key in nodes[index]:protect(nodes[index][key])
+            if nodes[index]['op'] in ('timed_parameter','parameter_gather','integer_parameter_gather'):
+                protect(nodes[index]['index'])
+                if nodes[index]['op']=='timed_parameter':protect(nodes[index]['time'])
+        for node in nodes:
+            if node['op'] in ('select','integer_select'):
+                protect(node['yes']);protect(node['no'])
+            elif node['op'] in ('boolean_and','boolean_or'):
+                protect(node['right'])
+        # Native straight-line programs eagerly validate even unused math.
+        # Retain those roots too; branch-only nodes remain behind their gate.
+        forest=sorted(set(forest)|{index for index,node in enumerate(nodes)
+                      if index not in protected and node['op'] not in ('sequence','integer_sequence')})
+        forest.append(final)
+        live=set()
+        def retain(index):
+            if index in live:return
+            live.add(index)
+            node=nodes[index]
+            for key in references:
+                if key in node:retain(node[key])
+            if node['op'] in ('timed_parameter','parameter_gather','integer_parameter_gather'):
+                retain(node['index'])
+                if node['op']=='timed_parameter':retain(node['time'])
+        for index in forest:retain(index)
+        compact=[];remap={}
+        for index,node in enumerate(nodes):
+            if index not in live:continue
+            copied=dict(node)
+            for key in references:
+                if key in copied:copied[key]=remap[copied[key]]
+            if copied['op'] in ('timed_parameter','parameter_gather','integer_parameter_gather'):
+                copied['index']=remap[copied['index']]
+                if copied['op']=='timed_parameter':copied['time']=remap[copied['time']]
+            remap[index]=len(compact);compact.append(copied)
+        nodes=compact;ends=[remap[index] for index in forest]
         result=ends[-1]
         integer_ops={'poisson','integer_constant','integer_state','integer_parameter','integer_neuron_parameter',
                      'integer_mapped_parameter','integer_parameter_gather','integer_cast','integer_binary',
@@ -96,7 +148,7 @@ def compile_scalar_event_captures(code,names,reads,parameters,fields,*,
 
 
 def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_types,
-                                 array_names,parameter_arrays,parameter_types,reload,typed_parameter,selected_output=None,selected_vector_factory=None,selected_accumulators=(),selected_guards=None,selected_call_presence=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=(),whole_local_inputs=None,whole_local_outputs=None):
+                                 array_names,parameter_arrays,parameter_types,reload,typed_parameter,selected_output=None,selected_vector_factory=None,selected_accumulators=(),selected_guards=None,selected_call_presence=None,selected_row_operands=(),copied_array_aliases=None,retained_copied_outputs=(),whole_local_inputs=None,whole_local_outputs=None,projected_poisson=False,masked_array_reads=()):
     """Separate independent whole-column writes from selected-row copies."""
     names=dict(names);parameters=dict(parameters);state_types=dict(state_types)
     whole_local_inputs={} if whole_local_inputs is None else dict(whole_local_inputs)
@@ -105,7 +157,13 @@ def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_type
         raise ValueError('invalid physical caller array binding')
     if any(source not in fields or fields[source][0] is None for source in whole_local_outputs.values()):
         raise ValueError('whole caller outputs require private physical vectors')
+    length_names={}
+    for field,value in fields.items():
+        if value[0] is not None and len(value)==3:
+            name=field+'_length';length_names[field]=name
+            names[name]=len(reads);state_types[len(reads)]='integer';reads.append(value[2])
     bindings,lengths,arrays,readonly,capture_types,vectors=_columns(fields,names,reads,parameters,state_types,typed_parameter,'batch')
+    arrays.update(length_names.values())
     parameter_types={**parameter_types,**capture_types}
     canonical={};aliases={}
     for name,slot in names.items():
@@ -134,11 +192,21 @@ def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_type
                     {capture:mapping[source] for capture,source in descriptor.capture_bindings},
                     readonly=descriptor.parameter_captures)
         def compile_column(whole_eager=False):
+            if selected_vectors is not None:
+                # A returned argument can already name the destination token.
+                # Retain its compact vector when the canonical alias is a new
+                # synthetic local rather than an actual callback operand.
+                for alias,source in (copied_array_aliases or {}).items():
+                    if alias in selected_vectors and source not in selected_vectors:
+                        selected_vectors[source]=selected_vectors[alias]
             # Compaction can allocate scalar inputs after the first compile
             # requests selected vectors. Keep the column's local aliases while
             # including those newly allocated context slots on the retry.
             column_names.update({name:slot for name,slot in names.items() if name not in column_names})
+            for local in whole_local_inputs:
+                if local in column_names:bound.pop(local,None)
             column_code=code if not whole_local_outputs else code+'\n'+'\n'.join(mapping[field]+' = '+local for local,field in whole_local_outputs.items())
+            column_code+=''.join('\n'+length_names[field]+' = 0' for field in whole_local_outputs.values() if field in length_names)
             return compile_state_effect_transform(column_code,states=column_names,parameters=bound,
                 array_states=set(array_names)|arrays|local_arrays,writable_states=set(array_names)|arrays|local_arrays,
                 copied_array_states=array_names,array_parameters=set(parameter_arrays)|readonly|local_parameters,temporary_parameters=parameter_arrays,
@@ -148,7 +216,10 @@ def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_type
                 selected_guards=selected_guards,selected_call_presence=selected_call_presence,
                 selected_row_operands=selected_row_operands,
                 copied_array_aliases=copied_array_aliases,retained_copied_outputs=retained_copied_outputs,
-                whole_array_locals=whole_local_inputs,
+                whole_array_locals=whole_local_inputs,projected_poisson=projected_poisson,masked_array_reads=masked_array_reads,
+                whole_array_lengths={local:length_names[field] for local,field in whole_local_inputs.items() if field in length_names},
+                whole_array_outputs={mapping[field]:min(column,lengths[field]-1) for field in whole_local_outputs.values() if field in length_names},
+                whole_length_outputs={length_names[field]:local for local,field in whole_local_outputs.items() if field in length_names},
                 eager_guard=next(iter(selected_guards.values())) if selected_guards else None)
         try:
             transform=compile_column()
@@ -157,12 +228,14 @@ def compile_batch_event_captures(code,names,reads,parameters,fields,*,state_type
                 bound.update({name:value for name,value in parameters.items() if name not in bound})
                 transform=compile_column()
         except ValueError as error:
-            if selected_vector_factory is None or selected_vectors is not None or 'whole reset captures cannot depend on event-selected arrays' not in str(error):raise
+            needs_compaction=('whole reset captures cannot depend on event-selected arrays','callback scalar draw requires compacted arrival cache')
+            if selected_vector_factory is None or selected_vectors is not None or not any(message in str(error) for message in needs_compaction):raise
             selected_vectors=selected_vector_factory(names,reads,parameters,state_types,max(lengths.values()))
             # Retry with an actual compact batch, never a single owner's value.
             bound.update({name:value for name,value in parameters.items() if name not in bound})
             transform=compile_column()
         own={names[source] for name,source in mapping.items() if source in names and column<lengths[name]}
+        if column==0:own.update(names[name] for name in length_names.values())
         # A read-only external buffer has persistent state but no write output.
         # Keep its discarded eager work for every column as a separate check.
         if not readonly and not own<=set(transform['unconditional_programs']):transform=compile_column(whole_eager=True)

@@ -152,7 +152,12 @@ def test_metal_gather_rejects_previous_abi(tmp_path,monkeypatch):
     import subprocess
     from brian2_rust import training_metal
     if os.environ.get('B2_TEST_GPU')!='1':pytest.skip('actual Metal setup required')
-    source=tmp_path/'old.c';source.write_text('#include <stdint.h>\nuint64_t b2_train_math_v1(void){return 1;}\nint b2_train_metal_v5r5(void){return 0;}\n')
+    # Satisfy current capability checks so the obsolete entry point, rather
+    # than an unrelated missing capability, is what this fixture exercises.
+    source=tmp_path/'old.c';source.write_text(
+        '#include <stdint.h>\nuint64_t b2_train_math_v1(void){return 1;}\n'
+        'uint64_t b2_train_vjp_activity_v1(void){return 1;}\n'
+        'int b2_train_metal_v5r5(void){return 0;}\n')
     library=tmp_path/'old.dylib';subprocess.run(['clang','-dynamiclib',str(source),'-o',str(library)],check=True,capture_output=True,text=True)
     monkeypatch.setattr(training_metal,'build',lambda directory:library)
     p,w,x=model(engine='metal');trainer=NativeLIFTrainer(p,runner=RUNNER,weights=w);before=snapshot(trainer)
@@ -164,7 +169,17 @@ def test_cuda_gather_translation_contains_typed_bounds_and_reverse_scatter():
     from brian2_rust.training_cuda import kernel_source
     text=kernel_source()
     assert 'case 48:case 49:{int index=atlas_dynamic_int(value[a]);if(index<0||uint64_t(index)>=b)return NAN;' in text
-    assert 'gradient[gradient_base+slot+uint64_t(index)]+=g;' in text
     import re
+    # The reverse interpreter now shares this leaf between ordinary VJPs and
+    # activity probes. Check the whole bounded gather branch, including both
+    # destinations, rather than requiring the old inline address spelling.
+    reverse_gather = (
+        'case 48:{int index=atlas_dynamic_int(value[a]);'
+        'if(index<0||uint64_t(index)>=b)return false;'
+        'uint64_t cell=slot+uint64_t(index);'
+        'if(probe){if(!atlas_dynamic_probe_add(cell,g,keys,leaves,used))return false;}'
+        'else gradient[gradient_base+cell]+=g;break;}'
+    )
+    assert re.sub(r'\s+', '', reverse_gather) in re.sub(r'\s+', '', text)
     integer_clause=re.search(r'bool integer=([^;]+);',text).group(1)
     assert 'op==49' in integer_clause.split('||') and '__float_as_int(x)' in text

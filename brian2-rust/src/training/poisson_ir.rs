@@ -104,6 +104,7 @@ pub(super) fn rate_differentiable(program: &Program, root: usize) -> bool {
 pub(super) fn validate_actions(spec: &dynamic::Spec) -> Result<()> {
     let mut sites=HashMap::new();let mut intern=HashMap::new();
     for action in &spec.actions {
+        if action.poisson_candidate {continue;}
         let Some(programs)=action.program_set.and_then(|i|spec.program_sets.get(i)) else{continue;};
         if !programs.iter().flatten().any(|n|matches!(n,Node::Poisson{..})){continue;}
         for program in programs {
@@ -151,6 +152,7 @@ pub(super) fn validate_actions(spec: &dynamic::Spec) -> Result<()> {
 pub(super) fn shared_actions(spec:&dynamic::Spec)->bool {
     let mut sites=std::collections::HashSet::new();
     for action in &spec.actions {
+        if action.poisson_candidate {continue;}
         let Some(programs)=action.program_set.and_then(|i|spec.program_sets.get(i)) else{continue;};
         let mut streams=0u16;
         for node in programs.iter().flatten(){if let Node::Poisson{stream,..}=node{if *stream<16{streams|=1<<stream;}}}
@@ -161,6 +163,7 @@ pub(super) fn shared_actions(spec:&dynamic::Spec)->bool {
 
 /// Whether a CPU execution may need a zero-rate counterfactual trajectory.
 pub(super) fn boundary_possible(spec: &dynamic::Spec) -> bool {
-    spec.program_sets.iter().flatten().any(|program| program.iter().any(|node|
+    spec.actions.iter().filter(|a| !a.poisson_candidate).filter_map(|a| a.program_set.map(|i| &spec.program_sets[i]))
+        .flatten().any(|program| program.iter().any(|node|
         matches!(*node, Node::Poisson {rate,..} if rate_differentiable(program,rate))))
 }

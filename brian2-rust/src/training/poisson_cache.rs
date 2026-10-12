@@ -105,11 +105,11 @@ pub(super) fn begin(a:&dynamic::Action,batch:usize,visit:usize,index:usize,tick:
 }
 fn current(r:&Runtime,stream:usize)->Identity {identity(&r.action,stream,r.point.batch,r.tick)}
 pub(super) fn needs_rate(stream:usize)->bool {
-    RUNTIME.with(|r|r.borrow().as_ref().is_none_or(|r|r.values.get(&current(r,stream))
+    RUNTIME.with(|r|r.borrow().as_ref().is_none_or(|r|r.action.poisson_candidate || r.values.get(&current(r,stream))
         .is_none_or(|d| !r.forward && d.origin==Some(r.point))))
 }
 pub(super) fn owns_score(stream:usize)->bool {
-    RUNTIME.with(|r|r.borrow().as_ref().is_none_or(|r|r.values.get(&current(r,stream))
+    RUNTIME.with(|r|r.borrow().as_ref().is_none_or(|r|!r.action.poisson_candidate && r.values.get(&current(r,stream))
         .is_some_and(|d|d.origin==Some(r.point))))
 }
 pub(super) fn sample(stream:usize,rate:f64,key:u64,forced:bool)->Result<i32> {
@@ -117,6 +117,11 @@ pub(super) fn sample(stream:usize,rate:f64,key:u64,forced:bool)->Result<i32> {
         let mut value=cell.borrow_mut();
         if let Some(r)=value.as_mut(){
             let id=current(r,stream);
+            if r.action.poisson_candidate {
+                ensure(r.forward,"candidate Poisson sampler cannot execute in reverse")?;
+                ensure(key==id.site.key(r.seed,r.sequence,id.batch,id.instant),"candidate Poisson counter mismatch")?;
+                return draw(rate,key,false);
+            }
             ensure(key==id.site.key(r.seed,r.sequence,id.batch,id.instant),"Poisson draw cache counter mismatch")?;
             if let Some(d)=r.values.get(&id){
                 if !r.forward && d.origin==Some(r.point){ensure(rate==d.rate,"Poisson origin rate replay mismatch")?;}
@@ -183,6 +188,19 @@ mod tests {
     fn action()->dynamic::Action {dynamic::Action{noise_domain:71,noise_streams:1,..Default::default()}}
     fn key(a:&dynamic::Action,tick:u64)->u64 {
         let id=identity(a,0,0,tick);id.site.key(13,9,0,id.instant)
+    }
+    #[test]
+    fn candidate_draw_never_uses_observation_or_owns_score() {
+        let _scope=scope(None);let mut a=action();let k=key(&a,0);
+        begin(&a,0,0,0,0,true,true);
+        assert_eq!(sample(0,0.,k,false).unwrap(),0);
+        let original=checkpoint();a.poisson_candidate=true;
+        begin(&a,0,0,1,0,true,true);
+        assert_eq!(sample(0,100.,k,false).unwrap(),poisson::sample(100.,k).unwrap().count);
+        assert_eq!(checkpoint(),original);assert!(!owns_score(0));
+        begin(&a,0,0,1,0,false,false);
+        assert!(sample(0,100.,k,false).is_err());
+        assert_eq!(checkpoint(),original);
     }
     #[test]
     fn aliases_skip_rate_but_reverse_origin_checks_it() {

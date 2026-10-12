@@ -63,7 +63,8 @@ def reference(data,weights,initial=None,anchors=None,start=0,count=4):
         for cell,ref in enumerate(p['dynamic']['initial_parameters']):
             if ref is not None:z[cell]=weights[ref[0]][ref[1]]
     v=bundle.provenance['neuron_state_layout'][g.name]['v'];h=bundle.provenance['dynamic_state_layout'][syn.name]['h']
-    routes=bundle.provenance['delay_queues'][syn.pre.name+'::numpy-stage:1']['new'];delay=routes[0]['delay']
+    paths=bundle.provenance['event_callback_stage_groups'][syn.pre.name][1:]
+    routes=bundle.provenance['delay_queues'][paths[0]]['new'];delay=routes[0]['delay']
     targets=np.asarray(syn.j[:]);repeated=targets[0]==targets[1];gain=weights[bank]
     before=[];margins=[];hard=[];spikes=[]
     for local in range(count):
@@ -72,11 +73,16 @@ def reference(data,weights,initial=None,anchors=None,start=0,count=4):
         before.append(z.copy());margin=z[v]-.5;event=(margin>0).astype(float);margins.append(margin.copy());hard.append(event.copy())
         if anchors is not None:
             old=anchors['margins'][local];event=anchors['hard'][local]+p['surrogate']['scale']/(1+p['surrogate']['slope']*abs(old))**2*(margin-old)
-        spikes.append(event.copy());old=z[h].copy()
-        for edge in range(2):
-            gate=z[routes[edge]['states'][0]] if delay else x[0,tick,edge]
-            new=.7*old[edge];z[h[edge]]+=gate*(new-z[h[edge]])
-            if repeated:z[v[targets[edge]]]+=gate*gain[edge]*new
+        spikes.append(event.copy())
+        for path in paths:
+            for snapshot in bundle.provenance['event_callback_snapshots'].get(path,[]):
+                z[snapshot['cache']]=z[snapshot['source']]
+            rows=bundle.provenance['delay_queues'][path]['new'];old=z[h].copy()
+            mode=bundle.provenance['event_callback_modes'][path]
+            for edge in range(2):
+                gate=z[rows[edge]['states'][0]] if delay else x[0,tick,edge]
+                if 'h' in mode['write_order']:z[h[edge]]+=gate*(.7*old[edge]-z[h[edge]])
+                if 'v_post' in mode['accum']:z[v[targets[edge]]]+=gate*gain[edge]*old[edge]
         for path in bundle.provenance['delay_queues'].values():
             for row in path['new']:
                 if row['states']:

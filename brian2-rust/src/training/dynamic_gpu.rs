@@ -27,10 +27,12 @@ pub(super) fn execute(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], l
     let writes = spec.actions.iter().map(|a| a.writes.len()).sum::<usize>();
     let nodes = spec.program_sets.iter().flatten().map(Vec::len).sum::<usize>();
     let programs = spec.program_sets.iter().map(Vec::len).sum::<usize>();
+    let mut candidate_sets=vec![false;spec.program_sets.len()];
+    for action in &spec.actions {if action.poisson_candidate {candidate_sets[action.program_set.unwrap()]=true;}}
     let poisson_sets: Vec<bool> = spec.program_sets.iter().map(|s|s.iter().flatten().any(|n|matches!(n,equation::Node::Poisson{..}))).collect();
     let action_poisson = |a: &dynamic::Action| a.program_set.is_some_and(|i|poisson_sets[i]);
     let boundary = operation != "evaluate" && poisson_ir::boundary_possible(spec);
-    let poisson_actions = spec.actions.iter().filter(|a|action_poisson(a)).count();
+    let poisson_actions = spec.actions.iter().filter(|a|action_poisson(a)&&!a.poisson_candidate).count();
     let ordinary_width = ordinary_tape_width + if boundary {poisson_actions} else {0};
     let shared=poisson_sets.iter().any(|&used|used)||poisson_state.is_some();
     let incoming=poisson_state.map_or(0,|s|s.entries.len());
@@ -98,7 +100,7 @@ pub(super) fn execute(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], l
                 }
             }
             let mut timed_offset = descriptors;
-            meta[h+3*s] = program.len() as u64 | if program.iter().any(|n|matches!(n,equation::Node::Poisson{..})) {256} else {0} | if boundary && poisson_sets[set_index] {512} else {0} | if shared && poisson_sets[set_index] {1024}else{0}; meta[h+3*s+1] = meta.len() as u64; meta[h+3*s+2] = params.len() as u64;
+            meta[h+3*s] = program.len() as u64 | if program.iter().any(|n|matches!(n,equation::Node::Poisson{..})) {256} else {0} | if boundary && poisson_sets[set_index] && !candidate_sets[set_index] {512} else {0} | if shared && poisson_sets[set_index] && !candidate_sets[set_index] {1024}else{0}; meta[h+3*s+1] = meta.len() as u64; meta[h+3*s+2] = params.len() as u64;
             for node in program {
                 let (mut row, value) = equation::gpu_node(node, &parameter_offsets);
                 if let equation::Node::Poisson{rate,..}=*node {row[3]=poisson_ir::rate_differentiable(program,rate) as u64;}
@@ -129,7 +131,7 @@ pub(super) fn execute(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], l
             meta[h+7] = if gate.state {3} else if gate.external {1} else {2};
             meta[h+8] = if gate.state { action.reads.iter().position(|&k| k == gate.index).unwrap() } else {gate.index} as u64;
         }
-        meta[h+9] = action.detach_trigger as u64;
+        meta[h+9] = action.detach_trigger as u64 | ((action.poisson_candidate as u64)<<1);
         meta[h+10] = action.mask.map_or(1, |[bank,index]| plan.masks[bank][index] as u64);
         meta[h+11] = action.parameter_index as u64;
         meta[h+12] = noise_offset as u64; noise_offset += noise_size(action);
@@ -150,7 +152,7 @@ pub(super) fn execute(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], l
             }
             context+=action.reads.len()+2*action.writes.len();
         }
-        if boundary && action_poisson(action) {context+=1;}
+        if boundary && action_poisson(action) && !action.poisson_candidate {context+=1;}
     }
     meta[15] = meta.len() as u64; meta.extend(spec.voltage.iter().map(|&k| k as u64));
     meta[16] = meta.len() as u64; meta.extend(spec.detached.iter().map(|&v| v as u64));
@@ -267,6 +269,12 @@ pub(super) fn execute(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], l
         let version:unsafe extern "C" fn()->u64=unsafe{std::mem::transmute(function)};
         ensure(unsafe{version()}==1,"GPU eager Boolean capability mismatch")?;
     }
+    if candidate_sets.iter().any(|&v|v) {
+        let name=CString::new("b2_train_poisson_candidate_v1")?;let function=unsafe{dlsym(handle,name.as_ptr())};
+        ensure(!function.is_null(),"GPU Poisson candidate capability missing")?;
+        let version:unsafe extern "C" fn()->u64=unsafe{std::mem::transmute(function)};
+        ensure(unsafe{version()}==1,"GPU Poisson candidate capability mismatch")?;
+    }
     if shared {
         let name=CString::new("b2_train_poisson_shared_v1")?;let function=unsafe{dlsym(handle,name.as_ptr())};
         ensure(!function.is_null(),"GPU shared Poisson cache capability missing")?;
@@ -332,7 +340,7 @@ pub(super) fn execute(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], l
         run(&meta,&params,&mut tape,&mut spikes,&mut live,&mut grad,&mut adj,&mut logits,&mut losses)?;
         let mut needed=Vec::with_capacity(b*t*poisson_actions);
         for sample in 0..b {for visit in 0..t {for (a,action) in spec.actions.iter().enumerate() {
-            if !action_poisson(action){continue;}
+            if !action_poisson(action)||action.poisson_candidate {continue;}
             let h=meta[13] as usize+16*a;
             let at=(sample*t+visit)*tape_width+meta[h] as usize+action.reads.len()
                 + if action.indirect.is_some(){action.reads.len()+2*action.writes.len()}else{0};
@@ -345,7 +353,7 @@ pub(super) fn execute(plan: &Plan, mut state: State, inputs: &[Vec<Vec<f64>>], l
         if let Some(m)=mpi {m.sum(&mut needed)?;}
         let mut cursor=0;
         for sample in 0..b {for visit in 0..t {for (a,action) in spec.actions.iter().enumerate() {
-            if !action_poisson(action){continue;}
+            if !action_poisson(action)||action.poisson_candidate {continue;}
             let mask=needed[cursor];cursor+=1;
             ensure(mask.is_finite()&&mask>=0.0&&mask<=65535.0&&mask==mask.floor(),"invalid distributed GPU boundary replay mask")?;
             let mask=mask as u16;
