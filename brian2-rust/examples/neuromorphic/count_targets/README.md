@@ -22,8 +22,8 @@ The TF SavedModel result is the previous actual TF execution: its model,
 input and output hashes were rechecked. Atlas and both new SDKs were freshly run.
 
 The conversion regression suite passed 91 tests. See [the audit](evidence/audit.json)
-and [source/environment identities](evidence/manifest.json). The source schema
-remains `b2ir-v1`; no Rust executor change was required.
+and [source/environment identities](evidence/manifest.json). These targets use the existing AtlasIR state and event semantics. New exports
+use `atlasir-v1`; the recorded audit retains its original wire identifiers.
 
 **This is the 90.03% 784→10 count classifier.** The 98.74% signed, biased MLP
 remains outside these targets' admitted profile. The result demonstrates zero

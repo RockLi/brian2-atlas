@@ -6,6 +6,8 @@ import struct
 import subprocess
 import tempfile
 import numpy as np
+
+from .protocol import SUPPORTED_V1_SCHEMAS
 from .spec import expression
 
 PROFILE = 'xylo-audio2-temporal-v1'
@@ -60,7 +62,7 @@ def _code(c,kind,when,order,expected,clock,domain='all_neurons'):
 
 def _lower_validated(model):
     d,instance,run=model['definition'],model['instance'],model['run']
-    require(model['schema']=='b2ir-v1' and d['numeric_profile']=='reference-f64' and not d['functions'],
+    require(model['schema'] in SUPPORTED_V1_SCHEMAS and d['numeric_profile']=='reference-f64' and not d['functions'],
             'requires reference-f64 AtlasIR without user functions')
     require(d['schedule']['base_slots']==SLOTS,'requires start → synapses → groups → thresholds → resets')
     require(number(run['start'])==0 and len(d['clocks'])==len(run['clocks'])==1,'requires one fresh clock')

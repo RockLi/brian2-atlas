@@ -78,7 +78,12 @@ def test_target_and_profile_errors_are_explicit():
     with pytest.raises(ValueError,match='biased/signed'):convert_ir('missing',target='specksim',runner='missing')
 
 
-def test_all_targets_share_validated_ir_and_refuse_stale_protocol(model,tmp_path):
+@pytest.mark.parametrize('legacy', [False, True])
+def test_all_targets_share_validated_ir_and_refuse_stale_protocol(model,tmp_path,legacy):
+    from brian2_rust.protocol import attach_protocol, LEGACY_V1_SCHEMA
+    if legacy:
+        model['schema'] = LEGACY_V1_SCHEMA
+        attach_protocol(model)
     runner=Path(os.environ.get('B2_RUNNER','missing'))
     if not runner.is_file():pytest.skip('set B2_RUNNER to trusted new-repository native runner')
     path=tmp_path/'source.json';path.write_bytes(canonical_bytes(model))

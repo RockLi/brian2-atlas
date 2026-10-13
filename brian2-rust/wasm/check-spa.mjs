@@ -9,6 +9,7 @@ const template=JSON.parse(readFileSync(templatePath,'utf8'));
 mkdirSync(output,{recursive:true});const results={};
 for(const [name,config] of Object.entries(presets)) {
   const draft=makeDraft(template,config),bundle=JSON.parse(compile_model(JSON.stringify(draft))),plan=JSON.parse(bundle.plan_json);
+  assert.equal(JSON.parse(bundle.model_json).schema,'atlasir-v1');
   assert.equal(plan.logical.clocks[0].steps,config.duration_ms/config.dt_ms);
   const executor=new BrowserExecutor(bundle.model_json,bundle.plan_json);
   try{
@@ -35,3 +36,13 @@ assert.throws(()=>compile_model(JSON.stringify(changed)),/population|count/,'aut
 const effects=makeDraft(template,defaults);effects.definition.schedule.nodes[0].effects.reads.push('forged');assert.throws(()=>compile_model(JSON.stringify(effects)),/effects/);
 assert.throws(()=>validateConfig({...defaults,dt_ms:0}));assert.throws(()=>validateConfig({...defaults,neurons:9.1}));assert.throws(()=>validateConfig({...defaults,unknown:1}));assert.throws(()=>validateConfig({...defaults,refractory_ms:2.03}));
 console.log(JSON.stringify(results,null,2));
+
+// The authoring boundary also emits the current envelope for legacy drafts.
+const legacyDraft=makeDraft(template,defaults);
+legacyDraft.schema='b2ir-v1';
+legacyDraft.protocol.name='b2ir';
+legacyDraft.protocol.canonical_encoding='b2ir-canonical-json-v1';
+const renamed=JSON.parse(JSON.parse(compile_model(JSON.stringify(legacyDraft))).model_json);
+assert.equal(renamed.schema,'atlasir-v1');
+assert.equal(renamed.protocol.name,'atlasir');
+assert.equal(renamed.protocol.canonical_encoding,'atlasir-canonical-json-v1');

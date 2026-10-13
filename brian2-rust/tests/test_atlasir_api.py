@@ -1,4 +1,4 @@
-"""Public AtlasIR naming must preserve old model and native-function identities."""
+"""Current AtlasIR naming and verified legacy import compatibility."""
 import io
 import json
 from pathlib import Path
@@ -21,18 +21,24 @@ def function(target, source='double curve(double x) { return x*x+0.5; }'):
     return value
 
 
-def test_public_ir_roundtrip_preserves_frozen_v1_bytes_and_hashes():
+def test_public_ir_migrates_legacy_envelope_without_changing_layers():
     assert IR_NAME == ir.IR_NAME == 'AtlasIR'
     model = json.loads(GOLDEN.read_text())
     original = ir.canonical_bytes(model)
     migrated = ir.migrate_model(model)
     stream = io.BytesIO()
     ir.write_canonical(migrated, stream)
-    assert stream.getvalue() == original
-    assert json.loads(stream.getvalue()) == model
+    assert stream.getvalue() != original
+    assert ir.canonical_bytes(model) == original  # No mutation of the old input.
+    assert ir.migrate_model(migrated) == migrated
+    for layer in ('definition', 'instance', 'run'):
+        assert migrated[layer] == model[layer]
+    assert migrated['protocol']['name'] == 'atlasir'
+    assert migrated['protocol']['canonical_encoding'] == 'atlasir-canonical-json-v1'
     ir.verify_protocol(migrated)
     assert ir.layer_hashes(migrated) == model['protocol']['layers']
-    assert ir.CURRENT_SCHEMA == model['schema'] == 'b2ir-v1'
+    assert ir.CURRENT_SCHEMA == migrated['schema'] == 'atlasir-v1'
+    assert model['schema'] == ir.LEGACY_V1_SCHEMA
 
 
 @pytest.mark.parametrize('suffix,backend', [

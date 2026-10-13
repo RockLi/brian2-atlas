@@ -183,7 +183,7 @@ def test_public_export_uses_rust_validation_and_checks_integrity(model, tmp_path
     attach_protocol(model)
     bad = tmp_path / 'bad.json'
     bad.write_text(json.dumps(model))
-    with pytest.raises(api.B2IRAkidaError, match='Atlas B2IR validation failed'):
+    with pytest.raises(api.B2IRAkidaError, match='AtlasIR validation failed'):
         api.export_b2ir_plan(bad, tmp_path / 'bad-export', runner=RUNNER)
     assert not (tmp_path / 'bad-export').exists()
     model['instance']['rng_seed'] += 1

@@ -1904,7 +1904,7 @@ z
     </g>
    </g>
    <g id="text_10">
-    <!-- AtlasIR  ·  b2ir-v1 -->
+    <!-- AtlasIR v1 -->
     <g style="fill: #2265b5" transform="translate(468 291.01625) scale(0.2 -0.2)">
      <defs>
       <path id="DejaVuSans-Bold-2c" d="M 588 4666
@@ -1942,46 +1942,6 @@ Q 2425 1766 2131 1766
 L 1791 1766
 z
 " transform="scale(0.015625)"/>
-      <path id="DejaVuSans-Bold-79" d="M 653 2828
-L 1778 2828
-L 1778 1619
-L 653 1619
-L 653 2828
-z
-" transform="scale(0.015625)"/>
-      <path id="DejaVuSans-Bold-45" d="M 2400 722
-Q 2759 722 2948 984
-Q 3138 1247 3138 1747
-Q 3138 2247 2948 2509
-Q 2759 2772 2400 2772
-Q 2041 2772 1848 2508
-Q 1656 2244 1656 1747
-Q 1656 1250 1848 986
-Q 2041 722 2400 722
-z
-M 1656 2988
-Q 1888 3294 2169 3439
-Q 2450 3584 2816 3584
-Q 3463 3584 3878 3070
-Q 4294 2556 4294 1747
-Q 4294 938 3878 423
-Q 3463 -91 2816 -91
-Q 2450 -91 2169 54
-Q 1888 200 1656 506
-L 1656 0
-L 538 0
-L 538 4863
-L 1656 4863
-L 1656 2988
-z
-" transform="scale(0.015625)"/>
-      <path id="DejaVuSans-Bold-10" d="M 347 2297
-L 2309 2297
-L 2309 1388
-L 347 1388
-L 347 2297
-z
-" transform="scale(0.015625)"/>
       <path id="DejaVuSans-Bold-59" d="M 97 3500
 L 1216 3500
 L 2088 1081
@@ -2015,17 +1975,8 @@ z
      <use xlink:href="#DejaVuSans-Bold-2c" transform="translate(286.46875 0)"/>
      <use xlink:href="#DejaVuSans-Bold-35" transform="translate(323.671875 0)"/>
      <use xlink:href="#DejaVuSans-Bold-3" transform="translate(400.671875 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-3" transform="translate(435.484375 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-79" transform="translate(470.296875 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-3" transform="translate(508.28125 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-3" transform="translate(543.09375 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-45" transform="translate(577.90625 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-15" transform="translate(649.484375 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-4c" transform="translate(719.0625 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-55" transform="translate(753.34375 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-10" transform="translate(802.65625 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-59" transform="translate(844.15625 0)"/>
-     <use xlink:href="#DejaVuSans-Bold-14" transform="translate(909.34375 0)"/>
+     <use xlink:href="#DejaVuSans-Bold-59" transform="translate(435.484375 0)"/>
+     <use xlink:href="#DejaVuSans-Bold-14" transform="translate(500.671875 0)"/>
     </g>
    </g>
    <g id="text_11">
@@ -2390,6 +2341,41 @@ z
    <g id="text_16">
     <!-- b2-train -->
     <g style="fill: #172b42" transform="translate(82.8 490.053438) scale(0.19 -0.19)">
+     <defs>
+      <path id="DejaVuSans-Bold-45" d="M 2400 722
+Q 2759 722 2948 984
+Q 3138 1247 3138 1747
+Q 3138 2247 2948 2509
+Q 2759 2772 2400 2772
+Q 2041 2772 1848 2508
+Q 1656 2244 1656 1747
+Q 1656 1250 1848 986
+Q 2041 722 2400 722
+z
+M 1656 2988
+Q 1888 3294 2169 3439
+Q 2450 3584 2816 3584
+Q 3463 3584 3878 3070
+Q 4294 2556 4294 1747
+Q 4294 938 3878 423
+Q 3463 -91 2816 -91
+Q 2450 -91 2169 54
+Q 1888 200 1656 506
+L 1656 0
+L 538 0
+L 538 4863
+L 1656 4863
+L 1656 2988
+z
+" transform="scale(0.015625)"/>
+      <path id="DejaVuSans-Bold-10" d="M 347 2297
+L 2309 2297
+L 2309 1388
+L 347 1388
+L 347 2297
+z
+" transform="scale(0.015625)"/>
+     </defs>
      <use xlink:href="#DejaVuSans-Bold-45"/>
      <use xlink:href="#DejaVuSans-Bold-15" transform="translate(71.578125 0)"/>
      <use xlink:href="#DejaVuSans-Bold-10" transform="translate(141.15625 0)"/>
@@ -4118,6 +4104,13 @@ z
     <!-- Conversion validation  ·  Atlas reference ↔ target SDK -->
     <g style="fill: #172b42" transform="translate(468 856.174531) scale(0.17 -0.17)">
      <defs>
+      <path id="DejaVuSans-Bold-79" d="M 653 2828
+L 1778 2828
+L 1778 1619
+L 653 1619
+L 653 2828
+z
+" transform="scale(0.015625)"/>
       <path id="DejaVuSans-Bold-c1e" d="M 313 1788
 L 313 2225
 L 1541 3453

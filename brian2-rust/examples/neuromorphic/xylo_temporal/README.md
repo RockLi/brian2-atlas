@@ -74,7 +74,7 @@ neurons have synaptic current `I`, membrane voltage `v` and count `q`.
 Brian2 emits one event per firing neuron per step. Multiplicity is explicit:
 each synapse delivers `w*q_pre`, and `q` records up to 31 hidden spikes or one
 output spike. The comparison checks **both multiplicity and event presence**.
-This uses existing states, events and AST operations in `b2ir-v1`; it introduces
+This uses existing states, events and AST operations in `atlasir-v1`; it introduces
 no new wire-format opcode or change to the Rust executor.
 
 The tick order is:

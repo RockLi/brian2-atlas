@@ -131,7 +131,11 @@ pub fn compile_browser_bundle(draft_json: &str) -> Result<String> {
         "WASM model exceeds 128 MiB",
     )?;
     let mut value: serde_json::Value = serde_json::from_str(draft_json)?;
-    check(value["schema"] == "b2ir-v1", "authoring requires AtlasIR v1")?;
+    check(
+        matches!(value["schema"].as_str(), Some(CURRENT_SCHEMA | LEGACY_V1_SCHEMA)),
+        "authoring requires AtlasIR v1",
+    )?;
+    value["schema"] = serde_json::Value::String(CURRENT_SCHEMA.into());
     value["protocol"] = expected_protocol(&value)?;
     let (_, plan) = validated_plan(value.clone())?;
     Ok(serde_json::to_string(&serde_json::json!({

@@ -9,16 +9,20 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'python'))
-from brian2_rust.protocol import attach_protocol  # noqa: E402
+from brian2_rust.protocol import attach_protocol, LEGACY_V1_SCHEMA  # noqa: E402
 
 
+@pytest.mark.parametrize('legacy', [False, True])
 @pytest.mark.parametrize('case,accepted', [
     ('current', True), ('omitted_optional', True), ('duplicate_key', True),
     ('tampered', False), ('invalid_shape', False), ('unknown_field', False),
 ])
-def test_compact_validation_matches_ordinary_loader(tmp_path, case, accepted):
-    model = json.loads((ROOT / 'tests/golden/b2ir-v1/minimal-v1.json').read_text())
+def test_compact_validation_matches_ordinary_loader(tmp_path, case, accepted, legacy):
+    model = json.loads((ROOT / 'tests/golden/atlasir-v1/minimal-v1.json').read_text())
     model = copy.deepcopy(model)
+    if legacy:
+        model["schema"] = LEGACY_V1_SCHEMA
+        attach_protocol(model)
     if case == 'omitted_optional':
         assert model['instance']['populations'][0]['spike_generator'] is None
         del model['instance']['populations'][0]['spike_generator']
@@ -30,7 +34,7 @@ def test_compact_validation_matches_ordinary_loader(tmp_path, case, accepted):
         attach_protocol(model)
     wire = json.dumps(model, sort_keys=True, separators=(',', ':'))
     if case == 'duplicate_key':
-        wire = wire[:-1] + ',"schema":"b2ir-v1"}'
+        wire = wire[:-1] + ',"schema":' + json.dumps(model['schema']) + '}'
     results = []
     for label, padding in [('ordinary', ''), ('large', ' ' * (8 * 1024 * 1024))]:
         path = tmp_path / f'{label}.json'

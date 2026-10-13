@@ -31,9 +31,11 @@ Atlas exposes three capabilities through the Brian2 modelling interface:
   and resource constraints, then produces a target-specific plan for SDK
   execution. Atlas reference results provide the conversion check.
 
-Simulation and conversion share **AtlasIR**. Native training currently uses
+Simulation and conversion share **AtlasIR**; new exports use `atlasir-v1`.
+Verified legacy imports remain supported (see [migration](brian2-rust/AtlasIR.md#7-migration-and-conformance)).
+Native training currently uses
 **separately versioned training plans**; it does not run through the frozen
-`b2ir-v1` simulation ABI. The TensorFlow examples import frozen weights into an
+`atlasir-v1` simulation ABI. The TensorFlow examples import frozen weights into an
 explicit Brian2 model. A bounded [native LIF training bridge](brian2-rust/examples/neuromorphic/native_training/README.md)
 now connects Atlas-trained networks to SpiNNaker2 software inference through
 explicit quantization and AtlasIR. Arbitrary TensorFlow graphs and general

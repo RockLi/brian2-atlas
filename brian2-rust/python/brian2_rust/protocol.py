@@ -9,16 +9,28 @@ import json
 from .encoded_array import EncodedArray, IndexArray
 
 IR_NAME = "AtlasIR"
-# Frozen wire identifiers are compatibility contracts, not display names.
-# Keep them unchanged so model bytes, hashes and existing consumers agree.
-CURRENT_SCHEMA = "b2ir-v1"
+CURRENT_SCHEMA = "atlasir-v1"
+LEGACY_V1_SCHEMA = "b2ir-v1"
+SUPPORTED_V1_SCHEMAS = (CURRENT_SCHEMA, LEGACY_V1_SCHEMA)
 PREVIOUS_SCHEMAS = (
     "b2ir-gate0-probe-v34",
     "b2ir-gate0-probe-v35",
     "b2ir-gate0-probe-v36",
     "b2ir-gate0-probe-v37",
 )
-CANONICAL_ENCODING = "b2ir-canonical-json-v1"
+CANONICAL_ENCODING = "atlasir-canonical-json-v1"
+
+
+def _protocol_header(schema):
+    if schema == CURRENT_SCHEMA:
+        name, encoding = "atlasir", CANONICAL_ENCODING
+    elif schema == LEGACY_V1_SCHEMA or schema in PREVIOUS_SCHEMAS:
+        name, encoding = "b2ir", "b2ir-canonical-json-v1"
+    else:
+        raise ValueError(f"unsupported AtlasIR schema {schema!r}")
+    return {"name": name, "version": {"major": 1, "minor": 0},
+            "canonical_encoding": encoding, "hash_algorithm": "sha256"}
+
 _JSON_SCALARS = frozenset({str, int, float, bool, type(None)})
 
 
@@ -90,14 +102,11 @@ def layer_hashes(model: dict) -> dict[str, str]:
 
 
 def attach_protocol(model: dict) -> dict:
-    """Attach a self-verifying protocol envelope to a current model."""
-    if model.get("schema") != CURRENT_SCHEMA:
+    """Attach an envelope for a current or explicitly legacy v1 model."""
+    if model.get("schema") not in SUPPORTED_V1_SCHEMAS:
         raise ValueError(f"cannot envelope unsupported schema {model.get('schema')!r}")
     model["protocol"] = {
-        "name": "b2ir",
-        "version": {"major": 1, "minor": 0},
-        "canonical_encoding": CANONICAL_ENCODING,
-        "hash_algorithm": "sha256",
+        **_protocol_header(model.get("schema")),
         "layers": layer_hashes(model),
     }
     return model
@@ -105,12 +114,7 @@ def attach_protocol(model: dict) -> dict:
 
 def verify_protocol(model: dict) -> None:
     protocol = model.get("protocol")
-    expected_header = {
-        "name": "b2ir",
-        "version": {"major": 1, "minor": 0},
-        "canonical_encoding": CANONICAL_ENCODING,
-        "hash_algorithm": "sha256",
-    }
+    expected_header = _protocol_header(model.get("schema"))
     if (not isinstance(protocol, dict) or
             set(protocol) != {*expected_header, "layers"} or
             canonical_bytes({name: protocol.get(name) for name in expected_header})
@@ -124,6 +128,10 @@ def migrate_model(model: dict) -> dict:
     """Return a verified current model or migrate a supported predecessor."""
     migrated = copy.deepcopy(model)
     schema = migrated.get("schema")
+    if schema == LEGACY_V1_SCHEMA:
+        verify_protocol(migrated)
+        migrated["schema"] = CURRENT_SCHEMA
+        return attach_protocol(migrated)
     if schema in PREVIOUS_SCHEMAS:
         if schema == PREVIOUS_SCHEMAS[0]:
             if "protocol" in migrated:

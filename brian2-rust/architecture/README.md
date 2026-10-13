@@ -12,7 +12,7 @@ modelling frontend, but have different execution contracts.
 
 | Capability | Intermediate contract | Executor | Result |
 |---|---|---|---|
-| Simulation | AtlasIR, frozen `b2ir-v1` wire format | Native CPU/AOT, CUDA, Metal, browser WASM/WebGPU, MPI | State trajectories, events, monitor records |
+| Simulation | AtlasIR, frozen `atlasir-v1` wire format | Native CPU/AOT, CUDA, Metal, browser WASM/WebGPU, MPI | State trajectories, events, monitor records |
 | Training | Dedicated versioned training plans | `b2-train` on CPU, CUDA, Metal or MPI | Learned weights, optimizer and physical-state checkpoints |
 | Conversion | Validated AtlasIR, then a target-specific private plan | Optional vendor/toolchain SDK on CPU | Target outputs, states or spike times for comparison |
 

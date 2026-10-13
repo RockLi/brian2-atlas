@@ -10,6 +10,20 @@ use std::time::Instant;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+const CURRENT_SCHEMA: &str = "atlasir-v1";
+const LEGACY_V1_SCHEMA: &str = "b2ir-v1";
+
+fn protocol_identifiers(schema: &str) -> Result<(&'static str, &'static str)> {
+    match schema {
+        CURRENT_SCHEMA => Ok(("atlasir", "atlasir-canonical-json-v1")),
+        LEGACY_V1_SCHEMA | "b2ir-gate0-probe-v34" | "b2ir-gate0-probe-v35"
+            | "b2ir-gate0-probe-v36" | "b2ir-gate0-probe-v37" =>
+            Ok(("b2ir", "b2ir-canonical-json-v1")),
+        _ => Err("unsupported AtlasIR schema".into()),
+    }
+}
+
+
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Model {
@@ -3188,14 +3202,15 @@ impl Model {
 
     fn validate(&self) -> Result<()> {
         check(
-            self.schema == "b2ir-v1",
+            matches!(self.schema.as_str(), CURRENT_SCHEMA | LEGACY_V1_SCHEMA),
             "unsupported schema; regenerate model with current exporter",
         )?;
+        let (name, encoding) = protocol_identifiers(&self.schema)?;
         check(
-            self.protocol.name == "b2ir"
+            self.protocol.name == name
                 && self.protocol.version.major == 1
                 && self.protocol.version.minor == 0
-                && self.protocol.canonical_encoding == "b2ir-canonical-json-v1"
+                && self.protocol.canonical_encoding == encoding
                 && self.protocol.hash_algorithm == "sha256",
             "unsupported AtlasIR protocol envelope",
         )?;
@@ -4691,10 +4706,11 @@ fn protocol_layers(value: &serde_json::Value) -> Result<serde_json::Value> {
 }
 
 fn expected_protocol(value: &serde_json::Value) -> Result<serde_json::Value> {
+    let (name, encoding) = protocol_identifiers(value["schema"].as_str().unwrap_or(""))?;
     Ok(serde_json::json!({
-        "name": "b2ir",
+        "name": name,
         "version": {"major": 1, "minor": 0},
-        "canonical_encoding": "b2ir-canonical-json-v1",
+        "canonical_encoding": encoding,
         "hash_algorithm": "sha256",
         "layers": protocol_layers(value)?,
     }))
@@ -4706,6 +4722,12 @@ fn prepare_protocol(value: &mut serde_json::Value) -> Result<()> {
         .and_then(serde_json::Value::as_str)
         .ok_or("missing AtlasIR schema")?
         .to_owned();
+    if schema == LEGACY_V1_SCHEMA {
+        verify_protocol(value)?;
+        value["schema"] = serde_json::Value::String(CURRENT_SCHEMA.into());
+        value["protocol"] = expected_protocol(value)?;
+        return Ok(());
+    }
     if matches!(
         schema.as_str(),
         "b2ir-gate0-probe-v34"
@@ -4750,7 +4772,7 @@ fn prepare_protocol(value: &mut serde_json::Value) -> Result<()> {
                 .entry("backend_implementations")
                 .or_insert_with(|| serde_json::Value::Object(serde_json::Map::new()));
         }
-        value["schema"] = serde_json::Value::String("b2ir-v1".into());
+        value["schema"] = serde_json::Value::String(CURRENT_SCHEMA.into());
         let protocol = expected_protocol(value)?;
         value
             .as_object_mut()
@@ -4758,7 +4780,7 @@ fn prepare_protocol(value: &mut serde_json::Value) -> Result<()> {
             .insert("protocol".into(), protocol);
         return Ok(());
     }
-    check(schema == "b2ir-v1", "unsupported AtlasIR schema")?;
+    check(schema == CURRENT_SCHEMA, "unsupported AtlasIR schema")?;
     Ok(())
 }
 

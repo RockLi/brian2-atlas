@@ -19,7 +19,7 @@ from brian2_rust.protocol import attach_protocol, canonical_bytes
 
 @pytest.fixture
 def model():
-    return json.loads((ROOT / "tests/golden/b2ir-v1/minimal-v1.json").read_text())
+    return json.loads((ROOT / "tests/golden/atlasir-v1/minimal-v1.json").read_text())
 
 
 def test_plan_preserves_frozen_bytes_and_completes_implicit_effects(model):

@@ -12,7 +12,7 @@ conversion of arbitrary Keras/SavedModel graphs.
 
 The example imports an explicit frozen integer checkpoint into a real Brian2
 model, exports AtlasIR, validates it with the current native Atlas runner, and
-compiles three backend-private plans. The IR wire schema remains `b2ir-v1`.
+compiles three backend-private plans. New exports use the `atlasir-v1` wire schema.
 
 ## Compatibility and expanded coverage
 

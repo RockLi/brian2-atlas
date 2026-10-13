@@ -16,7 +16,7 @@ from test_cuda import real_cuda,ROOT
 
 
 def test_atomic_read_source_is_bound_to_plan_and_restored(tmp_path):
-    model=json.loads((ROOT/'tests/golden/b2ir-v1/minimal-v1.json').read_text())
+    model=json.loads((ROOT/'tests/golden/atlasir-v1/minimal-v1.json').read_text())
     current=build_cuda_plan(model,numeric_mode='float32')
     header=cuda_codegen.CUDA_HEADER
     with atomic_reads(legacy=True):

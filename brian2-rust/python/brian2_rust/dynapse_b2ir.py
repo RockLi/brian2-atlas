@@ -2,6 +2,8 @@
 import copy,hashlib,json,struct,subprocess,tempfile
 from pathlib import Path
 import numpy as np
+
+from .protocol import SUPPORTED_V1_SCHEMAS
 from .dynapse_model import PARAMETERS,STATES
 
 PROFILE='dynapse-dpi-v1'
@@ -36,7 +38,7 @@ def signature(definition):
 
 def _lower_validated(model):
     d,inst,run=model['definition'],model['instance'],model['run']
-    require(model['schema']=='b2ir-v1' and len(d['populations'])==len(inst['populations'])==1,'requires one DPI population')
+    require(model['schema'] in SUPPORTED_V1_SCHEMAS and len(d['populations'])==len(inst['populations'])==1,'requires one DPI population')
     p=d['populations'][0];state=inst['populations'][0];n=p['count'];steps=p['steps']
     require(1<=n<=8 and 1<=steps<=512,'pilot admits 1..8 neurons and 1..512 steps')
     require(signature(d)==DEFINITION_SHA256,'unsupported circuit AST, schedule, monitoring or feature')

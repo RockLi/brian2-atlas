@@ -12,6 +12,8 @@ from pathlib import Path
 
 import numpy as np
 
+from .protocol import SUPPORTED_V1_SCHEMAS
+
 PROFILE = 'spinnaker2-lif-v1'
 SLOTS = ['start', 'groups', 'synapses', 'thresholds', 'resets', 'end']
 
@@ -59,8 +61,8 @@ def _code(code, *, kind, when, domain, target, value, clock, order=0):
 
 def _lower_validated(model):
     d, instance, run = model['definition'], model['instance'], model['run']
-    require(model['schema'] == 'b2ir-v1' and d['numeric_profile'] == 'reference-f64',
-            'requires reference-f64 b2ir-v1')
+    require(model['schema'] in SUPPORTED_V1_SCHEMAS and d['numeric_profile'] == 'reference-f64',
+            'requires reference-f64 AtlasIR v1')
     require(not d['functions'], 'user functions are unsupported')
     require(d['schedule']['base_slots'] == SLOTS,
             'requires groups → synapses → thresholds → resets scheduling')

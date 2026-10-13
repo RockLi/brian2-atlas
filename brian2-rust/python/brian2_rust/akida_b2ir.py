@@ -1,4 +1,4 @@
-"""Experimental Akida lowering of bounded, exact-integer B2IR v1 subsets.
+"""Experimental Akida lowering of bounded, exact-integer AtlasIR v1 subsets.
 
 One population, one tick, binary neuron parameters, a single straight-line
 run_regularly block: independent clip(affine(inputs), 0, upper) assignments,
@@ -23,6 +23,8 @@ import subprocess
 import tempfile
 
 import numpy as np
+
+from .protocol import SUPPORTED_V1_SCHEMAS
 
 
 class B2IRAkidaError(ValueError):
@@ -117,7 +119,7 @@ def _lower_validated(model, profile='binary-affine-v1'):
                    'binary-classifier-v3': 128, 'dense-int8-v1': 1024}[profile]
     state_limit = 512 if profile == 'dense-int8-v1' else 128 if profile == 'binary-classifier-v3' else 32 if wide else 16
     d, instance, run = model['definition'], model['instance'], model['run']
-    _require(model['schema'] == 'b2ir-v1', 'only b2ir-v1 is supported')
+    _require(model['schema'] in SUPPORTED_V1_SCHEMAS, 'requires AtlasIR v1')
     _require(d['numeric_profile'] == 'reference-f64', 'requires reference-f64 semantics')
     _require(len(d['populations']) == 1 and len(d['clocks']) == 1, 'requires one population and one clock')
     _require(not d['synapses'] and not instance['synapses'] and not d['functions'],
@@ -242,14 +244,14 @@ def _lower_validated(model, profile='binary-affine-v1'):
 
 
 def lower_b2ir(model_path, *, runner, profile='binary-affine-v1'):
-    """Validate a real B2IR snapshot with Atlas, then automatically derive weights.
+    """Validate a real AtlasIR snapshot with Atlas, then automatically derive weights.
 
     No Akida SDK or generated artifacts are needed for capability analysis.
     The runner must be a trusted Atlas binary supplied by the caller.
     """
     from .protocol import canonical_bytes, verify_protocol
     model = json.loads(Path(model_path).read_text())
-    _require(model.get('schema') == 'b2ir-v1', 'only b2ir-v1 is supported')
+    _require(model.get('schema') in SUPPORTED_V1_SCHEMAS, 'requires AtlasIR v1')
     verify_protocol(model)
     encoded = canonical_bytes(model)
     with tempfile.TemporaryDirectory(prefix='atlas-akida-validate-') as temporary:
@@ -257,7 +259,7 @@ def lower_b2ir(model_path, *, runner, profile='binary-affine-v1'):
         snapshot.write_bytes(encoded)
         validation = subprocess.run([str(Path(runner).resolve()), '--validate', str(snapshot)],
                                     capture_output=True, text=True, timeout=60)
-    _require(validation.returncode == 0, 'Atlas B2IR validation failed: ' + validation.stderr[-2000:])
+    _require(validation.returncode == 0, 'AtlasIR validation failed: ' + validation.stderr[-2000:])
     plan = _lower_validated(model, profile=profile)
     plan['source_model_sha256'] = hashlib.sha256(encoded).hexdigest()
     plan['atlas_validator_sha256'] = hashlib.sha256(Path(runner).read_bytes()).hexdigest()
@@ -265,7 +267,7 @@ def lower_b2ir(model_path, *, runner, profile='binary-affine-v1'):
 
 
 def export_b2ir_plan(model_path, directory, *, runner, profile='binary-affine-v1'):
-    """Write a derived backend-private plan; the B2IR v1 format stays unchanged."""
+    """Write a derived backend-private plan; the AtlasIR v1 format stays unchanged."""
     plan = lower_b2ir(model_path, runner=runner, profile=profile)
     from .protocol import canonical_bytes
     source = canonical_bytes(json.loads(Path(model_path).read_text()))

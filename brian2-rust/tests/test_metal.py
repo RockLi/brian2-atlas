@@ -21,7 +21,7 @@ from brian2_rust.results import load_results
 
 @pytest.fixture
 def golden():
-    return json.loads((ROOT / "tests/golden/b2ir-v1/minimal-v1.json").read_text())
+    return json.loads((ROOT / "tests/golden/atlasir-v1/minimal-v1.json").read_text())
 
 
 def test_metal_requires_explicit_precision_and_validated_model(golden):
@@ -47,7 +47,7 @@ def test_metal_golden_matches_reference_transport(golden, tmp_path):
     import subprocess
     reference = tmp_path / "reference"
     subprocess.run([str(ROOT / "target/release/b2-runner"),
-                    str(ROOT / "tests/golden/b2ir-v1/minimal-v1.json"), str(reference)], check=True)
+                    str(ROOT / "tests/golden/atlasir-v1/minimal-v1.json"), str(reference)], check=True)
     expected = load_results(golden, reference)
     with MetalExecutor(golden, tmp_path / "metal", numeric_mode="float32") as executor:
         result = executor.run()

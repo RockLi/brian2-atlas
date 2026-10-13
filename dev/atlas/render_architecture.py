@@ -54,7 +54,7 @@ def render(out):
     t(95,375,"Training lowering",size=19,color=PURPLE,weight="bold")
     t(95,414,"Dedicated, versioned training plans",size=15)
     box(625,357,1105,112,fill="#EAF2FC",edge="#AFC8E8")
-    t(650,373,"AtlasIR  ·  b2ir-v1",size=20,color=BLUE,weight="bold")
+    t(650,373,"AtlasIR v1",size=20,color=BLUE,weight="bold")
     t(650,411,"Typed state + schedule / event semantics · canonical hashes · native validation",size=15)
     arrow([(320,307),(320,355)],PURPLE)
     arrow([(905,307),(905,355)],BLUE)

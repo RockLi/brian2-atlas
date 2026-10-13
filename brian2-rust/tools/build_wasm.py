@@ -54,7 +54,7 @@ def main():
                     '--target', 'web', '--out-dir', str(output/'pkg')], check=True)
     copy_web_assets(output)
     from brian2_rust.wasm import export_wasm_bundle
-    model = json.loads((ROOT/'tests/golden/b2ir-v1/minimal-v1.json').read_text())
+    model = json.loads((ROOT/'tests/golden/atlasir-v1/minimal-v1.json').read_text())
     export_wasm_bundle(model, output/'sample.json')
     from spa_template import write_templates
     write_templates(output)

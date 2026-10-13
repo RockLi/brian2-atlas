@@ -54,7 +54,7 @@ baseline, so no measured speedup is claimed.
 
 Use `target="spinnaker2", profile="dense-int8-v1"`. The native Atlas validator
 and existing dense parser still validate the source. The new backend plan
-preserves weights, bias, clipping and state order without changing `b2ir-v1`.
+preserves weights, bias, clipping and state order without changing `atlasir-v1`.
 
 The encoding admits the dense profile's bounded signed integer arithmetic
 only when every expanded synapse fits the SDK's 20-bit magnitude. This limits
