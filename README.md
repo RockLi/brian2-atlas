@@ -15,6 +15,33 @@ licensed under [Apache-2.0](LICENSE); the combined checkout retains the upstream
 terms described in [license and repository scope](LICENSE_SCOPE.md). The migration baseline is Brian2 commit
 `27b5431168cf9959f0c27894cd4d92cdc6ad5c31`.
 
+## Architecture: simulation, training and conversion
+
+![Atlas architecture: Brian2 frontend, native training plans, AtlasIR simulation and neuromorphic conversion](brian2-rust/architecture/atlas-architecture.svg)
+
+Atlas exposes three capabilities through the Brian2 modelling interface:
+
+- **Simulation** executes a model on CPU, GPU, browser or MPI backends. The
+  heterogeneous MPI path can offload population state updates to a GPU while
+  retaining event ordering on the host.
+- **Training** lowers supported Brian models into dedicated training plans.
+  `b2-train` runs the forward pass, surrogate-gradient backpropagation and
+  optimizer on native CPU/GPU/MPI backends.
+- **Conversion** checks an AtlasIR model against a neuromorphic target's semantic
+  and resource constraints, then produces a target-specific plan for SDK
+  execution. Atlas reference results provide the conversion check.
+
+Simulation and conversion share **AtlasIR**. Native training currently uses
+**separately versioned training plans**; it does not run through the frozen
+`b2ir-v1` simulation ABI. The TensorFlow examples import frozen weights into an
+explicit Brian2 model. There is no general TensorFlow graph importer or automatic
+native-training-checkpoint-to-chip export path.
+
+See the [architecture notes](brian2-rust/architecture/README.md) for interfaces and
+validation boundaries. Figures: [English PNG](brian2-rust/architecture/atlas-architecture.png),
+[中文 PNG](brian2-rust/architecture/atlas-architecture-zh.png),
+[中文 SVG](brian2-rust/architecture/atlas-architecture-zh.svg).
+
 ## Install from source
 
 This is research software version **0.1.0**, paired with the
