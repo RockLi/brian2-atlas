@@ -67,13 +67,21 @@ with tempfile.TemporaryDirectory(prefix='atlas-installed-checkpoint-') as direct
     checkpoint=pathlib.Path(directory)/'checkpoint.json';trainer.store(checkpoint)
     trainer.step(inputs,labels);expected_state=copy.deepcopy(trainer.state)
     code='''import json,sys
+from pathlib import Path
 import numpy as np
+import brian2, brian2_atlas, brian2_rust
+for module in (brian2, brian2_atlas, brian2_rust):
+    assert Path(module.__file__).resolve().is_relative_to(Path(sys.prefix).resolve()), module.__file__
 from brian2_atlas import NativeLIFTrainer
 trainer=NativeLIFTrainer(json.loads(sys.argv[2]));trainer.restore(sys.argv[1])
 x=np.zeros((4,24,2));x[:2,:,0]=1;x[2:,:,1]=1
 trainer.step(x,[0,0,1,1]);print(json.dumps(trainer.state))
 '''
-    child=subprocess.run([sys.executable,'-c',code,str(checkpoint),json.dumps(plan)],capture_output=True,text=True,check=True,timeout=900)
+    # A fresh interpreter includes its working directory on sys.path. Keep it
+    # outside the checkout so source files cannot shadow the installed wheel.
+    child=subprocess.run([sys.executable,'-c',code,str(checkpoint),json.dumps(plan)],
+                         cwd=directory,capture_output=True,text=True,timeout=900)
+    assert child.returncode == 0, child.stdout + child.stderr
     assert json.loads(child.stdout)==expected_state
 if a.metal:
     gpu=atlas.NativeLIFTrainer(dict(plan,backend='metal'),weights=weights)

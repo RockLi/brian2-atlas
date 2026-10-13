@@ -115,4 +115,7 @@ jobs:
           export XDG_CACHE_HOME="$RUNNER_TEMP/atlas-cache"
           mkdir -p "$TMPDIR" "$XDG_CACHE_HOME"
           unset PYTHONPATH B2_RUNNER B2_TRAIN_RUNNER RUSTUP_TOOLCHAIN
-          build/installed/bin/python dev/atlas/check_installed.py --report build/installed-validation.json
+          cd "$RUNNER_TEMP"
+          "$GITHUB_WORKSPACE/build/installed/bin/python" \
+            "$GITHUB_WORKSPACE/dev/atlas/check_installed.py" \
+            --report "$GITHUB_WORKSPACE/build/installed-validation.json"
