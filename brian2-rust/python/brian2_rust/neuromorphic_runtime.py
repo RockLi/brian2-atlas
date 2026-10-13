@@ -48,6 +48,8 @@ def run_simulator(bundle, samples=None, *, batch_size=50):
     x = validate_inputs(bundle, samples)
     plan = bundle['plan']
     target = bundle['target']
+    if target == 'spinnaker2' and bundle['profile'] == 'dense-int8-v1':
+        return _module('spinnaker2_dense').run(plan, x)
     if target in ('spinnaker2', 'xylosim'):
         if bundle['profile'] != 'binary-count-v1':
             raise ValueError(f'{target} requires binary-count-v1')

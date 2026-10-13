@@ -13,23 +13,24 @@ It does not mean the vendor itself lacks that capability.
 | Profile / source semantics | Akida | Lava | Specksim | SpiNNaker2 | XyloSim | DynapSim |
 |---|---|---|---|---|---|---|
 | `binary-count-v1`: frozen binary-input count classifier | Verified | Verified | Verified | Verified | Verified | Rejected |
-| `dense-int8-v1`: signed weights, bias, quantized hidden activation, affine readout | Verified | Verified, uniform hidden shift | Rejected | Rejected | Rejected | Rejected |
+| `dense-int8-v1`: signed weights, bias, quantized hidden activation, affine readout | Verified | Verified, uniform hidden shift | Rejected | Verified, encoded weight bounds | Rejected | Rejected |
 | `spinnaker2-lif-v1`: explicit Euler LIF, recurrence, delayed events | Rejected | Rejected | Rejected | Verified | Rejected | Rejected |
 | `xylo-audio2-temporal-v1`: bounded integer current/membrane dynamics | Rejected | Rejected | Rejected | Rejected | Verified | Rejected |
 | `dynapse-dpi-v1`: bounded analog DPI circuit model | Rejected | Rejected | Rejected | Rejected | Rejected | Verified |
 
 The executable [compatibility check](coverage/check_compatibility.py) tests all
-30 cells: **10 admitted, 20 explicitly rejected**. It tests conversion routing;
+30 cells: **11 admitted, 19 explicitly rejected**. It tests conversion routing;
 separate SDK comparisons establish execution behavior.
-[Machine-readable result](dynapse/evidence/compatibility.json).
+[Machine-readable result](spinnaker2_dense/evidence/compatibility.json).
 
 ### Rejected does not mean impossible
 
-For the original 98.74% signed/biased MNIST MLP, Akida and Lava remain the only
-full-model verified targets. A new SpiNNaker2 feasibility experiment matched
-**81,920 states across all 16,384 inputs of a small MLP**, including signed
-weights, bias, rounding and clipping. The public converter is not implemented
-for this path, and full-model resource cost still needs work.
+The original 98.74% signed/biased MNIST MLP now runs through the public
+converter on **Akida, Lava and SpiNNaker2**. The new SpiNNaker2 run preserves
+the same frozen weights and matches a fresh native Atlas replay on all
+10,000 test images and 2,660,000 states. Its seven-bit decision encoding
+reduces first-layer connections from 130.59 million to 7.20 million.
+See the [full-model audit and reproduction](spinnaker2_dense/README.md).
 
 Specksim's direct path rejects bias and can change counts with signed event
 order. Xylo Audio 2's direct mapping exceeds input-channel and accumulator
@@ -46,7 +47,7 @@ See [the experiments, original-model bounds and next steps](dense_feasibility/RE
 | Import arbitrary TensorFlow/Keras graphs | Not implemented; examples import an explicit frozen integer checkpoint through Brian2/AtlasIR |
 | Preserve static hidden and output values | Exact for the static profiles in the tested domain |
 | Preserve source spike timing | Verified for all three temporal profiles in their tested domains; static event encoding is not source spike semantics |
-| Signed weights and bias | Akida/Lava dense profile; SpiNNaker2 and Xylo temporal profiles, with their respective bounds |
+| Signed weights and bias | Akida/Lava/SpiNNaker2 dense profile; SpiNNaker2 and Xylo temporal profiles, with their respective bounds |
 | Stateful recurrence | Temporal SpiNNaker2 and Xylo; not admitted by the static profiles |
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
@@ -74,6 +75,11 @@ CPU/GPU simulation and training surfaces.
   checked before conversion. Lava requires one uniform hidden shift and checks
   its expanded graph's int32 intermediates. This suite exercised every uniform
   shift; Akida's admitted nonuniform shift capability was not expanded here.
+- **SpiNNaker2 dense:** seven binary decision stages using stock `lif_32bit`;
+  integer inputs 0–127, signed weights and exact biases. Every encoded weight
+  must fit a 20-bit magnitude, limiting hidden shifts to 1–13 and rejecting
+  oversized encoded bias. Fixed eight-tick output latency, delays 0–6, no
+  state carryover between images. This is a static arithmetic encoding.
 - **SpiNNaker2 temporal:** at most 256 input and 256 LIF neurons, 1–10,000 steps,
   1 ms clocks, zero initial voltage, signed integer weights -15–15, delays 0–7,
   supported subtractive or fixed-value reset. Only the documented Euler update
@@ -110,6 +116,8 @@ combination of accepted parameters.
 | Lava: 20 count + 25 dense | 45 | 4,511 | Exact |
 | Specksim: count | 20 | 2,242 + 1,121 membrane residues | Exact; batch sizes 2 and 5 agree |
 | SpiNNaker2: count | 20 | 2,242 | Exact; one all-zero model uses the proven zero fast path, 19 execute the SDK |
+| SpiNNaker2: dense fixtures + exhaustive two-input probe | 23 | 83,904 | Exact; shifts 14–16 explicitly rejected |
+| SpiNNaker2: original 98.74% MNIST MLP | 1 | 2,660,000 | Exact against fresh Atlas; 9,874/10,000 correct |
 | XyloSim: count | 20 | 2,242 | Exact |
 | SpiNNaker2: temporal LIF | 48 | 101,940 voltage samples | Max float64 error 1.14e-13; 35,093 spike events exactly match |
 | XyloSim: temporal, preceding suite | 50 | 505,455 | Exact, including 7-step chunks |
@@ -132,7 +140,7 @@ remain within the stated tolerance; integer and pulse checks use no tolerance.
 aligned raw monitor times, rejecting off-clock timestamps. The audit preserves
 the public SDK differences; no dynamics, delays or SDK source were changed.
 
-**159 Python regression tests passed**, including timestamp regression tests,
+**166 Python regression tests passed**, including timestamp regression tests,
 semantic admission failures and existing backend checks.
 
 - [DynapSim execution audit](dynapse/evidence/audit.json)
@@ -144,9 +152,10 @@ semantic admission failures and existing backend checks.
 
 The frozen TF MNIST model's earlier full-test result remains **90.03% on all
 five count targets**, with exact conversion equivalence. The older **98.74%**
-signed/biased MLP was checked only on Akida/Lava against historical Atlas output;
-it is a different model. Neither accuracy experiment was rerun in this coverage
-extension. See the [original TF results](README.md) and
+signed/biased MLP is a different model. It was checked on Akida/Lava against
+historical Atlas output and has now been rerun on SpiNNaker2 against a fresh
+Atlas reference, with 98.74% accuracy and zero state differences.
+See the [original TF results](README.md) and
 [additional count-target results](count_targets/README.md).
 
 ## Acceptance checklist for a new capability

@@ -2,21 +2,26 @@
 
 Assessed 2026-10-13. A rejected public profile is an implementation boundary,
 not a proof that a chip cannot compute the model. The public compatibility
-matrix remains unchanged by these feasibility experiments.
+matrix was unchanged by these initial feasibility experiments.
+
+**Follow-up:** [The optimized public SpiNNaker2 converter](../spinnaker2_dense/README.md)
+now runs the full original model at 98.74%, with all 2,660,000 states matching
+a fresh native Atlas replay. The comparator experiment below is retained as
+the earlier mechanism proof.
 
 ## Findings
 
 | Target | Current evidence | What remains |
 |---|---|---|
 | Akida / Lava | Full original model previously verified | Already supported by the bounded dense profile |
-| SpiNNaker2 | Exact small signed/biased MLP mechanism demonstrated with stock SDK | A proper AtlasIR lowerer, resource reduction, full original-model execution and MNIST accuracy audit |
+| SpiNNaker2 | Full original model now verified at 98.74%; see follow-up above | Hardware placement and efficiency remain unverified |
 | Specksim | Direct bias conversion rejected; signed event order changes output counts | A new encoding or approximate ANN-to-SNN conversion; exact preservation has not been established |
 | XyloSim / Audio 2 | Current direct mapping exceeds channel and accumulator limits | Partitioning, temporal encoding and exact arithmetic handling; hardware mapping separately |
 | DynapSim | Circuit-model profile only; no exact integer MLP lowering | A separately designed representation or approximate model conversion and a fresh accuracy study |
 
-None of the latter four targets has been shown universally incapable of the
-computation. Nor does the available evidence justify promising unchanged
-98.74% accuracy on them.
+None of the remaining three targets has been shown universally incapable of
+the computation. Their current evidence does not establish unchanged 98.74%
+accuracy.
 
 ## Original model inspected
 
@@ -59,16 +64,16 @@ negative coefficients, positive and negative bias, rounding boundaries,
 active upper/lower clipping and signed affine outputs. SDK public float32
 records represent these integer results exactly.
 
-This is a mechanism experiment driven by a validated dense plan, not the new
-public `target="spinnaker2", profile="dense-int8-v1"` converter. It does not
+This initial mechanism experiment used a validated dense plan rather than the
+public `target="spinnaker2", profile="dense-int8-v1"` converter added in the follow-up. It did not
 run the original 784→256→10 model or establish its 98.74% accuracy on this target.
 The SDK remains an upstream Brian2 software backend, not a chip emulator.
 
 Resource cost is substantial: the naive same construction for the original
 model would require 5,488 input bit-plane neurons, 32,512 hidden comparators,
 and **130,590,544 first-layer connections**, before the readout. These are
-construction estimates, not hardware mapping results. A practical next step
-must reduce this expansion before a full-model run or efficiency claim.
+construction estimates, not hardware mapping results. The follow-up reduced this expansion with seven binary decisions and ran
+the full model. Hardware efficiency remains unmeasured.
 
 ## Specksim counterexample
 

@@ -13,7 +13,7 @@ sources={'dense-int8-v1':a.static_run/'dense_clip_round/source.json',
          'spinnaker2-lif-v1':a.spinnaker_run/'recurrent_64/model.json',
          'xylo-audio2-temporal-v1':a.xylo_run/'recurrent/source.json',
          'dynapse-dpi-v1':a.dynapse_run/'constant/source.json'}
-supported={'dense-int8-v1':{'akida','lava'},'binary-count-v1':set(TARGETS)-{'dynapse'},
+supported={'dense-int8-v1':{'akida','lava','spinnaker2'},'binary-count-v1':set(TARGETS)-{'dynapse'},
            'spinnaker2-lif-v1':{'spinnaker2'},'xylo-audio2-temporal-v1':{'xylosim'},'dynapse-dpi-v1':{'dynapse'}}
 rows=[]
 for profile in PROFILES:

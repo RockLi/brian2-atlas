@@ -185,8 +185,8 @@ def test_count_boundaries_all_integer_sums(dense, target):
     np.testing.assert_array_equal(counts,sums//64)
 
 
-@pytest.mark.parametrize('target', ['spinnaker2', 'xylosim'])
-def test_new_targets_reject_dense_mlp(target):
+@pytest.mark.parametrize('target', ['specksim', 'xylosim'])
+def test_restricted_targets_reject_dense_mlp(target):
     with pytest.raises(ValueError, match='binary-count-v1'):
         convert_ir('missing',target=target,runner='missing',profile='dense-int8-v1')
 

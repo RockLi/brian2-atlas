@@ -32,7 +32,7 @@ report=dict(target=bundle['target'],samples=len(x),states=int(result['states'].s
             results_sha256=sha(a.output/'results.npz'),elapsed_seconds=time.monotonic()-started,
             physical_hardware=False,hardware_mapping_tested=False,
             implementation_sha256={p.name:sha(p) for p in a.runtime.parent.glob('*.py')
-                                   if p.name in ('count_targets.py','neuromorphic_runtime.py')},
+                                   if p.name in ('count_targets.py','neuromorphic_runtime.py','spinnaker2_dense.py')},
             note='CPU simulator wall time is not chip latency or energy.')
 (a.output/'execution.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report),flush=True)

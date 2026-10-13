@@ -34,7 +34,10 @@ frozen TF SavedModel, the new-repository Atlas runner and all three SDKs:
 Specksim also matched all 100,000 final membrane residues. This accuracy is the
 small model's own accuracy, with **zero conversion loss**. The older 98.74% TF
 MLP was separately reconverted and rerun in Akida/Lava, comparing with its
-historical Atlas reference; it remains outside the Specksim profile.
+historical Atlas reference. It now also runs through the public SpiNNaker2
+converter at **98.74%**, matching **2,660,000 states** from a fresh native Atlas
+replay. See [the full-model result](spinnaker2_dense/README.md). It remains
+outside the Specksim profile.
 See [the compact audit](evidence/common-audit.json) for identities and confusion
 matrices. Large source/run artifacts are kept under ignored `output/neuromorphic`.
 
@@ -82,8 +85,8 @@ new demonstration of temporal SNN portability. Akida's implicit rounding is
 cancelled with a compiler-derived half-step bias; no trained bias is discarded.
 
 The original 98.74% 784→256→10 TF classifier remains a distinct model. Its
-conversion can be checked with `legacy_preflight.py`: Akida/Lava accept the
-bounded dense profile; the shared Specksim profile rejects it. The new common
+Akida/Lava conversion can be checked with `legacy_preflight.py`;
+`spinnaker2_dense/prepare.py` exercises the new SpiNNaker2 dense path; the shared Specksim profile rejects it. The new common
 TF model is a small 784→10 quantized count classifier, not a renamed version of
 that old model. Quantization can change the float model's predictions: the
 frozen **integer TF SavedModel** is the equivalence reference.

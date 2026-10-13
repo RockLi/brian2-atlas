@@ -22,7 +22,7 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
 
     ``binary-count-v1`` restricts its five targets to binary inputs and to the same
     bias-free count classifier. ``dense-int8-v1`` also handles signed biased
-    MLPs on Akida/Lava; Specksim explicitly rejects that general profile.
+    MLPs on Akida/Lava/SpiNNaker2; Specksim explicitly rejects that general profile.
     ``spinnaker2-lif-v1`` admits a separate temporal LIF subset with embedded
     spike input; use target ``spinnaker2``. See the dedicated example.
     ``xylo-audio2-temporal-v1`` admits bounded integer current/membrane
@@ -67,7 +67,7 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
                     source_model_sha256=plan['source_model_sha256'], source_hashes=plan['source_hashes'],
                     atlas_validator_sha256=plan['atlas_validator_sha256'],
                     physical_hardware=False, hardware_mapping_tested=False)
-    if target in ('specksim', 'spinnaker2', 'xylosim') and profile != 'binary-count-v1':
+    if target in ('specksim', 'xylosim') and profile != 'binary-count-v1':
         raise ValueError(f'{target} requires binary-count-v1; arbitrary biased/signed TF MLPs are unsupported')
     source = lower_b2ir(model_path, runner=runner, profile='dense-int8-v1')
     # Recheck bytes after native validation; do not admit another source if it
@@ -87,6 +87,9 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
         plan = source
     elif target == 'lava':
         from brian2_rust.lava_dense_b2ir import graph_plan
+        plan = graph_plan(source)
+    elif target == 'spinnaker2' and profile == 'dense-int8-v1':
+        from brian2_rust.spinnaker2_dense import graph_plan
         plan = graph_plan(source)
     elif target in ('spinnaker2', 'xylosim'):
         from brian2_rust.count_targets import graph_plan

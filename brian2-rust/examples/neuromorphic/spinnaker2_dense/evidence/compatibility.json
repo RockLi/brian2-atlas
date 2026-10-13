@@ -1,0 +1,191 @@
+{
+  "schema": "atlas.neuromorphic.compatibility-check.v1",
+  "passed": true,
+  "cells": 30,
+  "admitted": 11,
+  "rejected": 19,
+  "rows": [
+    {
+      "profile": "dense-int8-v1",
+      "target": "akida",
+      "status": "admitted",
+      "source_model_sha256": "a3b4080ffa27831208ddd3917140e8fda0e6ccae99752e7e8bb9d1453482f3fa"
+    },
+    {
+      "profile": "dense-int8-v1",
+      "target": "lava",
+      "status": "admitted",
+      "source_model_sha256": "a3b4080ffa27831208ddd3917140e8fda0e6ccae99752e7e8bb9d1453482f3fa"
+    },
+    {
+      "profile": "dense-int8-v1",
+      "target": "specksim",
+      "status": "rejected",
+      "reason": "specksim requires binary-count-v1; arbitrary biased/signed TF MLPs are unsupported"
+    },
+    {
+      "profile": "dense-int8-v1",
+      "target": "spinnaker2",
+      "status": "admitted",
+      "source_model_sha256": "a3b4080ffa27831208ddd3917140e8fda0e6ccae99752e7e8bb9d1453482f3fa"
+    },
+    {
+      "profile": "dense-int8-v1",
+      "target": "xylosim",
+      "status": "rejected",
+      "reason": "xylosim requires binary-count-v1; arbitrary biased/signed TF MLPs are unsupported"
+    },
+    {
+      "profile": "dense-int8-v1",
+      "target": "dynapse",
+      "status": "rejected",
+      "reason": "dynapse requires dynapse-dpi-v1; other profiles are unsupported"
+    },
+    {
+      "profile": "binary-count-v1",
+      "target": "akida",
+      "status": "admitted",
+      "source_model_sha256": "e772a20f6b0a8cf98c1e52f56c9e1c7dea1669a70b8b39b9f8f15b909fbd1c19"
+    },
+    {
+      "profile": "binary-count-v1",
+      "target": "lava",
+      "status": "admitted",
+      "source_model_sha256": "e772a20f6b0a8cf98c1e52f56c9e1c7dea1669a70b8b39b9f8f15b909fbd1c19"
+    },
+    {
+      "profile": "binary-count-v1",
+      "target": "specksim",
+      "status": "admitted",
+      "source_model_sha256": "e772a20f6b0a8cf98c1e52f56c9e1c7dea1669a70b8b39b9f8f15b909fbd1c19"
+    },
+    {
+      "profile": "binary-count-v1",
+      "target": "spinnaker2",
+      "status": "admitted",
+      "source_model_sha256": "e772a20f6b0a8cf98c1e52f56c9e1c7dea1669a70b8b39b9f8f15b909fbd1c19"
+    },
+    {
+      "profile": "binary-count-v1",
+      "target": "xylosim",
+      "status": "admitted",
+      "source_model_sha256": "e772a20f6b0a8cf98c1e52f56c9e1c7dea1669a70b8b39b9f8f15b909fbd1c19"
+    },
+    {
+      "profile": "binary-count-v1",
+      "target": "dynapse",
+      "status": "rejected",
+      "reason": "dynapse requires dynapse-dpi-v1; other profiles are unsupported"
+    },
+    {
+      "profile": "spinnaker2-lif-v1",
+      "target": "akida",
+      "status": "rejected",
+      "reason": "spinnaker2-lif-v1 is only supported by target spinnaker2"
+    },
+    {
+      "profile": "spinnaker2-lif-v1",
+      "target": "lava",
+      "status": "rejected",
+      "reason": "spinnaker2-lif-v1 is only supported by target spinnaker2"
+    },
+    {
+      "profile": "spinnaker2-lif-v1",
+      "target": "specksim",
+      "status": "rejected",
+      "reason": "spinnaker2-lif-v1 is only supported by target spinnaker2"
+    },
+    {
+      "profile": "spinnaker2-lif-v1",
+      "target": "spinnaker2",
+      "status": "admitted",
+      "source_model_sha256": "11a223192b5e8acbb4862fa1451eaf76f084f75d587981654d247f7bc59532ab"
+    },
+    {
+      "profile": "spinnaker2-lif-v1",
+      "target": "xylosim",
+      "status": "rejected",
+      "reason": "spinnaker2-lif-v1 is only supported by target spinnaker2"
+    },
+    {
+      "profile": "spinnaker2-lif-v1",
+      "target": "dynapse",
+      "status": "rejected",
+      "reason": "dynapse requires dynapse-dpi-v1; other profiles are unsupported"
+    },
+    {
+      "profile": "xylo-audio2-temporal-v1",
+      "target": "akida",
+      "status": "rejected",
+      "reason": "xylo-audio2-temporal-v1 is only supported by xylosim"
+    },
+    {
+      "profile": "xylo-audio2-temporal-v1",
+      "target": "lava",
+      "status": "rejected",
+      "reason": "xylo-audio2-temporal-v1 is only supported by xylosim"
+    },
+    {
+      "profile": "xylo-audio2-temporal-v1",
+      "target": "specksim",
+      "status": "rejected",
+      "reason": "xylo-audio2-temporal-v1 is only supported by xylosim"
+    },
+    {
+      "profile": "xylo-audio2-temporal-v1",
+      "target": "spinnaker2",
+      "status": "rejected",
+      "reason": "xylo-audio2-temporal-v1 is only supported by xylosim"
+    },
+    {
+      "profile": "xylo-audio2-temporal-v1",
+      "target": "xylosim",
+      "status": "admitted",
+      "source_model_sha256": "6077e0964aaab1026bcaaa97c3f6701d7049cc7787b265dbccb1d6da6e384240"
+    },
+    {
+      "profile": "xylo-audio2-temporal-v1",
+      "target": "dynapse",
+      "status": "rejected",
+      "reason": "dynapse requires dynapse-dpi-v1; other profiles are unsupported"
+    },
+    {
+      "profile": "dynapse-dpi-v1",
+      "target": "akida",
+      "status": "rejected",
+      "reason": "dynapse-dpi-v1 is only supported by dynapse"
+    },
+    {
+      "profile": "dynapse-dpi-v1",
+      "target": "lava",
+      "status": "rejected",
+      "reason": "dynapse-dpi-v1 is only supported by dynapse"
+    },
+    {
+      "profile": "dynapse-dpi-v1",
+      "target": "specksim",
+      "status": "rejected",
+      "reason": "dynapse-dpi-v1 is only supported by dynapse"
+    },
+    {
+      "profile": "dynapse-dpi-v1",
+      "target": "spinnaker2",
+      "status": "rejected",
+      "reason": "dynapse-dpi-v1 is only supported by dynapse"
+    },
+    {
+      "profile": "dynapse-dpi-v1",
+      "target": "xylosim",
+      "status": "rejected",
+      "reason": "dynapse-dpi-v1 is only supported by dynapse"
+    },
+    {
+      "profile": "dynapse-dpi-v1",
+      "target": "dynapse",
+      "status": "admitted",
+      "source_model_sha256": "1b6da10bab9fad91d4888f5b38fd20b18d230950b48e8911d414778a6ec9f194"
+    }
+  ],
+  "runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "scope": "Public conversion routing only. Simulator execution evidence is reported separately."
+}
