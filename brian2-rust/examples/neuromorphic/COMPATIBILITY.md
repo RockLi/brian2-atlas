@@ -10,33 +10,35 @@ vendor chip or SDK can do. All execution evidence below is from software.
 been compared with native Atlas. **Rejected** means the API refuses the pairing.
 It does not mean the vendor itself lacks that capability.
 
-| Profile / source semantics | Akida | Lava | Specksim | SpiNNaker2 | XyloSim |
-|---|---|---|---|---|---|
-| `binary-count-v1`: frozen binary-input count classifier | Verified | Verified | Verified | Verified | Verified |
-| `dense-int8-v1`: signed weights, bias, quantized hidden activation, affine readout | Verified | Verified, uniform hidden shift | Rejected | Rejected | Rejected |
-| `spinnaker2-lif-v1`: explicit Euler LIF, recurrence, delayed events | Rejected | Rejected | Rejected | Verified | Rejected |
-| `xylo-audio2-temporal-v1`: bounded integer current/membrane dynamics | Rejected | Rejected | Rejected | Rejected | Verified |
+| Profile / source semantics | Akida | Lava | Specksim | SpiNNaker2 | XyloSim | DynapSim |
+|---|---|---|---|---|---|---|
+| `binary-count-v1`: frozen binary-input count classifier | Verified | Verified | Verified | Verified | Verified | Rejected |
+| `dense-int8-v1`: signed weights, bias, quantized hidden activation, affine readout | Verified | Verified, uniform hidden shift | Rejected | Rejected | Rejected | Rejected |
+| `spinnaker2-lif-v1`: explicit Euler LIF, recurrence, delayed events | Rejected | Rejected | Rejected | Verified | Rejected | Rejected |
+| `xylo-audio2-temporal-v1`: bounded integer current/membrane dynamics | Rejected | Rejected | Rejected | Rejected | Verified | Rejected |
+| `dynapse-dpi-v1`: bounded analog DPI circuit model | Rejected | Rejected | Rejected | Rejected | Rejected | Verified |
 
 The executable [compatibility check](coverage/check_compatibility.py) tests all
-20 cells: **9 admitted, 11 explicitly rejected**. It tests conversion routing;
+30 cells: **10 admitted, 20 explicitly rejected**. It tests conversion routing;
 separate SDK comparisons establish execution behavior.
-[Machine-readable result](coverage/evidence/compatibility.json).
+[Machine-readable result](dynapse/evidence/compatibility.json).
 
 ## Functional checklist
 
 | Function | Current status and limits |
 |---|---|
-| Validate the actual AtlasIR before lowering | Verified for all five targets; canonical source and native runner hashes retained |
+| Validate the actual AtlasIR before lowering | Verified for all six targets; canonical source and native runner hashes retained |
 | Same frozen model and weights across targets | Verified for the shared binary count profile; no retraining during conversion |
 | Import arbitrary TensorFlow/Keras graphs | Not implemented; examples import an explicit frozen integer checkpoint through Brian2/AtlasIR |
 | Preserve static hidden and output values | Exact for the static profiles in the tested domain |
-| Preserve source spike timing | Verified only for the two temporal profiles; static event encoding is not source spike semantics |
+| Preserve source spike timing | Verified for all three temporal profiles in their tested domains; static event encoding is not source spike semantics |
 | Signed weights and bias | Akida/Lava dense profile; SpiNNaker2 and Xylo temporal profiles, with their respective bounds |
 | Stateful recurrence | Temporal SpiNNaker2 and Xylo; not admitted by the static profiles |
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
 | Stateful chunked input | Xylo temporal: 7-step chunks match a full run; not verified for the other temporal SDK path |
 | Atlas checkpoint/resume through conversion | Not implemented; temporal profiles require a fresh zero-state run |
+| Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
 | Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; external training is separate from conversion |
 | Native temporal convolutional SNN lowering | Not implemented; Specksim uses a convolution to encode a static classifier |
 | Official hardware configuration validation | Xylo temporal: all 50 tested configurations accepted by Samna |
@@ -74,6 +76,14 @@ CPU/GPU simulation and training surfaces.
   Xylo Audio 2's 16 hardware input channels. Only its separate temporal profile
   uses validated hardware-sized configurations.
 
+- **DynapSim:** 1–8 independent DPI neurons, diagonal nonnegative weights,
+  binary raster, 1–512 steps at 1 ms; fixed synthetic circuit/layout parameters
+  and enumerated bias/threshold/adaptation/refractory settings. No recurrence,
+  inhibitory gates, device mismatch or static TF model conversion. The stock
+  SDK is an approximate analog model, not a bit-accurate emulator; float traces
+  use stated tolerances and pulse ticks must match. See the
+  [exact contract and errors](dynapse/README.md).
+
 The converter source and detailed examples define further AST, monitoring,
 ordering and overflow requirements. Sampled tests do not prove every possible
 combination of accepted parameters.
@@ -89,6 +99,7 @@ combination of accepted parameters.
 | XyloSim: count | 20 | 2,242 | Exact |
 | SpiNNaker2: temporal LIF | 48 | 101,940 voltage samples | Max float64 error 1.14e-13; 35,093 spike events exactly match |
 | XyloSim: temporal, preceding suite | 50 | 505,455 | Exact, including 7-step chunks |
+| DynapSim: circuit dynamics | 16 | 36,985 | Float32/f64 tolerance checks; 510 spike events exactly match |
 
 Static cases include exhaustive small binary domains, zero/full-scale/one-hot
 inputs, repeated inputs, seeded random weights and samples, all six count
@@ -107,9 +118,10 @@ remain within the stated tolerance; integer and pulse checks use no tolerance.
 aligned raw monitor times, rejecting off-clock timestamps. The audit preserves
 the public SDK differences; no dynamics, delays or SDK source were changed.
 
-**134 Python regression tests passed**, including timestamp regression tests,
+**159 Python regression tests passed**, including timestamp regression tests,
 semantic admission failures and existing backend checks.
 
+- [DynapSim execution audit](dynapse/evidence/audit.json)
 - [Static execution audit](coverage/evidence/static-audit.json)
 - [Expanded SpiNNaker2 audit](coverage/evidence/spinnaker2-audit.json)
 - [Xylo temporal evidence](xylo_temporal/evidence/expanded/audit.json)

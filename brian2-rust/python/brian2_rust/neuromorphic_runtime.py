@@ -30,6 +30,11 @@ def validate_inputs(bundle, samples):
 
 
 def run_simulator(bundle, samples=None, *, batch_size=50):
+    if bundle.get('profile') == 'dynapse-dpi-v1':
+        if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
+                or bundle.get('target') != 'dynapse' or samples is not None):
+            raise ValueError('DynapSim requires dynapse and its embedded spike raster')
+        return _module('dynapse_runtime').run(bundle['plan'])
     if bundle.get('profile') == 'xylo-audio2-temporal-v1':
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('target') != 'xylosim' or samples is not None):

@@ -11,11 +11,11 @@ compiles three backend-private plans. The IR wire schema remains `b2ir-v1`.
 
 ## Compatibility and expanded coverage
 
-The [compatibility checklist](COMPATIBILITY.md) covers all five targets, their
+The [compatibility checklist](COMPATIBILITY.md) covers all six targets, their
 numeric and temporal contracts, rejected combinations, SDK limitations and
 hardware-validation gaps. The [expanded suite](coverage/README.md) varies
 network weights and dimensions, tests clipping/rounding and sample resets,
-and includes a 20-cell executable compatibility check. Static comparisons and
+and includes a 30-cell executable compatibility check. Static comparisons and
 temporal pulse comparisons are reported separately.
 
 ## Verified result (2026-10-13)
@@ -226,3 +226,12 @@ hardware-sized configurations. The expanded 50-case suite passed the vendor
 validator and matched Atlas at every recorded tick, including 7-step chunks. This is separate from the
 MNIST count encoding above: it uses the standard output neurons and admits at
 most 16 input channels. Physical chip execution remains untested.
+
+## DYNAP-SE2 analog-model pilot
+
+The [DynapSim example](dynapse/README.md) adds `target="dynapse"` with the
+separate `dynapse-dpi-v1` profile. Sixteen bounded circuit-model cases matched
+stock Rockpool/JAX within declared float tolerances, with exact spike timing.
+This path includes adaptation and refractory dynamics, but does not accept the
+static TF classifier or arbitrary LIF networks and does not validate a physical
+hardware configuration.

@@ -79,12 +79,17 @@ python brian2-rust/examples/neuromorphic/xylo_temporal/compare.py \
   --output output/neuromorphic/xylo-coverage
 python "$CODE/check_compatibility.py" --runner "$B2_RUNNER" \
   --static-run "$RUN" --spinnaker-run output/neuromorphic/spinnaker2-coverage \
-  --xylo-run output/neuromorphic/xylo-coverage --output "$RUN/compatibility.json"
+  --xylo-run output/neuromorphic/xylo-coverage \
+  --dynapse-run output/neuromorphic/dynapse --output "$RUN/compatibility.json"
 ```
 
-The routing check verifies all 20 public target/profile combinations. It is
+Run the [DynapSim example](../dynapse/README.md) to create its source fixture
+before the routing check above.
+
+The routing check verifies all 30 public target/profile combinations. It is
 separate from SDK execution and does not certify arbitrary graphs within a
-profile. Temporal checks start from zero state and compare the full run.
+profile. Temporal checks start from each profile's required initial state and compare
+the full run.
 Xylo's chunk check preserves one SDK model across calls; the static sample
 reset tests are a different contract.
 
@@ -96,5 +101,6 @@ B2_RUNNER="$B2_RUNNER" python -m pytest -q \
   brian2-rust/tests/test_akida_b2ir.py \
   brian2-rust/tests/test_lava_dense_b2ir.py \
   brian2-rust/tests/test_spinnaker2_b2ir.py \
-  brian2-rust/tests/test_xylo_b2ir.py
+  brian2-rust/tests/test_xylo_b2ir.py \
+  brian2-rust/tests/test_dynapse_b2ir.py
 ```

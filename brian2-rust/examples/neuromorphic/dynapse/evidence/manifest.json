@@ -1,0 +1,40 @@
+{
+  "base_commit": "181fa4b1efa30fa1610f22ec2fade17e31d05667",
+  "date": "2026-10-13",
+  "python_tests_passed": 159,
+  "source_sha256": {
+    "brian2-rust/python/brian2_rust/dynapse_model.py": "70889e92eab515608970f66f3e80fbef0b5c512ae6944249434f5984e41d85dd",
+    "brian2-rust/python/brian2_rust/dynapse_b2ir.py": "ce6fe88f143fca9cc1745f4b09306d644ac34f4e24abda25e0da8c1b8d0765c5",
+    "brian2-rust/python/brian2_rust/dynapse_runtime.py": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+    "brian2-rust/python/brian2_rust/neuromorphic_runtime.py": "985c872afd51e5258eebcdad3adbd107890f378d5011995c038c6759df78d16c",
+    "brian2-rust/python/brian2_atlas/neuromorphic.py": "bf3c9fdc892d98c13568e26153138cc195ead18611fa011bdf8142ffd73e627c",
+    "brian2-rust/tests/test_dynapse_b2ir.py": "4b80623c1aab46ed9f0b72c1d89781fe4dd17eea4dc24e3f192f91ecc20c6159",
+    "brian2-rust/examples/neuromorphic/coverage/check_compatibility.py": "ba47269f71cb4e722ed5214f18803ea9b3fa276f8953133c947dcf7cd11ad800",
+    "brian2-rust/examples/neuromorphic/dynapse/verify_brian2.py": "b6c31a9d0bd9b0722a6b4d5b5df45be1262b6f19109aa12b76746115671b2219",
+    "brian2-rust/examples/neuromorphic/dynapse/compare.py": "8115180ce1548f294393ff47f1c573d330cc692729697f591a6c535334f65547",
+    "brian2-rust/examples/neuromorphic/dynapse/sdk_worker.py": "159453509e07f0ca3ae1f8c0dd8346c44d4606fe63c4dda9c86900a6841b7d14"
+  },
+  "evidence_sha256": {
+    "audit.json": "3098d2b3bb4a61b16e8f70e96131ad7dff219c29056d035d4ebde9cde13890eb",
+    "compatibility.json": "cc90e5a7be4da99ef2e294f32203867cdde5632efb6751e5f60ad9ae8924364c",
+    "brian2-audit.json": "372e0ca1e029719a813b1285a04e29e633134338813fd2866e4d515f566493ea"
+  },
+  "sdk_sources_modified": false,
+  "native_executor_modified": false,
+  "ir_schema_modified": false,
+  "sdk_versions": {
+    "rockpool": "3.1.0",
+    "jax": "0.4.35",
+    "jaxlib": "0.4.35",
+    "numpy": "2.2.6"
+  },
+  "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+  "result": {
+    "cases": 16,
+    "trace_values": 36985,
+    "spike_events": 510,
+    "spike_differences": 0,
+    "independent_brian2_cases": 3
+  },
+  "limitation": "Approximate analog model, synthetic circuit parameters, no physical configuration or chip execution."
+}
