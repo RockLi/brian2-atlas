@@ -999,7 +999,9 @@ class CodeObjectSpec:
         guard_private_temporaries(vector, inputs)
         fuse_private_temporaries(vector, inputs)
         statements = scalar + vector
-        require(len(statements) <= 128, "at most 128 statements per code object")
+        from .resource_limits import statement_budget
+        require(len(statements) <= statement_budget(),
+                f"at most {statement_budget()} statements per code object")
         reads = set().union(*(loads(s["value"]) for s in statements)) & inputs
         reads |= {s["condition"] for s in statements if s["condition"] is not None}
         writes = {s["target"] for s in statements} & inputs

@@ -213,7 +213,7 @@ def test_independent_monitor_clock_uses_its_sample_count_for_budget(tmp_path, mo
 def test_default_execution_retains_frozen_output_bytes(tmp_path, monkeypatch):
     monkeypatch.delenv('B2_MAX_POPULATION_STEPS',raising=False)
     frozen=ROOT/'tests/fixtures/reference-v1'
-    subprocess.run([str(ROOT/'target/release/b2-runner'),str(frozen/'model.json'),str(tmp_path/'out')],
+    subprocess.run([str(RUNNER),str(frozen/'model.json'),str(tmp_path/'out')],
                    check=True,capture_output=True,timeout=30)
     for name in ['results.bin','events.bin']:
         assert (tmp_path/'out'/name).read_bytes()==(frozen/'reference'/name).read_bytes()

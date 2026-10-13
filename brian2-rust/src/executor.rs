@@ -5122,7 +5122,7 @@ impl Program {
 
     fn register(&mut self) -> Result<usize> {
         // Bound scratch storage independently of the serialized IR budget.
-        budget(self.registers.len() + 1, LANES, 4_000_000)?;
+        budget(self.registers.len() + 1, LANES, resource_limits::scratch_values()?)?;
         let slot = self.registers.len();
         self.registers.push(vec![0.0; LANES]);
         Ok(slot)

@@ -83,6 +83,16 @@ Use `engine="aot"` for model-specialized CPU execution. Backend capabilities
 are checked explicitly; unsupported model constructs raise a capability error.
 See [the backend guide](brian2-rust/README.md) for GPU, browser, MPI and training.
 
+## Experimental neuromorphic conversion
+
+`brian2_atlas.neuromorphic` converts validated AtlasIR to optional Akida, Lava,
+and Specksim **software simulator** plans. Each target admits an explicit
+semantic subset; this does not imply physical chip support. The
+[frozen TensorFlow example](brian2-rust/examples/neuromorphic/README.md) uses the
+same quantized count model, weights and source IR across all three targets,
+with fresh Atlas execution and exact output checks. Arbitrary TF graphs,
+on-chip learning and general temporal SNN conversion are outside this example.
+
 ## Validation and support scope
 
 The migration has run on macOS arm64/Python 3.14 with actual CPU/AOT, Apple

@@ -1887,7 +1887,7 @@ impl CodeObjectSpec {
         conditional_writes: &BTreeMap<String, String>,
     ) -> Result<()> {
         check(
-            self.scalar.len() + self.vector.len() <= 128,
+            self.scalar.len() + self.vector.len() <= resource_limits::statements()?,
             "too many statements",
         )?;
         check(
@@ -3421,7 +3421,7 @@ impl Model {
                 .map(|symbol| symbol.name.clone())
                 .collect();
             check(
-                population.states.len() <= 32
+                population.states.len() <= resource_limits::population_states()?
                     && state_names.len() == population.states.len()
                     && state_names == instance.initial_state.keys().cloned().collect(),
                 "population state arrays do not match definition",
@@ -3464,7 +3464,7 @@ impl Model {
                 .map(|symbol| symbol.name.clone())
                 .collect();
             check(
-                population.parameters.len() <= 128
+                population.parameters.len() <= resource_limits::population_parameters()?
                     && parameter_names.len() == population.parameters.len()
                     && parameter_names == instance.parameters.keys().cloned().collect(),
                 "population parameter arrays do not match definition",
