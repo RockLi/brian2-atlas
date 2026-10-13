@@ -1,0 +1,93 @@
+{
+  "schema": "atlas.dense-feasibility.v1",
+  "passed": true,
+  "samples": 16384,
+  "compared_states": 81920,
+  "differences": 0,
+  "scope": "Exhaustive small-model mechanism validation, not full MNIST conversion or a public SpiNNaker2 dense profile",
+  "atlas_sha256": "46963544bee8f842b219411780f1c9e85865ff2e67be1abb06e8c5b93ea2dabb",
+  "inputs_sha256": "c2f4cdf5422179cffcc12768aa993f1cc1c5964f310686c300b17a5f5b56d736",
+  "sdk": {
+    "samples": 16384,
+    "input_neurons": 14,
+    "comparator_neurons": 381,
+    "readout_neurons": 5,
+    "connections": 6477,
+    "max_sdk_weight": 1048575,
+    "neuron_model": "lif_32bit",
+    "pipeline_ticks": 2,
+    "versions": {
+      "spinnaker2": "0.8.0",
+      "brian2": "2.10.1",
+      "numpy": "2.3.4"
+    },
+    "bundle_sha256": "dc8b0abf69aca589d4e5e61f5fce2963e6f1ce2144f3d19b6f414527e292303d",
+    "sdk_source_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+    "results_sha256": "84852e23225a4b6214de7ea1ee8ba829360b1881299e46dee685bb84a92b3ff7",
+    "physical_hardware": false
+  },
+  "original_mnist_model": {
+    "shape": [
+      784,
+      256,
+      10
+    ],
+    "weights1_range": [
+      -14,
+      7
+    ],
+    "weights2_range": [
+      -61,
+      36
+    ],
+    "hidden_shifts": [
+      7
+    ],
+    "first_affine_attainable_extrema": [
+      -122364,
+      85170
+    ],
+    "hidden_units_exceeding_int16": 256,
+    "output_absolute_bound": 501787,
+    "naive_bitplane_inputs": 5488,
+    "naive_hidden_comparators": 32512,
+    "naive_first_layer_connections": 130590544,
+    "bundle_sha256": "44c41aaf36a1a238430afa0ea6f7fcda7d9a77213499c7ae93fb9647d8ad5f20"
+  },
+  "specksim": {
+    "bias_error": "Biases are not supported!",
+    "signed_order_cases": [
+      {
+        "input_order": [
+          0,
+          1
+        ],
+        "output_spikes": 1,
+        "final_membrane": [
+          [
+            [
+              -1.0
+            ]
+          ]
+        ]
+      },
+      {
+        "input_order": [
+          1,
+          0
+        ],
+        "output_spikes": 0,
+        "final_membrane": [
+          [
+            [
+              1.0
+            ]
+          ]
+        ]
+      }
+    ],
+    "static_reference_count": 0,
+    "scope": "Counterexample to direct event-order-independent count mapping, not a proof that every encoding is impossible."
+  },
+  "physical_hardware": false
+}

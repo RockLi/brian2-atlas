@@ -23,6 +23,20 @@ The executable [compatibility check](coverage/check_compatibility.py) tests all
 separate SDK comparisons establish execution behavior.
 [Machine-readable result](dynapse/evidence/compatibility.json).
 
+### Rejected does not mean impossible
+
+For the original 98.74% signed/biased MNIST MLP, Akida and Lava remain the only
+full-model verified targets. A new SpiNNaker2 feasibility experiment matched
+**81,920 states across all 16,384 inputs of a small MLP**, including signed
+weights, bias, rounding and clipping. The public converter is not implemented
+for this path, and full-model resource cost still needs work.
+
+Specksim's direct path rejects bias and can change counts with signed event
+order. Xylo Audio 2's direct mapping exceeds input-channel and accumulator
+limits. DynapSim has no established exact integer-MLP mapping. These are
+specific current obstacles, not universal impossibility claims.
+See [the experiments, original-model bounds and next steps](dense_feasibility/README.md).
+
 ## Functional checklist
 
 | Function | Current status and limits |
