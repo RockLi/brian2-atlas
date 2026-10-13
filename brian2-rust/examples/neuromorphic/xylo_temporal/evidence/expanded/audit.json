@@ -1,0 +1,2475 @@
+{
+  "schema": "atlas.xylo.temporal-audit.v1",
+  "passed": true,
+  "cases": [
+    {
+      "case": "recurrent",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 95,
+      "output_spikes": 119,
+      "max_hidden_spikes_per_tick": 4,
+      "differences": 0,
+      "source_model_sha256": "6077e0964aaab1026bcaaa97c3f6701d7049cc7787b265dbccb1d6da6e384240",
+      "atlas_results_sha256": "6833d5864ebb148ed8d16f3cb148958a04d2ffde809d7c5971aa9801b6a73ebf",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "b74a43ef505c633d4869ea3a149958b80e0d0e2e711ba3635c990b83b27c3f63",
+        "result_sha256": "4393c803e542d3be9f9126fd85ed358b9b344d61af3f1b572597f0e2b1f10384",
+        "config_sha256": "4a61f1b0e469207cfd84f17335260f3dbe27224acf640fe482acce9c76830cce",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "76158635f9f8e3effcfb254fc885866862ce5576007ca75baed530fb4644b48a"
+        }
+      }
+    },
+    {
+      "case": "silent",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 0,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 0,
+      "differences": 0,
+      "source_model_sha256": "08239181c9c47045ef7b9bd0f556799a4ca11c1fd33b852624e00cf379ae8e6c",
+      "atlas_results_sha256": "4b3225c4271a3281ec4c1f14f726caf36a6a70cfd8c07a9b5c9f7715925f32b7",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "504833b110e4c2b3538898978c8dfc48c8aefd8b4aeb9775c2c11a25a7c97140",
+        "result_sha256": "610e53923ec225b435ca4480edb066ed0da781fbdbe5f81a07fb3488b2d65bc5",
+        "config_sha256": "4a61f1b0e469207cfd84f17335260f3dbe27224acf640fe482acce9c76830cce",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "3e2f4fd62766b22cfa8bf7915ac05ab3262ba6068ef33727d5b52c464eed8ed4"
+        }
+      }
+    },
+    {
+      "case": "impulse_at_zero",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 1,
+      "output_spikes": 1,
+      "max_hidden_spikes_per_tick": 1,
+      "differences": 0,
+      "source_model_sha256": "b71b8eea98e6d19bbbf0128cae9be1621d60c06e4174b588263a134fb6aef1a5",
+      "atlas_results_sha256": "ae18e6f96126c71f044f865a7d9c119d5a2b9fb5b9ce207f99b5fb572627dff6",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "877bf2bfd5eef3664fbcaa6cddc91de75e9604fb3932d73f24c8d175c9a2b939",
+        "result_sha256": "517101a894cc7e3baf5a22eabf31c4ec1596c5d395877f11fba32c32cf5a9048",
+        "config_sha256": "4a61f1b0e469207cfd84f17335260f3dbe27224acf640fe482acce9c76830cce",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "aad6897584f9d516a77987226dcbb87756d539c69cb9a8fcc367e7dbc41dee25"
+        }
+      }
+    },
+    {
+      "case": "event_at_end",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 15,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 12,
+      "differences": 0,
+      "source_model_sha256": "318424bb8ec36daeb8839983a0f659df8d92d300449403892095d131679a0b4a",
+      "atlas_results_sha256": "c9724327fe9094196c94c68e84681d9372ed5c3d2c88068483ca2da3e1054bc1",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "184a23a98c811352b96c79bd70c86cd45d38da65d09929b30c900d5dee0f551f",
+        "result_sha256": "b12c23e6e675273f8af80a26b37c0cf557b804688bb0db5ab7beab4b8e8c1531",
+        "config_sha256": "4a61f1b0e469207cfd84f17335260f3dbe27224acf640fe482acce9c76830cce",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "7e8f8718dc292a0c92282d954458ce42a8407bcb864532f3289a18f9848fa271"
+        }
+      }
+    },
+    {
+      "case": "threshold_equality",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 2,
+      "output_spikes": 4,
+      "max_hidden_spikes_per_tick": 1,
+      "differences": 0,
+      "source_model_sha256": "3d22ed4b2e9f74803e0bad95762feeb0abd8060b264df0631980c122eebd1765",
+      "atlas_results_sha256": "8d31905e2a9aba40fae31f51a194b26cedcc00301d6c85d62aefceba8e93c995",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "82c118bf1ea4e38056121bd6c6f3d2c2eaea8b1411079312e8b809edb01ddadf",
+        "result_sha256": "c883fcf413214bd2dcdb0745ba8079b5d4b0ec5cd55ddca6935a9787a8cb4d74",
+        "config_sha256": "16f63b49c2fcb1f82b0beb0cab98e22f88286375a56a216294b5e49824d5d0be",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "e74bbb061a7580447f5a072c8246f5c5702a19b0b3c4213d26e02211c09ce41d"
+        }
+      }
+    },
+    {
+      "case": "minimum_decay",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 0,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 0,
+      "differences": 0,
+      "source_model_sha256": "e0ee8feb936289e3447df6ad68c002981e5b407a7dae52557a41418ad3ef1bf9",
+      "atlas_results_sha256": "d3cd56b4927b5004e6bc2d2360cecccd06fe4dd8cd09d4581a42490b75a6f7a4",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "a916a5b5d3163f5976efb0103e7d8d58e1569bfbbdc36acdc3eeca2b4088a043",
+        "result_sha256": "7cb262a6d3ac41c5cb4b71442680a250f573e83c6eea407adf5ed7eab8532a8d",
+        "config_sha256": "5a7f63caed3549e318525ed27db07065eabe94446afa6c6b5c77b7801202c06c",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "6660a08cc5cdf014f03ae02bb63988354f01bd3d17bc676de2ff57c41132eb98"
+        }
+      }
+    },
+    {
+      "case": "multi_spike_caps",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 5952,
+      "output_spikes": 126,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "a6bcad4935c859faada7d701f92f39294e46162654ccd49ce82fa6640f90501e",
+      "atlas_results_sha256": "1e0d12a90a506797fd9bac5b15510cd8eff5645872302c55ea071b06b646ddae",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "5025d90df3710e9b2b9e3759911483608e1f9835db93cdb794171f07ecc558de",
+        "result_sha256": "764c10cbd8f338b09c34cf6d81e2ecdc399fe73c9deabd67ae06fa0fe60adc06",
+        "config_sha256": "d909011d26a14613cdd621818cf9850925ece957331adc0709d29e736fe8b902",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "ba6ba0980121460a14b6c1d17c9802e8c85ddf07a138d51d56610b93abf87b32"
+        }
+      }
+    },
+    {
+      "case": "positive_saturation",
+      "steps": 128,
+      "sizes": {
+        "hidden": 3,
+        "input": 16,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 384,
+        "hidden_v": 384,
+        "hidden_q": 384,
+        "output_I": 256,
+        "output_v": 256,
+        "output_q": 256
+      },
+      "hidden_spikes": 255,
+      "output_spikes": 251,
+      "max_hidden_spikes_per_tick": 1,
+      "differences": 0,
+      "source_model_sha256": "1a9ef4509e46f5347b8cfe5a63243ee84caf6ace8e9fd3fc218dac31a040b163",
+      "atlas_results_sha256": "1c15fbc7f7f900823e4e87f7ac4a5b74019da08b110ca53311e6ebbb2bb42098",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "bb44fd8f2ec18f6dd881bad295df4bbaf8901590250c5a238ed9eaa753eeb931",
+        "result_sha256": "6e6f52aab8f22bb5cc6c25e6d8be3ac7ecbad029ad6d3d6b62b1d522e649d72e",
+        "config_sha256": "37a6d6f6852a3e903f6af2066601f41bc4dff142c63ef10ea51289628c20407d",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 19,
+          "state_values": 1920,
+          "differences": 0,
+          "result_sha256": "711dd131c8b507a81100516edbb4be576f49460d2f83e777366d4cfa134f462a"
+        }
+      }
+    },
+    {
+      "case": "negative_saturation",
+      "steps": 128,
+      "sizes": {
+        "hidden": 3,
+        "input": 16,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 384,
+        "hidden_v": 384,
+        "hidden_q": 384,
+        "output_I": 256,
+        "output_v": 256,
+        "output_q": 256
+      },
+      "hidden_spikes": 0,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 0,
+      "differences": 0,
+      "source_model_sha256": "64a158e888bc6453db8084e48ce2afcd35d2674df99369ec918256aa4660a21f",
+      "atlas_results_sha256": "f01515033f406ac77219632f22b2c1905b428e4561e91618be797ea1016606ca",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "42dc1a93eb313089504a0ee5689d15d792e7a9e3f06a1d3c5488bb5a77316901",
+        "result_sha256": "62ca7c1b95f2a8f2ccbeb9b195472a7f0d7afbcebf2b6b4f6aa5cc7602bdd714",
+        "config_sha256": "5beddb52d1f57cb2cea4f54ced89ed936b9af80199199eb1c247213f2964cfad",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 19,
+          "state_values": 1920,
+          "differences": 0,
+          "result_sha256": "59c7002ce6190bae16ac05f2be13d0346fc302c34b32c06bef8645dbdd05a332"
+        }
+      }
+    },
+    {
+      "case": "mixed_saturation_order",
+      "steps": 128,
+      "sizes": {
+        "hidden": 3,
+        "input": 16,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 384,
+        "hidden_v": 384,
+        "hidden_q": 384,
+        "output_I": 256,
+        "output_v": 256,
+        "output_q": 256
+      },
+      "hidden_spikes": 8000,
+      "output_spikes": 254,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "6826991a6370f1ca38116204baa272ce9d73f2030ac2350dc26d9c18dfe46d5e",
+      "atlas_results_sha256": "b68d1e18a50a08ad043f0bba067587c4ea21bb4c6a3f9b9a43d332557875fedf",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "5994fb272cd78d51196074633130c49b1dce2e604d31653248687d70bc232448",
+        "result_sha256": "0758ac38dc6d0ae07884db0271979ea00afa9210a71a10d8992e8823011a684e",
+        "config_sha256": "10fe835a668264f248f345aa3d5fbb7d53bc1ceae63c66af795830d4aec7f47c",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 19,
+          "state_values": 1920,
+          "differences": 0,
+          "result_sha256": "c21422e0c5d18766de56197ecbf7c4c9955a518e35101ba1be5335f3e1366359"
+        }
+      }
+    },
+    {
+      "case": "bias_only",
+      "steps": 64,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 192,
+        "hidden_v": 192,
+        "hidden_q": 192,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 127,
+      "output_spikes": 63,
+      "max_hidden_spikes_per_tick": 2,
+      "differences": 0,
+      "source_model_sha256": "f8a75d8b85189d42202419735228bd5fe49da8166917446f102fbea594b4554a",
+      "atlas_results_sha256": "64840aa17e1af8d618478ccc214a9820de0f43f4e996a27218ae2336f794dd34",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "3cecc0a79ce38b494199f4d86a8df9872364007e616d153bd08cf9f6081ec21a",
+        "result_sha256": "818baf710fe8d2c89a654440e4a6098b8699b57528f222bf3625e6a373a676c3",
+        "config_sha256": "8e608f9d57e0dff3ad13632aba38fddcc2dbee2f8b56821e45aea049d237f08e",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 10,
+          "state_values": 960,
+          "differences": 0,
+          "result_sha256": "5e234b2110d3923a9689c6b41371a1da23e2e8f6290b0075137f1898d1dddbf1"
+        }
+      }
+    },
+    {
+      "case": "seeded_1024",
+      "steps": 1024,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 3072,
+        "hidden_v": 3072,
+        "hidden_q": 3072,
+        "output_I": 2048,
+        "output_v": 2048,
+        "output_q": 2048
+      },
+      "hidden_spikes": 31432,
+      "output_spikes": 2043,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "f2eb26c3592a1a619d0101c60efc6b334907b25dc0324425987c3d2c0f9fff72",
+      "atlas_results_sha256": "813516bb2f11885a1e11cced40ca2ca31d59462b2fe67520c34fb4e3d0e99999",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "47d59aaf3787badbe68a9edb6b81b1357df526455d75bab380b701c854ae2294",
+        "result_sha256": "f8829468371fb765e8dc4ada5717da65425db23432b13f12f249f61365965a58",
+        "config_sha256": "2f20d955320d148d0c7e1ff8e88c2a7d0e4456fd5a9c58454bcfc7f62a414d74",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 147,
+          "state_values": 15360,
+          "differences": 0,
+          "result_sha256": "92cb28f7d7599ffb6b7e65c23c5948c3e97786709b7a130a0aa223f57dd4bc21"
+        }
+      }
+    },
+    {
+      "case": "max_input_output_dimensions",
+      "steps": 128,
+      "sizes": {
+        "hidden": 16,
+        "input": 16,
+        "output": 8
+      },
+      "compared_values": {
+        "hidden_I": 2048,
+        "hidden_v": 2048,
+        "hidden_q": 2048,
+        "output_I": 1024,
+        "output_v": 1024,
+        "output_q": 1024
+      },
+      "hidden_spikes": 2435,
+      "output_spikes": 4,
+      "max_hidden_spikes_per_tick": 9,
+      "differences": 0,
+      "source_model_sha256": "6a7a74421aa5dceb04a3d7c3683a2a33f29d56660a6537bea7f58d053fdb9899",
+      "atlas_results_sha256": "219f8c00c310d3739c1dd2e4594e4c7d0927e5667f98cda78eca6dcc2962a2bb",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "5d606f366c82fa39109489378c52b85db8c51a119ef0902e6a7d7fd6bef86584",
+        "result_sha256": "6b46f4e7a3f39eda7aea19ac0aa5f16fc7f8aeab7bfedc508c67b7c3134e060e",
+        "config_sha256": "7bbd0b437cbf02881ea410fe59fb11cea2bfd0a8f27f170ca7fa5d22f1de2e34",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 19,
+          "state_values": 9216,
+          "differences": 0,
+          "result_sha256": "374aead322bac78cbbbf68e0416e5e39b1a095eee0bb5258e8e4ef619f0afec8"
+        }
+      }
+    },
+    {
+      "case": "random_00",
+      "steps": 97,
+      "sizes": {
+        "hidden": 16,
+        "input": 7,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 1552,
+        "hidden_v": 1552,
+        "hidden_q": 1552,
+        "output_I": 97,
+        "output_v": 97,
+        "output_q": 97
+      },
+      "hidden_spikes": 12486,
+      "output_spikes": 97,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "33f0f38f3406b51734f581134ef2f7f1b52184de9544eaba522639cdc53bbb8e",
+      "atlas_results_sha256": "6bf6a2b4a8601514803cca3fa4eca77608251d8033b1012db1bce57d3b553d39",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "01927d4c3c9314b8601203066044bca12cc3626ba11d4c5f42ea3ad484206eec",
+        "result_sha256": "5fd2f7b83e333d32b36d738fed7534425ea8a2167023d2561070a548ef03d9d6",
+        "config_sha256": "854f3e895e30611bec53494b48ad3bc35feeaa6f314cbccf0748a8bddc02ab55",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 14,
+          "state_values": 4947,
+          "differences": 0,
+          "result_sha256": "7854e3a3e668f32f7397bf6f85b0e1803d0616c925beaa2a8b778e6d5615a5ec"
+        }
+      }
+    },
+    {
+      "case": "random_01",
+      "steps": 98,
+      "sizes": {
+        "hidden": 16,
+        "input": 16,
+        "output": 7
+      },
+      "compared_values": {
+        "hidden_I": 1568,
+        "hidden_v": 1568,
+        "hidden_q": 1568,
+        "output_I": 686,
+        "output_v": 686,
+        "output_q": 686
+      },
+      "hidden_spikes": 18151,
+      "output_spikes": 238,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "255e5a6e2e77246754ee3eb49a156a3ebb2f0774b5d54c6fdc0f8650edee3599",
+      "atlas_results_sha256": "89c183f60b92c369756388f9c87fe713350fb8f9af33caff8c7319203b449cf1",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "2144feb684ff8b665d066d841b9d093892862eb6e85e868fd41eb2823669f335",
+        "result_sha256": "b4b5ecd5cd33af972dcbdac89fd69c12baccffa3d2517f746205adb0144bc356",
+        "config_sha256": "7188ebd4458286fd55079e68dd64ddc75d57126b7c26694108bffe94d85d0a90",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 14,
+          "state_values": 6762,
+          "differences": 0,
+          "result_sha256": "0d0e54b8cc2d0dee30ca4690448f0680df840266dd53d9c9067705d07e3fbf76"
+        }
+      }
+    },
+    {
+      "case": "random_02",
+      "steps": 99,
+      "sizes": {
+        "hidden": 21,
+        "input": 5,
+        "output": 6
+      },
+      "compared_values": {
+        "hidden_I": 2079,
+        "hidden_v": 2079,
+        "hidden_q": 2079,
+        "output_I": 594,
+        "output_v": 594,
+        "output_q": 594
+      },
+      "hidden_spikes": 28215,
+      "output_spikes": 299,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "b26b8ccd0260a8f638677dc03238e95ff2fa46b625b2cca8a69e6de8c1930990",
+      "atlas_results_sha256": "6b69cd908654e2aae7f060c8e8f43953821aa0619300ecd682430029a3232a7e",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "ec3bb630f07c26bfa063b526a42985dab110c84fbf072c1fc3503af478a0186f",
+        "result_sha256": "7a39dfa56cabad59c6e7a883a09b5854edaff99fbe46857300c8b312c8be5746",
+        "config_sha256": "c3c6a0a318a67cf047be46153ea4e97009db2cbee14fea204a97660f806088ff",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 15,
+          "state_values": 8019,
+          "differences": 0,
+          "result_sha256": "8a02266649e874f8f8d0be861f0e23324e0d1ccfa79587e490a62a40b97b3f28"
+        }
+      }
+    },
+    {
+      "case": "random_03",
+      "steps": 100,
+      "sizes": {
+        "hidden": 28,
+        "input": 3,
+        "output": 5
+      },
+      "compared_values": {
+        "hidden_I": 2800,
+        "hidden_v": 2800,
+        "hidden_q": 2800,
+        "output_I": 500,
+        "output_v": 500,
+        "output_q": 500
+      },
+      "hidden_spikes": 22490,
+      "output_spikes": 362,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "9b8dc59aa97f8de75155b09fe42c677f7fbd0d52c5b46bd83a90841f3c88bc60",
+      "atlas_results_sha256": "eedbc437b9dbf559bfef8be12505ab2ccab7ad01918cb5ce1ef8a251ecd7107b",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "8cc3b0b1e914833c93f148d0236ec8b9358d5ce96d2fa28483194920997e3ee9",
+        "result_sha256": "e905cff9d4be81b2a7b8a067f061d2447cf655331844c4acde53c004a19528ea",
+        "config_sha256": "e2a11172bcc271cd1415c42ce5f9b0c95ec90217fe02fa062beaaf3b4cf2b013",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 15,
+          "state_values": 9900,
+          "differences": 0,
+          "result_sha256": "56a81b41d07940d05e39710b094ee6fafe3c09ef88306e1f30eaf556159d54cf"
+        }
+      }
+    },
+    {
+      "case": "random_04",
+      "steps": 101,
+      "sizes": {
+        "hidden": 8,
+        "input": 12,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 808,
+        "hidden_v": 808,
+        "hidden_q": 808,
+        "output_I": 101,
+        "output_v": 101,
+        "output_q": 101
+      },
+      "hidden_spikes": 3188,
+      "output_spikes": 100,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "1643da33c320deec508c83bceadc7f4cb4560abcb43787e11f92fbf9d56e021a",
+      "atlas_results_sha256": "e077eca1c3fe89c5a31c56920dc024d60b735336150554f337f626272179d49f",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "fbba00f3f4568b1d60acf36b26691f60e361691dbb1e628708f7ecce66fb657b",
+        "result_sha256": "a8984f6b337dc4dcc6c8fbc9943c573ec94c63b83b90a058c7b41c75ee80783e",
+        "config_sha256": "a2adf38d6dc7fd44eba2f60e493d12bab95c8b43a35a8cd563b17d065d16e430",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 15,
+          "state_values": 2727,
+          "differences": 0,
+          "result_sha256": "f69706fe23bde643117608784475fcd60098af45ecfe89350da3d04ab3fe87ea"
+        }
+      }
+    },
+    {
+      "case": "random_05",
+      "steps": 102,
+      "sizes": {
+        "hidden": 25,
+        "input": 16,
+        "output": 4
+      },
+      "compared_values": {
+        "hidden_I": 2550,
+        "hidden_v": 2550,
+        "hidden_q": 2550,
+        "output_I": 408,
+        "output_v": 408,
+        "output_q": 408
+      },
+      "hidden_spikes": 40446,
+      "output_spikes": 239,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "b6bf5aa6976a28bbc977e4b0c4fb8c198e4fe1d7f1f9df6f163388783b0b6501",
+      "atlas_results_sha256": "36cf1ea468702e51bb04a76ef80b587e01ea0f51f31f86693b8ab57b460bcb4d",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "14e77fb620d87b191b48b191a6f28296179d88f8a64aa5c4713cda426b69805f",
+        "result_sha256": "2aad2b151c4dc0d46acacad90b79b789ff113114e18242fc9858f368ec6a5149",
+        "config_sha256": "7832aec5357b7e8ef18759de5d5c7a8a9bddcbb4d6566a41905e065dcf543010",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 15,
+          "state_values": 8874,
+          "differences": 0,
+          "result_sha256": "24933166cafa7b5a45e63e04bb45515f9a124ad32fc48cf406dc0fd77636fbe4"
+        }
+      }
+    },
+    {
+      "case": "random_06",
+      "steps": 103,
+      "sizes": {
+        "hidden": 14,
+        "input": 10,
+        "output": 3
+      },
+      "compared_values": {
+        "hidden_I": 1442,
+        "hidden_v": 1442,
+        "hidden_q": 1442,
+        "output_I": 309,
+        "output_v": 309,
+        "output_q": 309
+      },
+      "hidden_spikes": 12674,
+      "output_spikes": 205,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "72e1377879f87018dccd59aa71229272f8416efc0902878de6a0630e7fef5f06",
+      "atlas_results_sha256": "d5503fdb9c590c9b779be926e4055547ea366e5a8c3f8aa2ef6351cd74119695",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "028d697f552ebdbdd2eff070226b93f1abab5896344dbc0c2ab22050344b86f9",
+        "result_sha256": "b6d80a19719a54050eaba8126acc9341b84c595aff6e1739d06de38dcb175703",
+        "config_sha256": "e2fdc4259bf9f573c86f3fe78ba22dca165b59107471b1055fb0c9d7f1c1650f",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 15,
+          "state_values": 5253,
+          "differences": 0,
+          "result_sha256": "ed98ca565e6659f8d1ceb6ed3b409cd4cf163e320dbf0055b37c1ea453ca2d9c"
+        }
+      }
+    },
+    {
+      "case": "random_07",
+      "steps": 104,
+      "sizes": {
+        "hidden": 23,
+        "input": 1,
+        "output": 3
+      },
+      "compared_values": {
+        "hidden_I": 2392,
+        "hidden_v": 2392,
+        "hidden_q": 2392,
+        "output_I": 312,
+        "output_v": 312,
+        "output_q": 312
+      },
+      "hidden_spikes": 33775,
+      "output_spikes": 106,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "8ea4e2b114bbce7401501dc40cbcbda1392ec80862708ca5d23650e46e3aec8d",
+      "atlas_results_sha256": "73b48ea6da1c9de6a4ec85e5951a375aeaf3996862a4e8e3b04ccbdcd9668038",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "f41b7ea12dad53ff4135b4565b040a63d133fc9d731f1d9e703dc9976f7e0ac0",
+        "result_sha256": "99cdf72ef94f9ae8f6115de7bbe8b00c94fd03c454bafbf5dc33acb58571d2be",
+        "config_sha256": "e9d4b71053dffd7c2b3b28a63fdb55e1f5a66b38843fe319a3d20c8967bb3154",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 15,
+          "state_values": 8112,
+          "differences": 0,
+          "result_sha256": "a622917bd70458e6a6cc78960f9b86d6d68ce7c1efb751822961cd22b4ed2e65"
+        }
+      }
+    },
+    {
+      "case": "random_08",
+      "steps": 105,
+      "sizes": {
+        "hidden": 23,
+        "input": 1,
+        "output": 6
+      },
+      "compared_values": {
+        "hidden_I": 2415,
+        "hidden_v": 2415,
+        "hidden_q": 2415,
+        "output_I": 630,
+        "output_v": 630,
+        "output_q": 630
+      },
+      "hidden_spikes": 24826,
+      "output_spikes": 309,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "b2deacd3f4650ab985ac030ca9341bb533ea6ae8d8d20523da1c36ec27b6866f",
+      "atlas_results_sha256": "faf90f4d729b58e2f51e85eaf9a02b6e02351a13d7dad4da307ef3da6be899c7",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "5575b22448361cd4d1ad99a66bbeff1f6d00adf4969cc7227bf85128aa8c8115",
+        "result_sha256": "d9e396fb369119fbf30b7a50c890a7698a1734bc19b876632d21904d19818d97",
+        "config_sha256": "b0a25bd1ef90cc485c7b2cd089d54214fe0c836c1c0dbec24efdaa581de4f2a8",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 15,
+          "state_values": 9135,
+          "differences": 0,
+          "result_sha256": "7a9b362d5452dacc1e3a1419f24e50999568f45008a87ca9169a8c1cd04bd913"
+        }
+      }
+    },
+    {
+      "case": "random_09",
+      "steps": 106,
+      "sizes": {
+        "hidden": 17,
+        "input": 4,
+        "output": 8
+      },
+      "compared_values": {
+        "hidden_I": 1802,
+        "hidden_v": 1802,
+        "hidden_q": 1802,
+        "output_I": 848,
+        "output_v": 848,
+        "output_q": 848
+      },
+      "hidden_spikes": 12433,
+      "output_spikes": 367,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "4daea33d29c369d0c2c90890d99f8a3d2e5d251c1bdbba5a07b11b13f37537ac",
+      "atlas_results_sha256": "17468c2f0c8569c1460064cdfd489ddb9cc18abecf21baaacdda30a10c1eaa5d",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "d94a214d6d0027817d615f35531e59ffd0ded2e1842520334c3a5097d0054ed7",
+        "result_sha256": "d1f7285f8aac7ab3a16b8e7fa31f8ab5482b8d41d5afd62f829f6cff3e071edb",
+        "config_sha256": "9b6a887b178bd9d33a98e6a70b1ae5b8a05230744d9c3a89288afa27b3d9f5d1",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 16,
+          "state_values": 7950,
+          "differences": 0,
+          "result_sha256": "ace318ccd3027e7b168084e31b5e85bed68f4b52d4323cc3d7fbb78b33cdf9ee"
+        }
+      }
+    },
+    {
+      "case": "random_10",
+      "steps": 107,
+      "sizes": {
+        "hidden": 27,
+        "input": 8,
+        "output": 5
+      },
+      "compared_values": {
+        "hidden_I": 2889,
+        "hidden_v": 2889,
+        "hidden_q": 2889,
+        "output_I": 535,
+        "output_v": 535,
+        "output_q": 535
+      },
+      "hidden_spikes": 40596,
+      "output_spikes": 471,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "89acf32d19afb501b5e0930917cdbdd6060de321a9277ac04361be6ce367be52",
+      "atlas_results_sha256": "e91a8b894710bd986f68ed274062d699149c5dd707c668b726a94766b83ee142",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "a6e2c4e2ead30c069e45d5cb4693496811ed06ef48f15ece4c23a211754bd895",
+        "result_sha256": "bcde96fb0a7473f0a65c55a348dbaa473e95447d4836cd51854ac2f7b341c919",
+        "config_sha256": "0996059c15f18da6792cbbfd93a7103133c9305a40d412423f20175e033ecf29",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 16,
+          "state_values": 10272,
+          "differences": 0,
+          "result_sha256": "24af76c587a84f991451d0ce3524487a2803e5697f8c74c22b70cbd5280f62d0"
+        }
+      }
+    },
+    {
+      "case": "random_11",
+      "steps": 108,
+      "sizes": {
+        "hidden": 22,
+        "input": 12,
+        "output": 4
+      },
+      "compared_values": {
+        "hidden_I": 2376,
+        "hidden_v": 2376,
+        "hidden_q": 2376,
+        "output_I": 432,
+        "output_v": 432,
+        "output_q": 432
+      },
+      "hidden_spikes": 24493,
+      "output_spikes": 108,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "eb4a546fc667bbe465bc12f7a936202918292c8bf8873c609a36af4e2d3e274b",
+      "atlas_results_sha256": "3346728872c2cb9073275704253bb8fc62efd19cb1e06047f0b0dfc5843d0257",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "b8da11c098870e06dc0a83204f652758649feae577f573c8a0a32f57230ad447",
+        "result_sha256": "6557fcaef8365cbc198995c5882dcaea018eddf07fad041afa2d790dfc3b11f1",
+        "config_sha256": "8d2d8c20f258843a2814f4a28c098ec49623cdf1db7cbc92667052e13e829f06",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 16,
+          "state_values": 8424,
+          "differences": 0,
+          "result_sha256": "bc7c0619807eb26d22a1dd2fe225f2f50c0d69a88104481f748f4c68c201ffc9"
+        }
+      }
+    },
+    {
+      "case": "random_12",
+      "steps": 109,
+      "sizes": {
+        "hidden": 18,
+        "input": 8,
+        "output": 4
+      },
+      "compared_values": {
+        "hidden_I": 1962,
+        "hidden_v": 1962,
+        "hidden_q": 1962,
+        "output_I": 436,
+        "output_v": 436,
+        "output_q": 436
+      },
+      "hidden_spikes": 12331,
+      "output_spikes": 325,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "88d96cde0f813715bdf54517714e235b620f74d2dedc123cffe11b1bc7ffaa06",
+      "atlas_results_sha256": "270a1c992cd06e828cecedf0b2a35100372700d8927aac424d216219a345a2c2",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "b2a7c49b3a65c061b8d423866d14901565e9970acb940b0e913b307bc6782a5f",
+        "result_sha256": "6f6ff5ed77d8eab607fb83511e57eb5601c9529778201e848281e3394c1b774c",
+        "config_sha256": "9fc1f97a917f4a6099d2de7be00269fd812e38e5953ada90f19b0e1fb762a637",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 16,
+          "state_values": 7194,
+          "differences": 0,
+          "result_sha256": "b5cfcd84ea82c70db029f7161305c1df3a37b603554bb03d6c03ed76c33af757"
+        }
+      }
+    },
+    {
+      "case": "random_13",
+      "steps": 110,
+      "sizes": {
+        "hidden": 24,
+        "input": 11,
+        "output": 3
+      },
+      "compared_values": {
+        "hidden_I": 2640,
+        "hidden_v": 2640,
+        "hidden_q": 2640,
+        "output_I": 330,
+        "output_v": 330,
+        "output_q": 330
+      },
+      "hidden_spikes": 28820,
+      "output_spikes": 47,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "d3ce3af0c120c942cfc975d02927d4b9666d2085ae4b912cf63d41eddfdd6c9b",
+      "atlas_results_sha256": "1e5dcf8076477248bfea4672f005507331d538daff33f0d35efa0754aac00cf7",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "2682f3d36b140d5e527f05d8539fa9c71a6168b7fd60662bbdb230a0c820efde",
+        "result_sha256": "639dc9d8ece7d83b7843086ba117d78d97ff0b9a127a26b5add43af189c8112b",
+        "config_sha256": "16a58030d46e8851ab428d5f0986f639e46839ef05df56c1ac8a83f3061ee830",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 16,
+          "state_values": 8910,
+          "differences": 0,
+          "result_sha256": "ed1e1965904aa1a9db66b3878cd40c4125d82a4659cd7826ea594d43ef2ca72a"
+        }
+      }
+    },
+    {
+      "case": "random_14",
+      "steps": 111,
+      "sizes": {
+        "hidden": 17,
+        "input": 12,
+        "output": 8
+      },
+      "compared_values": {
+        "hidden_I": 1887,
+        "hidden_v": 1887,
+        "hidden_q": 1887,
+        "output_I": 888,
+        "output_v": 888,
+        "output_q": 888
+      },
+      "hidden_spikes": 26503,
+      "output_spikes": 522,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "d15303f0676dcf22e6be280e7328cb3000b242f228c76ff0cb248326af12281d",
+      "atlas_results_sha256": "45aba9c8b7462b936190735a2933d6554c71bd38fd4f2cbd70221a05b9f55709",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "496048cf2471091fe60888ae09ba9525fd6be9a99f5ec6099482192f99b82f12",
+        "result_sha256": "ff1b153938a9da4c39976f99bcd2e1c4778205232de4b40313b8b82dc4f2b042",
+        "config_sha256": "38a8e7870dfb17dddd9ef488e3b20b77417236f2bddca33aeb533e31ca6da3e3",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 16,
+          "state_values": 8325,
+          "differences": 0,
+          "result_sha256": "f9ce17cae58778073cf3e0f29de888598fc3afb7720c15468853cb85a9ef594c"
+        }
+      }
+    },
+    {
+      "case": "random_15",
+      "steps": 112,
+      "sizes": {
+        "hidden": 25,
+        "input": 3,
+        "output": 8
+      },
+      "compared_values": {
+        "hidden_I": 2800,
+        "hidden_v": 2800,
+        "hidden_q": 2800,
+        "output_I": 896,
+        "output_v": 896,
+        "output_q": 896
+      },
+      "hidden_spikes": 25343,
+      "output_spikes": 338,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "fbba54bb5d69e63898a95d7172fa1aa730654cfdd47975d4b8828f6b22bb80c2",
+      "atlas_results_sha256": "903118a1467780ce5daf2de6fef35825333e0476927501951f2175b7655fbef9",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "f1b4c17beec566dd00bcd6a0484c62a3d82f8000eee3f433b32058814d729072",
+        "result_sha256": "c46d4c6201270700032492dd98ee7b9cc2f52a522e1724274ae32a907bdd9b60",
+        "config_sha256": "a236bfb13f96ec934548fa0cb8fb427ac2c6cecb30627b51db3d2925b6f79fba",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 16,
+          "state_values": 11088,
+          "differences": 0,
+          "result_sha256": "fb71fb70a34c29e4374a31b1b087a679f942d294b08a3c3cd1f0a8fa2c4e9967"
+        }
+      }
+    },
+    {
+      "case": "random_16",
+      "steps": 113,
+      "sizes": {
+        "hidden": 27,
+        "input": 11,
+        "output": 3
+      },
+      "compared_values": {
+        "hidden_I": 3051,
+        "hidden_v": 3051,
+        "hidden_q": 3051,
+        "output_I": 339,
+        "output_v": 339,
+        "output_q": 339
+      },
+      "hidden_spikes": 43334,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "0ea6342e923a8d17d648b2a70962ed05080e916789035501f3925df50842eaac",
+      "atlas_results_sha256": "5408e954533dfbf2651ff3731bf2459e8fcb9bb22e3a2eeba005e9887798c05f",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "8e370c7f5f0907a63006bf3558e8e2bec80e41380108d6f84025664a08bc32de",
+        "result_sha256": "31a1fc7728e69dc168086637f57c815233a202dfd526a790531980844e4c40c9",
+        "config_sha256": "585212cc326dc2f804c91e82545c1611aed34264a43f661b49e9e67ae62368f2",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 17,
+          "state_values": 10170,
+          "differences": 0,
+          "result_sha256": "717f1d484c01d5276f3284eaed8436f0389936dc8e8b658d19c0380c98a01177"
+        }
+      }
+    },
+    {
+      "case": "random_17",
+      "steps": 114,
+      "sizes": {
+        "hidden": 25,
+        "input": 8,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 2850,
+        "hidden_v": 2850,
+        "hidden_q": 2850,
+        "output_I": 228,
+        "output_v": 228,
+        "output_q": 228
+      },
+      "hidden_spikes": 53835,
+      "output_spikes": 113,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "71bbe383bc3a06bd5546d27144d635aa78653601c918875fcc3cd90b6cc24bb0",
+      "atlas_results_sha256": "964b1f68200087aa075ef33e8ead749d85c53ff9ce90a819f38465883811b5e3",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "434dd3c82b8f52f8623c10a7ef73241befdccbd6399c7d9f41c0b6c2eaa4c919",
+        "result_sha256": "f6b7894d8aca4687f5766148c9b0ca6205cf274386ef95c5f8d8f662b7bb76d5",
+        "config_sha256": "f54314d0b2853e378c151b32408468caf65cba6ea8048b0d4b8dbc2560153914",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 17,
+          "state_values": 9234,
+          "differences": 0,
+          "result_sha256": "d78b6bd0807a8bf8c74ceb75dbab2f4131b6435f1265801d7d4f8d76d182a1f7"
+        }
+      }
+    },
+    {
+      "case": "random_18",
+      "steps": 115,
+      "sizes": {
+        "hidden": 17,
+        "input": 8,
+        "output": 3
+      },
+      "compared_values": {
+        "hidden_I": 1955,
+        "hidden_v": 1955,
+        "hidden_q": 1955,
+        "output_I": 345,
+        "output_v": 345,
+        "output_q": 345
+      },
+      "hidden_spikes": 24064,
+      "output_spikes": 129,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "e56ca3d2e2c5e0f13c7f6ad10e749bea91175d452136c82bb2062386c211b92f",
+      "atlas_results_sha256": "39436abb3f02dd595259ceede3888b3db03973a8a4325bbff66c17c458a7d746",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "12665ea1c892e853e37ef1b13921bcd8a5925f04f4b02fb010bc184ecbadd2ef",
+        "result_sha256": "31ec3e0f3a9dda1d3c0e9bb51a28a1de768cf342f2bd39275c5577a250e4398c",
+        "config_sha256": "c939d2448817505b5f100fe67529d2f97cfd966080935c6f83cf7108a760ecb6",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 17,
+          "state_values": 6900,
+          "differences": 0,
+          "result_sha256": "b580552fc100c30fc6d0d6612d3c3fb5dac26c113d5977db9b254c683233f5fa"
+        }
+      }
+    },
+    {
+      "case": "random_19",
+      "steps": 116,
+      "sizes": {
+        "hidden": 27,
+        "input": 5,
+        "output": 7
+      },
+      "compared_values": {
+        "hidden_I": 3132,
+        "hidden_v": 3132,
+        "hidden_q": 3132,
+        "output_I": 812,
+        "output_v": 812,
+        "output_q": 812
+      },
+      "hidden_spikes": 27088,
+      "output_spikes": 578,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "27460586d07ebe205d397d1d6d61afb0992e373ca78ffe712d2eab62ae4d88fe",
+      "atlas_results_sha256": "0732349b785eb59811fdf97ae70c52ed56275ff9630760f99b79ee832bae554a",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "f1f7e003c799544c0fd400db312d632a8ebd1aa1d287bf972adfb6137fc8d2ad",
+        "result_sha256": "fdb4e6d9d5415ab56549177a44ac926a3ae9d31018099f7b4b31e750178a7a19",
+        "config_sha256": "553e8d632be623e95404db461c9fec40ce6da45f86e11449caceb7a3363d95a8",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 17,
+          "state_values": 11832,
+          "differences": 0,
+          "result_sha256": "a9c69a601d63c8e0b47917915fb8505cc54104d29b6c5c22e559a9aaa6d231cd"
+        }
+      }
+    },
+    {
+      "case": "random_20",
+      "steps": 117,
+      "sizes": {
+        "hidden": 24,
+        "input": 5,
+        "output": 3
+      },
+      "compared_values": {
+        "hidden_I": 2808,
+        "hidden_v": 2808,
+        "hidden_q": 2808,
+        "output_I": 351,
+        "output_v": 351,
+        "output_q": 351
+      },
+      "hidden_spikes": 54130,
+      "output_spikes": 232,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "46965e88ae2c1577af2bb9380144d8cce1d85a5f973a1a28f6dc55ff40afc85e",
+      "atlas_results_sha256": "a36e857c5d64b4c7c1c53a499271910a18d3fa5add837b68887e14b382e95da2",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "b8fbc78fbfb1689f6852f961ca657dea2e99835eceb171924542ce9c6c6be37f",
+        "result_sha256": "c16247494d486aa20ea96409a4453f876917cd213d2a0cc3d1c1123b0db579b2",
+        "config_sha256": "7adc0b24f10ac7275e2c4d74b5202eee71837435dd7a65e94cff1506ab9aff4e",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 17,
+          "state_values": 9477,
+          "differences": 0,
+          "result_sha256": "f9d47c8da3cce353f345142d6939f592a8989378fd904ebba05f938a19be3a31"
+        }
+      }
+    },
+    {
+      "case": "random_21",
+      "steps": 118,
+      "sizes": {
+        "hidden": 13,
+        "input": 16,
+        "output": 6
+      },
+      "compared_values": {
+        "hidden_I": 1534,
+        "hidden_v": 1534,
+        "hidden_q": 1534,
+        "output_I": 708,
+        "output_v": 708,
+        "output_q": 708
+      },
+      "hidden_spikes": 11842,
+      "output_spikes": 352,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "ec4587b8cfde34217960877d016c88dfe0617d9d27b3e52ec1a7d6e325e3c769",
+      "atlas_results_sha256": "8ab21a2c070d747b15dd67bfbf75b1317d8f6a7e915e2263c2ca9b4d3a48202f",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "4c46ba26eed9953bd0a4f13dabbf9779973d7f62c554b24efc9639d43a42d841",
+        "result_sha256": "9762075b3bda1d20b6e365ee59d49d7228564473bc1210c2a448f57dc08f1fa3",
+        "config_sha256": "be2bfaac8201b272d831fd18c9c1ce8b6466d8083b7d8c1b0e8d5914a70db025",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 17,
+          "state_values": 6726,
+          "differences": 0,
+          "result_sha256": "fb0e2a194b9a062b48461e2070b3b9bb6910f28aa59421ee88177409ed3b2afb"
+        }
+      }
+    },
+    {
+      "case": "random_22",
+      "steps": 119,
+      "sizes": {
+        "hidden": 12,
+        "input": 5,
+        "output": 7
+      },
+      "compared_values": {
+        "hidden_I": 1428,
+        "hidden_v": 1428,
+        "hidden_q": 1428,
+        "output_I": 833,
+        "output_v": 833,
+        "output_q": 833
+      },
+      "hidden_spikes": 3511,
+      "output_spikes": 330,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "fe5acbf896a2a5d66e3a312b9084849df919fbd0981063c4b19c084e1988c024",
+      "atlas_results_sha256": "5c1c7b2e2c76b388eaa9790c5fe9eff1286376279aebe426623c893b44d7585b",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "cbb6aae74600cdc62d78123cc6921655a2846f9f2cfaaa88e36e239664c00998",
+        "result_sha256": "8016adf6d996ef02cd5e0082e77581eeda606f8ae613243cf4eb729a6cadaf5e",
+        "config_sha256": "70069f93b8cb44072e4cc74e62bd5b122d96eef878e82d900e7a4cc61578c608",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 17,
+          "state_values": 6783,
+          "differences": 0,
+          "result_sha256": "fc74a9c01078dd3ecdcb2b25d026f16d1879ad3b97036cde21777619d85caa11"
+        }
+      }
+    },
+    {
+      "case": "random_23",
+      "steps": 120,
+      "sizes": {
+        "hidden": 29,
+        "input": 8,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 3480,
+        "hidden_v": 3480,
+        "hidden_q": 3480,
+        "output_I": 240,
+        "output_v": 240,
+        "output_q": 240
+      },
+      "hidden_spikes": 47567,
+      "output_spikes": 236,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "2e062f04a8c0ba4e4fd620dd86e1ebcb04af3ab6043bf7f3428cc26cfb59ee0c",
+      "atlas_results_sha256": "07671676cd4f6a1bd28fdc07f9ea00e7d38d7cecbffb637d1f37267ce44595a0",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "159639e868feef9143d8610b6a6311f4ad6fceef71458a8a0c28560604bbcc55",
+        "result_sha256": "c63f07beef5e1b60043a93610bb102c483d12f679b51adfa0d44eee9fa05ca2a",
+        "config_sha256": "c38dcdf352e40d7614a9561d3bb77433fc1cf45a7ef01cf285f9b9cc79f789bd",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 18,
+          "state_values": 11160,
+          "differences": 0,
+          "result_sha256": "1abeb9a8989039c10079ee0f2ff4f82840426eb6bdc0be62a00cf02a699ae817"
+        }
+      }
+    },
+    {
+      "case": "random_24",
+      "steps": 121,
+      "sizes": {
+        "hidden": 25,
+        "input": 3,
+        "output": 7
+      },
+      "compared_values": {
+        "hidden_I": 3025,
+        "hidden_v": 3025,
+        "hidden_q": 3025,
+        "output_I": 847,
+        "output_v": 847,
+        "output_q": 847
+      },
+      "hidden_spikes": 31494,
+      "output_spikes": 602,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "3fd3124d6fb29fabc9af5062a943b761b3a484c86763e02b48de619bf8454284",
+      "atlas_results_sha256": "08416d72c6d61e4d5e88773373da2a0f3840b1f83eedaa5ae1fed9a2dabe4a75",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "6f0594a1a32195912b005717a411afbfd3c317c0bac7f64525d90e57eb173e6b",
+        "result_sha256": "28152002fe8a18a644a74334cad28128397638446e73038ce9336d318f7c343c",
+        "config_sha256": "09f4d51fb8f8fd340638e72c8933a7ba1517d46edd2f4df7e6d28f7cd8f625bf",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 18,
+          "state_values": 11616,
+          "differences": 0,
+          "result_sha256": "1cadd6a33b9825164617278b810da251ab77eabc47c0bee11b002b4a0ec65dfd"
+        }
+      }
+    },
+    {
+      "case": "random_25",
+      "steps": 122,
+      "sizes": {
+        "hidden": 11,
+        "input": 5,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 1342,
+        "hidden_v": 1342,
+        "hidden_q": 1342,
+        "output_I": 122,
+        "output_v": 122,
+        "output_q": 122
+      },
+      "hidden_spikes": 7241,
+      "output_spikes": 121,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "463257226e8d966422f716c161dd2c7f86c954d9a005559ff25806d44e4edbb8",
+      "atlas_results_sha256": "806e82083d07f4b47e3bfce35f800d4f56b4c3229ae98b57f83337051a4ad1f5",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "dfa9b80a52c49913c9dd13f2c03209d8b18a306b0337224b3f42ef498fcc0d17",
+        "result_sha256": "63258f1060cfb1420ab1447d58cada2102892eb4787d8c25de7cf473c74b1d49",
+        "config_sha256": "30e09c6403c9e8a0232f6d2af5391102b8244fcd3a48bc88e58476385ec3265f",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 18,
+          "state_values": 4392,
+          "differences": 0,
+          "result_sha256": "9f98a381e8bd65b13db7a94fcd221b70b52e64c09e18ee0b7b3b277752af540d"
+        }
+      }
+    },
+    {
+      "case": "random_26",
+      "steps": 123,
+      "sizes": {
+        "hidden": 21,
+        "input": 5,
+        "output": 4
+      },
+      "compared_values": {
+        "hidden_I": 2583,
+        "hidden_v": 2583,
+        "hidden_q": 2583,
+        "output_I": 492,
+        "output_v": 492,
+        "output_q": 492
+      },
+      "hidden_spikes": 18518,
+      "output_spikes": 303,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "fdfb209c6a3eb8d2d342735ff9e5c3713e7dc28538f534508f671cc79f38b363",
+      "atlas_results_sha256": "aaa2c2cd3bcefa21a7ee3dab9920b928ed310bcede51c7c14c94c88b4ed7cd2d",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "82abd309d268d1618e0e958bcf81badd08887c735e8634b950b3283e4bb35d0b",
+        "result_sha256": "cea2fe9bac6c0384b48e06aa3c3726f2445a67ec8dce0c999b6069eef6e51add",
+        "config_sha256": "20bba3b9115f7da08de0e63c7cd076ba489e4de3e7f28bd5bb996dae51828ed4",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 18,
+          "state_values": 9225,
+          "differences": 0,
+          "result_sha256": "bd2dd3061f33c154732ee685e79c63f3e2bed0a7610e578352c9276c9ab0f97f"
+        }
+      }
+    },
+    {
+      "case": "random_27",
+      "steps": 124,
+      "sizes": {
+        "hidden": 22,
+        "input": 16,
+        "output": 3
+      },
+      "compared_values": {
+        "hidden_I": 2728,
+        "hidden_v": 2728,
+        "hidden_q": 2728,
+        "output_I": 372,
+        "output_v": 372,
+        "output_q": 372
+      },
+      "hidden_spikes": 21315,
+      "output_spikes": 107,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "74efea204ac4c056d79f7ba233a38bb78307070e14ed3f073e28f32d7eab47a2",
+      "atlas_results_sha256": "9ecd1c6ac63be6e720d445b575ae794d36c8457081e207171100b86d2373be52",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "d1350a29d8d7bb667b4c4a37e147edef6edca035dfda881e4662aabcb930760f",
+        "result_sha256": "67ade8eeac9d87d5f986d1546676aeb4883e14f94a493bd0ef5528a99a64ffb5",
+        "config_sha256": "53fc01009bf24a9d5128912669ca05c8105125a684b050e55927692620b07f19",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 18,
+          "state_values": 9300,
+          "differences": 0,
+          "result_sha256": "e5abb64b70707b8bbefa3882a8e139d2423540ff13b26c3c2102fd74085b3eb3"
+        }
+      }
+    },
+    {
+      "case": "random_28",
+      "steps": 125,
+      "sizes": {
+        "hidden": 13,
+        "input": 9,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 1625,
+        "hidden_v": 1625,
+        "hidden_q": 1625,
+        "output_I": 250,
+        "output_v": 250,
+        "output_q": 250
+      },
+      "hidden_spikes": 7791,
+      "output_spikes": 146,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "586d82a31a3d6e71ccfa913edbf2aa510f9f15eddeff02238a044e37f7ac9c90",
+      "atlas_results_sha256": "bfced4979cfa88bd05bf1131c43a387e36d38692e8fcccd49e9bb79fe380cad5",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "6946419b612c84b8ba9394df27099f967f0ff5a1e58d518cebb84571f0e46c21",
+        "result_sha256": "e1d9724b9da6eef7c5b73661e7d74b70ef48caf16fbe9944954739c63ddb9dfe",
+        "config_sha256": "61d426ac5772b9dcdc254ce45c8ec6147c04b8804e07fd2d64eff4780b494d00",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 18,
+          "state_values": 5625,
+          "differences": 0,
+          "result_sha256": "925be0eab21f8f34638bcc05a2762110112f4731a3b5a7be3fa07555e8168c3b"
+        }
+      }
+    },
+    {
+      "case": "random_29",
+      "steps": 126,
+      "sizes": {
+        "hidden": 29,
+        "input": 16,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 3654,
+        "hidden_v": 3654,
+        "hidden_q": 3654,
+        "output_I": 126,
+        "output_v": 126,
+        "output_q": 126
+      },
+      "hidden_spikes": 45816,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "3ed957c743f4fc4244aac10531136af7eab665f1a046dfc678a285b660576a7d",
+      "atlas_results_sha256": "f8081dddd37db153f26cb09b37fe9c354c619ceb8916f123d33573ed06da7c37",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "549d541b4a1acdb6ee90b80bfefe7f41b62164763e275bee25c27dcd0549b4e8",
+        "result_sha256": "51fde9502964d0ef91fb8e4f8822763db9049c6aaf65285d8a943fc1f99a1ab1",
+        "config_sha256": "c6ffa53b863d5b3d4815019528cd3c3d3d82cb71fedd16dd24ddffe134f1ff20",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 18,
+          "state_values": 11340,
+          "differences": 0,
+          "result_sha256": "d5dabd8182c7b2ccd5d90b1eaf61fe36b96d7e20ca542d5303b3aa5f44f9440f"
+        }
+      }
+    },
+    {
+      "case": "random_30",
+      "steps": 127,
+      "sizes": {
+        "hidden": 12,
+        "input": 7,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 1524,
+        "hidden_v": 1524,
+        "hidden_q": 1524,
+        "output_I": 127,
+        "output_v": 127,
+        "output_q": 127
+      },
+      "hidden_spikes": 11856,
+      "output_spikes": 3,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "5510bc6a6ac3c3737963127a73650d6743529b110d4f431092b9effa67e1e735",
+      "atlas_results_sha256": "05a9c03a2542008137a0a3bbb3c5a2b15ca642fc0298c35e895663a9632efa22",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "a5b3512b1fcfea9842b069cc5c3a7b5662f75693a8147d3044f5d58f99f22a02",
+        "result_sha256": "fcb739d60b84097ca704e522ee1415831eea8b4244bd40904c74ca4c10419bff",
+        "config_sha256": "87ac2e5ed853dfd75e52a054dfd89808dee70b3ebd710ff19a30c6611cc09654",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 19,
+          "state_values": 4953,
+          "differences": 0,
+          "result_sha256": "3c8fb049e1ca88f57434974c4b72927dab3957941044bcc6e4e1cecb5fc9a96a"
+        }
+      }
+    },
+    {
+      "case": "random_31",
+      "steps": 128,
+      "sizes": {
+        "hidden": 16,
+        "input": 10,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 2048,
+        "hidden_v": 2048,
+        "hidden_q": 2048,
+        "output_I": 128,
+        "output_v": 128,
+        "output_q": 128
+      },
+      "hidden_spikes": 15733,
+      "output_spikes": 126,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "786d14046fce5719f18d1b2a242757d78eaba5db4c9ead95c6ca8d109b3601bb",
+      "atlas_results_sha256": "7191dccf758e8e8d35d890ea2bd4e971d4821b6d45b44f91cd0bf16b49a20d9a",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "ca6c2ff9aeff572ee57aba7c1eb071d3ade7e0a49cf0d3bfbfd1ac280e5762d3",
+        "result_sha256": "339c7c755d6fb605cc763416416d70f18caab8dfb2480037fdabe98d5a279757",
+        "config_sha256": "981684bb0f5f167302b6f8a478e9c3bc77cd8e47ad43e620a9105b2aaa9fab22",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 19,
+          "state_values": 6528,
+          "differences": 0,
+          "result_sha256": "4442e3d0c8acb7cd61f851b9e4834571b221a427fe77558259631437bb8748f3"
+        }
+      }
+    },
+    {
+      "case": "one_tick",
+      "steps": 1,
+      "sizes": {
+        "hidden": 1,
+        "input": 1,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 1,
+        "hidden_v": 1,
+        "hidden_q": 1,
+        "output_I": 1,
+        "output_v": 1,
+        "output_q": 1
+      },
+      "hidden_spikes": 0,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 0,
+      "differences": 0,
+      "source_model_sha256": "755aaa09d80ad425982e9c676479e0ae30295901a36f6d286b7abe3ae10bf36c",
+      "atlas_results_sha256": "3ad5d650ca740f9c2ecbce3b0ab4484b8c4c4a7e23443f5f3d64859b290a0b43",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "7dc2f2428a9391d6a1c2cea46b15d60d6146caecc34f7324fcbddc81102d96f9",
+        "result_sha256": "f3045838e551ab46248800663ebfe561d2153fe45960742e646676c53cde2273",
+        "config_sha256": "1b6709b3c2cd568560033aa118ea96bd454034be42cd14518f39280022dec06b",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 1,
+          "state_values": 6,
+          "differences": 0,
+          "result_sha256": "d625455c611877085b316e2d11793140e22f15bdac5bc70882409eea147f3fbf"
+        }
+      }
+    },
+    {
+      "case": "one_neuron",
+      "steps": 97,
+      "sizes": {
+        "hidden": 1,
+        "input": 1,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 97,
+        "hidden_v": 97,
+        "hidden_q": 97,
+        "output_I": 97,
+        "output_v": 97,
+        "output_q": 97
+      },
+      "hidden_spikes": 97,
+      "output_spikes": 0,
+      "max_hidden_spikes_per_tick": 1,
+      "differences": 0,
+      "source_model_sha256": "54a41c7ba3bebfaa6a2f656c36195cb46085bd491354b9ed08e7e050720d545b",
+      "atlas_results_sha256": "77be5a7d13f45fd5d8e1805d1f656de216a8af6d95cb2822ef98a75adfeb5047",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "0d7668f1f77d1284379c6d5b2be8180d0f89e48f3e6680df6edba5a1cb4c6ddf",
+        "result_sha256": "cbd681f299c0e2ae5c011ea8f980ef2aa901ef5366206ff89a845f852738fd01",
+        "config_sha256": "c9e4aaf6421551b289321f26f753ce6cf4d1267b8722826314bba1d8a8216182",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 14,
+          "state_values": 582,
+          "differences": 0,
+          "result_sha256": "e36ec3184b008188db657460602dcc250e944c281213d59c1a751be7368f45d8"
+        }
+      }
+    },
+    {
+      "case": "maximum_profile_dimensions",
+      "steps": 257,
+      "sizes": {
+        "hidden": 64,
+        "input": 16,
+        "output": 8
+      },
+      "compared_values": {
+        "hidden_I": 16448,
+        "hidden_v": 16448,
+        "hidden_q": 16448,
+        "output_I": 2056,
+        "output_v": 2056,
+        "output_q": 2056
+      },
+      "hidden_spikes": 146756,
+      "output_spikes": 953,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "fc550e4d84e0eb01356f368f287751b0a8b728a68c90d283a7c4749f3f372560",
+      "atlas_results_sha256": "20f189fca6907653dfb8ecba72f77f3eb3af3776357d1921f0b65040922b010f",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "882e2dbbaac2b50027f45f19cf0ffa6088106265fe0bc7dd021341e82547bc4b",
+        "result_sha256": "a0e6e865fd4864a4386c959f21f2e7e5625c8cbe48a9df249825e919e63dfc12",
+        "config_sha256": "a247e16fea7dde7b877e3ec8e25c599c7219b48c6f85d8acadc64d62018d6167",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 37,
+          "state_values": 55512,
+          "differences": 0,
+          "result_sha256": "ca2be3d3cbfacd3b24fea3cd5224496fb16bd4de9e0a34936fab01fe2d16f756"
+        }
+      }
+    },
+    {
+      "case": "maximum_duration",
+      "steps": 10000,
+      "sizes": {
+        "hidden": 3,
+        "input": 2,
+        "output": 2
+      },
+      "compared_values": {
+        "hidden_I": 30000,
+        "hidden_v": 30000,
+        "hidden_q": 30000,
+        "output_I": 20000,
+        "output_v": 20000,
+        "output_q": 20000
+      },
+      "hidden_spikes": 323607,
+      "output_spikes": 19999,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "c94fc57583e5c1626a1bac55e28e15505dcdf6b4a050e2357e071481b0698bce",
+      "atlas_results_sha256": "87445cd2e7c62d630b6bed261093e261dc40e238150439af3f0838a8d645592d",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "061867ee73634428deff61623e37c286a01447fcabe24a68aba3ca9e26845241",
+        "result_sha256": "aaa5d4530976e8be81d7790f746aa6f9e9fb2a57f84f93002650024cdae7d8b8",
+        "config_sha256": "86db64683ef36528ade7ec6db69d5399fb69056ae46bc318cf8d1ae228dec3e5",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 1429,
+          "state_values": 150000,
+          "differences": 0,
+          "result_sha256": "2d972f5d138f9c8302b0600f8072fb4c3dac3d098a1987070a517c4f5751950d"
+        }
+      }
+    },
+    {
+      "case": "chunk_boundary_impulse",
+      "steps": 31,
+      "sizes": {
+        "hidden": 1,
+        "input": 1,
+        "output": 1
+      },
+      "compared_values": {
+        "hidden_I": 31,
+        "hidden_v": 31,
+        "hidden_q": 31,
+        "output_I": 31,
+        "output_v": 31,
+        "output_q": 31
+      },
+      "hidden_spikes": 775,
+      "output_spikes": 24,
+      "max_hidden_spikes_per_tick": 31,
+      "differences": 0,
+      "source_model_sha256": "af89f30a697375e9b42f2bcd06ed71a6fefc87a3c79bd701889285783c6460ca",
+      "atlas_results_sha256": "29835cb808285b3afb6941f1b9486c4018bc6f3933c27142302127e540a91fe3",
+      "sdk": {
+        "official_configuration_valid": true,
+        "bundle_sha256": "4b186fe3e6a190ee63b1d9b1317c6f03369365c08468a4e6161c1894a9ec07a5",
+        "result_sha256": "7c5a8817ec73393159386b1d40e460110558ba73aaf2c0350e8c6c89150976dd",
+        "config_sha256": "9a45856850e1803f91734ad75e2f223917ae940abdf314db164c9ebcb62a3435",
+        "versions": {
+          "xylosim": "0.1.3",
+          "samna": "0.48.6",
+          "rockpool": "3.1.0",
+          "numpy": "2.5.4",
+          "bitstruct": "8.23.0",
+          "packaging": "26.3"
+        },
+        "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+        "runtime_sha256": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+        "xylo_runtime_sha256": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+        "physical_hardware": false,
+        "chunked": {
+          "steps": 7,
+          "chunks": 5,
+          "state_values": 186,
+          "differences": 0,
+          "result_sha256": "514563abab650a209ebb70b1831ce2d8186737cbc4446d8b009406466deabe69"
+        }
+      }
+    }
+  ],
+  "native_atlas_runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "same_tick_comparison": true,
+  "official_configuration_validation": true,
+  "nonvacuous_boundary_checks": true,
+  "physical_hardware": false,
+  "hardware_mapping_tested": false,
+  "classification_accuracy_tested": false,
+  "suite": "coverage",
+  "parameter_coverage": {
+    "seed": 20261013,
+    "generated_cases": 37,
+    "synaptic_shifts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "membrane_shifts": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "input_counts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "weight_extrema": [
+      -128,
+      127
+    ]
+  }
+}

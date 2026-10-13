@@ -112,3 +112,28 @@ def test_target_profile_and_input_separation():
     bundle=dict(schema='atlas.neuromorphic.simulator-bundle.v1',target='xylosim',profile='xylo-audio2-temporal-v1')
     with pytest.raises(ValueError,match='embedded spike-count'):
         run_simulator(bundle,[[1]])
+
+
+@pytest.mark.parametrize('chunk_steps',[0,-1,1.5,True,'7'])
+def test_invalid_chunk_size_rejected_before_sdk_import(chunk_steps):
+    from brian2_rust.xylo_runtime import run
+    with pytest.raises(ValueError,match='positive integer'):
+        run({},chunk_steps=chunk_steps)
+
+
+def test_coverage_suite_reproducibility_and_boundaries():
+    spec=importlib.util.spec_from_file_location('xylo_coverage',EXAMPLE.with_name('coverage_cases.py'))
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    networks=module.cases()
+    assert networks==module.cases()
+    observed=module.parameter_coverage(networks)
+    assert observed['synaptic_shifts']==list(range(16))
+    assert observed['membrane_shifts']==list(range(1,16))
+    assert observed['input_counts']==list(range(16))
+    assert observed['weight_extrema']==[-128,127]
+    maximum=networks['maximum_profile_dimensions']
+    assert len(maximum['raster'][0])==16
+    assert len(maximum['hidden']['threshold'])==64
+    assert len(maximum['output']['threshold'])==8
+    assert len(networks['maximum_duration']['raster'])==10000
+    assert len(networks['one_tick']['raster'])==1

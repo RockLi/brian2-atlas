@@ -104,9 +104,17 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('output','runner','sdk-python'):p.add_argument('--'+name,type=Path,required=True)
-    a=p.parse_args();a.output=a.output.absolute();a.output.mkdir(parents=True,exist_ok=False)
+    p.add_argument('--suite',choices=('baseline','coverage'),default='baseline')
+    p.add_argument('--chunk-steps',type=int)
+    a=p.parse_args()
+    if a.chunk_steps is not None and a.chunk_steps<1:p.error('--chunk-steps must be positive')
+    a.output=a.output.absolute();a.output.mkdir(parents=True,exist_ok=False)
     bundles=[]
-    for name,c in cases().items():
+    networks=cases();coverage=None
+    if a.suite=='coverage':
+        from coverage_cases import cases as coverage_cases,parameter_coverage
+        extra=coverage_cases();networks.update(extra);coverage=parameter_coverage(extra)
+    for name,c in networks.items():
         root=a.output/name;root.mkdir();source=root/'source.json'
         model=export_network(build(c),len(c['raster'])*b.ms,source)
         bundle=export_ir(source,root/'converted',runner=a.runner,target='xylosim',profile='xylo-audio2-temporal-v1')
@@ -121,7 +129,9 @@ def main():
     env={**os.environ,'PYTHONPATH':'','PYTHONNOUSERSITE':'1'}
     runtime=Path(__file__).resolve().parents[3]/'python/brian2_rust/neuromorphic_runtime.py'
     run=subprocess.run([str(a.sdk_python.absolute()),str(Path(__file__).with_name('sdk_worker.py')),
-                        '--runtime',str(runtime),'--bundles',*map(str,bundles)],env=env,cwd=a.output,
+                        '--runtime',str(runtime),
+                        *(['--chunk-steps',str(a.chunk_steps)] if a.chunk_steps is not None else []),
+                        '--bundles',*map(str,bundles)],env=env,cwd=a.output,
                         capture_output=True,text=True,timeout=300)
     (a.output/'sdk.log').write_text(run.stdout+run.stderr)
     if run.returncode:raise RuntimeError(run.stderr[-5000:])
@@ -139,6 +149,9 @@ def main():
         execution=json.loads((path.parent/'execution.json').read_text())
         assert execution['official_configuration_valid'] and execution['bundle_sha256']==sha(path)
         assert execution['result_sha256']==sha(path.parent/'sdk.npz')
+        if a.chunk_steps is not None:
+            assert execution['chunked']['result_sha256']==sha(path.parent/'sdk-chunked.npz')
+            assert execution['chunked']['differences']==0
         reports.append(dict(case=root.name,steps=plan['steps'],sizes=plan['sizes'],compared_values=comparison,
             hidden_spikes=int(sdk['hidden_q'].sum()),output_spikes=int(sdk['output_q'].sum()),
             max_hidden_spikes_per_tick=int(sdk['hidden_q'].max()),differences=0,
@@ -151,10 +164,14 @@ def main():
     assert observed('positive_saturation')['hidden_I'].max()==32766
     assert observed('negative_saturation')['hidden_v'].min()==-32768
     assert observed('minimum_decay')['hidden_I'].min()==-1 and observed('minimum_decay')['hidden_I'].max()==1
+    if a.suite=='coverage':
+        boundary=observed('chunk_boundary_impulse')
+        assert boundary['hidden_q'][6,0]>0 and boundary['output_q'][7,0]>0
+        assert boundary['hidden_q'][14:,0].sum()>0
     report=dict(schema='atlas.xylo.temporal-audit.v1',passed=True,cases=reports,
                 native_atlas_runner_sha256=sha(a.runner),same_tick_comparison=True,
                 official_configuration_validation=True,nonvacuous_boundary_checks=True,physical_hardware=False,hardware_mapping_tested=False,
-                classification_accuracy_tested=False)
+                classification_accuracy_tested=False,suite=a.suite,parameter_coverage=coverage)
     (a.output/'audit.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(dict(cases=len(reports),state_values=sum(sum(r['compared_values'].values()) for r in reports),
                          hidden_spikes=sum(r['hidden_spikes'] for r in reports),output_spikes=sum(r['output_spikes'] for r in reports),differences=0)))

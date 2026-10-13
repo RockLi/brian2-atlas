@@ -4,7 +4,9 @@ from pathlib import Path
 import numpy as np
 
 
-def run(plan):
+def run(plan, *, chunk_steps=None):
+    if chunk_steps is not None and (type(chunk_steps) is not int or chunk_steps < 1):
+        raise ValueError('chunk_steps must be a positive integer')
     from rockpool.devices.xylo.syns61201 import config_from_specification,XyloSim
     import samna
     import xylosim.v2
@@ -24,9 +26,15 @@ def run(plan):
     # Build from the validated hardware config, not a separately constructed
     # unrestricted simulator specification. No hardware device is opened.
     model=XyloSim.from_config(config,dt=plan['dt_seconds'],output_mode='Spike')
-    spikes,_,record=model.evolve(np.array(plan['input_raster'],dtype=int),record=True)
-    result=dict(hidden_I=record['Isyn'],hidden_v=record['Vmem'],hidden_q=record['Spikes'],
-                output_I=record['Isyn_out'],output_v=record['Vmem_out'],output_q=spikes)
+    raster=np.array(plan['input_raster'],dtype=int)
+    chunks=[]
+    width=chunk_steps if chunk_steps is not None else len(raster)
+    for start in range(0,len(raster),width):
+        # Keep the same model: recurrence and neuron states cross chunk boundaries.
+        spikes,_,record=model.evolve(raster[start:start+width],record=True)
+        chunks.append(dict(hidden_I=record['Isyn'],hidden_v=record['Vmem'],hidden_q=record['Spikes'],
+                           output_I=record['Isyn_out'],output_v=record['Vmem_out'],output_q=spikes))
+    result={key:np.concatenate([chunk[key] for chunk in chunks],axis=0) for key in chunks[0]}
     result['configuration_json']=config.to_json()
     result['configuration_valid']=np.array(True)
     result['sdk_binary_sha256']=hashlib.sha256(Path(xylosim.v2.__file__).read_bytes()).hexdigest()

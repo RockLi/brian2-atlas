@@ -5,7 +5,39 @@ runs the native Atlas Rust executor and lowers the same IR to an official
 SynSense Xylo Audio 2 configuration. Rockpool/Samna validate that configuration;
 XyloSim v2 then executes **from the validated configuration**.
 
-## Verified result — 2026-10-13
+## Expanded coverage — 2026-10-13
+
+The expanded suite contains **50 networks**: the original 13 cases, 32 seeded
+random networks and five size, duration or chunk-boundary cases. All 50 pass
+Samna's official configuration validator.
+
+- **505,455 current, membrane and spike-count values** match native Atlas exactly.
+- **1,311,454 hidden spikes** and **31,352 output spikes**, counting multiplicity,
+  agree; the native spike event pairs also match.
+- Every network also runs in chunks of **7 steps** on one persistent SDK model.
+  All 505,455 values match the full SDK run. A dedicated case fires immediately
+  before a chunk boundary, delivers to the output after the boundary and retains
+  recurrent activity through later silent-input chunks.
+- Dimensions reach **16 inputs / 64 hidden / 8 outputs**, the current profile's
+  limit. Durations cover **1 through 10,000 steps** at selected lengths.
+- Random inputs exercise counts 0–15, all synaptic shifts 0–15 and membrane
+  shifts 1–15, weight endpoints -128/127, and signed bias endpoints.
+- **8 cases** independently match Brian2 NumPy states and spike events, including
+  random networks, the largest dimensions, one neuron and one tick.
+- **130 Python tests** pass across the Xylo and existing conversion regressions.
+
+The random seed is `20261013`. The audit lists the parameters actually covered;
+these are sampled semantic cases, not an exhaustive proof or a code-coverage
+percentage. This change does not expand the admitted neuron semantics, the IR
+schema or the native executor. Chunking tests SDK state preservation within one
+run; it does not add Atlas checkpoint/resume support.
+
+See the expanded [audit](evidence/expanded/audit.json),
+[Brian2 comparison](evidence/expanded/brian2-audit.json) and
+[source identities](evidence/expanded/manifest.json). The original evidence below
+is retained unchanged.
+
+## Original verification — 2026-10-13
 
 - **13 networks** passed the official configuration validator.
 - **38,016** recorded current, membrane and spike-count values agreed exactly
@@ -139,10 +171,24 @@ python -m pytest -q \
   brian2-rust/tests/test_lava_dense_b2ir.py
 ```
 
+To reproduce the expanded suite and its independent Brian2 check:
+
+```sh
+python brian2-rust/examples/neuromorphic/xylo_temporal/compare.py \
+  --suite coverage --chunk-steps 7 \
+  --runner "$B2_RUNNER" \
+  --sdk-python /absolute/path/to/xylo-env/bin/python \
+  --output output/neuromorphic/xylo-coverage
+python brian2-rust/examples/neuromorphic/xylo_temporal/verify_brian2.py \
+  --coverage --run output/neuromorphic/xylo-coverage
+```
+
 Choose a new output directory. Each case keeps its source IR, converted bundle,
 native Atlas results, SDK output and serialized official configuration. The
 separate SDK worker gets bundles only; comparison with Atlas happens afterwards.
-The audit records identities, versions and per-case counts.
+The audit records identities, versions and per-case counts. With `--chunk-steps`,
+it also records the chunked output hash and comparison count; the raw
+`sdk-chunked.npz` is saved alongside each full-run result.
 
 References: [official Xylo limits and simulator workflow](https://rockpool.ai/devices/quick-xylo/deploy_to_xylo.html),
 [official configuration API](https://rockpool.ai/reference/_autosummary/devices.xylo.syns61201.config_from_specification.html),
