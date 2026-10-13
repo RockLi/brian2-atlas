@@ -1,8 +1,11 @@
 # Brian2 Atlas
 
-Brian2 Atlas combines the Brian2 modelling interface with native simulation,
-GPU/browser backends, distributed MPI execution and native training. This
-repository contains the product implementation and its regression tests.
+Brian2 Atlas brings simulation, training and model conversion to the Brian2
+modelling interface. It supports native CPU simulation, GPU/browser backends,
+distributed MPI execution, native training, and experimental conversion to
+software targets for neuromorphic chip ecosystems. AtlasIR is the shared
+representation for execution and conversion. This repository contains the
+product implementation and its regression tests.
 [The preprint repository](https://github.com/RockLi/brian2-atlas-preprint) contains
 the manuscript, historical experiments and reproduction materials.
 
@@ -83,19 +86,50 @@ Use `engine="aot"` for model-specialized CPU execution. Backend capabilities
 are checked explicitly; unsupported model constructs raise a capability error.
 See [the backend guide](brian2-rust/README.md) for GPU, browser, MPI and training.
 
-## Experimental neuromorphic conversion
+## Neuromorphic chip ecosystems: experimental conversion
 
-`brian2_atlas.neuromorphic` converts validated AtlasIR to optional Akida, Lava,
-Specksim, SpiNNaker2, XyloSim and DynapSim **software simulator** plans. Each target admits an explicit
-semantic subset; this does not imply physical chip support. The
-[frozen TensorFlow example](brian2-rust/examples/neuromorphic/README.md) uses the
-same quantized count model, weights and source IR across all five targets,
-with fresh Atlas execution and exact output checks. Arbitrary TF graphs,
-on-chip learning and general temporal SNN conversion are outside this example.
-Separate bounded temporal profiles cover SpiNNaker2 LIF, Xylo dynamics and
-DYNAP-SE2 circuit dynamics.
+`brian2_atlas.neuromorphic` converts validated AtlasIR into plans for six
+neuromorphic software targets. Conversion preserves the admitted source
+semantics and rejects unsupported constructs. These are development additions;
+they are not included in the frozen `v0.1.0` release installed above.
+
+| Chip ecosystem | Software target | Verified conversion scope |
+|---|---|---|
+| BrainChip Akida | Akida SDK simulator | Frozen signed/biased integer MLPs and binary count classifiers |
+| Intel Loihi | Lava CPU simulation | Frozen integer MLPs with a uniform hidden shift, and binary count classifiers |
+| SynSense Speck | Specksim | Restricted binary count classifiers |
+| SpiNNaker2 | py-spinnaker2 Brian2 backend | Frozen integer MLPs, binary count classifiers and a bounded temporal LIF profile |
+| SynSense Xylo Audio 2 | XyloSim | Binary count classifiers and bounded integer temporal dynamics |
+| SynSense DYNAP-SE2 | Rockpool DynapSim | A bounded temporal DPI circuit-model profile |
+
+The static inference path is **externally trained, frozen weights → Brian2
+model → AtlasIR → target simulator**. Atlas runs the same source model as the
+reference. Training through Atlas is a separate capability; this conversion
+path does not perform on-chip learning or import arbitrary TensorFlow graphs.
+
+Two full MNIST test-set results are available:
+
+- The original TensorFlow-trained **784→256→10 MLP reaches 98.74%** on Akida,
+  Lava and SpiNNaker2 with the same frozen model and weights. The latest
+  SpiNNaker2 run matches a fresh native Atlas replay on all **2,660,000 hidden
+  and output states** across 10,000 images. Its optimized encoding reduces
+  first-layer connections by 94.5%.
+  [Full-model result and reproduction](brian2-rust/examples/neuromorphic/spinnaker2_dense/README.md).
+- A separate, smaller binary count model reaches **90.03%** on Akida, Lava,
+  Specksim, SpiNNaker2 and XyloSim, with exact conversion equivalence.
+  [TensorFlow example](brian2-rust/examples/neuromorphic/README.md) and
+  [additional count targets](brian2-rust/examples/neuromorphic/count_targets/README.md).
+
+All of these results use **software execution**. Hardware placement, physical
+chip execution, power and latency remain unverified. Simulator admission also
+does not guarantee hardware fit; for example, the Xylo count MNIST encoding
+exceeds the chip's input-channel limit. The temporal profiles have their own
+state and spike checks; static classifier encodings do not establish general
+SNN portability.
+
 The [compatibility checklist](brian2-rust/examples/neuromorphic/COMPATIBILITY.md)
-lists verified features, limits and reproducible simulator coverage.
+records supported features, numeric limits, rejected combinations and execution
+evidence for each target.
 
 ## Validation and support scope
 
