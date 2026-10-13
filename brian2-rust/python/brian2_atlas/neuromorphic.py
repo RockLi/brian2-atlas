@@ -14,7 +14,7 @@ from brian2_rust.akida_b2ir import lower_b2ir
 from brian2_rust.protocol import canonical_bytes
 
 TARGETS = ('akida', 'lava', 'specksim', 'spinnaker2', 'xylosim')
-PROFILES = ('dense-int8-v1', 'binary-count-v1', 'spinnaker2-lif-v1')
+PROFILES = ('dense-int8-v1', 'binary-count-v1', 'spinnaker2-lif-v1', 'xylo-audio2-temporal-v1')
 
 
 def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
@@ -25,12 +25,24 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
     MLPs on Akida/Lava; Specksim explicitly rejects that general profile.
     ``spinnaker2-lif-v1`` admits a separate temporal LIF subset with embedded
     spike input; use target ``spinnaker2``. See the dedicated example.
+    ``xylo-audio2-temporal-v1`` admits bounded integer current/membrane
+    dynamics, recurrent spike counts and hardware-sized Xylo Audio 2 graphs.
     The runner is a trusted native Atlas executable supplied by the caller.
     """
     if target not in TARGETS:
         raise ValueError(f'unknown simulator target: {target!r}; expected {TARGETS}')
     if profile not in PROFILES:
         raise ValueError(f'unknown conversion profile: {profile!r}')
+    if profile == 'xylo-audio2-temporal-v1':
+        if target != 'xylosim':
+            raise ValueError('xylo-audio2-temporal-v1 is only supported by xylosim')
+        from brian2_rust.xylo_b2ir import lower_b2ir as lower_xylo
+        plan = lower_xylo(model_path, runner=runner)
+        return dict(schema='atlas.neuromorphic.simulator-bundle.v1', target=target, profile=profile,
+                    input_domain='embedded integer spike-count raster', plan=plan,
+                    source_model_sha256=plan['source_model_sha256'], source_hashes=plan['source_hashes'],
+                    atlas_validator_sha256=plan['atlas_validator_sha256'],
+                    physical_hardware=False, hardware_mapping_tested=False)
     if profile == 'spinnaker2-lif-v1':
         if target != 'spinnaker2' or profile != 'spinnaker2-lif-v1':
             raise ValueError('spinnaker2-lif-v1 is only supported by target spinnaker2')

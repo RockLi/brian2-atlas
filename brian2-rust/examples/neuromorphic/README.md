@@ -207,3 +207,13 @@ These use `binary-count-v1`; neither admits the larger signed/biased MLP.
 SpiNNaker2 expands the count into comparator neurons. XyloSim uses recorded
 hidden spikes and exceeds Xylo Audio 2's hardware input-channel limit, which
 is explicitly recorded in its plan. Both are software-only conversion targets.
+
+
+## Temporal Xylo Audio 2 profile
+
+The [Xylo temporal example](xylo_temporal/README.md) converts small integer
+current/membrane networks, including recurrent spike multiplicity, to official
+hardware-sized configurations. Thirteen configurations passed the vendor
+validator and matched Atlas at every recorded tick. This is separate from the
+MNIST count encoding above: it uses the standard output neurons and admits at
+most 16 input channels. Physical chip execution remains untested.

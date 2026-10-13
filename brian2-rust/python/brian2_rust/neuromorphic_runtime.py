@@ -30,6 +30,11 @@ def validate_inputs(bundle, samples):
 
 
 def run_simulator(bundle, samples=None, *, batch_size=50):
+    if bundle.get('profile') == 'xylo-audio2-temporal-v1':
+        if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
+                or bundle.get('target') != 'xylosim' or samples is not None):
+            raise ValueError('Xylo temporal requires xylosim and its embedded spike-count raster')
+        return _module('xylo_runtime').run(bundle['plan'])
     if bundle.get('target') == 'spinnaker2' and bundle.get('profile') == 'spinnaker2-lif-v1':
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('profile') != 'spinnaker2-lif-v1' or samples is not None):
