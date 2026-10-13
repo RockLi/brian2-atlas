@@ -162,12 +162,16 @@ def _lower_validated(model):
         pathway = state['pathways'][0]
         require(pathway['kind'] == 'pre' and pathway['event'] == 'spike' and not pathway['pending']
                 and pathway['delay_initializer'] is None, 'pending events/dynamic delays are unsupported')
-        w = [number(v) for v in state['parameters']['w']]
+        count = len(state['source'])
+        def expanded(values, name):
+            require(len(values) in (1, count), name + ' must be scalar or per-synapse')
+            return values * count if len(values) == 1 else values
+        w = [number(v) for v in expanded(state['parameters']['w'], 'weights')]
         require(all(np.isfinite(v) and v == int(v) and 0 < abs(v) <= 15 for v in w),
                 'lif weights must be nonzero integers in [-15,15]; SDK quantization must be lossless')
-        delays = pathway['delay_ticks']
+        delays = expanded(pathway['delay_ticks'], 'delay ticks')
         require(all(0 <= v <= 7 for v in delays), 'lif delays must fit 3 bits (0..7 ticks)')
-        require(all(number(bits) == ticks * 0.001 for bits, ticks in zip(pathway['delay'], delays)),
+        require(all(number(bits) == ticks * 0.001 for bits, ticks in zip(expanded(pathway['delay'], 'delays'), delays)),
                 'delay must already be an exact integer number of ticks')
         pairs = list(zip(state['source'], state['target']))
         require(len(set(pairs)) == len(pairs), 'multapses would be merged by the SDK sparse matrices')

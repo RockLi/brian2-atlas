@@ -144,3 +144,28 @@ def test_sdk_off_clock_timestamps_rejected(times):
     from brian2_rust.spinnaker2_runtime import spike_ticks
     with pytest.raises(ValueError,match='clock'):
         spike_ticks(times)
+
+
+def test_scalar_delay_broadcast_preserves_every_connection(model):
+    for synapse in model['instance']['synapses']:
+        synapse['pathways'][0]['delay'] = [bits(0.)]
+        synapse['pathways'][0]['delay_ticks'] = [0]
+    plan = _lower_validated(model)
+    for original, converted in zip(model['instance']['synapses'], plan['projections']):
+        assert len(converted['connections']) == len(original['source'])
+        assert all(row[3] == 0 for row in converted['connections'])
+
+
+def test_scalar_weight_broadcast_preserves_every_connection(model):
+    for synapse in model['instance']['synapses']:
+        synapse['parameters']['w'] = [bits(2.)]
+    plan = _lower_validated(model)
+    for original, converted in zip(model['instance']['synapses'], plan['projections']):
+        assert len(converted['connections']) == len(original['source'])
+        assert all(row[2] == 2 for row in converted['connections'])
+
+
+def test_invalid_delay_shape_is_not_silently_zipped(model):
+    model['instance']['synapses'][0]['pathways'][0]['delay_ticks'] = [0, 1]
+    with pytest.raises(ValueError, match='scalar or per-synapse'):
+        _lower_validated(model)

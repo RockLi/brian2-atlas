@@ -9,6 +9,7 @@ from pathlib import Path
 import argparse
 import matplotlib
 matplotlib.use("Agg")
+matplotlib.rcParams["svg.hashsalt"] = "atlas-architecture-v1"
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 from matplotlib.font_manager import FontProperties
@@ -133,11 +134,12 @@ def render(out, lang, font_path=None):
       "转换验证  ·  Atlas 参考执行 ↔ 目标 SDK",size=17,weight="bold")
     t(650,1198,"Compare states, outputs and spike ticks; exact equality or an explicit profile tolerance.",
       "对比状态、输出与脉冲时刻；按语义子集要求逐位一致或满足明确误差界限。",size=13,color=MUTED)
+    arrow([(320,1115),(320,1150)],PURPLE)
     box(70,1152,500,76,fill="#FFFFFF",edge=LINE,dashed=True)
-    t(91,1166,"No general training-checkpoint → chip bridge",
-      "尚无通用的训练检查点 → 芯片转换通路",size=13,weight="bold")
-    t(91,1198,"Conversion needs an admitted source model.",
-      "转换必须满足目标支持的源模型语义。",size=13,color=MUTED)
+    t(91,1166,"Native LIF → AtlasIR → SpiNNaker2",
+      "原生 LIF → AtlasIR → SpiNNaker2",size=13,weight="bold")
+    t(91,1198,"Explicit quantization · bounded fresh-state profile.",
+      "显式量化 · 受限模型 · 每样本状态清零。",size=13,color=MUTED)
 
     t(70,1260,"Verification boundary", "验证边界",size=14,weight="bold")
     t(70,1292,"Native CPU/GPU and same-host MPI: bounded validation. Cross-host / multi-GPU: not qualified.",
@@ -147,7 +149,11 @@ def render(out, lang, font_path=None):
     out.mkdir(parents=True,exist_ok=True)
     stem = "atlas-architecture" + ("-zh" if zh else "")
     for ext in ("svg","png"):
-        fig.savefig(out/f"{stem}.{ext}",dpi=140,facecolor=fig.get_facecolor())
+        path = out/f"{stem}.{ext}"
+        fig.savefig(path,dpi=140,facecolor=fig.get_facecolor(),
+                    metadata={"Date": None} if ext == "svg" else None)
+        if ext == "svg":
+            path.write_text("\n".join(line.rstrip() for line in path.read_text().splitlines())+"\n")
     plt.close(fig)
 
 

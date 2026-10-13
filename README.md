@@ -34,8 +34,10 @@ Atlas exposes three capabilities through the Brian2 modelling interface:
 Simulation and conversion share **AtlasIR**. Native training currently uses
 **separately versioned training plans**; it does not run through the frozen
 `b2ir-v1` simulation ABI. The TensorFlow examples import frozen weights into an
-explicit Brian2 model. There is no general TensorFlow graph importer or automatic
-native-training-checkpoint-to-chip export path.
+explicit Brian2 model. A bounded [native LIF training bridge](brian2-rust/examples/neuromorphic/native_training/README.md)
+now connects Atlas-trained networks to SpiNNaker2 software inference through
+explicit quantization and AtlasIR. Arbitrary TensorFlow graphs and general
+native training plans are not admitted by this bridge.
 
 See the [architecture notes](brian2-rust/architecture/README.md) for interfaces and
 validation boundaries. Figures: [English PNG](brian2-rust/architecture/atlas-architecture.png),
@@ -134,7 +136,15 @@ model → AtlasIR → target simulator**. Atlas runs the same source model as th
 reference. Training through Atlas is a separate capability; this conversion
 path does not perform on-chip learning or import arbitrary TensorFlow graphs.
 
-Two full MNIST test-set results are available:
+A separate [native training example](brian2-rust/examples/neuromorphic/native_training/README.md)
+trains both layers of a small MNIST SNN in Atlas, freezes and quantizes its
+weights, and exports through AtlasIR to SpiNNaker2. On the full MNIST test split,
+accuracy is **94.53% before quantization and 93.80% afterward**; SDK inference
+also reaches **93.80%**, with all 11,840,000 spike-raster entries matching native
+Atlas. The audit separates quantization loss from conversion loss. This is a new temporal SNN,
+with different preprocessing and architecture from the TensorFlow models below.
+
+Two externally trained MNIST test-set results are available:
 
 - The original TensorFlow-trained **784→256→10 MLP reaches 98.74%** on Akida,
   Lava and SpiNNaker2 with the same frozen model and weights. The latest

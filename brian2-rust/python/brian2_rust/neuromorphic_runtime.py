@@ -41,6 +41,11 @@ def run_simulator(bundle, samples=None, *, batch_size=50):
             raise ValueError('Xylo temporal requires xylosim and its embedded spike-count raster')
         return _module('xylo_runtime').run(bundle['plan'])
     if bundle.get('target') == 'spinnaker2' and bundle.get('profile') == 'spinnaker2-lif-v1':
+        if 'native_training_bridge' in bundle and samples is not None:
+            if bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1':
+                raise ValueError('unknown simulator bundle schema')
+            return _module('spinnaker2_runtime').run_native_batch(
+                bundle['plan'], bundle['native_training_bridge'], samples, batch_size)
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('profile') != 'spinnaker2-lif-v1' or samples is not None):
             raise ValueError('SpiNNaker2 requires spinnaker2-lif-v1 and its embedded spike schedule')

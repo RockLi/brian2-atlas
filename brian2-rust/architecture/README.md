@@ -39,8 +39,12 @@ state as specified by the training contract.
 
 The training plans are versioned independently of the frozen AtlasIR simulation
 ABI. A shared frontend does not mean that an arbitrary simulation model can be
-trained or exported to a chip. There is currently no general automatic bridge
-from native training checkpoints to neuromorphic conversion.
+trained or exported to a chip. The first [native training bridge](../examples/neuromorphic/native_training/README.md)
+now freezes a bounded dense LIF model, applies explicit quantization, constructs
+an inference-equivalent Brian2 model, and exports through AtlasIR to SpiNNaker2.
+It admits beta=0.5, subtract reset and fresh binary-input sequences of at most
+16 ticks. General training plans and live checkpoint continuation are not
+supported by this bridge.
 
 ### Neuromorphic conversion
 
@@ -63,7 +67,9 @@ They do not all accept the same models:
 
 The external TensorFlow path imports frozen parameters into an explicitly
 constructed Brian2 model. It is not a general Keras/SavedModel graph importer,
-and it does not train on the target chip.
+and it does not train on the target chip. Native Atlas training is a second
+source path: its bounded LIF exporter joins the same AtlasIR conversion API,
+with separate float-versus-quantized and quantized-versus-SDK checks.
 
 ## What the validation means
 

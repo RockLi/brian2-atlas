@@ -65,3 +65,17 @@ are outside this increment's acceptance scope.
 Historical development documentation and receipts are preserved in the preprint
 repository. They are separate from results measured on this Atlas source tree.
 The `v0.1.0` tag and paper release remain unchanged.
+
+## Export a trained LIF network
+
+The [native MNIST conversion example](examples/neuromorphic/native_training/README.md)
+connects `NativeLIFTrainer` to SpiNNaker2 software inference. Both dense layers
+are trained with the native CPU forward/backward/optimizer, then frozen with
+`freeze_native_lif` and exported through AtlasIR with `export_native_lif`.
+Quantization is explicit and is measured separately from conversion.
+
+This first bridge accepts dense v1 plans, subtract reset, beta=0.5, binary
+inputs, power-of-two target scales and at most 16 inference ticks. It exports
+weights for fresh zero-state inference; it does not export the optimizer or
+resume a live training state on the target. Other native training plans and
+on-chip training remain outside this path.

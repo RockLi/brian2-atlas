@@ -38,6 +38,23 @@ limits. DynapSim has no established exact integer-MLP mapping. These are
 specific current obstacles, not universal impossibility claims.
 See [the experiments, original-model bounds and next steps](dense_feasibility/README.md).
 
+
+### Native Atlas training source
+
+The [native LIF example](native_training/README.md) adds a source bridge into
+`spinnaker2-lif-v1`; it does not add a seventh target or another profile-matrix
+row. Both layers are trained in `b2-train`. Freezing explicitly quantizes the
+weights, and conversion uses a declared state transformation to reconcile
+native training and SDK scheduling. The full MNIST test audit reports float,
+quantized-native and SDK accuracy separately.
+
+The bridge accepts dense v1 training plans, beta=0.5, subtract reset, binary
+inputs, power-of-two scales, up to 256 inputs and 256 total LIF neurons, and
+1–16 inference ticks. Scaled weights must fit [-15,15] without clipping.
+Simulator batching replicates independent admitted networks; it does not claim
+that a batched graph fits physical hardware. Other training schemas, masks,
+live state continuation and on-chip learning are rejected or not implemented.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -52,9 +69,10 @@ See [the experiments, original-model bounds and next steps](dense_feasibility/RE
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
 | Stateful chunked input | Xylo temporal: 7-step chunks match a full run; not verified for the other temporal SDK path |
-| Atlas checkpoint/resume through conversion | Not implemented; temporal profiles require a fresh zero-state run |
+| Native trained weights → inference | Verified for the bounded dense LIF bridge to SpiNNaker2; explicit quantization, beta=0.5, subtract reset, binary input, at most 16 ticks |
+| Atlas live checkpoint/resume through conversion | Not implemented; native bridge exports weights for fresh inference, not optimizer/continuation state |
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
-| Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; external training is separate from conversion |
+| Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; native or external training occurs before freezing and conversion |
 | Native temporal convolutional SNN lowering | Not implemented; Specksim uses a convolution to encode a static classifier |
 | Official hardware configuration validation | Xylo temporal: all 50 tested configurations accepted by Samna |
 | Physical chip execution / placement | Not verified by these suites |

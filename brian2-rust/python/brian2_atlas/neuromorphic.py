@@ -114,3 +114,7 @@ def export_ir(model_path, directory, **kwargs):
     (directory/'source.json').write_bytes(encoded)
     (directory/'bundle.json').write_text(json.dumps(bundle, indent=2)+'\n')
     return bundle
+
+
+# Native training is frozen explicitly before target conversion.
+from brian2_rust.native_lif_conversion import freeze_native_lif, export_native_lif
