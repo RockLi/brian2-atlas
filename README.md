@@ -143,6 +143,16 @@ also reaches **93.80%**, with all 11,840,000 spike-raster entries matching nativ
 Atlas. The audit separates quantization loss from conversion loss. This is a new temporal SNN,
 with different preprocessing and architecture from the TensorFlow models below.
 
+The [character language-model example](brian2-rust/examples/neuromorphic/language_model/README.md)
+trains a 129→128→32 LIF model in Atlas to predict the next character from a
+fixed four-character context. On its 9,996 held-out targets, perplexity is
+**8.09 before quantization and 9.92 afterward**, versus **11.43** for a
+training-only bigram baseline. SpiNNaker2 also reaches **9.92** with exact
+per-token logits, probabilities and spikes; 32 autoregressively generated
+characters match too. Each prediction starts from zero neuron state. This
+validates a bounded language-model conversion, not general LLM or persistent
+recurrent-state support.
+
 Two externally trained MNIST test-set results are available:
 
 - The original TensorFlow-trained **784→256→10 MLP reaches 98.74%** on Akida,

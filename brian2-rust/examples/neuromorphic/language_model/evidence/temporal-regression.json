@@ -1,0 +1,292 @@
+{
+  "schema": "atlas.spinnaker2.lif-audit.v1",
+  "passed": true,
+  "cases": [
+    {
+      "case": "recurrent_16",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 16,
+      "state_values": 48,
+      "spikes": 9,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "f2dd61aefe4f6b13f4540e7d1815aad0ae0620ea08e735e7163f70acd7d125c2",
+      "atlas_results_sha256": "9180376955793747bf2694b4ef87ab2892b8c705f8f01fdb721c0e19b15c91b2",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "604383039edd3eec1f4af5fa411e42e1219a573eb87fa35d4b0634ada360a116",
+        "results_sha256": "82da474d6575c46f6c8f5cfd847ff8b3ab2f808740d4ec84891e69f0602c2c28"
+      }
+    },
+    {
+      "case": "recurrent_64",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 64,
+      "state_values": 192,
+      "spikes": 26,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "11a223192b5e8acbb4862fa1451eaf76f084f75d587981654d247f7bc59532ab",
+      "atlas_results_sha256": "eaad9d775c26aac757329404f51eaca627d4dec9dc9ac58cb5bd30d39e9d0e0f",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "b5cf9969e071acfb38015f6d71a7df31f9bfacd5b91787ee18074d693a7340d8",
+        "results_sha256": "83ab0165feca615b70f8dc6e7e068adf5bb29ae4a01d219af9590d9662db898a"
+      }
+    },
+    {
+      "case": "subtract_reset",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 64,
+      "state_values": 192,
+      "spikes": 191,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "0d8cd66e1b3355c01332230114fc407c0f43ed78eb44851454b633c202d221d8",
+      "atlas_results_sha256": "defb84a75045cb88e8eebbccf4c4c77e4da83cbf9cdb6f79dc21cbfed8aa8837",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "25a4de44e9c5739c99dfab3db1bca57f76258c7187605f82370ec4f603a1a81b",
+        "results_sha256": "385710c078a4a950c627477c3c1d884315bad0349ae63aebfd866c1bbfd16c68"
+      }
+    },
+    {
+      "case": "nonzero_reset",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 64,
+      "state_values": 192,
+      "spikes": 26,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "bda4146d206966a9a1f54671ded2b6b4771455914b636685b23fe29f4be6b94f",
+      "atlas_results_sha256": "ff02cefeab0b57c84386c42a24271c22c8bb3e89bace2c6d6486369bde904f00",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "763e4b5a3c950c5eaba5a8da93c7428625cfc8c78baffc735c5a658d780e56c2",
+        "results_sha256": "a1ebed9c3bcd433b251ceb274aefb6163ad1488c0d5a38c579380046c0b0d388"
+      }
+    },
+    {
+      "case": "zero_delay",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 12,
+      "state_values": 36,
+      "spikes": 0,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "b7a87c92e14381e9d56607c0cccb8d77fa13b9eb1b306381151696f17a77ffb6",
+      "atlas_results_sha256": "d31d61435607a00fb984dfe4e7c37dec8389685e621de31b3bc93be8a10b1557",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "46b077eb283a8b00d81deabefa081a887c26cd96c2d3dd215f7ff5f094b206ff",
+        "results_sha256": "6a000e7793df3e7aa46054a118f9250836801066f012f0da9eaab44d36c69d1e"
+      }
+    },
+    {
+      "case": "seven_tick_delay",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 12,
+      "state_values": 36,
+      "spikes": 0,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "1c832c6e6f005a47c03d5eabbc2b5c4666d24d2a242e64bfc8ca41c3b366c86e",
+      "atlas_results_sha256": "2b476f0c2b499e1182c37da6bca128621bb46df561f0384410a5bee4a0b9bb41",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "205a633fafd6766f59636bde87b20102f06188d76eaa7a4abc880aa0eef0c5a5",
+        "results_sha256": "a36289720cb899a6de100af26f7f5b909cfee6311a374f855d2ced1a352c4cd3"
+      }
+    },
+    {
+      "case": "pending_at_end",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 12,
+      "state_values": 36,
+      "spikes": 0,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "b0dff4ff62b80b1b6ee09f609c6d0345c3705fe3ede08ffe6b9bcff9470ae46b",
+      "atlas_results_sha256": "abad0bb889aa2c92aa4b212b134c887913d5665851a3450957524e623fd4e1c3",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "d77cb271018f17b3327881c3623c945a74dfc87a760b89046f6f06596cbc5928",
+        "results_sha256": "3405831f12509c2a2aa6fe6be54d23c38a123a88403f395c0ac6cf33f060fef9"
+      }
+    },
+    {
+      "case": "threshold_equality",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 16,
+      "state_values": 48,
+      "spikes": 0,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "bf806e99a9d6b7537786a19dc0c0a5a8e6f746ed51886779e7831bf482d810f5",
+      "atlas_results_sha256": "dffe2c63dadd7e9ff52f90c6a59869255e889f5430a58385595c83532a7f938e",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "fb31a541d8ad2cf04e710f29101435fa6756ec788eaad647b9fc044e31cd0192",
+        "results_sha256": "5764af1e02d79984e1713f3b40e9cc4c3703e588469c69fb989c1186e639fce4"
+      }
+    },
+    {
+      "case": "threshold_above",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 16,
+      "state_values": 48,
+      "spikes": 48,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "2957a0e0d4d9b5b0bb1bb119ce40f40623739e2a98795966e87e756860e598ed",
+      "atlas_results_sha256": "4b0544bc788582d04b13d4989352d6a4ba93eae72ebcdb61fd8215bd19cea3c8",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "538339d858baad94ae0b6394e62355cba630c60e5061fcacf34dc42fc9227aa8",
+        "results_sha256": "d6cf4772cac94f0af47a6a04d76b6c31396f9a57c5b30ad0c7fdc1830c75da06"
+      }
+    },
+    {
+      "case": "weight_limits",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 64,
+      "state_values": 192,
+      "spikes": 26,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "7ea5e2b5718f33d30a6f7fecdf020bb18ee691cf94c1fc5602ee0d9daf197b2e",
+      "atlas_results_sha256": "1058229fb8635c8308e29121ff292db5bf46094a7def5c6e805c63b4d64d55cd",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "3e0d54a55797011e256f3f10403282ed0cdf678deb82d8f9f2216fe47297c867",
+        "results_sha256": "4b8b465a511e8ea2095fc415ae7c1b5cddf38fff94ec74715fcca9ccda5fd353"
+      }
+    },
+    {
+      "case": "silent",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 64,
+      "state_values": 192,
+      "spikes": 0,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "9ba8f07c983e46d73835b7ffd7f6154b3b55f39af25d5bf7e0e9560ba9f3667a",
+      "atlas_results_sha256": "93012e60db6b743ec7b57e2b8f8aabfec797f120e237872e37f24c0baf58da36",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "ea209a834427ff1b96960209218a0dc3884862b271ac4477b660100ffda3d11d",
+        "results_sha256": "34a78a97e38b8762f3e50b1321e59accb5c1bd36ccbc90f2321e929443691490"
+      }
+    },
+    {
+      "case": "seeded_recurrent",
+      "sdk_public_timestamp_differences": 0,
+      "steps": 128,
+      "state_values": 384,
+      "spikes": 68,
+      "spike_differences": 0,
+      "max_abs_voltage_error": 0.0,
+      "public_float32_voltage_differences": 0,
+      "source_model_sha256": "18628b42cd943d551e500992b2d14f733497aeb5e80231e4b673a92c1f277a6e",
+      "atlas_results_sha256": "bcdd68b79d08a7f7a88bc8fa06ff21d18b16ba4b739cfa6a5e9ab6dbd66b3787",
+      "sdk_execution": {
+        "versions": {
+          "spinnaker2": "0.8.0",
+          "brian2": "2.10.1",
+          "numpy": "2.3.4",
+          "scipy": "1.18.1"
+        },
+        "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+        "bundle_sha256": "fa4393d2b01cc5a056591a8d5644ca4a8ffb33f2f9e339cb1be7b47126c95bf5",
+        "results_sha256": "7f8c001fe15915524b49f825f08e07bdd2de76e4c31e8d46d19e553ce332ec56"
+      }
+    }
+  ],
+  "runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "sdk_backend": "upstream Brian2 NumPy via py-spinnaker2",
+  "physical_hardware": false,
+  "hardware_mapping_tested": false,
+  "voltage_atol": 1e-12,
+  "voltage_rtol": 0,
+  "spike_comparison": "exact tick and neuron",
+  "includes_mnist": false,
+  "expanded_coverage": false,
+  "random_seed": null
+}

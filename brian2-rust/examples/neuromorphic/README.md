@@ -3,7 +3,10 @@
 This is an experimental **conversion and inference** surface in the Atlas
 product repository. The static examples below use external TensorFlow training.
 The separate [native training example](native_training/README.md) trains a temporal
-LIF classifier in Atlas and exports it to SpiNNaker2. SDKs execute on CPU;
+LIF classifier in Atlas and exports it to SpiNNaker2. The
+[character language-model example](language_model/README.md) uses the same
+bridge for next-character prediction and per-token inference comparisons.
+SDKs execute on CPU;
 there is no chip execution, energy measurement, on-chip training, or automatic
 conversion of arbitrary Keras/SavedModel graphs.
 

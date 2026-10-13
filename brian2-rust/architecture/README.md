@@ -43,7 +43,9 @@ now freezes a bounded dense LIF model, applies explicit quantization, constructs
 an inference-equivalent Brian2 model, and exports through AtlasIR to SpiNNaker2.
 It admits beta=0.5, subtract reset and fresh binary-input sequences of at most
 16 ticks. General training plans and live checkpoint continuation are not
-supported by this bridge.
+supported by this bridge. The [character language-model example](../examples/neuromorphic/language_model/README.md)
+uses this bridge for fixed-context next-character prediction, with the host
+maintaining a four-character context window between fresh inference calls.
 
 ### Neuromorphic conversion
 

@@ -99,8 +99,16 @@ def test_quantized_native_to_atlas_to_sdk(trained,tmp_path):
     np.save(tmp_path/'inputs.npy',x)
     runtime=Path(__file__).resolve().parents[1]/'python/brian2_rust/neuromorphic_runtime.py'
     script='''import importlib.util,json,numpy as np,sys
+from spinnaker2 import snn
+voltage_reads=[]
+original_get_voltages=snn.Population.get_voltages
+def count_voltage_reads(pop):
+    voltage_reads.append(pop.size)
+    return original_get_voltages(pop)
+snn.Population.get_voltages=count_voltage_reads
 spec=importlib.util.spec_from_file_location('runtime',sys.argv[1]);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 bundle=json.load(open(sys.argv[2]));x=np.load(sys.argv[3]);r=m.run_simulator(bundle,x,batch_size=2)
+assert voltage_reads==[12,6], voltage_reads  # Once per batch, not once per neuron.
 np.savez(sys.argv[4],spikes=r['spike_raster'],voltage=r['voltage_f64'],final=r['final_v'])
 '''
     subprocess.run([SDK,'-c',script,str(runtime),str(tmp_path/'export/converted/bundle.json'),str(tmp_path/'inputs.npy'),str(tmp_path/'sdk.npz')],cwd=tmp_path,

@@ -1,0 +1,26 @@
+{
+  "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "packages": {
+    "numpy": "2.5.2",
+    "brian2": "2.10.1.post729",
+    "pytest": "9.1.1"
+  },
+  "tests": [
+    "brian2-rust/tests/test_character_language_model.py",
+    "brian2-rust/tests/test_native_lif_conversion.py",
+    "brian2-rust/tests/test_spinnaker2_b2ir.py"
+  ],
+  "passed": 50,
+  "failed": 0,
+  "skipped": 0,
+  "actual_sdk_test": true,
+  "note": "22 character-language/bridge tests and 28 SpiNNaker2 profile tests passed; real SDK access-count regression included.",
+  "log_sha256": "528e02e3df0e09c203a4aabba1c17181d483d319f5397f72645b44d4afa633fe",
+  "preexisting_ci": {
+    "commit": "e2553432",
+    "frontend_failure": "test_multiple_stateless_function_calls: DID NOT RAISE BrianObjectException",
+    "job_url": "https://github.com/RockLi/brian2-atlas/actions/runs/38409899070/job/115339130534?pr=2"
+  },
+  "profile_test_log_sha256": "d32776f93922dd745ac848928096a39fa855fd53d7883e6b13cce9c31b11ca6e",
+  "temporal_sdk_cases": 12
+}

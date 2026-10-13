@@ -49,8 +49,11 @@ def run(plan):
         monitor = backend.spike_monitors[pop]
         raw_ticks = spike_ticks(monitor.t / b.ms)
         raw_spikes = np.column_stack((raw_ticks, np.asarray(monitor.i, dtype=np.int64)))
+        # The SDK sorts and copies the whole dictionary on every accessor call.
+        # Fetch once so collection stays linear in the population size.
+        public_voltages = pop.get_voltages()
         return dict(
-            voltage=np.stack([pop.get_voltages()[i] for i in range(pop.size)], axis=1),
+            voltage=np.stack([public_voltages[i] for i in range(pop.size)], axis=1),
             voltage_f64=np.asarray(backend.state_monitors[pop].v).T.copy(),
             final_v=np.asarray(backend.pops[pop].v[:]).copy(),
             # SDK get_spikes truncates t/dt and can report a tick too early.

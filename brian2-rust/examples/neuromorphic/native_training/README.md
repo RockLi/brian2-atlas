@@ -167,3 +167,10 @@ python -m pytest -q brian2-rust/tests/test_native_lif_conversion.py \
 Training and SDK wall times describe host software execution. Physical-chip
 placement, hardware arithmetic, power, hardware latency and on-chip learning
 have not been validated by this example.
+
+## Another use of this bridge
+
+The [character language-model example](../language_model/README.md) trains a
+129→128→32 LIF model for next-character prediction. It reuses this same
+fresh-state bridge, with a four-character context encoded by the host, and
+checks held-out perplexity and per-token inference consistency.

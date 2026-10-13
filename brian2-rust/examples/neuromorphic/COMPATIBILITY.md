@@ -48,6 +48,13 @@ weights, and conversion uses a declared state transformation to reconcile
 native training and SDK scheduling. The full MNIST test audit reports float,
 quantized-native and SDK accuracy separately.
 
+The [character language-model example](language_model/README.md) exercises
+the same bridge with a fixed four-character input context and a 32-character
+output distribution. It measures held-out perplexity and per-token parity.
+Each prediction starts from zero LIF state; autoregressive context updates
+happen on the host. It does not add EGRU, Transformer or persistent inter-token
+neural-state support.
+
 The bridge accepts dense v1 training plans, beta=0.5, subtract reset, binary
 inputs, power-of-two scales, up to 256 inputs and 256 total LIF neurons, and
 1–16 inference ticks. Scaled weights must fit [-15,15] without clipping.
