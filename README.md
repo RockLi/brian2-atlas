@@ -86,12 +86,15 @@ See [the backend guide](brian2-rust/README.md) for GPU, browser, MPI and trainin
 ## Experimental neuromorphic conversion
 
 `brian2_atlas.neuromorphic` converts validated AtlasIR to optional Akida, Lava,
-and Specksim **software simulator** plans. Each target admits an explicit
+Specksim, SpiNNaker2 and XyloSim **software simulator** plans. Each target admits an explicit
 semantic subset; this does not imply physical chip support. The
 [frozen TensorFlow example](brian2-rust/examples/neuromorphic/README.md) uses the
-same quantized count model, weights and source IR across all three targets,
+same quantized count model, weights and source IR across all five targets,
 with fresh Atlas execution and exact output checks. Arbitrary TF graphs,
 on-chip learning and general temporal SNN conversion are outside this example.
+Separate bounded temporal profiles cover SpiNNaker2 LIF and Xylo dynamics.
+The [compatibility checklist](brian2-rust/examples/neuromorphic/COMPATIBILITY.md)
+lists verified features, limits and reproducible simulator coverage.
 
 ## Validation and support scope
 

@@ -9,6 +9,15 @@ The example imports an explicit frozen integer checkpoint into a real Brian2
 model, exports AtlasIR, validates it with the current native Atlas runner, and
 compiles three backend-private plans. The IR wire schema remains `b2ir-v1`.
 
+## Compatibility and expanded coverage
+
+The [compatibility checklist](COMPATIBILITY.md) covers all five targets, their
+numeric and temporal contracts, rejected combinations, SDK limitations and
+hardware-validation gaps. The [expanded suite](coverage/README.md) varies
+network weights and dimensions, tests clipping/rounding and sample resets,
+and includes a 20-cell executable compatibility check. Static comparisons and
+temporal pulse comparisons are reported separately.
+
 ## Verified result (2026-10-13)
 
 The complete 10,000-image MNIST test split was freshly executed through the
@@ -213,7 +222,7 @@ is explicitly recorded in its plan. Both are software-only conversion targets.
 
 The [Xylo temporal example](xylo_temporal/README.md) converts small integer
 current/membrane networks, including recurrent spike multiplicity, to official
-hardware-sized configurations. Thirteen configurations passed the vendor
-validator and matched Atlas at every recorded tick. This is separate from the
+hardware-sized configurations. The expanded 50-case suite passed the vendor
+validator and matched Atlas at every recorded tick, including 7-step chunks. This is separate from the
 MNIST count encoding above: it uses the standard output neurons and admits at
 most 16 input channels. Physical chip execution remains untested.

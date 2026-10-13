@@ -51,9 +51,9 @@ def build(config):
     b.prefs.codegen.loop_invariant_optimisations = False
     clock = b.Clock(dt=b.ms, name='clock')
     events = config['events']
-    source = b.SpikeGeneratorGroup(2, [i for _, i in events],
+    source = b.SpikeGeneratorGroup(config.get('input_size',2), [i for _, i in events],
                                   np.array([t for t, _ in events]) * b.ms, clock=clock, name='input_spikes')
-    group = b.NeuronGroup(3,
+    group = b.NeuronGroup(len(config['tau_ms']),
         'dv/dt = -v/tau + i_offset/dt : 1\n'
         'tau : second (constant)\ni_offset : 1 (constant)\n'
         'v_reset : 1 (constant)\nthreshold : 1 (constant)',
@@ -88,11 +88,16 @@ def main():
     p.add_argument('--runner', type=Path, required=True)
     p.add_argument('--sdk-python', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--coverage',action='store_true')
     a = p.parse_args()
     a.output = a.output.resolve()
     a.output.mkdir(parents=True, exist_ok=False)
     bundles, model_hashes = [], {}
-    for name, config in cases().items():
+    networks=cases()
+    if a.coverage:
+        from coverage_cases import cases as expanded_cases
+        networks.update(expanded_cases())
+    for name, config in networks.items():
         root = a.output / name
         root.mkdir()
         source = root / 'model.json'
@@ -128,7 +133,18 @@ def main():
             np.testing.assert_array_equal(sdk['voltage'], atlas['voltage'].astype(np.float32))
             np.testing.assert_array_equal(sdk['spikes'], atlas['spikes'])
             np.testing.assert_array_equal(sdk['raw_spikes'], atlas['spikes'])
-            reports.append(dict(case=name, steps=len(sdk['voltage']), state_values=sdk['voltage'].size,
+            public=sdk['sdk_public_spikes']
+            # Compare per neuron: truncated timestamps can alter global sorting.
+            deltas=[]
+            for neuron in range(sdk['voltage'].shape[1]):
+                actual=public[public[:,1]==neuron,0]
+                expected=atlas['spikes'][atlas['spikes'][:,1]==neuron,0]
+                assert actual.shape==expected.shape
+                delta=actual-expected
+                assert np.isin(delta,[-1,0]).all()
+                deltas.extend(delta.tolist())
+            reports.append(dict(case=name,
+                                sdk_public_timestamp_differences=int(np.count_nonzero(deltas)), steps=len(sdk['voltage']), state_values=sdk['voltage'].size,
                                 spikes=len(sdk['spikes']), spike_differences=0,
                                 max_abs_voltage_error=float(np.max(np.abs(sdk['voltage_f64'] - atlas['voltage']))),
                                 public_float32_voltage_differences=0,
@@ -139,10 +155,11 @@ def main():
                   runner_sha256=sha(a.runner), sdk_backend='upstream Brian2 NumPy via py-spinnaker2',
                   physical_hardware=False, hardware_mapping_tested=False,
                   voltage_atol=1e-12, voltage_rtol=0, spike_comparison='exact tick and neuron',
-                  includes_mnist=False)
+                  includes_mnist=False,expanded_coverage=a.coverage,random_seed=20261013 if a.coverage else None)
     (a.output / 'audit.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(dict(passed=True, cases=len(reports), state_values=sum(r['state_values'] for r in reports),
                          spikes=sum(r['spikes'] for r in reports),
+                         sdk_public_timestamp_differences=sum(r['sdk_public_timestamp_differences'] for r in reports),
                          max_abs_voltage_error=max(r['max_abs_voltage_error'] for r in reports)), indent=2))
 
 

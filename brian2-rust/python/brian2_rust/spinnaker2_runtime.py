@@ -5,6 +5,15 @@ from pathlib import Path
 import numpy as np
 
 
+def spike_ticks(times_in_steps):
+    """Recover aligned SDK clock ticks without truncating float timestamps."""
+    times=np.asarray(times_in_steps,dtype=np.float64)
+    ticks=np.rint(times)
+    if not np.isfinite(times).all() or not np.allclose(times,ticks,rtol=0,atol=1e-8):
+        raise ValueError('SDK spike timestamp is not on the admitted clock')
+    return ticks.astype(np.int64)
+
+
 def run(plan):
     import brian2 as b
     from spinnaker2 import brian2_sim, snn
@@ -38,13 +47,16 @@ def run(plan):
         pop = pops[plan['lif_population']]
         public_spikes = sorted((tick, int(i)) for i, ticks in pop.get_spikes().items() for tick in ticks)
         monitor = backend.spike_monitors[pop]
-        raw_ticks = np.rint(np.asarray(monitor.t / b.ms)).astype(np.int64)
+        raw_ticks = spike_ticks(monitor.t / b.ms)
         raw_spikes = np.column_stack((raw_ticks, np.asarray(monitor.i, dtype=np.int64)))
         return dict(
             voltage=np.stack([pop.get_voltages()[i] for i in range(pop.size)], axis=1),
             voltage_f64=np.asarray(backend.state_monitors[pop].v).T.copy(),
             final_v=np.asarray(backend.pops[pop].v[:]).copy(),
-            spikes=np.asarray(public_spikes, dtype=np.int64).reshape(-1, 2),
+            # SDK get_spikes truncates t/dt and can report a tick too early.
+            # Use its raw monitor clock; preserve the public result for audits.
+            spikes=raw_spikes.reshape(-1, 2).copy(),
+            sdk_public_spikes=np.asarray(public_spikes, dtype=np.int64).reshape(-1, 2),
             raw_spikes=raw_spikes.reshape(-1, 2),
             sdk_simulator_sha256=hashlib.sha256(Path(brian2_sim.__file__).read_bytes()).hexdigest(),
         )

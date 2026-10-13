@@ -127,3 +127,20 @@ def test_static_and_temporal_profiles_cannot_be_mixed():
                   profile='spinnaker2-lif-v1', plan={})
     with pytest.raises(ValueError, match='embedded spike schedule'):
         run_simulator(bundle, [[1]])
+
+
+def test_sdk_float_timestamps_use_nearest_clock_tick():
+    import numpy as np
+    from brian2_rust.spinnaker2_runtime import spike_ticks
+    times=np.array([1,1001,2025,4002,9999],dtype=float)
+    below=np.nextafter(times,-np.inf)
+    assert np.any(below.astype(int)!=times)
+    np.testing.assert_array_equal(spike_ticks(below),times.astype(int))
+    assert spike_ticks([]).shape==(0,)
+
+
+@pytest.mark.parametrize('times',[[1.25],[float('nan')],[float('inf')]])
+def test_sdk_off_clock_timestamps_rejected(times):
+    from brian2_rust.spinnaker2_runtime import spike_ticks
+    with pytest.raises(ValueError,match='clock'):
+        spike_ticks(times)

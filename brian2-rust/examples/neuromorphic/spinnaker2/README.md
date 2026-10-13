@@ -9,7 +9,26 @@ The existing AtlasIR schema already carries the required state updates,
 thresholds, resets, connectivity, delays, spike inputs and schedule. No IR
 schema extension or Rust executor change was needed.
 
-## Result
+## Expanded coverage — 2026-10-13
+
+With `--coverage`, the suite now runs **48 networks**, including 32 seeded
+random cases, one neuron, one tick, 256 input / 256 LIF neurons and 10,000 steps.
+It compares **101,940 voltage samples** and **35,093 spike events**. Spike ticks
+and indices match exactly; maximum float64 voltage error is **1.14e-13**, within
+`atol=1e-12, rtol=0`. SDK public float32 traces match Atlas cast to float32.
+
+The longest case exposed the SDK's floating timestamp truncation: its public
+`get_spikes()` reports 31 events one tick early. The adapter now rounds aligned
+raw monitor timestamps and preserves the public timestamps in the result for
+diagnostics. No event delay or SDK code was changed. Four regression tests
+cover near-integer and invalid timestamps; all 134 shared Python tests pass.
+
+See the [expanded audit](../coverage/evidence/spinnaker2-audit.json),
+[reproduction guide](../coverage/README.md) and
+[compatibility checklist](../COMPATIBILITY.md). This remains an upstream Brian2
+software backend comparison, not a chip-emulator or hardware test.
+
+## Original result
 
 Verified on macOS arm64, 2026-10-13:
 
