@@ -195,3 +195,15 @@ The separate [SpiNNaker2 LIF example](spinnaker2/README.md) converts a native
 time-dependent AtlasIR model to the official SDK Brian2 software backend.
 It checks membrane traces and spike timesteps, rather than reusing the static
 TF classifier profile. Its scope and evidence are documented separately.
+
+
+## Additional count targets
+
+The same frozen 90.03% model and source IR now also run in the official
+SpiNNaker2 Brian2 backend and XyloSim v2 C++ core. Both matched the freshly
+rerun Atlas results over all 10,000 MNIST test images and the boundary inputs.
+See [the conversion details and reproduction steps](count_targets/README.md).
+These use `binary-count-v1`; neither admits the larger signed/biased MLP.
+SpiNNaker2 expands the count into comparator neurons. XyloSim uses recorded
+hidden spikes and exceeds Xylo Audio 2's hardware input-channel limit, which
+is explicitly recorded in its plan. Both are software-only conversion targets.

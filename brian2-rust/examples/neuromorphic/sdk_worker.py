@@ -24,13 +24,15 @@ with np.load(a.inputs,allow_pickle=False) as data:
 started=time.monotonic()
 result=api.run_simulator(bundle,x,batch_size=a.batch_size)
 np.savez_compressed(a.output/'results.npz',**result)
-packages={'akida':['akida','numpy'],'lava':['lava-nc','numpy'],'specksim':['sinabs','samna','torch','numpy']}[bundle['target']]
+packages={'akida':['akida','numpy'],'lava':['lava-nc','numpy'],'specksim':['sinabs','samna','torch','numpy'],'spinnaker2':['spinnaker2','brian2','numpy'],'xylosim':['xylosim','numpy']}[bundle['target']]
 sha=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
 report=dict(target=bundle['target'],samples=len(x),states=int(result['states'].size),
             versions={p:md.version(p) for p in packages},bundle_sha256=sha(a.bundle),inputs_sha256=sha(a.inputs),
             source_model_sha256=bundle['source_model_sha256'],runtime_sha256=sha(a.runtime),
             results_sha256=sha(a.output/'results.npz'),elapsed_seconds=time.monotonic()-started,
             physical_hardware=False,hardware_mapping_tested=False,
+            implementation_sha256={p.name:sha(p) for p in a.runtime.parent.glob('*.py')
+                                   if p.name in ('count_targets.py','neuromorphic_runtime.py')},
             note='CPU simulator wall time is not chip latency or energy.')
 (a.output/'execution.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report),flush=True)

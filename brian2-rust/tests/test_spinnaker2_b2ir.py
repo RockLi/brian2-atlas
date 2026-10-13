@@ -121,7 +121,7 @@ def test_validated_export_preserves_source_and_refuses_tampering(model, tmp_path
 
 def test_static_and_temporal_profiles_cannot_be_mixed():
     for target, profile in [('spinnaker2', 'dense-int8-v1'), ('lava', 'spinnaker2-lif-v1')]:
-        with pytest.raises(ValueError, match='only supported'):
+        with pytest.raises(ValueError, match='only supported|binary-count-v1'):
             convert_ir('missing', target=target, profile=profile, runner='missing')
     bundle = dict(schema='atlas.neuromorphic.simulator-bundle.v1', target='spinnaker2',
                   profile='spinnaker2-lif-v1', plan={})

@@ -30,7 +30,7 @@ def validate_inputs(bundle, samples):
 
 
 def run_simulator(bundle, samples=None, *, batch_size=50):
-    if bundle.get('target') == 'spinnaker2':
+    if bundle.get('target') == 'spinnaker2' and bundle.get('profile') == 'spinnaker2-lif-v1':
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('profile') != 'spinnaker2-lif-v1' or samples is not None):
             raise ValueError('SpiNNaker2 requires spinnaker2-lif-v1 and its embedded spike schedule')
@@ -38,6 +38,10 @@ def run_simulator(bundle, samples=None, *, batch_size=50):
     x = validate_inputs(bundle, samples)
     plan = bundle['plan']
     target = bundle['target']
+    if target in ('spinnaker2', 'xylosim'):
+        if bundle['profile'] != 'binary-count-v1':
+            raise ValueError(f'{target} requires binary-count-v1')
+        return getattr(_module('count_targets'), 'run_'+target)(plan, x)
     if target == 'akida':
         api = _module('akida_b2ir')
         model = api.build_akida_model(plan)

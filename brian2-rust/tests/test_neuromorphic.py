@@ -82,10 +82,10 @@ def test_all_targets_share_validated_ir_and_refuse_stale_protocol(model,tmp_path
     runner=Path(os.environ.get('B2_RUNNER','missing'))
     if not runner.is_file():pytest.skip('set B2_RUNNER to trusted new-repository native runner')
     path=tmp_path/'source.json';path.write_bytes(canonical_bytes(model))
-    results=[export_ir(path,tmp_path/t,target=t,runner=runner,profile='binary-count-v1') for t in ('akida','lava','specksim')]
+    results=[export_ir(path,tmp_path/t,target=t,runner=runner,profile='binary-count-v1') for t in ('akida','lava','specksim','spinnaker2','xylosim')]
     assert len({r['source_model_sha256'] for r in results})==1
     assert all(r['atlas_validator_sha256'] and r['input_domain']=='binary' for r in results)
-    for target in ('akida','lava','specksim'):
+    for target in ('akida','lava','specksim','spinnaker2','xylosim'):
         assert (tmp_path/target/'source.json').read_bytes()==path.read_bytes()
     model['instance']['rng_seed']+=1
     path.write_bytes(canonical_bytes(model))
@@ -142,3 +142,58 @@ def test_opt_in_budgets_preserve_defaults_in_python_and_rust(kind,count,envname,
     env=dict(os.environ);env.pop(envname)
     rejected=subprocess.run(cmd,env=env,capture_output=True,text=True)
     assert rejected.returncode!=0
+
+
+@pytest.mark.parametrize('target', ['spinnaker2', 'xylosim'])
+def test_new_count_targets_exhaustive_binary_domain(dense, target):
+    from brian2_rust.count_targets import graph_plan as compile_count
+    base = graph_plan(dense)
+    plan = compile_count(base, target)
+    x = np.array(list(itertools.product([0,1], repeat=len(base['inputs']))))
+    sums = x @ np.array(base['weights']).T
+    expected = sums // base['threshold']
+    counts = np.zeros_like(expected)
+    if target == 'spinnaker2':
+        for (c,_), threshold in zip(plan['comparators'], plan['thresholds']):
+            counts[:,c] += sums[:,c] > threshold
+    else:
+        for (c,_), bias in zip(plan['banks'], plan['biases']):
+            current = (2*sums[:,c]) - ((2*sums[:,c]) >> 1)
+            counts[:,c] += np.clip((current+bias)//base['threshold'], 0, 31)
+    np.testing.assert_array_equal(counts, expected)
+    assert not plan['hardware_mapping_tested']
+
+
+@pytest.mark.parametrize('target', ['spinnaker2', 'xylosim'])
+def test_count_boundaries_all_integer_sums(dense, target):
+    from brian2_rust.count_targets import graph_plan as compile_count
+    # Maximum admitted total: floor(S/64)<=127. Include every remainder,
+    # every spike-count cap boundary and the zero-output case.
+    base = graph_plan(dense)
+    base.update(inputs=['x']*128, hidden_states=['h'], weights=[[63]*128],
+                binary_max_counts=[126], threshold=64)
+    plan = compile_count(base, target)
+    sums = np.arange(8065,dtype=np.int64)
+    counts = np.zeros_like(sums)
+    if target == 'spinnaker2':
+        for threshold in plan['thresholds']:
+            counts += sums > threshold
+    else:
+        for bias in plan['biases']:
+            counts += np.clip((sums+bias)//64,0,31)
+        assert plan['hardware_input_limit_exceeded']
+    np.testing.assert_array_equal(counts,sums//64)
+
+
+@pytest.mark.parametrize('target', ['spinnaker2', 'xylosim'])
+def test_new_targets_reject_dense_mlp(target):
+    with pytest.raises(ValueError, match='binary-count-v1'):
+        convert_ir('missing',target=target,runner='missing',profile='dense-int8-v1')
+
+
+@pytest.mark.parametrize('target', ['spinnaker2', 'xylosim'])
+def test_count_expansion_size_limit(dense,target):
+    from brian2_rust.count_targets import graph_plan as compile_count
+    base=graph_plan(dense);base['inputs']=['x']*1025
+    with pytest.raises(ValueError,match='1024'):
+        compile_count(base,target)

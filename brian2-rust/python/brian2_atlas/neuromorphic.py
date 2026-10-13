@@ -13,15 +13,15 @@ from brian2_rust.neuromorphic_runtime import run_simulator, validate_inputs
 from brian2_rust.akida_b2ir import lower_b2ir
 from brian2_rust.protocol import canonical_bytes
 
-TARGETS = ('akida', 'lava', 'specksim', 'spinnaker2')
+TARGETS = ('akida', 'lava', 'specksim', 'spinnaker2', 'xylosim')
 PROFILES = ('dense-int8-v1', 'binary-count-v1', 'spinnaker2-lif-v1')
 
 
 def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
     """Validate AtlasIR and compile a simulator plan, rejecting semantic loss.
 
-    ``binary-count-v1`` restricts Akida, Lava and Specksim to binary inputs
-    and to the same bias-free count classifier. ``dense-int8-v1`` also handles signed biased
+    ``binary-count-v1`` restricts all targets to binary inputs and to the same
+    bias-free count classifier. ``dense-int8-v1`` also handles signed biased
     MLPs on Akida/Lava; Specksim explicitly rejects that general profile.
     ``spinnaker2-lif-v1`` admits a separate temporal LIF subset with embedded
     spike input; use target ``spinnaker2``. See the dedicated example.
@@ -31,7 +31,7 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
         raise ValueError(f'unknown simulator target: {target!r}; expected {TARGETS}')
     if profile not in PROFILES:
         raise ValueError(f'unknown conversion profile: {profile!r}')
-    if target == 'spinnaker2' or profile == 'spinnaker2-lif-v1':
+    if profile == 'spinnaker2-lif-v1':
         if target != 'spinnaker2' or profile != 'spinnaker2-lif-v1':
             raise ValueError('spinnaker2-lif-v1 is only supported by target spinnaker2')
         from brian2_rust.spinnaker2_b2ir import lower_b2ir as lower_lif
@@ -41,8 +41,8 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
                     source_model_sha256=plan['source_model_sha256'], source_hashes=plan['source_hashes'],
                     atlas_validator_sha256=plan['atlas_validator_sha256'],
                     physical_hardware=False, hardware_mapping_tested=False)
-    if target == 'specksim' and profile != 'binary-count-v1':
-        raise ValueError('Specksim requires binary-count-v1; arbitrary biased/signed TF MLPs are unsupported')
+    if target in ('specksim', 'spinnaker2', 'xylosim') and profile != 'binary-count-v1':
+        raise ValueError(f'{target} requires binary-count-v1; arbitrary biased/signed TF MLPs are unsupported')
     source = lower_b2ir(model_path, runner=runner, profile='dense-int8-v1')
     # Recheck bytes after native validation; do not admit another source if it
     # changed between reads. Save the exact canonical source with the bundle.
@@ -62,6 +62,9 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
     elif target == 'lava':
         from brian2_rust.lava_dense_b2ir import graph_plan
         plan = graph_plan(source)
+    elif target in ('spinnaker2', 'xylosim'):
+        from brian2_rust.count_targets import graph_plan
+        plan = graph_plan(count_plan, target)
     else:
         plan = count_plan
     return dict(schema='atlas.neuromorphic.simulator-bundle.v1', target=target, profile=profile,
