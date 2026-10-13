@@ -40,9 +40,8 @@ explicit quantization and AtlasIR. Arbitrary TensorFlow graphs and general
 native training plans are not admitted by this bridge.
 
 See the [architecture notes](brian2-rust/architecture/README.md) for interfaces and
-validation boundaries. Figures: [English PNG](brian2-rust/architecture/atlas-architecture.png),
-[中文 PNG](brian2-rust/architecture/atlas-architecture-zh.png),
-[中文 SVG](brian2-rust/architecture/atlas-architecture-zh.svg).
+validation boundaries. Figures: [PNG](brian2-rust/architecture/atlas-architecture.png),
+[SVG](brian2-rust/architecture/atlas-architecture.svg).
 
 ## Install from source
 

@@ -6,8 +6,7 @@ modelling frontend, but have different execution contracts.
 
 ![Atlas architecture](atlas-architecture.svg)
 
-[English PNG](atlas-architecture.png) · [中文 PNG](atlas-architecture-zh.png) ·
-[中文 SVG](atlas-architecture-zh.svg)
+[PNG](atlas-architecture.png) · [SVG](atlas-architecture.svg)
 
 ## The three paths
 
@@ -102,14 +101,13 @@ placement, physical execution, power and hardware latency are not qualified.
 
 ## Regenerate the figures
 
-The SVGs contain vector paths and do not require the reader to have the rendering
-fonts installed. PNGs are provided for presentations and sharing. Regenerate with
+The SVG contains vector paths and does not require the reader to have the rendering
+font installed. The PNG is provided for presentations and sharing. Regenerate with
 Matplotlib using [the renderer](../../dev/atlas/render_architecture.py):
 
 ```sh
 MPLCONFIGDIR=/tmp/atlas-mpl python dev/atlas/render_architecture.py
 ```
 
-English always renders. Chinese also renders when `/Library/Fonts/Arial Unicode.ttf`
-is present; on other systems, pass `--cjk-font /path/to/a/CJK-font.ttf`. The renderer
-is a documentation tool and adds no dependency to the Atlas runtime.
+The renderer produces English SVG and PNG files using Matplotlib's bundled
+DejaVu Sans font. It adds no dependency to the Atlas runtime.

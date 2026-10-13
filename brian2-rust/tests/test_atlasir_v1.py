@@ -168,7 +168,7 @@ def test_streamed_canonical_hashes_match_standard_encoder_at_array_boundaries():
     from io import BytesIO
     from brian2_rust.protocol import _canonical_chunks, write_canonical
 
-    values = ["escaped\\quote\"\n雪", 0, -0.0, 5e-324, True, None, [], {}]
+    values = ["escaped\\quote\"\n\u96ea", 0, -0.0, 5e-324, True, None, [], {}]
     rng = random.Random(20260907)
     for length in (0, 1, 65535, 65536, 65537, 131073):
         value = {"z": [values[rng.randrange(len(values))] for _ in range(length)],
