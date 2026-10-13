@@ -188,3 +188,10 @@ cases, not additional classification samples.
 For external drives, use a filesystem suitable for many small files. The
 verified environment uses an APFS sparse bundle on a T7 data disk; SDK packages
 are outside the repository and are not part of the wheel or source package.
+
+## Temporal SpiNNaker2 pilot
+
+The separate [SpiNNaker2 LIF example](spinnaker2/README.md) converts a native
+time-dependent AtlasIR model to the official SDK Brian2 software backend.
+It checks membrane traces and spike timesteps, rather than reusing the static
+TF classifier profile. Its scope and evidence are documented separately.

@@ -29,7 +29,12 @@ def validate_inputs(bundle, samples):
     return x.astype(np.uint8)
 
 
-def run_simulator(bundle, samples, *, batch_size=50):
+def run_simulator(bundle, samples=None, *, batch_size=50):
+    if bundle.get('target') == 'spinnaker2':
+        if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
+                or bundle.get('profile') != 'spinnaker2-lif-v1' or samples is not None):
+            raise ValueError('SpiNNaker2 requires spinnaker2-lif-v1 and its embedded spike schedule')
+        return _module('spinnaker2_runtime').run(bundle['plan'])
     x = validate_inputs(bundle, samples)
     plan = bundle['plan']
     target = bundle['target']
