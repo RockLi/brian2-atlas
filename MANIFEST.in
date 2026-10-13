@@ -25,6 +25,9 @@ exclude .gitattributes
 exclude .gitmodules
 include brian2/_version.py
 
+# Cython extensions and generated standalone code need these source resources.
+recursive-include brian2 *.h *.cpp *.pyx *.pxd
+
 include brian2/devices/cpp_standalone/templates/*
 include brian2/devices/cpp_standalone/templates_GSL/*
 include brian2/tests/test_templates/fake_package_1/templates/*

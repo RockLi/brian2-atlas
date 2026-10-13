@@ -69,7 +69,8 @@ def test_mnist_reader_accepts_gzip_without_shifting_labels(tmp_path):
 
 
 @pytest.mark.parametrize("device_name", ["atlas", "rust_standalone"])
-def test_rust_runs_reduced_train_observe_test_pipeline(tmp_path, device_name):
+@pytest.mark.parametrize("without_matplotlib", [False, True])
+def test_rust_runs_reduced_train_observe_test_pipeline(tmp_path, device_name, without_matplotlib):
     pytest.importorskip("progressbar")
     if not RUNNER.is_file():
         pytest.skip("release b2-runner is not built")
@@ -92,10 +93,16 @@ def test_rust_runs_reduced_train_observe_test_pipeline(tmp_path, device_name):
         "--engine", "reference",
         "--runner", str(RUNNER),
     ]
+    command = [sys.executable]
+    if without_matplotlib:
+        command += ["-c", (
+            "import runpy, sys; "
+            "sys.modules['pylab'] = None; sys.modules['matplotlib'] = None; "
+            "sys.argv = sys.argv[1:]; runpy.run_path(sys.argv[0], run_name='__main__')"
+        )]
     for mode in ("train", "observe", "test"):
         completed = subprocess.run(
-            [
-                sys.executable,
+            command + [
                 str(EXAMPLE),
                 mode,
                 *common,
