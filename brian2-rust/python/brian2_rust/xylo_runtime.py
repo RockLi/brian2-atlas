@@ -5,13 +5,14 @@ from pathlib import Path
 import numpy as np
 
 if __package__:
-    from .xylo_readout import decode_counts
+    from .xylo_readout import decode_readout, validate_readout_contract
 else:
     import importlib.util
     _spec = importlib.util.spec_from_file_location('atlas_xylo_readout', Path(__file__).with_name('xylo_readout.py'))
     _readout = importlib.util.module_from_spec(_spec)
     _spec.loader.exec_module(_readout)
-    decode_counts = _readout.decode_counts
+    decode_readout = _readout.decode_readout
+    validate_readout_contract = _readout.validate_readout_contract
 
 
 def _model(plan):
@@ -69,7 +70,7 @@ def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
     """
     x=np.asarray(samples)
     sizes=bridge.get('sizes', [])
-    exact=(bridge.get('schema') in ('atlas.native-xylo-frozen.v1','atlas.native-xylo-frozen.v2')
+    exact=(bridge.get('schema') in ('atlas.native-xylo-frozen.v1','atlas.native-xylo-frozen.v2','atlas.native-xylo-current-bridge.v1')
            and bridge.get('dynamics_equivalent') is True)
     approximate=(bridge.get('schema') == 'atlas.native-lif-frozen.v1'
                  and bridge.get('dynamics_equivalent') is False
@@ -86,12 +87,13 @@ def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
             or not np.isfinite(x).all() or not ((x>=0)&(x<=upper)&(x==np.floor(x))).all()):
         raise ValueError('native Xylo inference requires '+('binary batch' if upper==1 else 'bounded integer counts, batch')+' × time × input')
     readout_start=bridge.get('readout_start',0)
-    recurrent=bridge.get('schema')=='atlas.native-xylo-frozen.v2'
+    recurrent=bridge.get('schema') in ('atlas.native-xylo-frozen.v2','atlas.native-xylo-current-bridge.v1')
     if (type(readout_start) is not int or not 0<=readout_start<plan['steps']
             or (recurrent and bridge.get('stateful_chunks') is not True)):
         raise ValueError('invalid recurrent Xylo readout contract')
     if chunk_steps is not None and (not recurrent or type(chunk_steps) is not int or chunk_steps<1):
         raise ValueError('native chunking requires v2 and positive integer chunk_steps')
+    validate_readout_contract(bridge,plan['parameters']['output']['threshold'])
     model,configuration,sdk_hash=_model(plan)
     records=[]
     for raster in x:
@@ -103,7 +105,8 @@ def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
     result['spike_raster']=np.concatenate((result['hidden_q'],result['output_q']),axis=2)
     result['voltage']=np.concatenate((result['hidden_v'],result['output_v']),axis=2)
     result['counts']=result['output_q'][:,readout_start:].sum(axis=1,dtype=np.int64)
-    result['logits']=decode_counts(result['counts'],bridge,plan['steps']-readout_start)
+    result['current_sums']=result['output_I'][:,readout_start:].sum(axis=1,dtype=np.int64)
+    result['logits']=decode_readout(result['counts'],result['current_sums'],bridge,plan['steps']-readout_start)
     result.update(configuration_json=configuration,configuration_valid=np.array(True),
                   sdk_binary_sha256=sdk_hash,dynamics_equivalent=exact)
     return result
@@ -112,7 +115,7 @@ def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
 class XyloInferenceSession:
     """One v2 sequence on a persistent stock XyloSim model, bounded by export.
 
-    push() accepts the next binary time x input chunk. Counts/logits accumulate
+    push() accepts the next bounded-count time x input chunk. Counts and currents accumulate
     only within the absolute readout window. reset() starts a new independent
     sequence. No arbitrary SDK-state injection or on-chip learning is provided.
     """
@@ -122,7 +125,7 @@ class XyloInferenceSession:
             raise ValueError('XyloInferenceSession requires an exported Xylo bundle')
         self._plan=copy.deepcopy(bundle['plan']);self._bridge=copy.deepcopy(bundle.get('native_training_bridge',{}))
         p=self._plan;d=self._bridge
-        if (d.get('schema')!='atlas.native-xylo-frozen.v2' or d.get('dynamics_equivalent') is not True
+        if (d.get('schema') not in ('atlas.native-xylo-frozen.v2','atlas.native-xylo-current-bridge.v1') or d.get('dynamics_equivalent') is not True
                 or d.get('stateful_chunks') is not True or d.get('fresh_state_per_sample') is not True
                 or d.get('source_is_zero_input_template') is not True or np.any(p['input_raster'])
                 or d.get('sizes')!=[p['sizes'][k] for k in ('input','hidden','output')]
@@ -130,12 +133,14 @@ class XyloInferenceSession:
                 or not 1<=p['steps']<=128 or not np.isfinite(d.get('logit_scale',np.nan))
                 or not 0<d['logit_scale']<=100):
             raise ValueError('invalid native recurrent Xylo session contract')
+        validate_readout_contract(d,p['parameters']['output']['threshold'])
         self._model,self.configuration_json,self.sdk_binary_sha256=_model(p)
         self.reset()
 
     def reset(self):
         self._model.reset_state();self.elapsed_ticks=0
         self._counts=np.zeros(self._plan['sizes']['output'],dtype=np.int64)
+        self._current_sums=np.zeros_like(self._counts)
 
     def push(self,inputs):
         x=np.asarray(inputs);p=self._plan;d=self._bridge
@@ -147,9 +152,11 @@ class XyloInferenceSession:
         result=_records(self._model,x.astype(int))
         start=max(0,d['readout_start']-self.elapsed_ticks)
         self._counts+=result['output_q'][start:].sum(axis=0,dtype=np.int64)
+        self._current_sums+=result['output_I'][start:].sum(axis=0,dtype=np.int64)
         self.elapsed_ticks+=len(x);read_ticks=max(0,self.elapsed_ticks-d['readout_start'])
         result.update(spike_raster=np.concatenate((result['hidden_q'],result['output_q']),axis=1),
             voltage=np.concatenate((result['hidden_v'],result['output_v']),axis=1),
-            counts=self._counts.copy(),logits=decode_counts(self._counts,d,read_ticks),
+            counts=self._counts.copy(),current_sums=self._current_sums.copy(),
+            logits=decode_readout(self._counts,self._current_sums,d,read_ticks),
             elapsed_ticks=self.elapsed_ticks,readout_ticks=read_ticks)
         return result

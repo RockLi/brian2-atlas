@@ -144,16 +144,18 @@ reference. Training through Atlas is a separate capability; this conversion
 path does not perform on-chip learning or import arbitrary TensorFlow graphs.
 
 The [ten-class block-sequential MNIST example](brian2-rust/examples/neuromorphic/sequential_mnist/README.md)
-trains a recurrent integer network natively in Atlas. The same model and weights
-reach **97.47% on all 10,000 test images** in Atlas, XyloSim and the custom
-SpiNNaker2 C host kernel (previous round: 97.28%). Each target matches
-**141,480,000 spike/current/membrane values** and all class scores exactly.
-The selected 16→126→5 model has 10,584 trainable weights and uses 36 ticks;
-host preprocessing and a fixed class codebook remain part of inference.
-The 98% target remains unmet. [Selection, controls and costs](brian2-rust/examples/neuromorphic/sequential_mnist/ROUND3.md)
-are documented. Recurrent v2 now admits up to 128 hidden neurons while preserving
-the 63-target recurrent fanout bound. This is a software conversion result;
-SpiNNaker2 firmware deployment, chip power and latency are not established.
+trains a recurrent integer network natively in Atlas. A fourth training/readout
+round reaches **97.44% on all 10,000 test images** in Atlas, XyloSim and the
+custom SpiNNaker2 C host kernel (previous wider result: 97.47%). The same model
+and weights match **73,440,000 spike/current/membrane values** and all class scores
+exactly per target. The selected 16→63→5 model has 5,292 active trainable
+weights and 36 ticks. Host preprocessing and fixed decoding remain part
+of inference. The 98% test target remains unmet.
+[Selection, unsuccessful experiments and controls](brian2-rust/examples/neuromorphic/sequential_mnist/ROUND4.md)
+are documented. Optional rate-loss training, eight-output codebook transfer and
+signed-current host readout are available; they are not all selected methods.
+Recurrent v2 retains the 128-hidden and 63-target fanout bounds. These are
+software results; SpiNNaker2 firmware, chip power and latency remain unverified.
 
 A [native recurrent Xylo example](brian2-rust/examples/neuromorphic/native_xylo_recurrent/README.md)
 now trains input, readout and recurrent weights on a delayed AB/BA task. Atlas

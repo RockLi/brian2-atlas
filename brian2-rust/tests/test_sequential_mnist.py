@@ -222,13 +222,24 @@ def test_coded_gradient_chunks_and_export_contract(coded):
 
 
 @pytest.mark.parametrize('target,environment',[('xylosim','B2_XYLO_PYTHON'),('spinnaker2','B2_SPINNAKER2_PYTHON')])
-def test_coded_sdk_parity(coded,tmp_path,target,environment):
+@pytest.mark.parametrize('readout',['spikes','rate','current','hadamard'])
+def test_coded_sdk_parity(coded,tmp_path,target,environment,readout):
+    plan=copy.deepcopy(coded.plan);weights=copy.deepcopy(coded.state['weights'])
+    if readout=='rate':plan['code_rate_weight']=1.
+    if readout=='current':plan['readout_source']='synaptic_current'
+    if readout=='hadamard':
+        spec=importlib.util.spec_from_file_location('smnist_codes',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+        m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+        plan['sizes'][-1]=8;plan['class_codes']=m.class_codes('hadamard8').tolist()
+        weights[1]=np.random.default_rng(12).uniform(-.3,.7,32)
+    coded=NativeXyloTrainer(plan,runner=TRAIN,weights=weights)
     sdk=os.environ.get(environment)
     if not RUN.is_file() or not sdk:pytest.skip('set runners and SDK python')
     x=np.random.default_rng(42).integers(0,coded.plan["input_max"]+1,(3,19,3),dtype=np.uint8);y=[7,8,9]
     coded.step(x,y);f=freeze_native_xylo(coded);reference=coded.evaluate(x,y)
     bundle=export_native_xylo(f,tmp_path/'export',steps=19,runner=RUN,target=target)
-    assert bundle['native_training_bridge']['class_codes']==CODES
+    assert bundle['native_training_bridge']['class_codes']==coded.plan['class_codes']
+    assert bundle['native_training_bridge']['schema']==('atlas.native-xylo-current-bridge.v1' if readout=='current' else 'atlas.native-xylo-frozen.v2')
     np.save(tmp_path/'inputs.npy',x)
     script="""import importlib.util,json,numpy as np,sys
 s=importlib.util.spec_from_file_location('runtime',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
@@ -330,3 +341,137 @@ def test_wide_native_sdk_boundary(tmp_path,target,environment):
         if schema.endswith('v1'):
             for key in ('recurrent','readout_start','class_codes'):bad.pop(key)
         with pytest.raises(ValueError):NativeXyloTrainer(bad,runner=TRAIN).evaluate(np.zeros((1,4,2)),[0])
+
+
+@pytest.mark.parametrize('weight',[0.,2.5])
+def test_rate_objective_surrogate_and_forward_contract(coded,tmp_path,weight):
+    x=np.random.default_rng(73).integers(0,coded.plan["input_max"]+1,(2,9,3));y=[2,9]
+    before=copy.deepcopy(coded.state);weights=before['weights']
+    plan=copy.deepcopy(coded.plan);plan['code_rate_weight']=weight
+    regularized=NativeXyloTrainer(plan,runner=TRAIN,weights=weights)
+    original=coded.gradients(x,y);result=regularized.gradients(x,y)
+    assert regularized.state==before
+    for key in ('spikes','logits','final_membrane'):
+        assert result[key]==original[key]
+    np.testing.assert_allclose(result['loss'],_linearized_loss(plan,weights,weights,x,y),atol=1e-12)
+    rng=np.random.default_rng(21)
+    for _ in range(3):
+        direction=[rng.normal(size=len(w)) for w in weights];eps=1e-5
+        plus=[np.asarray(w)+eps*d for w,d in zip(weights,direction)]
+        minus=[np.asarray(w)-eps*d for w,d in zip(weights,direction)]
+        finite=(_linearized_loss(plan,weights,plus,x,y)-_linearized_loss(plan,weights,minus,x,y))/(2*eps)
+        reverse=sum(np.dot(g,d) for g,d in zip(result['gradients'],direction))
+        np.testing.assert_allclose(reverse,finite,rtol=1e-5,atol=1e-7)
+    if weight==0:
+        assert result['loss']==original['loss'] and result['gradients']==original['gradients']
+    else:
+        assert result['loss']>original['loss'] and result['gradients']!=original['gradients']
+    regularized.step(x,y);f=freeze_native_xylo(regularized)
+    assert validate_frozen(f)==plan['sizes']
+    full=regularized.evaluate(x,y);chunk=regularized.evaluate_chunks(x,y,chunk_steps=2)
+    for key in ('logits','spikes','currents','membranes','continuation'):assert full[key]==chunk[key]
+    assert full['loss']==chunk['loss']
+    regularized.store(tmp_path/'state.json')
+    restored=NativeXyloTrainer(plan,runner=TRAIN);restored.restore(tmp_path/'state.json')
+    assert restored.step(x,y)==regularized.step(x,y)
+    for invalid in (-1,101):
+        request=dict(plan={**plan,'code_rate_weight':invalid},state=before,
+            operation='train',inputs=x.tolist(),labels=y,initial=None)
+        with pytest.raises(ValueError):regularized._run_request(request)
+    request['plan']={**plan};del request['plan']['class_codes']
+    with pytest.raises(ValueError):regularized._run_request(request)
+    for invalid in (-1,101,float('nan'),True):
+        with pytest.raises(ValueError):xylo_recurrent_training_plan([3,4,5],class_codes=CODES,code_rate_weight=invalid)
+    with pytest.raises(ValueError):xylo_recurrent_training_plan([3,4,5],code_rate_weight=1)
+    bad=copy.deepcopy(f);bad['plan']['code_rate_weight']=-1
+    bad['sha256']=digest({k:v for k,v in bad.items() if k!='sha256'})
+    with pytest.raises(ValueError):validate_frozen(bad)
+
+
+def test_readout_transfer_and_cosine_schedule(coded):
+    spec=importlib.util.spec_from_file_location('smnist_round4',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    x=np.random.default_rng(21).integers(0,coded.plan["input_max"]+1,(2,9,3));y=[2,9]
+    coded.step(x,y);f=freeze_native_xylo(coded)
+    plan=copy.deepcopy(coded.plan);plan['sizes'][-1]=8;plan['class_codes']=m.class_codes('hadamard8').tolist()
+    initial=m.recode_weights(f,plan)
+    assert [len(w) for w in initial]==[12,32,16]
+    for k in (0,2):np.testing.assert_array_equal(initial[k],np.asarray(f['target_weights'][k])/plan['weight_scale'])
+    # Changing class labels changes the initialization, so class order is explicit.
+    permuted=copy.deepcopy(plan);permuted['class_codes']=plan['class_codes'][::-1]
+    assert not np.array_equal(initial[1],m.recode_weights(f,permuted)[1])
+    bad=copy.deepcopy(plan);bad['threshold'][0]+=1
+    with pytest.raises(ValueError):m.recode_weights(f,bad)
+    baseline=copy.deepcopy(coded.state)
+    changed=m.scheduled_trainer(coded,.0002)
+    assert changed.state==baseline and coded.state==baseline
+    assert changed.plan['optimizer']['learning_rate']==.0002
+    assert coded.plan['optimizer']['learning_rate']!=.0002
+    changed.step(x,y)
+    assert changed.state['step']==baseline['step']+1 and coded.state==baseline
+    rates=[m.cosine_rate(k,101,.001,.1) for k in range(1,102)]
+    np.testing.assert_allclose([rates[0],rates[-1]],[.001,.0001])
+    assert np.all(np.diff(rates)<0)
+    for args in ((0,10,.1,.1),(1,10,.1,0),(11,10,.1,.1)):
+        with pytest.raises(ValueError):m.cosine_rate(*args)
+
+
+def test_current_readout_gradients_and_history(coded,tmp_path):
+    from brian2_rust.xylo_readout import decode_readout
+    plan=copy.deepcopy(coded.plan);plan['readout_source']='synaptic_current'
+    weights=copy.deepcopy(coded.state['weights'])
+    model=NativeXyloTrainer(plan,runner=TRAIN,weights=weights)
+    x=np.random.default_rng(43).integers(0,plan['input_max']+1,(2,11,3));y=[1,8]
+    result=model.gradients(x,y)
+    np.testing.assert_allclose(result['loss'],_linearized_loss(plan,weights,weights,x,y),rtol=1e-12,atol=1e-12)
+    rng=np.random.default_rng(32)
+    for bank in range(3):
+        direction=[np.zeros(len(w)) for w in weights];direction[bank]=rng.normal(size=len(weights[bank]));eps=1e-6
+        plus=[np.asarray(w)+eps*d for w,d in zip(weights,direction)]
+        minus=[np.asarray(w)-eps*d for w,d in zip(weights,direction)]
+        finite=(_linearized_loss(plan,weights,plus,x,y)-_linearized_loss(plan,weights,minus,x,y))/(2*eps)
+        np.testing.assert_allclose(sum(np.dot(g,d) for g,d in zip(result['gradients'],direction)),finite,rtol=1e-5,atol=1e-7)
+    before=coded.evaluate(x,y);after=model.evaluate(x,y)
+    for key in ('spikes','currents','membranes'):assert before[key]==after[key]
+    assert before['logits']!=after['logits']
+    sums=np.asarray(after['currents'])[:,plan['readout_start']:,-5:].sum(1).astype(np.int64)
+    bridge={**plan,'readout_divisor':plan['threshold'][1]}
+    np.testing.assert_array_equal(after['continuation']['current_sums'],sums)
+    np.testing.assert_array_equal(after['logits'],decode_readout(after['continuation']['counts'],sums,bridge,9))
+    for width in (1,3,7):
+        chunk=model.evaluate_chunks(x,y,chunk_steps=width)
+        for key in ('logits','spikes','currents','membranes','continuation','loss'):assert after[key]==chunk[key]
+    prefix=model.evaluate(x[:,:3],y)['continuation']
+    for invalid in (None,[[32768*129]*5]*2,[[0]*4]*2):
+        state=copy.deepcopy(prefix);state['current_sums']=invalid
+        with pytest.raises(ValueError):model.evaluate(x[:,3:],y,initial=state)
+    model.step(x,y);f=freeze_native_xylo(model);assert validate_frozen(f)==plan['sizes']
+    model.store(tmp_path/'current.json')
+    restored=NativeXyloTrainer(plan,runner=TRAIN);restored.restore(tmp_path/'current.json')
+    assert restored.step(x,y)==model.step(x,y)
+    for source in ('membrane','spikes',''):
+        with pytest.raises(ValueError):xylo_recurrent_training_plan([3,4,5],readout_source=source)
+    with pytest.raises(ValueError):xylo_recurrent_training_plan([3,4,5],readout_source='synaptic_current',class_codes=CODES,code_rate_weight=0)
+    for invalid in (0,32768,True):
+        with pytest.raises(ValueError):decode_readout([[0]*5],[[0]*5],{**bridge,'readout_divisor':invalid},9)
+    # Signed current sums must retain sign; casting to unsigned would invert the ranking.
+    signed=np.array([[-100,-50,0,50,100]])
+    np.testing.assert_array_equal(decode_readout([[0]*5],signed,bridge,9),
+        (signed @ np.asarray(CODES).T)*plan['logit_scale']/9/plan['threshold'][1])
+
+
+def test_current_readout_bridge_threshold_contract():
+    from brian2_rust.xylo_readout import validate_readout_contract
+    bridge=dict(schema='atlas.native-xylo-current-bridge.v1',source_schema='atlas.native-xylo-frozen.v2',dynamics_equivalent=True,
+        readout_source='synaptic_current',readout_divisor=64)
+    validate_readout_contract(bridge,[64]*5)
+    validate_readout_contract({},[64]*5)
+    for key,value in [('schema','atlas.native-xylo-frozen.v1'),('schema','atlas.native-xylo-frozen.v2'),('source_schema','wrong'),('dynamics_equivalent',False),
+            ('readout_source','voltage'),('readout_divisor',32),('readout_divisor',True)]:
+        with pytest.raises(ValueError):validate_readout_contract({**bridge,key:value},[64]*5)
+    with pytest.raises(ValueError):validate_readout_contract(bridge,[64,32])
+    with pytest.raises(ValueError):validate_readout_contract(bridge,[])
+    with pytest.raises(ValueError):validate_readout_contract({'readout_divisor':64},[64]*5)
+
+    missing={**bridge};del missing['readout_source']
+    with pytest.raises(ValueError):validate_readout_contract(missing,[64]*5)

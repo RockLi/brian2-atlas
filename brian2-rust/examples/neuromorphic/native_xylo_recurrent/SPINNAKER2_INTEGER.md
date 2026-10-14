@@ -176,3 +176,15 @@ replays, per-sample logits and the audit. To build the standalone host kernel:
 cmake -S brian2-rust/python/brian2_rust/spinnaker2_integer_kernel -B /tmp/atlas-s2-host
 cmake --build /tmp/atlas-s2-host
 ```
+
+## Optional current readout
+
+The native recurrent bridge also supports `readout_source="synaptic_current"`.
+The C kernel is unchanged: it still returns exact spikes, synaptic currents and
+membrane potentials. A fixed host decoder accumulates signed output currents
+within the declared readout window, applies the class codebook and normalizes by
+the output threshold. The same objective is available in Atlas native training.
+This requires state recording and does not establish an on-chip classifier,
+firmware implementation or energy advantage. See the
+[training contract](../../../TRAINING.md#optional-objectives-and-current-readout)
+for the loss and state-carry rules.

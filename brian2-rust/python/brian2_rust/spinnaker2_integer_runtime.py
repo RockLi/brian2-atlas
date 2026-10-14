@@ -14,13 +14,14 @@ import tempfile
 import numpy as np
 
 if __package__:
-    from .xylo_readout import decode_counts
+    from .xylo_readout import decode_readout, validate_readout_contract
 else:
     import importlib.util
     _spec = importlib.util.spec_from_file_location('atlas_xylo_readout', Path(__file__).with_name('xylo_readout.py'))
     _readout = importlib.util.module_from_spec(_spec)
     _spec.loader.exec_module(_readout)
-    decode_counts = _readout.decode_counts
+    decode_readout = _readout.decode_readout
+    validate_readout_contract = _readout.validate_readout_contract
 
 MODEL = 'atlas_xylo_integer_host_v1'
 PROFILE = 'spinnaker2-xylo-integer-v1'
@@ -213,10 +214,11 @@ def run(plan, samples=None, *, bridge=None, batch_size=50, chunk_steps=None):
         require(bridge is None, 'native bridge requires an input batch')
         samples = np.asarray(plan['input_raster'])[None]
     else:
-        require(bridge is not None and bridge.get('schema') in ('atlas.native-xylo-frozen.v1', 'atlas.native-xylo-frozen.v2')
+        require(bridge is not None and bridge.get('schema') in ('atlas.native-xylo-frozen.v1', 'atlas.native-xylo-frozen.v2', 'atlas.native-xylo-current-bridge.v1')
                 and bridge.get('fresh_state_per_sample') and bridge.get('source_is_zero_input_template')
                 and bridge.get('dynamics_equivalent') is True, 'unknown native bridge')
         require(not np.any(plan['input_raster']), 'native bridge requires zero-input template')
+    validate_readout_contract(bridge or {},plan['parameters']['output']['threshold'])
     x = np.asarray(samples)
     require(x.ndim == 3 and len(x) > 0 and x.shape[1:] == (plan['steps'], plan['sizes']['input']), 'input shape')
     upper = bridge.get('input_max',1) if bridge else 15
@@ -246,7 +248,8 @@ def run(plan, samples=None, *, bridge=None, batch_size=50, chunk_steps=None):
     start = bridge.get('readout_start', 0) if bridge else 0
     require(type(start) is int and 0 <= start < plan['steps'], 'readout window outside horizon')
     arrays['counts'] = arrays['output_q'][:, start:].sum(1)
-    arrays['logits'] = decode_counts(arrays['counts'], bridge if bridge else {'logit_scale': 1.}, plan['steps'] - start)
+    arrays['current_sums'] = arrays['output_I'][:, start:].sum(1,dtype=np.int64)
+    arrays['logits'] = decode_readout(arrays['counts'], arrays['current_sums'], bridge if bridge else {'logit_scale': 1.}, plan['steps'] - start)
     return dict(**arrays, execution_kind='custom-c-host-kernel', dynamics_equivalent=True,
                 stock_sdk_neuron_model=False, physical_hardware=False, hardware_mapping_tested=False,
                 firmware_adapter_implemented=False, kernel_receipt=receipt)

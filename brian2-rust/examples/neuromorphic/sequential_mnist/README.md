@@ -12,6 +12,24 @@ camera dataset. Host preprocessing starts with ordinary MNIST images.
 
 ## Latest result
 
+**97.44% on all 10,000 official test images** (9,744/10,000), compared
+with 97.47% in the previous round. The 98% test target remains unmet.
+Validation selected `compact-cosine` at 98.1333% on 6,000 images before this round
+opened the official test arrays.
+
+| Execution | Correct / total | Accuracy | Spike/current/membrane differences |
+|---|---:|---:|---:|
+| Atlas native integer forward | 9,744 / 10,000 | 97.44% | Reference |
+| Stock XyloSim | 9,744 / 10,000 | 97.44% | 0 / 73,440,000 |
+| SpiNNaker2 custom C host kernel | 9,744 / 10,000 | 97.44% | 0 / 73,440,000 |
+
+The selected graph is 16→63→5, with 5,292 active trainable weights and
+36 ticks. [Fourth-round details and reproduction](ROUND4.md) cover training
+objectives, readout candidates, validation selection, full-test controls and
+software-only limits.
+
+## Third round (retained)
+
 **97.47% on all 10,000 official test images**, compared with 97.28% in the
 previous round. The 98% target remains unmet. Validation selected `wide-precision` at 98.1000%
 on 6,000 images before this round opened the test arrays.

@@ -13,8 +13,15 @@ def xylo_training_plan(sizes, *, thresholds=(32,32), weight_scale=32., learning_
         logit_scale=logit_scale,max_tape_bytes=max_tape_bytes,seed=seed)
 
 
-def xylo_recurrent_training_plan(sizes, *, readout_start=0, class_codes=None, input_max=None, **kwargs):
-    """CPU recurrent v2; fresh BPTT and explicit chunked evaluation state."""
+def xylo_recurrent_training_plan(sizes, *, readout_start=0, class_codes=None, input_max=None, code_rate_weight=None, readout_source=None, **kwargs):
+    """CPU recurrent v2; fresh BPTT and explicit chunked evaluation state.
+
+    code_rate_weight adds mean squared rate error to fixed 0.1/0.9 code targets.
+    readout_source="synaptic_current" instead uses signed output-current sums,
+    normalized by the output threshold; it cannot use the spike-rate objective.
+    Both decoders run on the host after conversion. Current readout needs state
+    recording and does not claim an on-chip classifier.
+    """
     plan=xylo_training_plan(sizes,**kwargs)
     plan.update(schema='atlas-xylo-training-plan-v2',recurrent=True,readout_start=readout_start)
     if input_max is not None:
@@ -24,6 +31,15 @@ def xylo_recurrent_training_plan(sizes, *, readout_start=0, class_codes=None, in
     if class_codes is not None:
         from .xylo_readout import validate_codes
         plan["class_codes"] = validate_codes(class_codes, sizes[2]).tolist()
+    if readout_source is not None:
+        if readout_source!='synaptic_current' or code_rate_weight is not None:
+            raise ValueError('readout_source requires synaptic_current without a code-rate loss')
+        plan['readout_source']=readout_source
+    if code_rate_weight is not None:
+        from .xylo_readout import validate_code_rate_weight
+        if class_codes is None:
+            raise ValueError('code_rate_weight requires class codes')
+        plan['code_rate_weight'] = validate_code_rate_weight(code_rate_weight)
     return plan
 
 
@@ -54,7 +70,7 @@ class NativeXyloTrainer(NativeLIFTrainer):
     def evaluate_chunks(self, inputs, labels, *, chunk_steps):
         """Evaluate one <=128-tick sequence in chunks without committing state.
 
-        The returned logits/counts include the full declared readout window.
+        The returned logits/counts and optional current sums include the full readout window.
         This is inference state carry, not truncated training or optimizer carry.
         """
         import numpy as np

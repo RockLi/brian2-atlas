@@ -119,9 +119,57 @@ adds no trained weights or physical neurons. Continuation state retains physical
 output counts, so chunk boundaries do not change decoded logits. Existing plans
 without these fields retain binary inputs and direct output-count readout.
 
+### Optional objectives and current readout
+
+`xylo_recurrent_training_plan(..., code_rate_weight=0.5)` adds a training-only
+output-rate objective when a class codebook is supplied. For each physical
+output, the target rate is `0.1 + 0.8 * class_codes[label][output]`. The loss is
+cross entropy plus `code_rate_weight` times the mean squared rate error, averaged
+across examples and physical outputs. The native reverse pass differentiates
+both terms through the declared surrogate graph. Omission preserves the original
+loss; zero is mathematically equivalent. The coefficient must be finite in
+`[0, 100]`. Frozen artifacts retain the objective as provenance; exported neural
+transitions and the host spike-count decoder are unchanged.
+
+Alternatively, `readout_source="synaptic_current"` trains with the signed sum of
+recorded output synaptic currents over the readout window. The fixed codebook
+maps those integer sums to class scores; logit scaling then divides by the
+window length and the output threshold. This avoids the output spike counter's
+resolution and saturation limits in the training objective. Input, hidden and
+output neurons still execute the same integer transitions and emit their normal
+spikes. The backward pass seeds output-current derivatives directly, then trains
+all three weight banks. This option is recurrent v2 only and cannot be combined
+with the spike-rate objective.
+
+The current decoder uses the distinct `atlas.native-xylo-current-bridge.v1`
+export contract, so older runtimes reject it instead of silently counting spikes.
+The source frozen artifact remains recurrent v2. The current decoder **runs on
+the host and requires output-state recording**.
+It is not an on-chip classifier or a hardware power optimization. Native
+continuation state carries signed `current_sums` as well as ordinary spike
+counts. Whole-sequence, chunked XyloSim sessions and the custom SpiNNaker2 host
+runtime use the same sum and threshold normalization. Conversion checks that the
+readout divisor matches every exported output-neuron threshold. Independent
+surrogate directional derivatives, signed accumulation and checkpoint replay
+cover this path.
+
+The MNIST example also supports cosine learning-rate schedules and transfer to
+an eight-output fixed codebook. Schedules retain Adam moments and weights while
+changing only the step size. Codebook transfer copies input and recurrence
+weights and fits an initial readout using the two codebooks, without samples or
+labels; it does not claim initial spiking equivalence. Subsequent training stays
+in the native Rust executor. These are optional experiments, not a change to the
+default spike-count inference contract.
+
 The [block-sequential MNIST example](examples/neuromorphic/sequential_mnist/README.md)
 exercises ten classes using native training and both exact software targets.
 It explicitly separates real-data classification accuracy from conversion parity.
+The [fourth training/readout round](examples/neuromorphic/sequential_mnist/ROUND4.md)
+selects `compact-cosine` at 98.1333% validation and reaches **97.44%** on the
+complete official test set. The selected 16→63→5 model has 5,292 active
+trainable weights; both software targets match 73,440,000 neural values and
+all logits exactly. The 98% test target remains unmet. Candidate selection preceded this round's test audit.
+
 The [third training round](examples/neuromorphic/sequential_mnist/ROUND3.md)
 reaches 97.47% on all 10,000 official test images, with exact agreement across
 141,480,000 neural values per target. The selected 16→126→5 model has

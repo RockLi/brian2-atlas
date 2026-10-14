@@ -1,0 +1,222 @@
+......................................                                   [100%]WARNING    The object 'xylo_hidden_5' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_5' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'b_xylo_recurrent' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_5' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_4' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_4' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_4' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_2' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_2' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_2' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_1' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_1' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_1' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_3' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_3' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_3' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_6' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_6' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_6' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'a_xylo_input' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'c_xylo_readout' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'b_xylo_recurrent_1' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_7' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_7' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_7' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'a_xylo_input_1' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'c_xylo_readout_1' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'b_xylo_recurrent_2' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_8' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_8' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_8' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'a_xylo_input_2' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'c_xylo_readout_2' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'b_xylo_recurrent_3' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_9' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_9' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_9' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'a_xylo_input_3' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'c_xylo_readout_3' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'b_xylo_recurrent_4' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_10' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_10' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_10' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'a_xylo_input_4' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'c_xylo_readout_4' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'b_xylo_recurrent_5' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_11' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_hidden_11' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_output_11' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'a_xylo_input_5' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'c_xylo_readout_5' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'b_xylo_recurrent_6' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+
+38 passed in 44.64s

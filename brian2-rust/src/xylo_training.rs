@@ -36,6 +36,11 @@ pub struct Plan {
     pub class_codes: Option<Vec<Vec<i32>>>,
     #[serde(default, skip_serializing_if="Option::is_none")]
     pub input_max: Option<u8>,
+    /// Training objective only: mean squared output-rate error to 0.1/0.9 code bits.
+    #[serde(default, skip_serializing_if="Option::is_none")]
+    pub code_rate_weight: Option<f64>,
+    #[serde(default, skip_serializing_if="Option::is_none")]
+    pub readout_source: Option<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -58,6 +63,8 @@ pub struct Continuation {
     pub membranes: Vec<Vec<i32>>,
     pub spikes: Vec<Vec<i32>>,
     pub counts: Vec<Vec<i32>>,
+    #[serde(default, skip_serializing_if="Option::is_none")]
+    pub current_sums: Option<Vec<Vec<i32>>>,
 }
 #[derive(Serialize)]
 pub struct Output {
@@ -100,6 +107,14 @@ impl Plan {
                 && (0..codes.len()).all(|i| !codes[..i].contains(&codes[i])),
                 "class codes must be distinct and have equal Hamming weight")?;
         }
+        if let Some(source)=&self.readout_source {
+            require(v2 && source=="synaptic_current" && self.code_rate_weight.is_none(),
+                    "readout_source requires recurrent synaptic_current without a code-rate loss")?;
+        }
+        if let Some(weight)=self.code_rate_weight {
+            require(v2 && self.class_codes.is_some() && weight.is_finite() && (0.0..=100.0).contains(&weight),
+                    "code_rate_weight requires recurrent class codes and finite weight in 0..100")?;
+        }
         require(self.threshold.len()==2 && self.threshold.iter().all(|v| (1..=32767).contains(v)),
                 "Xylo thresholds must be positive int16")?;
         require(self.synaptic_shift==1 && self.membrane_shift==1 && self.detach_reset,
@@ -128,6 +143,7 @@ pub fn execute(request: Request) -> Result<Output> {
     require(initial.is_none() || (recurrent && operation=="evaluate"),
             "Xylo continuation is evaluation-only in v2; training requires fresh state")?;
     let readout_start=p.readout_start.unwrap_or(0);
+    let current_readout=p.readout_source.is_some();
     let [ni,nh,no]=[p.sizes[0],p.sizes[1],p.sizes[2]];
     let classes=p.class_codes.as_ref().map_or(no,|c|c.len());
     let cells=nh+no;let batch=x.len();
@@ -157,7 +173,8 @@ pub fn execute(request: Request) -> Result<Output> {
     let identity=format!("{:x}",Sha256::digest(serde_json::to_vec(&(&p,&weights))?));
     let initial=initial.unwrap_or_else(||Continuation{schema:"atlas.xylo-evaluation-state.v1".into(),
         model_sha256:identity.clone(),elapsed_ticks:0,currents:vec![vec![0;cells];batch],
-        membranes:vec![vec![0;cells];batch],spikes:vec![vec![0;cells];batch],counts:vec![vec![0;no];batch]});
+        membranes:vec![vec![0;cells];batch],spikes:vec![vec![0;cells];batch],counts:vec![vec![0;no];batch],
+        current_sums:if current_readout {Some(vec![vec![0;no];batch])} else {None}});
     require(initial.schema=="atlas.xylo-evaluation-state.v1" && initial.model_sha256==identity,
             "Xylo continuation model identity mismatch")?;
     require(initial.elapsed_ticks<=128 && steps<=128-initial.elapsed_ticks,
@@ -172,6 +189,10 @@ pub fn execute(request: Request) -> Result<Output> {
         && initial.spikes.iter().all(|r|r.iter().enumerate().all(|(k,q)|*q>=0 && *q<=if k<nh {31}else{1}))
         && initial.counts.len()==batch && initial.counts.iter().all(|r|r.len()==no && r.iter().all(|v|*v>=0 && *v<=old_read_ticks as i32)),
         "Xylo continuation state out of range")?;
+    require(if current_readout {initial.current_sums.as_ref().is_some_and(|s|
+        s.len()==batch && s.iter().all(|r|r.len()==no && r.iter().all(|v|
+            (LO*old_read_ticks as i32..=HI*old_read_ticks as i32).contains(v))))}
+        else {initial.current_sums.is_none()}, "Xylo continuation readout history mismatch")?;
     let mut current=vec![0;count];let mut voltage=vec![0;count];let mut pre=vec![0;count];
     let mut spike=vec![0;count];
     let at=|b:usize,t:usize,k:usize| (b*steps+t)*cells+k;
@@ -199,15 +220,23 @@ pub fn execute(request: Request) -> Result<Output> {
     }}}
     let mut logits=vec![vec![0.0;classes];batch];let mut dlogits=vec![vec![0.0;no];batch];let mut loss=0.0;
     let mut counts=initial.counts.clone();
+    let mut current_sums=initial.current_sums.clone();
     for b in 0..batch {
         for j in 0..no {
             counts[b][j]+=(0..steps).filter(|t|elapsed+t>=readout_start).map(|t|spike[at(b,t,nh+j)]).sum::<i32>();
         }
+        if let Some(sums)=&mut current_sums {
+            for j in 0..no {
+                sums[b][j]+=(0..steps).filter(|t|elapsed+t>=readout_start).map(|t|current[at(b,t,nh+j)]).sum::<i32>();
+            }
+        }
+        let values=if let Some(sums)=&current_sums {&sums[b]} else {&counts[b]};
         for c in 0..classes {
             let score=if let Some(codes)=&p.class_codes {
-                (0..no).map(|j|counts[b][j]*codes[c][j]).sum::<i32>()
-            } else {counts[b][c]};
+                (0..no).map(|j|values[j]*codes[c][j]).sum::<i32>()
+            } else {values[c]};
             logits[b][c]=score as f64*p.logit_scale/read_ticks.max(1) as f64;
+            if current_readout {logits[b][c]/=p.threshold[1] as f64;}
         }
         let max=logits[b].iter().copied().fold(f64::NEG_INFINITY,f64::max);
         let z=logits[b].iter().map(|v|(v-max).exp()).sum::<f64>();
@@ -218,12 +247,26 @@ pub fn execute(request: Request) -> Result<Output> {
                 for j in 0..no {dlogits[b][j]+=grad*codes[c][j] as f64;}
             } else {dlogits[b][c]=grad;}
         }
+        if let Some(weight)=p.code_rate_weight {
+            let codes=p.class_codes.as_ref().unwrap(); // validated above
+            for j in 0..no {
+                let target=0.1+0.8*codes[labels[b]][j] as f64;
+                let error=counts[b][j] as f64/read_ticks.max(1) as f64-target;
+                loss+=weight*error*error/(batch*no) as f64;
+                // dlogits is scaled by logit_scale/read_ticks in the reverse pass.
+                dlogits[b][j]+=2.0*weight*error/((batch*no) as f64*p.logit_scale);
+            }
+        }
     }
     let mut gradient:Vec<Vec<f64>>=lengths.iter().map(|n|vec![0.0;*n]).collect();
     if operation!="evaluate" {
         let mut di=vec![0.0;count];let mut dv=di.clone();let mut dq=di.clone();
         for b in 0..batch { for t in 0..steps { for j in 0..no {
-            if t>=readout_start {dq[at(b,t,nh+j)]=dlogits[b][j]*p.logit_scale/read_ticks as f64;}
+            if t>=readout_start {
+                let g=dlogits[b][j]*p.logit_scale/read_ticks as f64;
+                if current_readout {di[at(b,t,nh+j)]=g/p.threshold[1] as f64;}
+                else {dq[at(b,t,nh+j)]=g;}
+            }
         }}}
         for b in 0..batch {for t in (0..steps).rev() {for l in (0..2).rev() {
             let (fan,n,offset,cap)=if l==0 {(ni,nh,0,31)} else {(nh,no,nh,1)};
@@ -292,7 +335,7 @@ pub fn execute(request: Request) -> Result<Output> {
     let continuation=if recurrent && operation=="evaluate" {
         let last=|data:&[i32]|(0..batch).map(|b|data[at(b,steps-1,0)..at(b,steps-1,0)+cells].to_vec()).collect();
         Some(Continuation{schema:initial.schema,model_sha256:identity,elapsed_ticks:elapsed+steps,
-            currents:last(&current),membranes:last(&voltage),spikes:last(&spike),counts})
+            currents:last(&current),membranes:last(&voltage),spikes:last(&spike),counts,current_sums})
     } else {None};
     Ok(Output{schema:"b2-lif-training-result-v1",backend:"cpu",numeric_profile:"xylo-int16-forward-f64-surrogate",
         state,loss,gradients:gradient,final_membrane,spikes:nested(&spike),logits,

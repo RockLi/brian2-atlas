@@ -289,12 +289,60 @@ def widen_weights(frozen, plan, groups, jitter, rng):
     return result
 
 
+
+def recode_weights(frozen, plan):
+    """Transfer input/recurrence and fit a new fixed-code readout initialization.
+
+    The least-squares fit uses codebook entries, not samples or labels. It only
+    approximates the old linear class scores; spiking equivalence is not claimed.
+    All banks are subsequently trained by the native integer runner.
+    """
+    from brian2_rust.native_xylo_conversion import validate_frozen
+    ni,nh,no=validate_frozen(frozen)
+    old=frozen['plan']
+    if plan['sizes'][:2]!=[ni,nh] or any(plan[k]!=old[k] for k in ('weight_scale','threshold')):
+        raise ValueError('recoding requires unchanged inputs, hidden size, weight scale and thresholds')
+    before=np.asarray(old['class_codes'],dtype=float)
+    after=np.asarray(plan['class_codes'],dtype=float)
+    if len(before)!=len(after):raise ValueError('recoding requires the same class order and count')
+    wi,wo,wr=[np.asarray(w,dtype=float)/plan['weight_scale'] for w in frozen['target_weights']]
+    wo=wo.reshape(nh,no)
+    centered_before=before-before.mean(1,keepdims=True)
+    centered_after=after-after.mean(1,keepdims=True)
+    fitted=wo @ centered_before.T @ np.linalg.pinv(centered_after.T)
+    fitted+=wo.mean(1,keepdims=True)
+    result=[wi.copy(),fitted.ravel(),wr.copy()]
+    if not all(np.all((w*plan['weight_scale']>=-128)&(w*plan['weight_scale']<=127)) for w in result):
+        raise ValueError('recoded initialization exceeds signed int8 range')
+    return result
+
+
+def scheduled_trainer(trainer, learning_rate):
+    """Change only the step size; preserve all latent weights and Adam moments."""
+    if not np.isfinite(learning_rate) or learning_rate<=0:
+        raise ValueError('learning rate must be finite and positive')
+    plan=copy.deepcopy(trainer.plan)
+    plan['optimizer']['learning_rate']=float(learning_rate)
+    result=NativeXyloTrainer(plan,runner=trainer.runner,request_timeout=trainer.request_timeout)
+    result.state=copy.deepcopy(trainer.state)
+    return result
+
+
+def cosine_rate(step, updates, maximum, minimum_ratio):
+    if not 1<=step<=updates or not 0<minimum_ratio<=1 or maximum<=0:
+        raise ValueError('invalid cosine schedule')
+    progress=(step-1)/max(1,updates-1)
+    return maximum*(minimum_ratio+(1-minimum_ratio)*.5*(1+np.cos(np.pi*progress)))
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     for key in ('dataset', 'runner', 'output'):
         p.add_argument('--' + key, type=Path, required=True)
     start_group = p.add_mutually_exclusive_group()
     start_group.add_argument('--resume', type=Path)
+    start_group.add_argument('--recode-from', type=Path, help='transfer hidden integer weights and initialize a different fixed-code readout')
+    p.add_argument('--source-runner', type=Path, help='original checkpoint runtime for warm-start transfer across native builds')
     start_group.add_argument('--widen-from', type=Path, help='initialize independent recurrent groups from a frozen native model')
     start_group.add_argument('--warm-start', type=Path, help='reuse latent weights, reset optimizer; permit a new encoder or readout window')
     p.add_argument('--warm-average', type=Path, nargs='+', default=[], help='additional native checkpoints to average with warm-start; reset Adam before retraining')
@@ -307,6 +355,10 @@ def main():
     p.add_argument('--elastic-sigma', type=float, default=4.)
     p.add_argument('--evaluation-round', type=int, default=3)
     p.add_argument('--prior-test-accuracy', type=float, default=.9728)
+    p.add_argument('--readout-source', choices=('spikes','synaptic_current'), default='spikes')
+    p.add_argument('--code-rate-weight', type=float, default=0.)
+    p.add_argument('--lr-schedule', choices=('constant','cosine'), default='constant')
+    p.add_argument('--lr-min-ratio', type=float, default=.1)
     p.add_argument('--logit-scale', type=float, default=12.)
     p.add_argument('--surrogate-slope', type=float, default=3.)
     p.add_argument('--updates', type=int, default=3000)
@@ -327,6 +379,12 @@ def main():
     a = p.parse_args()
     if min(a.updates,a.validate_every,a.batch_size,a.readout_ticks,a.repeats)<1:
         p.error('updates, validation interval, batch size, readout ticks and repeats must be positive')
+    if not np.isfinite(a.code_rate_weight) or not 0<=a.code_rate_weight<=100 or not 0<a.lr_min_ratio<=1:
+        p.error('invalid code rate weight or learning rate ratio')
+    if a.readout_source!='spikes' and a.code_rate_weight:
+        p.error('current readout does not use the spike-rate objective')
+    if a.source_runner and not a.warm_start:
+        p.error('source-runner requires warm-start')
     if a.warm_average and not a.warm_start:
         p.error('warm-average requires warm-start')
     if not np.isfinite(a.warm_weight_scale) or a.warm_weight_scale<=0 or (a.warm_weight_scale!=1 and not a.warm_start):
@@ -357,7 +415,9 @@ def main():
     plan = xylo_recurrent_training_plan([ni, nh, no], readout_start=x.shape[1]-a.readout_ticks,
         thresholds=(a.threshold, a.threshold if a.output_threshold is None else a.output_threshold), weight_scale=32., learning_rate=a.lr,
         logit_scale=a.logit_scale, seed=a.seed, class_codes=codes.tolist(),
-        input_max=15 if a.encoding.endswith('-counts') else 1)
+        input_max=15 if a.encoding.endswith('-counts') else 1,
+        code_rate_weight=a.code_rate_weight if a.code_rate_weight else None,
+        readout_source=a.readout_source if a.readout_source!='spikes' else None)
     plan['surrogate']['slope'] = a.surrogate_slope
     initial = [rng.normal(.03, .2, (ni, nh)).ravel(), rng.normal(.02, .1, (nh, no)).ravel(),
                (np.eye(nh)*a.rec_init + rng.normal(0, .015, (nh, nh))).ravel()]
@@ -373,8 +433,18 @@ def main():
         resume_receipt=dict(kind='widen-frozen',source=str(a.widen_from),frozen_file_sha256=sha(a.widen_from/'frozen.json'),
             groups=a.recurrent_groups,jitter=a.widen_jitter,output_threshold_multiplier=plan['threshold'][1]/parent['plan']['threshold'][1],
             optimizer_moments_preserved=False,source_weights='quantized native weights')
+    if a.recode_from:
+        parent=json.loads((a.recode_from/'frozen.json').read_text())
+        report=json.loads((a.recode_from/'training.json').read_text())
+        assert sha(a.recode_from/'frozen.json')==report['frozen_file_sha256']
+        initial=recode_weights(parent,plan)
+        trainer=NativeXyloTrainer(plan,runner=a.runner,weights=initial)
+        resume_receipt=dict(kind='recode-frozen',source=str(a.recode_from),
+            frozen_file_sha256=sha(a.recode_from/'frozen.json'),optimizer_moments_preserved=False,
+            initialization='unchanged integer input/recurrence; codebook-only linear least-squares readout',
+            prediction_equivalence_claimed=False)
     if a.warm_start:
-        initial,resume_receipt=warm_weights([a.warm_start,*a.warm_average],plan,a.runner,a.warm_weight_scale)
+        initial,resume_receipt=warm_weights([a.warm_start,*a.warm_average],plan,a.source_runner or a.runner,a.warm_weight_scale)
         trainer=NativeXyloTrainer(plan,runner=a.runner,weights=initial)
     if a.resume:
         prior = json.loads((a.resume/'frozen.json').read_text())
@@ -401,6 +471,8 @@ def main():
         initial=[np.asarray(w).copy() for w in trainer.state['weights']]
     start = time.monotonic(); history = []; best = -1.
     for step in range(1, a.updates+1):
+        if a.lr_schedule=='cosine':
+            trainer=scheduled_trainer(trainer,cosine_rate(step,a.updates,a.lr,a.lr_min_ratio))
         ix = rng.integers(0, len(x), a.batch_size)
         if a.augmentation_shift or a.augmentation_affine or a.augmentation_elastic:
             raw = deskew_images(images[ix]) if a.deskew else images[ix]
@@ -416,7 +488,7 @@ def main():
         if step % a.validate_every and step != a.updates:
             continue
         score = evaluate(trainer, vx, vy)
-        item = dict(step=step, validation_accuracy=score, loss=result['loss'])
+        item = dict(step=step, validation_accuracy=score, loss=result['loss'],learning_rate=trainer.plan['optimizer']['learning_rate'])
         history.append(item); print(json.dumps(item), flush=True)
         if score > best:
             best = score; trainer.store(a.output/'checkpoint.json')
@@ -437,6 +509,7 @@ def main():
             validation_original_index_range=[54000, 60000], test_arrays_read=False,
             selected=selected, history=history, resume=resume_receipt, updates_completed=step, requested_updates=a.updates,
             selection='highest native validation accuracy, earliest tie; no test or SDK selection',
+            readout_source=a.readout_source,code_rate_weight=a.code_rate_weight,lr_schedule=a.lr_schedule,
             training='native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained',
             external_training_framework=False, seed=a.seed, arguments={k:([str(p) for p in v] if k=='warm_average' else str(v) if isinstance(v, Path) else v) for k,v in vars(a).items()},
             seconds=time.monotonic()-start, script_sha256=hashlib.sha256(source_bytes).hexdigest(), runner_sha256=sha(a.runner),

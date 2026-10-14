@@ -7,6 +7,7 @@ from .protocol import canonical_bytes
 
 SCHEMA='atlas.native-xylo-frozen.v1'
 RECURRENT_SCHEMA='atlas.native-xylo-frozen.v2'
+CURRENT_BRIDGE_SCHEMA='atlas.native-xylo-current-bridge.v1'
 
 def digest(value):return hashlib.sha256(canonical_bytes(value)).hexdigest()
 
@@ -48,6 +49,15 @@ def validate_frozen(f):
         from .xylo_readout import validate_codes
         validate_codes(p["class_codes"], sizes[2])
         expected.add("class_codes")
+    if 'readout_source' in p:
+        require(recurrent and p['readout_source']=='synaptic_current' and 'code_rate_weight' not in p,
+                'current readout requires recurrent synaptic_current without a code-rate loss')
+        expected.add('readout_source')
+    if "code_rate_weight" in p:
+        from .xylo_readout import validate_code_rate_weight
+        require(recurrent and 'class_codes' in p, 'rate objective requires recurrent class codes')
+        validate_code_rate_weight(p['code_rate_weight'])
+        expected.add('code_rate_weight')
     require(set(p)==expected and p['schema']==('atlas-xylo-training-plan-v2' if recurrent else 'atlas-xylo-training-plan-v1')
         and p['backend']=='cpu' and p['synaptic_shift']==p['membrane_shift']==1 and p['detach_reset'] is True,
         'unsupported training dynamics')
@@ -113,6 +123,11 @@ def export_native_xylo(f,directory,*,steps,runner,target='xylosim'):
         bundle['native_training_bridge'].update(readout_start=f['plan']['readout_start'],stateful_chunks=True)
     if 'input_max' in f['plan']:
         bundle['native_training_bridge']['input_max']=f['plan']['input_max']
+    if 'readout_source' in f['plan']:
+        # Older runtimes must reject this decoder instead of silently summing spikes.
+        bundle['native_training_bridge'].update(schema=CURRENT_BRIDGE_SCHEMA,source_schema=f['schema'],
+            readout_source=f['plan']['readout_source'],
+            readout_divisor=f['plan']['threshold'][1],readout_execution='host-fixed-integer-current-sum')
     if 'class_codes' in f['plan']:
         bundle['native_training_bridge']['class_codes']=copy.deepcopy(f['plan']['class_codes'])
         bundle['native_training_bridge']['class_decoder_execution']='host-fixed-integer-codebook'

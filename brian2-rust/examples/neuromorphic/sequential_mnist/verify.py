@@ -82,7 +82,7 @@ def main():
         ablated.extend(no_rec.evaluate(raster,labels)['logits'])
         prefix=trainer.evaluate(raster[:,:boundary],labels);state=copy.deepcopy(prefix['continuation'])
         for key in ('currents','membranes','spikes'):state[key]=np.zeros_like(state[key]).tolist()
-        # Preserve any accumulated readout counts: change neural memory only.
+        # Preserve accumulated spike counts and optional current sums; change neural memory only.
         reset_logits.extend(trainer.evaluate(raster[:,boundary:],labels,initial=state)['logits'])
         for index in replay_indices:
             if i<=index<i+len(raster):replay_reference[index]={k:v[index-i].copy() for k,v in arrays.items()}
@@ -145,12 +145,15 @@ def main():
         max_recurrent_fanout=int(np.count_nonzero(np.asarray(f['target_weights'][2]).reshape(sizes[1],sizes[1]),axis=1).max()),
         evaluation_round=training.get('evaluation_round',1),
         prior_official_test_accuracy_known=training.get('prior_official_test_accuracy_known'),readout_start=f['plan']['readout_start'],class_codes=f['plan']['class_codes'],
+        readout_source=f['plan'].get('readout_source','spikes'),
+        readout_divisor=f['plan']['threshold'][1] if f['plan'].get('readout_source') else 1,
+        readout_execution='host-fixed-integer-current-sum' if f['plan'].get('readout_source') else 'host-spike-count',
         class_decoder_execution='host-fixed-integer-codebook',same_model=True,same_weight_banks=True,
         same_class_codebook=True,retraining=False,clock_shift=0,numerical_tolerance=0,
         native=accuracy(logits,y),xylosim=accuracy(target_logits['xylosim'],y),spinnaker2_integer=accuracy(target_logits['spinnaker2'],y),
         accuracy_target=.98,accuracy_target_met=bool(accuracy(logits,y)['accuracy']>=.98),
         memory_controls=dict(zero_recurrence=accuracy(ablated,y),reset_neural_state=accuracy(reset_logits,y),
-            reset_before_tick=boundary,accumulated_counts_preserved=True),comparisons=comparisons,
+            reset_before_tick=boundary,accumulated_counts_preserved=True,accumulated_current_sums_preserved=True),comparisons=comparisons,
         portable_native_comparison=dict(checked=portable is not None,values=portable_values,
             differences=0 if portable is not None else None,runner_sha256=sha(a.portable_train_runner) if portable is not None else None),
         freeze_comparison=dict(checked=not a.frozen_only,values=freeze_values,differences=0 if not a.frozen_only else None),sdk_executions=executions,

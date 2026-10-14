@@ -78,7 +78,7 @@ def _linearized_loss(plan, weights, perturbed, x, labels):
     shapes=list(zip(sizes,sizes[1:]))+([(sizes[1],sizes[1])] if plan.get('recurrent') else [])
     w0=[np.rint(np.asarray(w)*scale).reshape(a,b) for w,(a,b) in zip(weights,shapes)]
     wp=[w+scale*(np.asarray(new)-old).reshape(w.shape) for w,new,old in zip(w0,perturbed,weights)]
-    logits=[]
+    logits=[];rates=[]
     def clip(z,zp):return np.clip(z,-32768,32767),np.clip(z,-32768,32767)+((-32768<=z)&(z<=32767))*(zp-z)
     def decay(z):return np.floor(z/2)+(z==1)
     for row in x:
@@ -104,12 +104,20 @@ def _linearized_loss(plan, weights, perturbed, x, labels):
                     i0[k]=ni;ip[k]=nip;v0[k]=u-q*theta;vp[k]=up-q*theta
                     new_q0[k]=q;new_qp[k]=qpert
             q0,qp=new_q0,new_qp
-            if time>=plan.get('readout_start',0):counts+=qp[-sizes[-1]:]
+            if time>=plan.get('readout_start',0):
+                counts+=(ip[-sizes[-1]:] if plan.get('readout_source') else qp[-sizes[-1]:])
+        rates.append(counts/(steps-plan.get('readout_start',0)))
         if 'class_codes' in plan:
             counts = np.asarray(plan['class_codes']) @ counts
-        logits.append(counts*plan['logit_scale']/(steps-plan.get('readout_start',0)))
+        score=counts*plan['logit_scale']/(steps-plan.get('readout_start',0))
+        if plan.get('readout_source'):score/=plan['threshold'][1]
+        logits.append(score)
     logits=np.asarray(logits);maximum=logits.max(1)
-    return np.mean(np.log(np.exp(logits-maximum[:,None]).sum(1))+maximum-logits[np.arange(batch),labels])
+    loss=np.mean(np.log(np.exp(logits-maximum[:,None]).sum(1))+maximum-logits[np.arange(batch),labels])
+    if 'code_rate_weight' in plan:
+        target=.1+.8*np.asarray(plan['class_codes'])[labels]
+        loss+=plan['code_rate_weight']*np.mean((np.asarray(rates)-target)**2)
+    return loss
 
 
 def test_reverse_pass_matches_surrogate_directional_derivative(trainer):

@@ -1,0 +1,16 @@
+{
+  "methods": [
+    "counts",
+    "current",
+    "positive_current",
+    "pre_reset_voltage",
+    "counts_plus_final_residual"
+  ],
+  "readout_ticks": [
+    8,
+    12,
+    20
+  ],
+  "samples": "original train[54000:60000]",
+  "test_arrays_read": false
+}

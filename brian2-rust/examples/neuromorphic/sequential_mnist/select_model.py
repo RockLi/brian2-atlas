@@ -30,7 +30,9 @@ def main():
             augmentation_shift=report.get('augmentation_shift',0),
             augmentation_affine=report.get('augmentation_affine',0.),
             augmentation_elastic=report.get('augmentation_elastic',0.),
-            readout_start=report['readout_start'],history=report['history'],
+            readout_start=report['readout_start'],readout_source=report.get('readout_source','spikes'),
+            code_rate_weight=report.get('code_rate_weight',0.),lr_schedule=report.get('lr_schedule','constant'),
+            history=report['history'],
             report_sha256=sha(directory/'training.json'),frozen_file_sha256=sha(directory/'frozen.json')))
     winner=max(range(len(candidates)),key=lambda i:candidates[i]['validation_accuracy'])
     source=a.runs[winner];a.output.mkdir(parents=True,exist_ok=False)

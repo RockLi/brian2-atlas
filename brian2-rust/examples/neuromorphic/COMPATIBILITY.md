@@ -129,17 +129,18 @@ The SDK graph feeds an independent compiled C kernel; this is neither stock
 ### Full ten-class block-sequential MNIST
 
 The [native sequential example](sequential_mnist/README.md) uses the same
-16→126→5 recurrent integer model and weights in native Atlas, stock XyloSim
-and the custom SpiNNaker2 C host profile. All three reach **97.47%** on the complete
-10,000-image official test set (previous round: 97.28%). Each target matches
-141,480,000 spike/current/membrane values and 100,000 logits exactly. The 98% target remains unmet.
-The selected latent checkpoint, frozen model, independent native build and ten
-concrete AtlasIR replays agree. [The third-round report](sequential_mnist/ROUND3.md)
-records validation selection, unsuccessful candidates, controls and costs.
+16→63→5 recurrent integer model and weights in native Atlas, stock XyloSim
+and the custom SpiNNaker2 C host profile. All three reach **97.44%** on the
+complete 10,000-image official test set (previous wider result: 97.47%). Each
+target matches 73,440,000 spike/current/membrane values and 100,000 logits exactly.
+The 98% test target remains unmet. The selected latent checkpoint, frozen model, independent native build
+and ten concrete AtlasIR replays agree. [The fourth-round report](sequential_mnist/ROUND4.md)
+records validation selection, training/readout candidates and controls. Optional
+current readout uses host state recording; the selected readout is `spikes`.
 
 Recurrent v2 training/export admits 16/128/8 dimensions, count inputs up to 15,
-and a fixed host class codebook. Recurrent fanout remains ≤63. The wider example
-uses independent groups and projects cross-group weights and Adam moments to
+and a fixed host class codebook. Recurrent fanout remains ≤63. The retained
+round-three wider example uses independent groups and projects cross-group weights and Adam moments to
 zero. V1 feedforward retains 16/64/8. No integer neuron transition changed.
 The selected input is `rows-full-counts` with host deskew and 36 ticks;
 this is not the canonical 784-step sequential benchmark. Earlier test scores
@@ -161,6 +162,8 @@ execution is established by these software checks.
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
 | Stateful chunked input | Xylo temporal and native recurrent v2: full runs match fixed and irregular chunks; custom SpiNNaker2 integer host execution matches 1/7/13-tick chunks; other temporal SDK paths are unverified |
 | Fixed class-code readout | Native recurrent integer training and exact Xylo/custom SpiNNaker2 bridges; 2–32 classes decoded on the host from at most 8 physical outputs |
+| Signed output-current readout | Optional native recurrent v2 objective and exact Xylo/custom SpiNNaker2 host decoding; sums recorded output Isyn, preserves signed chunk history and checks output-threshold normalization; requires state recording, not on-chip classification |
+| Output-rate auxiliary objective | Optional native recurrent v2 training loss with fixed class codes; exported spike-count inference is unchanged; independent surrogate derivatives verified |
 | Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2 and approximate LIF adaptation to Xylo (1–16 ticks); separate exact integer-trained Xylo and custom SpiNNaker2 C host bridges (1–128 ticks). All start fresh sequences; recurrent Xylo v2 carries inference state between chunks |
 | Atlas live checkpoint/resume through conversion | Not implemented; native bridge exports weights for fresh inference, not optimizer/continuation state |
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
