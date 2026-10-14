@@ -1,0 +1,252 @@
+{
+  "schema": "atlas.sequential-mnist.training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "task": "Ten-class block-sequential MNIST",
+  "encoding": "rows-full-counts",
+  "repeats": 1,
+  "deskew": true,
+  "query_ticks": 8,
+  "augmentation_shift": 1,
+  "augmentation_affine": 4.0,
+  "augmentation_elastic": 0.0,
+  "elastic_sigma": 4.0,
+  "evaluation_round": 4,
+  "prior_official_test_accuracy_known": 0.9747,
+  "steps": 36,
+  "readout_start": 24,
+  "sizes": [
+    16,
+    63,
+    5
+  ],
+  "recurrent_groups": 1,
+  "active_weight_count": 5292,
+  "masked_recurrent_weights": 0,
+  "max_recurrent_fanout": 63,
+  "classes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "class_codes": [
+    [
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  ],
+  "class_decoder_execution": "host-fixed-integer-codebook",
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "selected": {
+    "step": 6000,
+    "validation_accuracy": 0.9786666666666667,
+    "loss": 0.021061488899352276,
+    "learning_rate": 6.954995787775596e-05,
+    "changed_latent_weights": [
+      1008,
+      315,
+      3969
+    ]
+  },
+  "history": [
+    {
+      "step": 1000,
+      "validation_accuracy": 0.9763333333333334,
+      "loss": 0.04460903988854098,
+      "learning_rate": 0.0002897414835010377
+    },
+    {
+      "step": 2000,
+      "validation_accuracy": 0.9758333333333333,
+      "loss": 0.07006233651637689,
+      "learning_rate": 0.0002604875299518713
+    },
+    {
+      "step": 3000,
+      "validation_accuracy": 0.9758333333333333,
+      "loss": 0.06847622765288264,
+      "learning_rate": 0.00021669287745008537
+    },
+    {
+      "step": 4000,
+      "validation_accuracy": 0.9775,
+      "loss": 0.10686204323901488,
+      "learning_rate": 0.00016502651050165698
+    },
+    {
+      "step": 5000,
+      "validation_accuracy": 0.9776666666666667,
+      "loss": 0.015835980253025517,
+      "learning_rate": 0.00011335610657349034
+    },
+    {
+      "step": 6000,
+      "validation_accuracy": 0.9786666666666667,
+      "loss": 0.021061488899352276,
+      "learning_rate": 6.954995787775596e-05
+    },
+    {
+      "step": 7000,
+      "validation_accuracy": 0.9773333333333334,
+      "loss": 0.0062747655327889396,
+      "learning_rate": 4.0278799543736485e-05
+    },
+    {
+      "step": 8000,
+      "validation_accuracy": 0.9783333333333334,
+      "loss": 0.27147810778292125,
+      "learning_rate": 2.9999999999999997e-05
+    }
+  ],
+  "resume": {
+    "kind": "warm-start",
+    "weight_multiplier": 1.0,
+    "parents": [
+      {
+        "run": "/Volumes/T7/atlas-sequential-mnist-round4-20261014/compact-cosine",
+        "checkpoint_sha256": "3bb8f2be5eaa35e1cbf33ec0e553b9e5ddb2d302f4e883aa0bea3653dce006a5",
+        "frozen_file_sha256": "094e678d7cee84562dc520c86a734ffb05345e06f02ae24e7066689c6b4694c6",
+        "validation_accuracy": 0.9813333333333333
+      }
+    ],
+    "optimizer_moments_preserved": false,
+    "aggregation": "equal mean of latent weights before native retraining"
+  },
+  "updates_completed": 8000,
+  "requested_updates": 8000,
+  "selection": "highest native validation accuracy, earliest tie; no test or SDK selection",
+  "readout_source": "spikes",
+  "code_rate_weight": 0.0,
+  "lr_schedule": "cosine",
+  "training": "native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained",
+  "external_training_framework": false,
+  "seed": 20261126,
+  "arguments": {
+    "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "runner": "/Volumes/T7/atlas-sequential-mnist-round4-20261014/b2-train-current",
+    "output": "/Volumes/T7/atlas-sequential-mnist-round4-20261014/compact-late",
+    "resume": null,
+    "recode_from": null,
+    "source_runner": "/Volumes/T7/atlas-sequential-mnist-round4-20261014/b2-train",
+    "widen_from": null,
+    "warm_start": "/Volumes/T7/atlas-sequential-mnist-round4-20261014/compact-cosine",
+    "warm_average": [],
+    "warm_weight_scale": 1.0,
+    "deskew": true,
+    "query_ticks": 8,
+    "augmentation_shift": 1,
+    "augmentation_affine": 4.0,
+    "augmentation_elastic": 0.0,
+    "elastic_sigma": 4.0,
+    "evaluation_round": 4,
+    "prior_test_accuracy": 0.9747,
+    "readout_source": "spikes",
+    "code_rate_weight": 0.0,
+    "lr_schedule": "cosine",
+    "lr_min_ratio": 0.1,
+    "logit_scale": 12.0,
+    "surrogate_slope": 3.0,
+    "updates": 8000,
+    "encoding": "rows-full-counts",
+    "codebook": "pairs5",
+    "repeats": 1,
+    "hidden": 63,
+    "recurrent_groups": 1,
+    "widen_jitter": 0.03,
+    "threshold": 64,
+    "output_threshold": 256,
+    "lr": 0.0003,
+    "rec_init": 0.5,
+    "readout_ticks": 12,
+    "batch_size": 32,
+    "validate_every": 1000,
+    "seed": 20261126
+  },
+  "seconds": 1061.9485566250514,
+  "script_sha256": "64a24ecd15786814b7d27d4c87612a33fba89f25371f789b1de48c331efa2567",
+  "runner_sha256": "b927f3d631ae971333f131388afaa2d163c68e8f521a86c493413018065c8af5",
+  "checkpoint_sha256": "7e18d8313070d74e08a371b5740cbac234090a9ca8b165fa9ca23df0a664ee5f",
+  "frozen_file_sha256": "d1e01a2194e5412fa268b5cc065e3cbeefdcc2abd939fe63df748c862f92e1d0"
+}

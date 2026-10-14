@@ -87,9 +87,9 @@ def check_units_statements(code, variables):
             continue  # skip empty lines
 
         varname, op, expr, comment = parse_statement(line)
-        if op in ("+=", "-=", "*=", "/=", "%="):
+        if op in ("+=", "-=", "*=", "/=", "//=", "%="):
             # Replace statements such as "w *=2" by "w = w * 2"
-            expr = f"{varname} {op[0]} {expr}"
+            expr = f"{varname} {op[:-1]} ({expr})"
         elif op == "=":
             pass
         else:

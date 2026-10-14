@@ -1,0 +1,12 @@
+{
+  "candidate": "wide-rate",
+  "decision": "retain original full training budget",
+  "rule": "stop at update 2000 only if validation remains below 0.981",
+  "observed": {
+    "step": 2000,
+    "validation_accuracy": 0.981,
+    "loss": 0.024654915953710745,
+    "learning_rate": 0.0002604875299518713
+  },
+  "test_arrays_read": false
+}

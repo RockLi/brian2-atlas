@@ -1,0 +1,18 @@
+{
+  "target": "xylosim",
+  "versions": {
+    "rockpool": "3.1.0",
+    "xylosim": "0.1.3",
+    "samna": "0.48.6",
+    "numpy": "2.5.4"
+  },
+  "bundle_sha256": "b3cd48be740b5b45686a0de9ff8053fef572df51d4c1fb33816bedf250a3bbe6",
+  "inputs_sha256": "180587c365ae4adc1f4b06fabcb1ef90fe11436935e894c1ec50944a81e9adf9",
+  "results_sha256": "176c9e9cc02ad5dee66b5052026d95644f6ac3f0bdf603082a96776b042aa62f",
+  "execution_seconds": 1.902154499955941,
+  "reference_or_labels_read": false,
+  "physical_hardware": false,
+  "official_configuration_valid": true,
+  "configuration_sha256": "b41efef0ccecc6fef595ce20a88fadb461fbd17256920971987dd60f4ba0a380",
+  "sdk_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed"
+}

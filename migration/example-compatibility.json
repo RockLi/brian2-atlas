@@ -1,0 +1,78 @@
+{
+  "schema": "atlas-example-compatibility-port-v1",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "upstream_base": "27b5431168cf9959f0c27894cd4d92cdc6ad5c31",
+  "files": [
+    {
+      "source": "examples/advanced/float_32_64_benchmark.py",
+      "target": "examples/advanced/float_32_64_benchmark.py",
+      "source_sha256": "c917dba1ab4a07036d60f58742165edeb09a63f591e4880a5854eacb6424f4b5",
+      "target_sha256": "c917dba1ab4a07036d60f58742165edeb09a63f591e4880a5854eacb6424f4b5",
+      "source_git_state": "tracked",
+      "source_blob": "1e431fc4b39a97a4318e7c35c4033f8108d55593",
+      "adaptation": "Exact captured project delta; pinned upstream file is unchanged from the original upstream base."
+    },
+    {
+      "source": "examples/coupled_oscillators.py",
+      "target": "examples/coupled_oscillators.py",
+      "source_sha256": "08b7ee55e13333d453931389f743775a81adf1b53fe8b22c20066ded3beedaf4",
+      "target_sha256": "08b7ee55e13333d453931389f743775a81adf1b53fe8b22c20066ded3beedaf4",
+      "source_git_state": "tracked",
+      "source_blob": "48bfccfa3ab8c7f70ec51deb3a04bad017fcb020",
+      "adaptation": "Exact captured project delta; pinned upstream file is unchanged from the original upstream base."
+    },
+    {
+      "source": "examples/frompapers/Stimberg_et_al_2018/example_1_COBA.py",
+      "target": "examples/frompapers/Stimberg_et_al_2018/example_1_COBA.py",
+      "source_sha256": "fb16933fd7348d0f6db60666400b36d4b45219b2898e24c2ee58f3709bc8eede",
+      "target_sha256": "fb16933fd7348d0f6db60666400b36d4b45219b2898e24c2ee58f3709bc8eede",
+      "source_git_state": "tracked",
+      "source_blob": "206271e1bff97b31ae3fdc6bc00727379471181f",
+      "adaptation": "Exact captured project delta; pinned upstream file is unchanged from the original upstream base."
+    },
+    {
+      "source": "examples/synapses/efficient_gaussian_connectivity.py",
+      "target": "examples/synapses/efficient_gaussian_connectivity.py",
+      "source_sha256": "507a02098dea955a551ded3a9683a04435121256df833c782c082d3cc9e5b3e6",
+      "target_sha256": "507a02098dea955a551ded3a9683a04435121256df833c782c082d3cc9e5b3e6",
+      "source_git_state": "tracked",
+      "source_blob": "eedfbe1d7b5dfa7280e1a4bb2f51c96acf541039",
+      "adaptation": "Exact captured project delta; pinned upstream file is unchanged from the original upstream base."
+    },
+    {
+      "source": "examples/synapses/homeostatic_stdp_at_inhibitory_synapes.py",
+      "target": "examples/synapses/homeostatic_stdp_at_inhibitory_synapes.py",
+      "source_sha256": "b4f0dfea7a0144943ff67d4f622d9ce1289044d9454b65fd7763854b7f5465e4",
+      "target_sha256": "b4f0dfea7a0144943ff67d4f622d9ce1289044d9454b65fd7763854b7f5465e4",
+      "source_git_state": "tracked",
+      "source_blob": "cfa8c7908ec801c7bad82485affd76d0ead8d83b",
+      "adaptation": "Exact captured project delta; pinned upstream file is unchanged from the original upstream base."
+    }
+  ],
+  "changes": [
+    "Use Python built-in sum for the profiling generator under NumPy 2.",
+    "Pass sequences to the Matplotlib line artist.",
+    "Replace removed np.in1d with np.isin.",
+    "Make the Gaussian connectivity benchmark importable, return counts, and explicitly own its objects in a Network.",
+    "Preserve backslashes in mathematical docstrings."
+  ],
+  "validation": {
+    "python_syntax": "All five files parsed.",
+    "runtime": {
+      "status": "passed",
+      "frontend": "/atlas-storage/0001/repos/brian2-atlas/brian2/__init__.py",
+      "source_sha256": "507a02098dea955a551ded3a9683a04435121256df833c782c082d3cc9e5b3e6",
+      "neuron_count": 32,
+      "seed": 174,
+      "connection_counts": {
+        "naive": 175,
+        "limited": 181,
+        "divided": 181
+      },
+      "numpy_version": "2.5.3",
+      "completed_unix": 1791458224.6526022,
+      "scope": "Executed each of the three original connection generators; this is a functional smoke check, not a performance benchmark or statistical-equivalence proof."
+    },
+    "limitations": "Full benchmark sweeps, interactive animation, and scientific example simulations were not rerun."
+  }
+}

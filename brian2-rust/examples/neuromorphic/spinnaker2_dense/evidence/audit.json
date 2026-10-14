@@ -1,0 +1,302 @@
+{
+  "schema": "atlas.spinnaker2.dense-mnist-audit.v1",
+  "passed": true,
+  "samples": 10000,
+  "correct": 9874,
+  "accuracy": 0.9874,
+  "accuracy_loss_percentage_points": 0.0,
+  "compared_states": 2660000,
+  "differing_states": 0,
+  "prediction_disagreements": 0,
+  "hidden_state_values": 2560000,
+  "score_values": 100000,
+  "exact_as_float64_bits": true,
+  "same_frozen_weights_and_biases": true,
+  "same_input_preprocessing": true,
+  "reference_kind": "fresh native Atlas replay",
+  "training_framework": "external TensorFlow",
+  "training_repeated": false,
+  "confusion_matrix": [
+    [
+      971,
+      0,
+      1,
+      1,
+      0,
+      1,
+      2,
+      1,
+      3,
+      0
+    ],
+    [
+      0,
+      1132,
+      2,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      2,
+      2,
+      1017,
+      4,
+      0,
+      0,
+      0,
+      4,
+      3,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      997,
+      0,
+      8,
+      0,
+      2,
+      0,
+      2
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      967,
+      0,
+      4,
+      2,
+      2,
+      7
+    ],
+    [
+      0,
+      0,
+      0,
+      7,
+      0,
+      882,
+      1,
+      2,
+      0,
+      0
+    ],
+    [
+      3,
+      2,
+      1,
+      0,
+      3,
+      1,
+      948,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      3,
+      9,
+      1,
+      0,
+      0,
+      0,
+      1012,
+      1,
+      2
+    ],
+    [
+      3,
+      1,
+      2,
+      2,
+      0,
+      2,
+      1,
+      2,
+      959,
+      2
+    ],
+    [
+      0,
+      2,
+      0,
+      4,
+      7,
+      3,
+      0,
+      3,
+      1,
+      989
+    ]
+  ],
+  "source_model_sha256": "6b278eb3bfa64d04c120a8622fb6b72f2b2b2188aa79e67673f9c501e98ae9d1",
+  "weights_sha256": "3efd2db4735374269ff50beed0ac1ef443489673fabf2e3812a91eb8854e594c",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "historical_reference_sha256": "abfbb7ea39230e60266f6bb715ab79aed33325895ac16ce18f8992f9023eb8f8",
+  "resources": {
+    "input_neurons": 5489,
+    "comparator_neurons": 1792,
+    "readout_neurons": 266,
+    "first_layer_connections": 7197904,
+    "bias_connections": 1792,
+    "decision_connections": 5376,
+    "readout_connections": 19306
+  },
+  "total_connections": 7224378,
+  "naive_comparator_neurons": 32512,
+  "naive_first_layer_connections": 130590544,
+  "sdk": {
+    "target": "spinnaker2",
+    "samples": 10000,
+    "states": 2660000,
+    "versions": {
+      "spinnaker2": "0.8.0",
+      "brian2": "2.10.1",
+      "numpy": "2.3.4"
+    },
+    "bundle_sha256": "ced58bf61d11b003c9f2de2f05fec623a3700f8dcbcf2ecc6105281a3145fe40",
+    "inputs_sha256": "13753b51260dec02cae482eade14febe1f599d36e51c94ba00567c1a8f23a5c2",
+    "source_model_sha256": "6b278eb3bfa64d04c120a8622fb6b72f2b2b2188aa79e67673f9c501e98ae9d1",
+    "runtime_sha256": "2bf60e69a1ae2997a180dfecbb08f0001afed69d86f9f8f4b37881829228036c",
+    "results_sha256": "935d3e679004e1f42fdd593289b09462bb639c60e50d1d0138ee5c945c4d406f",
+    "elapsed_seconds": 51.31242537498474,
+    "physical_hardware": false,
+    "hardware_mapping_tested": false,
+    "implementation_sha256": {
+      "count_targets.py": "2567a1b4b029d60cb42efdd8a8817d52ccfd25726013f57d2583ba17ca01369f",
+      "neuromorphic_runtime.py": "2bf60e69a1ae2997a180dfecbb08f0001afed69d86f9f8f4b37881829228036c",
+      "spinnaker2_dense.py": "86555616ccc9f0aeccb1b35a6466adfabc13af855544d783921cc36137db5bc8"
+    },
+    "note": "CPU simulator wall time is not chip latency or energy."
+  },
+  "atlas": {
+    "reference_kind": "fresh native Atlas replay",
+    "samples": 10000,
+    "batches": [
+      {
+        "start": 0,
+        "count": 500,
+        "source_sha256": "f75b344436b4f870c4e92a7d07ef41de4245b01dc8dc4af7fbcee2b020803d74"
+      },
+      {
+        "start": 500,
+        "count": 500,
+        "source_sha256": "49a2f54cc959daab2307554041b0872f4802f1f9f49b9c2af4be20a0892d4645"
+      },
+      {
+        "start": 1000,
+        "count": 500,
+        "source_sha256": "47e8e88c6f480a0b6850e14a9c675a930e03d3e6019094df49399fc3c5d9e12d"
+      },
+      {
+        "start": 1500,
+        "count": 500,
+        "source_sha256": "e7f23048f5dade850066a46ee6ff1344b2e8124117dcf5f3bbc756b985cedd2a"
+      },
+      {
+        "start": 2000,
+        "count": 500,
+        "source_sha256": "7b126f9ddc2c3f39dcc4e10a9173e1c46333acdba16c980e4a31928b431b8ea3"
+      },
+      {
+        "start": 2500,
+        "count": 500,
+        "source_sha256": "447916f7b44b1b234f448c46ce5c6426c9b9b8ecf8db808f05564b655fddcdaf"
+      },
+      {
+        "start": 3000,
+        "count": 500,
+        "source_sha256": "e10f77b0ec5499185957a7656a4cc4752123fef0d2b24aeef7f6e3c8855a8a80"
+      },
+      {
+        "start": 3500,
+        "count": 500,
+        "source_sha256": "48b8c1fde52dd7bdfe898f181598d7bbd47d3e8c04c83f0fe6cc98b2d4ed2e24"
+      },
+      {
+        "start": 4000,
+        "count": 500,
+        "source_sha256": "cdd9b52a3d8fb51141398ef141cbd4f7e4198e34ee7894ac6a6b4f11994f1d31"
+      },
+      {
+        "start": 4500,
+        "count": 500,
+        "source_sha256": "26f47dbe5aff6749d5506b790429bbc9a09c6f3d296d76e9b845dac3914bfaa0"
+      },
+      {
+        "start": 5000,
+        "count": 500,
+        "source_sha256": "6cfcdb5adce6d05a8341c0fdf3ff71657d45c10a77ca518ad1e3d1d173da5c36"
+      },
+      {
+        "start": 5500,
+        "count": 500,
+        "source_sha256": "3ececab69ac0ad6f92ba50e8f6871c869b8950b1e0f7a31cd21a9b250a02b977"
+      },
+      {
+        "start": 6000,
+        "count": 500,
+        "source_sha256": "76ad03646419808d9d964e8529266b76d861e6ed9f536e280dd282f7f53bfce6"
+      },
+      {
+        "start": 6500,
+        "count": 500,
+        "source_sha256": "e07543d5a2990ec598f7ce58313e031d4536d523a1463fa6aa6ecec07b53c9da"
+      },
+      {
+        "start": 7000,
+        "count": 500,
+        "source_sha256": "1f2a953afdbffef18c3013eab0c663a7c935d817eb8c2cffa0b8ba81acafe66c"
+      },
+      {
+        "start": 7500,
+        "count": 500,
+        "source_sha256": "023aa24698243e7c43f7b7d53286cab4321e375767f020b7b5e3304e5a92d432"
+      },
+      {
+        "start": 8000,
+        "count": 500,
+        "source_sha256": "7a7275474022d168306885cc5406c55e7c6b637305abe1efcab7795e150028b0"
+      },
+      {
+        "start": 8500,
+        "count": 500,
+        "source_sha256": "70efa9ea0bc59728f36e5ca933b6288097d0322f325cff55142b830a17b45883"
+      },
+      {
+        "start": 9000,
+        "count": 500,
+        "source_sha256": "43c9fd6a8e206b4f420f0a8d0d096fa1b5aac2587a79a86277e22d38bd74eda2"
+      },
+      {
+        "start": 9500,
+        "count": 500,
+        "source_sha256": "6b278eb3bfa64d04c120a8622fb6b72f2b2b2188aa79e67673f9c501e98ae9d1"
+      }
+    ],
+    "elapsed_seconds": 51.8236457920284,
+    "source_model_sha256": "6b278eb3bfa64d04c120a8622fb6b72f2b2b2188aa79e67673f9c501e98ae9d1",
+    "definition_sha256": "b6f96368017cbae8e4a46e9b74d77888a9e14c42c2aaed62e3b409aba6c48cb7",
+    "runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+    "inputs_sha256": "13753b51260dec02cae482eade14febe1f599d36e51c94ba00567c1a8f23a5c2",
+    "states_sha256": "57e884ba276d84d69aafddeed03de028a4879d9df6e2e992e9d8c7b665d441b9",
+    "resource_budgets": {
+      "B2_MAX_POPULATION_STATES": "512",
+      "B2_MAX_POPULATION_PARAMETERS": "1024",
+      "B2_MAX_STATEMENTS": "512",
+      "B2_MAX_SCRATCH_VALUES": "128000000"
+    }
+  },
+  "physical_hardware": false,
+  "hardware_mapping_tested": false,
+  "scope": "Exact static integer MLP conversion in the stock SDK CPU simulator. Internal spikes encode arithmetic; no temporal-SNN portability or chip power claim."
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "atlas-source-ignore-port-v1",
+  "source_snapshot": "20261008T063409Z",
+  "files": [
+    {
+      "source": ".gitignore",
+      "source_sha256": "baa91c41fb418e3b5a5a3fce0a696e21371b9014b00cc6e7a4cd4ba45998a299",
+      "target": ".gitignore",
+      "previous_target_sha256": "d6025a75998a0538b1d632b1ffd968f34873d212c35320ea81f9eb8011e76591",
+      "target_sha256": "64a67e9db1c5807e59cf098ce1a0401ff40b4ec4908dad23e0a5919792eec969",
+      "adaptation": "Retain the captured project-specific generated-directory exclusions in addition to current upstream and Atlas rules."
+    },
+    {
+      "source": "brian2-rust/.gitignore",
+      "source_sha256": "5c0c67e82028283e3a6ec78b21d4c6e3329f0d4cdec99f8e39c3f9aec1abefc5",
+      "target": "brian2-rust/.gitignore",
+      "previous_target_sha256": "6f262c905bbda70b8d558af5967012124da1c98d3534be15a27d5f1a74673b52",
+      "target_sha256": "8e26a42a0c7d28291494c345e7baf83556424f611e48bdcc096d1fdb9f038b3f",
+      "adaptation": "Retain the captured project-specific generated-directory exclusions in addition to current upstream and Atlas rules."
+    }
+  ],
+  "validation": "All five captured additional cache/build exclusions verified with git check-ignore."
+}

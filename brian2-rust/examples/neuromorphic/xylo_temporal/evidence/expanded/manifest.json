@@ -1,0 +1,44 @@
+{
+  "base_commit": "ba13b16431db3f7445235c5b1d7667af07975ea7",
+  "date": "2026-10-13",
+  "platform": "macOS arm64",
+  "atlas_executor_modified": false,
+  "ir_schema_modified": false,
+  "admitted_semantics_modified": false,
+  "sdk_sources_modified": false,
+  "python_tests_passed": 130,
+  "seed": 20261013,
+  "source_sha256": {
+    "brian2-rust/examples/neuromorphic/xylo_temporal/compare.py": "24dc54f68bf39265e6c2d2e570926795d56c36743f91b624c3f2ec4cc84e74d3",
+    "brian2-rust/examples/neuromorphic/xylo_temporal/coverage_cases.py": "21efc7deb06adffb10c68ffe5ec28518254583cb4d9fdbde330841678be66405",
+    "brian2-rust/examples/neuromorphic/xylo_temporal/sdk_worker.py": "e46ab1f164e5c6e81a326f0fa6ea94aae8a241d66a9d47bbe87124230b77139b",
+    "brian2-rust/examples/neuromorphic/xylo_temporal/verify_brian2.py": "618596a7a6b8a065a5cfa997985ac216b2ac21783a5ad84c4b8f51e6eec4ab0d",
+    "brian2-rust/python/brian2_rust/xylo_runtime.py": "feb3fe6abc5bc7d532d5e7633dc264685588f2d3042fa24840743f08f3d36f8f",
+    "brian2-rust/python/brian2_rust/xylo_b2ir.py": "0c5f5505812e9bab3c0c40c598a6b0ea9b3c7f001e93eb5cd63d642df5fd23d3",
+    "brian2-rust/python/brian2_rust/neuromorphic_runtime.py": "a8e67fc68789664eb0ae116deeac7118d6560cdc58f532be840c29cc958abae9",
+    "brian2-rust/tests/test_xylo_b2ir.py": "9d6119a62e6bff73fba5dd0550c864184d304fd931a0c22786dc9c8f97734c8b"
+  },
+  "audit_sha256": "788a41a621eeeec1aa9d137f26457357df326c12036718bd330e9ac218bf9b32",
+  "brian2_audit_sha256": "1a32edc2c847278d2c71014e473e7e09cce402b363c79b5af5c7cec3ea58b392",
+  "sdk_versions": {
+    "xylosim": "0.1.3",
+    "samna": "0.48.6",
+    "rockpool": "3.1.0",
+    "numpy": "2.5.4",
+    "bitstruct": "8.23.0",
+    "packaging": "26.3"
+  },
+  "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+  "native_atlas_runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "result": {
+    "cases": 50,
+    "state_values": 505455,
+    "hidden_spikes": 1311454,
+    "output_spikes": 31352,
+    "differences": 0,
+    "chunk_steps": 7,
+    "chunked_state_values": 505455,
+    "chunked_differences": 0,
+    "brian2_cases": 8
+  }
+}

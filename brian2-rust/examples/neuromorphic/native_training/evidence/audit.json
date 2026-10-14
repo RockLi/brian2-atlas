@@ -1,0 +1,572 @@
+{
+  "schema": "atlas.native-lif.mnist-audit.v1",
+  "passed": true,
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "training": {
+    "schema": "atlas.native-lif.mnist-training.v1",
+    "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+    "seed": 20261014,
+    "training_backend": "native CPU b2-train",
+    "external_training_framework": false,
+    "train_indices": [
+      0,
+      54000
+    ],
+    "validation_indices": [
+      54000,
+      60000
+    ],
+    "test_arrays_read": false,
+    "preprocessing": "2x2 mean pooling to 14x14; pixel >= 80; repeat binary spikes for 16 ticks",
+    "sizes": [
+      196,
+      64,
+      10
+    ],
+    "trainable_layers": [
+      true,
+      true
+    ],
+    "optimizer_steps": 1800,
+    "selection": "highest quantized accuracy on all 6000 validation images; earliest tie",
+    "initial_validation_accuracy": 0.13083333333333333,
+    "selected": {
+      "step": 1800,
+      "float_validation_accuracy": 0.9538333333333333,
+      "quantized_validation_accuracy": 0.9455,
+      "scales": [
+        16.0,
+        16.0
+      ],
+      "weight_changes": [
+        11328,
+        640
+      ]
+    },
+    "history": [
+      {
+        "step": 300,
+        "float_validation_accuracy": 0.9188333333333333,
+        "quantized_validation_accuracy": 0.9113333333333333,
+        "scales": [
+          16.0,
+          32.0
+        ]
+      },
+      {
+        "step": 600,
+        "float_validation_accuracy": 0.9378333333333333,
+        "quantized_validation_accuracy": 0.9285,
+        "scales": [
+          16.0,
+          16.0
+        ]
+      },
+      {
+        "step": 900,
+        "float_validation_accuracy": 0.9465,
+        "quantized_validation_accuracy": 0.9351666666666667,
+        "scales": [
+          16.0,
+          16.0
+        ]
+      },
+      {
+        "step": 1200,
+        "float_validation_accuracy": 0.9456666666666667,
+        "quantized_validation_accuracy": 0.9351666666666667,
+        "scales": [
+          16.0,
+          16.0
+        ]
+      },
+      {
+        "step": 1500,
+        "float_validation_accuracy": 0.95,
+        "quantized_validation_accuracy": 0.94,
+        "scales": [
+          16.0,
+          16.0
+        ]
+      },
+      {
+        "step": 1800,
+        "float_validation_accuracy": 0.9538333333333333,
+        "quantized_validation_accuracy": 0.9455,
+        "scales": [
+          16.0,
+          16.0
+        ]
+      }
+    ],
+    "training_seconds": 489.7238944590208,
+    "runner_sha256": "f213be9b29793298f1ca8a464ae08a550ac7c50f37b2148a0383fda9c61ef76b",
+    "training_script_sha256": "20d1ba851012608a3baf807324d4f27d221d37129e1e51366f802e6550992dd2",
+    "checkpoint_sha256": "6f0c2b5b9cd09580ed02edf87a3c0566b6cbb9e4fde12ecc960685f651af2f0f",
+    "frozen_file_sha256": "870d8919d3af7337c53fd80165a3e5cd26fb7d836395f2e5af4b79a6a7e250bf"
+  },
+  "full_official_test_split": true,
+  "float_native": {
+    "correct": 9453,
+    "total": 10000,
+    "accuracy": 0.9453,
+    "confusion_matrix": [
+      [
+        956,
+        0,
+        6,
+        2,
+        1,
+        4,
+        4,
+        2,
+        5,
+        0
+      ],
+      [
+        2,
+        1116,
+        5,
+        0,
+        0,
+        1,
+        2,
+        3,
+        6,
+        0
+      ],
+      [
+        8,
+        3,
+        995,
+        9,
+        2,
+        0,
+        3,
+        9,
+        3,
+        0
+      ],
+      [
+        1,
+        4,
+        22,
+        941,
+        1,
+        11,
+        0,
+        12,
+        15,
+        3
+      ],
+      [
+        3,
+        1,
+        7,
+        1,
+        930,
+        1,
+        5,
+        7,
+        4,
+        23
+      ],
+      [
+        7,
+        0,
+        3,
+        33,
+        1,
+        821,
+        7,
+        4,
+        9,
+        7
+      ],
+      [
+        12,
+        2,
+        5,
+        1,
+        5,
+        11,
+        920,
+        0,
+        2,
+        0
+      ],
+      [
+        2,
+        9,
+        16,
+        4,
+        7,
+        0,
+        1,
+        976,
+        1,
+        12
+      ],
+      [
+        12,
+        4,
+        12,
+        21,
+        11,
+        13,
+        13,
+        7,
+        877,
+        4
+      ],
+      [
+        5,
+        4,
+        4,
+        9,
+        33,
+        0,
+        2,
+        25,
+        6,
+        921
+      ]
+    ]
+  },
+  "quantized_native": {
+    "correct": 9380,
+    "total": 10000,
+    "accuracy": 0.938,
+    "confusion_matrix": [
+      [
+        954,
+        0,
+        7,
+        2,
+        1,
+        4,
+        2,
+        2,
+        7,
+        1
+      ],
+      [
+        1,
+        1113,
+        6,
+        0,
+        0,
+        0,
+        4,
+        4,
+        7,
+        0
+      ],
+      [
+        9,
+        3,
+        988,
+        13,
+        3,
+        0,
+        2,
+        11,
+        3,
+        0
+      ],
+      [
+        3,
+        4,
+        19,
+        952,
+        0,
+        5,
+        1,
+        12,
+        13,
+        1
+      ],
+      [
+        4,
+        3,
+        6,
+        1,
+        924,
+        1,
+        6,
+        8,
+        5,
+        24
+      ],
+      [
+        11,
+        0,
+        2,
+        45,
+        2,
+        801,
+        8,
+        8,
+        9,
+        6
+      ],
+      [
+        12,
+        2,
+        6,
+        1,
+        4,
+        14,
+        915,
+        1,
+        3,
+        0
+      ],
+      [
+        3,
+        7,
+        21,
+        4,
+        5,
+        0,
+        1,
+        978,
+        1,
+        8
+      ],
+      [
+        10,
+        3,
+        33,
+        32,
+        10,
+        8,
+        13,
+        12,
+        845,
+        8
+      ],
+      [
+        5,
+        4,
+        3,
+        15,
+        28,
+        0,
+        2,
+        38,
+        4,
+        910
+      ]
+    ]
+  },
+  "sdk": {
+    "correct": 9380,
+    "total": 10000,
+    "accuracy": 0.938,
+    "confusion_matrix": [
+      [
+        954,
+        0,
+        7,
+        2,
+        1,
+        4,
+        2,
+        2,
+        7,
+        1
+      ],
+      [
+        1,
+        1113,
+        6,
+        0,
+        0,
+        0,
+        4,
+        4,
+        7,
+        0
+      ],
+      [
+        9,
+        3,
+        988,
+        13,
+        3,
+        0,
+        2,
+        11,
+        3,
+        0
+      ],
+      [
+        3,
+        4,
+        19,
+        952,
+        0,
+        5,
+        1,
+        12,
+        13,
+        1
+      ],
+      [
+        4,
+        3,
+        6,
+        1,
+        924,
+        1,
+        6,
+        8,
+        5,
+        24
+      ],
+      [
+        11,
+        0,
+        2,
+        45,
+        2,
+        801,
+        8,
+        8,
+        9,
+        6
+      ],
+      [
+        12,
+        2,
+        6,
+        1,
+        4,
+        14,
+        915,
+        1,
+        3,
+        0
+      ],
+      [
+        3,
+        7,
+        21,
+        4,
+        5,
+        0,
+        1,
+        978,
+        1,
+        8
+      ],
+      [
+        10,
+        3,
+        33,
+        32,
+        10,
+        8,
+        13,
+        12,
+        845,
+        8
+      ],
+      [
+        5,
+        4,
+        3,
+        15,
+        28,
+        0,
+        2,
+        38,
+        4,
+        910
+      ]
+    ]
+  },
+  "quantization_accuracy_change_percentage_points": -0.7300000000000084,
+  "conversion_prediction_differences": 0,
+  "spike_raster_values": 11840000,
+  "spike_raster_differences": 0,
+  "readout_count_values": 100000,
+  "readout_count_differences": 0,
+  "final_native_state_values": 740000,
+  "max_native_state_error": 0.0,
+  "atlas_ir_replay_samples": 64,
+  "atlas_ir_voltage_values": 75776,
+  "atlas_sdk_voltage_max_error": 0.0,
+  "atlas_ir_receipts": [
+    {
+      "first_test_index": 0,
+      "samples": 8,
+      "source_sha256": "ec1ed8bc030a9549a13f011a5b3561846321509d2eccce7ae173ce277503aca3"
+    },
+    {
+      "first_test_index": 8,
+      "samples": 8,
+      "source_sha256": "2375283bfa95fad630eb60ddaba7688eb1cec1d36a6cb02525e146bb5a39a84f"
+    },
+    {
+      "first_test_index": 16,
+      "samples": 8,
+      "source_sha256": "de4d8974da1b33105efd9be0f0226e1772a6623d1fee2c9bbc7e0132cb618529"
+    },
+    {
+      "first_test_index": 24,
+      "samples": 8,
+      "source_sha256": "b1f45a9cede7a82e7e93d530e381d427a0c6ed456acf416d79dfc6b186977385"
+    },
+    {
+      "first_test_index": 32,
+      "samples": 8,
+      "source_sha256": "a56d11748fd9b3061eb816283381a1208a04be70a0c0b51a45a9c6634fc6e697"
+    },
+    {
+      "first_test_index": 40,
+      "samples": 8,
+      "source_sha256": "42da5df299f74479bb7a19d25b700a0d63d1894ce5f5137e3dbfde78932980bc"
+    },
+    {
+      "first_test_index": 48,
+      "samples": 8,
+      "source_sha256": "5ef4dd4ed5b2c85b7814cdc779a595e104aca690a2e1d6111e68ff0ae11715ed"
+    },
+    {
+      "first_test_index": 56,
+      "samples": 8,
+      "source_sha256": "0505fee56f609ea35505688c2a4515dad67bc7ff110c74e9fd9d539241a223e4"
+    }
+  ],
+  "frozen_sha256": "61abc74d540708e5c9bccb79480be0f1e0874abdef599a6a08a5201257a83e3b",
+  "frozen_file_sha256": "870d8919d3af7337c53fd80165a3e5cd26fb7d836395f2e5af4b79a6a7e250bf",
+  "checkpoint_sha256": "6f0c2b5b9cd09580ed02edf87a3c0566b6cbb9e4fde12ecc960685f651af2f0f",
+  "input_file_sha256": "205cc422e9817cb507b2b9cc3fb6459bb68f6f100c3a7bc9ab3472758f5ea81c",
+  "native_results_sha256": "4560f16ee213568c9c0056de42eabb24eaa06026fceb0ada98d24bcff7779fcb",
+  "atlas_runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "sdk_execution": {
+    "versions": {
+      "spinnaker2": "0.8.0",
+      "brian2": "2.10.1",
+      "numpy": "2.3.4",
+      "scipy": "1.18.1"
+    },
+    "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+    "batch_size": 100,
+    "execution_seconds": 486.59369520895416,
+    "bundle_sha256": "f18b99fb56e80fb554a3d48a03f277082688f5f8e640e31ce10866608c29e7be",
+    "inputs_sha256": "205cc422e9817cb507b2b9cc3fb6459bb68f6f100c3a7bc9ab3472758f5ea81c",
+    "results_sha256": "54a722f952a732d95fc26b7977b367b03158da574affd5cf41d6daa8f51196f4",
+    "physical_hardware": false,
+    "reference_or_labels_read": false
+  },
+  "physical_hardware": false,
+  "hardware_mapping_tested": false,
+  "runtime_source_sha256": {
+    "neuromorphic_runtime.py": "bb4f489ca09cb02434c45ed252305d3cd6970344f686713119cee4de32549111",
+    "spinnaker2_runtime.py": "545d6ae84b42222880aba683984d283aa44c7a5acebd1392c1a66eadd6caf1c6",
+    "native_lif_conversion.py": "b614aa37f5fc1bfe491daa2e2ba3464b7a7dc49818a8cfa2fa8ad53d65dae564"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "akida": {
+    "status": "converted",
+    "source_model_sha256": "6b278eb3bfa64d04c120a8622fb6b72f2b2b2188aa79e67673f9c501e98ae9d1"
+  },
+  "lava": {
+    "status": "converted",
+    "source_model_sha256": "6b278eb3bfa64d04c120a8622fb6b72f2b2b2188aa79e67673f9c501e98ae9d1"
+  },
+  "specksim": {
+    "status": "unsupported",
+    "reason": "requires a uniform power-of-two threshold in [2,64]"
+  }
+}

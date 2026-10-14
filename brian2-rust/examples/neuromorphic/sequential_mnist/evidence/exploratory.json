@@ -1,0 +1,253 @@
+{
+  "schema": "atlas.sequential-mnist.exploratory.v1",
+  "test_data_used": false,
+  "note": "Exploratory validation summaries; these preliminary runs are not the selected artifact.",
+  "runs": [
+    {
+      "run": "rows-pilot",
+      "encoding": "rows",
+      "sizes": [
+        14,
+        63,
+        5
+      ],
+      "steps": 64,
+      "last_completed_validation_step": 300,
+      "best_validation_accuracy": 0.09783333333333333,
+      "readout_start": 56,
+      "arguments": {
+        "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+        "runner": "/private/tmp/atlas-smnist-cargo/release/b2-train",
+        "output": "/private/tmp/atlas-smnist-rows-pilot",
+        "updates": 300,
+        "encoding": "rows",
+        "repeats": 1,
+        "hidden": 63,
+        "threshold": 16,
+        "lr": 0.001,
+        "rec_init": 0.5,
+        "readout_ticks": 8,
+        "batch_size": 32,
+        "validate_every": 150,
+        "seed": 20261014
+      },
+      "history": [
+        {
+          "step": 150,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        },
+        {
+          "step": 300,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        }
+      ],
+      "selected_for_test": false,
+      "early_stopped": false
+    },
+    {
+      "run": "rows-count",
+      "encoding": "rows",
+      "sizes": [
+        14,
+        63,
+        5
+      ],
+      "steps": 64,
+      "last_completed_validation_step": 1000,
+      "best_validation_accuracy": 0.356,
+      "readout_start": 0,
+      "arguments": {
+        "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+        "runner": "/private/tmp/atlas-smnist-cargo/release/b2-train",
+        "output": "/private/tmp/atlas-smnist-rows-count",
+        "updates": 1000,
+        "encoding": "rows",
+        "repeats": 1,
+        "hidden": 63,
+        "threshold": 16,
+        "lr": 0.003,
+        "rec_init": 0.7,
+        "readout_ticks": 64,
+        "batch_size": 32,
+        "validate_every": 500,
+        "seed": 20261014
+      },
+      "history": [
+        {
+          "step": 500,
+          "validation_accuracy": 0.32116666666666666,
+          "loss": 1.9791452989119076
+        },
+        {
+          "step": 1000,
+          "validation_accuracy": 0.356,
+          "loss": 1.6946707755911543
+        }
+      ],
+      "selected_for_test": false,
+      "early_stopped": false
+    },
+    {
+      "run": "blocks-count",
+      "encoding": "blocks",
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "steps": 57,
+      "last_completed_validation_step": 1000,
+      "best_validation_accuracy": 0.3175,
+      "readout_start": 0,
+      "arguments": {
+        "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+        "runner": "/private/tmp/atlas-smnist-cargo/release/b2-train",
+        "output": "/private/tmp/atlas-smnist-blocks-count",
+        "updates": 1000,
+        "encoding": "blocks",
+        "repeats": 1,
+        "hidden": 63,
+        "threshold": 16,
+        "lr": 0.003,
+        "rec_init": 0.7,
+        "readout_ticks": 57,
+        "batch_size": 32,
+        "validate_every": 500,
+        "seed": 20261014
+      },
+      "history": [
+        {
+          "step": 500,
+          "validation_accuracy": 0.3125,
+          "loss": 2.1680253713235533
+        },
+        {
+          "step": 1000,
+          "validation_accuracy": 0.3175,
+          "loss": 2.2171898461839996
+        }
+      ],
+      "selected_for_test": false,
+      "early_stopped": false
+    },
+    {
+      "run": "query",
+      "encoding": "rows-query",
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "steps": 64,
+      "last_completed_validation_step": 3000,
+      "best_validation_accuracy": 0.09783333333333333,
+      "readout_start": 56,
+      "arguments": {
+        "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+        "runner": "/private/tmp/atlas-smnist-cargo/release/b2-train",
+        "output": "/private/tmp/atlas-smnist-query",
+        "updates": 3000,
+        "encoding": "rows-query",
+        "repeats": 1,
+        "hidden": 63,
+        "threshold": 16,
+        "lr": 0.003,
+        "rec_init": 0.5,
+        "readout_ticks": 8,
+        "batch_size": 32,
+        "validate_every": 500,
+        "seed": 20261014
+      },
+      "history": [
+        {
+          "step": 500,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        },
+        {
+          "step": 1000,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        },
+        {
+          "step": 1500,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        },
+        {
+          "step": 2500,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.09783333333333333,
+          "loss": 2.3025850929940486
+        }
+      ],
+      "selected_for_test": false,
+      "early_stopped": false
+    },
+    {
+      "run": "stable",
+      "encoding": "rows-query",
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "steps": 64,
+      "last_completed_validation_step": 2000,
+      "best_validation_accuracy": 0.5498333333333333,
+      "readout_start": 56,
+      "arguments": {
+        "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+        "runner": "/private/tmp/atlas-smnist-cargo/release/b2-train",
+        "output": "/private/tmp/atlas-smnist-stable",
+        "updates": 4000,
+        "encoding": "rows-query",
+        "repeats": 1,
+        "hidden": 63,
+        "threshold": 16,
+        "output_threshold": 64,
+        "lr": 0.001,
+        "rec_init": 0.2,
+        "readout_ticks": 8,
+        "batch_size": 32,
+        "validate_every": 500,
+        "seed": 20261014
+      },
+      "history": [
+        {
+          "step": 500,
+          "validation_accuracy": 0.43516666666666665,
+          "loss": 1.827968219788341
+        },
+        {
+          "step": 1000,
+          "validation_accuracy": 0.45516666666666666,
+          "loss": 2.229070755680077
+        },
+        {
+          "step": 1500,
+          "validation_accuracy": 0.5498333333333333,
+          "loss": 1.3590767556240162
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.47433333333333333,
+          "loss": 1.2551333262303654
+        }
+      ],
+      "selected_for_test": false,
+      "early_stopped": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "executables": {
+    "b2-train-wide": {
+      "sha256": "e9024d9684e082498d296d9ffc1080f2681617b40fba1a1863bf7b8ed31fac9c",
+      "rust_version": "1.98.1"
+    },
+    "b2-runner-wide": {
+      "sha256": "e7c8973c4c36865f9c293579a46d58c89b367e54cb07b04e79c8c89a39cbe54b",
+      "rust_version": "1.98.1"
+    },
+    "b2-train-portable": {
+      "sha256": "f6b74c565c19d55ebdb394cabc33c2f6d2f073c23df086d8b28f2091493e545f",
+      "rust_version": "1.86.0"
+    }
+  },
+  "old_trainer": {
+    "sha256": "8e862759cc2a8d8794d20a7ed42979e182b9e739c284e6e83e51311c987fc9e9",
+    "rust_version": "1.86.0"
+  },
+  "source_sha256": {
+    "brian2-rust/src/xylo_training.rs": "e96740e4aa9ff23b76dfa96df7da03249ef29799532ab34f69561b69ac0091d9",
+    "brian2-rust/python/brian2_rust/spinnaker2_integer_kernel/kernel.c": "7d5acac55c84fae2f28969102bb9e7134cf5a07d553dbf326a0e15892fbad34e"
+  },
+  "independent_native_build": "cargo +stable release, separate target directory; not a wheel package"
+}

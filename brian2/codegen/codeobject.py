@@ -8,13 +8,14 @@ import platform
 from abc import ABC, abstractmethod
 
 from brian2.core.base import weakproxy_with_fallback
-from brian2.core.functions import DEFAULT_FUNCTIONS, Function
+from brian2.core.functions import DEFAULT_FUNCTIONS, Function, FunctionImplementationContainer
 from brian2.core.names import Nameable
 from brian2.equations.unitcheck import check_units_statements
 from brian2.utils.logger import get_logger
 from brian2.utils.stringtools import code_representation, indent
 
 from .translation import analyse_identifiers
+from .indices import order_by_index
 
 __all__ = ["CodeObject", "constant_or_scalar"]
 
@@ -459,7 +460,12 @@ def create_runner_codeobj(
                 from brian2.codegen.runtime.numpy_rt import NumpyCodeObject
 
                 if codeobj_class is NumpyCodeObject:
-                    value.implementations.add_numpy_implementation(value.pyfunc)
+                    if type(value.implementations) is FunctionImplementationContainer:
+                        value.implementations.add_numpy_implementation(
+                            value.pyfunc, _automatic=True
+                        )
+                    else:
+                        value.implementations.add_numpy_implementation(value.pyfunc)
                 else:
                     raise NotImplementedError(
                         f"Cannot use function '{varname}': {ex}"
@@ -474,11 +480,16 @@ def create_runner_codeobj(
     ]
     compiler_kwds = _merge_compiler_kwds(all_keywords)
 
-    # Add the indices needed by the variables
-    for varname in list(variables):
-        var_index = all_variable_indices[varname]
-        if var_index not in ("_idx", "0"):
-            variables[var_index] = all_variables[var_index]
+    # Indices can themselves be indexed references. Include their complete
+    # dependency chain before asking a code generator to load the arrays.
+    # Templates can own self-indexed metadata (SpikeGeneratorGroup's
+    # spike_number). Such metadata is not an abstract array-read dependency;
+    # generators still reject a self-index if abstract code tries to read it.
+    for varname in order_by_index(
+        list(variables), all_variable_indices, allow_self_index=True
+    ):
+        if varname not in variables:
+            variables[varname] = all_variables[varname]
 
     return device.code_object(
         owner=group,

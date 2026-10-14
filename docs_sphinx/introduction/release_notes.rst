@@ -154,7 +154,7 @@ contributions):
 * shriyaise725 (`@shriya7ise <https://github.com/shriya7ise>`_)
 * Ankur Sinha (`@sanjayankur31 <https://github.com/sanjayankur31>`_)
 * Hong Zhu (`@Jasmine969 <https://github.com/Jasmine969>`_)
-* 火焰青年 (`@zhengrenjie <https://github.com/zhengrenjie>`_)
+* `@zhengrenjie <https://github.com/zhengrenjie>`_
 
 
 Brian 2.8.0.1-2.8.0.4

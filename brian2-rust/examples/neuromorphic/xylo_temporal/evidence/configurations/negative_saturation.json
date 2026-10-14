@@ -1,0 +1,240 @@
+{
+    "value0": {
+        "operationMode": 0,
+        "synapse2Enable": false,
+        "biasEnable": true,
+        "directFetchStateRam": false,
+        "enableHibernationMode": false,
+        "clearNetworkState": false,
+        "timeResolutionWrap": 0,
+        "hibernationModeTimeResolutionWrap": 0,
+        "input": {
+            "weightBitShift": 0,
+            "weights": {
+                "dimensions": {
+                    "value0": 16,
+                    "value1": 3
+                },
+                "offsets": {
+                    "value0": 3,
+                    "value1": 1
+                },
+                "values": [
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128,
+                    -128
+                ]
+            },
+            "syn2_weights": {
+                "dimensions": {
+                    "value0": 1,
+                    "value1": 1
+                },
+                "offsets": {
+                    "value0": 1,
+                    "value1": 1
+                },
+                "values": [
+                    0
+                ]
+            }
+        },
+        "reservoir": {
+            "weightBitShift": 0,
+            "weights": {
+                "dimensions": {
+                    "value0": 3,
+                    "value1": 3
+                },
+                "offsets": {
+                    "value0": 3,
+                    "value1": 1
+                },
+                "values": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            },
+            "syn2Weights": {
+                "dimensions": {
+                    "value0": 1,
+                    "value1": 1
+                },
+                "offsets": {
+                    "value0": 1,
+                    "value1": 1
+                },
+                "values": [
+                    0
+                ]
+            },
+            "neurons": [
+                {
+                    "threshold": 32767,
+                    "vMemDecay": 15,
+                    "iSynDecay": 15,
+                    "vMemBias": 100,
+                    "iSyn2Decay": 0,
+                    "aliasTarget": {
+                        "nullopt": true
+                    }
+                },
+                {
+                    "threshold": 32767,
+                    "vMemDecay": 15,
+                    "iSynDecay": 15,
+                    "vMemBias": -100,
+                    "iSyn2Decay": 0,
+                    "aliasTarget": {
+                        "nullopt": true
+                    }
+                },
+                {
+                    "threshold": 32767,
+                    "vMemDecay": 15,
+                    "iSynDecay": 15,
+                    "vMemBias": 0,
+                    "iSyn2Decay": 0,
+                    "aliasTarget": {
+                        "nullopt": true
+                    }
+                }
+            ],
+            "aliasing": false
+        },
+        "readout": {
+            "weightBitShift": 0,
+            "weights": {
+                "dimensions": {
+                    "value0": 3,
+                    "value1": 2
+                },
+                "offsets": {
+                    "value0": 2,
+                    "value1": 1
+                },
+                "values": [
+                    4,
+                    0,
+                    -3,
+                    2,
+                    2,
+                    4
+                ]
+            },
+            "neurons": [
+                {
+                    "threshold": 3,
+                    "vMemDecay": 2,
+                    "iSynDecay": 2,
+                    "vMemBias": 0
+                },
+                {
+                    "threshold": 4,
+                    "vMemDecay": 2,
+                    "iSynDecay": 3,
+                    "vMemBias": 0
+                }
+            ]
+        },
+        "debug": {
+            "keepInterrupt": false,
+            "alwaysUpdateOmpStat": false,
+            "enableRstPadPull": true,
+            "rstPadPullSelect": false,
+            "ramWakeUpSettleTime": 0,
+            "ramPowerEnable": true,
+            "monitors": {
+                "value0": 0,
+                "value1": 0,
+                "value2": 0,
+                "value3": 0
+            },
+            "isynClockEnable": true,
+            "isyn2ClockEnable": false,
+            "raClockEnable": true,
+            "biasClockEnable": true,
+            "hmClockEnable": true,
+            "inputWriteSelect": 0,
+            "inputReadSelect": 0,
+            "inputSelectEnable": false,
+            "ramManualSleepControl": 0,
+            "ramAutoSleepControl": 0,
+            "ramLightSleep": false,
+            "ramDeepSleep": false,
+            "debugStatusUpdateEnable": false,
+            "monitorDebugEnable": false,
+            "peInternalSelect": 3,
+            "peFsmSelect": 7,
+            "peEngineSelect": 7,
+            "peAccessRamFsmSelect": 31,
+            "memShellRamArbiterSelect": 31,
+            "readTimingSelect": 1,
+            "writeTimingSelect": 1,
+            "monitorNeuronVMem": {
+                "nullopt": true
+            },
+            "monitorNeuronISyn": {
+                "nullopt": true
+            },
+            "monitorNeuronISyn2": {
+                "nullopt": true
+            },
+            "monitorNeuronSpike": {
+                "nullopt": true
+            }
+        }
+    }
+}

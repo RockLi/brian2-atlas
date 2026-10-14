@@ -1,0 +1,23 @@
+........................................................................ [ 61%]
+.............................................                            [100%]WARNING    The object 'xylo_hidden_41' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'xylo_input_41' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/python.py', line 167, in pytest_pyfunc_call
+    result = testfunction(**testargs) [brian2.core.base.unused_brian_object]
+WARNING    The object 'hidden' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/fixtures.py', line 998, in call_fixture_func
+    fixture_result = next(generator) [brian2.core.base.unused_brian_object]
+WARNING    The object 'input_spikes' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/fixtures.py', line 998, in call_fixture_func
+    fixture_result = next(generator) [brian2.core.base.unused_brian_object]
+WARNING    The object 'output' is getting deleted, but was never included in a network. This probably means that you did not store the object reference in a variable, or that the variable was not used to construct the network.
+The object was created here (most recent call only):
+  File '/Users/rock/workspace/bettiai/brian2/.venv/lib/python3.14/site-packages/_pytest/fixtures.py', line 998, in call_fixture_func
+    fixture_result = next(generator) [brian2.core.base.unused_brian_object]
+
+117 passed in 101.65s (0:01:41)

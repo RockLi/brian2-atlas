@@ -8,6 +8,7 @@ from brian2.codegen.permutation_analysis import (
     check_for_order_independence,
 )
 from brian2.codegen.translation import make_statements
+from brian2.codegen.indices import order_by_index
 from brian2.core.functions import Function
 from brian2.core.variables import ArrayVariable
 from brian2.utils.logger import get_logger
@@ -197,23 +198,30 @@ class CodeGenerator:
             for varname, var in list(variables.items())
             if isinstance(var, ArrayVariable) and varname in write
         }
-        # Gather the indices stored as arrays (ignore _idx which is special)
-        indices = set()
-        indices |= {
-            variable_indices[varname]
-            for varname in read
-            if variable_indices[varname] not in ("_idx", "0")
-            and isinstance(variables[variable_indices[varname]], ArrayVariable)
-        }
-        indices |= {
-            variable_indices[varname]
-            for varname in write
-            if variable_indices[varname] not in ("_idx", "0")
-            and isinstance(variables[variable_indices[varname]], ArrayVariable)
-        }
+        indices = self.array_indices(read | write)
         # don't list arrays that are read explicitly and used as indices twice
         read -= indices
         return read, write, indices
+
+    def array_indices(self, variable_names):
+        """Return all array indices, including an index's own dependencies."""
+        ordered = order_by_index(sorted(variable_names), self.variable_indices)
+        return {
+            self.variable_indices[name]
+            for name in ordered
+            if self.variable_indices[name] not in ("_idx", "0")
+            and isinstance(self.variables[self.variable_indices[name]], ArrayVariable)
+        }
+
+    def ordered_array_reads(self, read, indices):
+        """Load each array once, after any arrays used to compute its index."""
+        return [
+            name
+            for name in order_by_index(
+                sorted(indices) + sorted(read), self.variable_indices
+            )
+            if isinstance(self.variables[name], ArrayVariable)
+        ]
 
     def get_conditional_write_vars(self):
         """
@@ -242,6 +250,9 @@ class CodeGenerator:
             for var in write
             if var in conditional_write_vars
         }
+        # A conditional-write flag can introduce another indexed reference.
+        indices |= self.array_indices(read | write | indices)
+        read -= indices
         return read, write, indices, conditional_write_vars
 
     def has_repeated_indices(self, statements):

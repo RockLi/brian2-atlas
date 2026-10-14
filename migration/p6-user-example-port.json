@@ -1,0 +1,570 @@
+{
+  "schema": "atlas-user-example-port-v1",
+  "base": "6677a5bafd3b703ab56b6ed176e9aad70f4638cd",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "stage": "/atlas-storage/0001/staging/p6-validation",
+  "files": [
+    {
+      "source": "brian2-rust/examples/brunel_device.py",
+      "target": "brian2-rust/examples/brunel_device.py",
+      "source_sha256": "0babc7d93593cd6bd7bbda238277c36a3928141a40eb7c7603511485c3620b22",
+      "target_sha256": "0babc7d93593cd6bd7bbda238277c36a3928141a40eb7c7603511485c3620b22",
+      "source_git_state": "tracked",
+      "source_blob": "feb1bb04386ebdfe9d82db2a9c94b430ceab751e",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/cuba.py",
+      "target": "brian2-rust/examples/cuba.py",
+      "source_sha256": "e259bbce8e7d47261c427050b78c1d7126d07bafa98d2e737eeedb0e430d0f84",
+      "target_sha256": "e259bbce8e7d47261c427050b78c1d7126d07bafa98d2e737eeedb0e430d0f84",
+      "source_git_state": "tracked",
+      "source_blob": "b3b95f59e545484be9d03425d3d26dae8a4b4ed7",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/flywire_device.py",
+      "target": "brian2-rust/examples/flywire_device.py",
+      "source_sha256": "a3de870d5376675df4fa45e0b918cdbc5e150925206d4f595dc60200570f27fd",
+      "target_sha256": "a3de870d5376675df4fa45e0b918cdbc5e150925206d4f595dc60200570f27fd",
+      "source_git_state": "tracked",
+      "source_blob": "caf9b2fb3baa6ddb69c61e594a1baa190f881157",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/flywire_ei_import.py",
+      "target": "brian2-rust/examples/flywire_ei_import.py",
+      "source_sha256": "0cc7abbde80640241dd21754f7c6aec863822d63cc3621ab7b10ab527437c66e",
+      "target_sha256": "0cc7abbde80640241dd21754f7c6aec863822d63cc3621ab7b10ab527437c66e",
+      "source_git_state": "tracked",
+      "source_blob": "76886389e916e8dc9e4938fe7942e10b45354b21",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/lif.py",
+      "target": "brian2-rust/examples/lif.py",
+      "source_sha256": "fb7220a3bc4745ae0b51a41c8d23bf616f214e317952a69c236f4b0a114522fb",
+      "target_sha256": "fb7220a3bc4745ae0b51a41c8d23bf616f214e317952a69c236f4b0a114522fb",
+      "source_git_state": "tracked",
+      "source_blob": "7497741f3f48e39fd8bf691c230ebcb329eb80eb",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/minimal.py",
+      "target": "brian2-rust/examples/minimal.py",
+      "source_sha256": "fc2892c8f3161d598bde62064c80f1389115798fdc30f1a3d38ec384cafc040e",
+      "target_sha256": "fc2892c8f3161d598bde62064c80f1389115798fdc30f1a3d38ec384cafc040e",
+      "source_git_state": "tracked",
+      "source_blob": "cb85e009831bd4761350c07d9b6e45c5a2ea7ac3",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/mpi_cuba.py",
+      "target": "brian2-rust/examples/mpi_cuba.py",
+      "source_sha256": "49cdd5f310af9f3be9fee568c6679b1645138942f1846efb13dfe77c5be4411a",
+      "target_sha256": "49cdd5f310af9f3be9fee568c6679b1645138942f1846efb13dfe77c5be4411a",
+      "source_git_state": "tracked",
+      "source_blob": "4ebfa78542e0c7efbd55ab74ad43b509bf5e7a05",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/mpi_heterogeneous.py",
+      "target": "brian2-rust/examples/mpi_heterogeneous.py",
+      "source_sha256": "bc9ed636f94c72bce0d3c0f3826e51ac434c8570ab4af914fceb52b7fbab4137",
+      "target_sha256": "bc9ed636f94c72bce0d3c0f3826e51ac434c8570ab4af914fceb52b7fbab4137",
+      "source_git_state": "tracked",
+      "source_blob": "904c4484543fa909403c8c521c0c79b482c0616b",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/mpi_procedural.py",
+      "target": "brian2-rust/examples/mpi_procedural.py",
+      "source_sha256": "e74473afe905b24273f86f2c0e8f66b725a8bfd56f0a26cfa5ee68030d35ff8b",
+      "target_sha256": "e74473afe905b24273f86f2c0e8f66b725a8bfd56f0a26cfa5ee68030d35ff8b",
+      "source_git_state": "tracked",
+      "source_blob": "1c6412911f70aff05382c6ce4fefc406c365774c",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/mpi_training.py",
+      "target": "brian2-rust/examples/mpi_training.py",
+      "source_sha256": "8f53b37a1d099019b93810b2593ee281b3f1caf3a1c8c8a14d52a842e51ac912",
+      "target_sha256": "8f53b37a1d099019b93810b2593ee281b3f1caf3a1c8c8a14d52a842e51ac912",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/native_graph_training.py",
+      "target": "brian2-rust/examples/native_graph_training.py",
+      "source_sha256": "f60ca5a516e9941e32ef00e76c54abeb5353058f0d848585f9cfe28c0e524b6d",
+      "target_sha256": "f60ca5a516e9941e32ef00e76c54abeb5353058f0d848585f9cfe28c0e524b6d",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/native_supervised_training.py",
+      "target": "brian2-rust/examples/native_supervised_training.py",
+      "source_sha256": "16c9ae2914532c506a238ab861cdb36a4e1b29b43a21aec17d78a893a4c3f494",
+      "target_sha256": "16c9ae2914532c506a238ab861cdb36a4e1b29b43a21aec17d78a893a4c3f494",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/population.py",
+      "target": "brian2-rust/examples/population.py",
+      "source_sha256": "784f62300fee59d29d407a20cc4dd57d5ee4d987e5952d2a1a6aed28129ec5a9",
+      "target_sha256": "784f62300fee59d29d407a20cc4dd57d5ee4d987e5952d2a1a6aed28129ec5a9",
+      "source_git_state": "tracked",
+      "source_blob": "3c58ffccff12fb66cca84312292b7de78d18cd68",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/refractory.py",
+      "target": "brian2-rust/examples/refractory.py",
+      "source_sha256": "c0b229d13bc851d7248fff32084498a22231ed00f8821ab9be8353a40dce3e96",
+      "target_sha256": "c0b229d13bc851d7248fff32084498a22231ed00f8821ab9be8353a40dce3e96",
+      "source_git_state": "tracked",
+      "source_blob": "f2793a7ea28622c77d35b966a6edc390d918f810",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/synapses.py",
+      "target": "brian2-rust/examples/synapses.py",
+      "source_sha256": "de61ea0db395fb58fe7f05ecdc0af9c103a96bc3d331fee9c70730e317dc67ab",
+      "target_sha256": "de61ea0db395fb58fe7f05ecdc0af9c103a96bc3d331fee9c70730e317dc67ab",
+      "source_git_state": "tracked",
+      "source_blob": "abd214eb726134159f7af128fbabc0ce3a20a4e9",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/two_populations.py",
+      "target": "brian2-rust/examples/two_populations.py",
+      "source_sha256": "9a779a07148f20b0b927e73079ecfa36bddd7a1e6717a4bdebecf43e24e12706",
+      "target_sha256": "9a779a07148f20b0b927e73079ecfa36bddd7a1e6717a4bdebecf43e24e12706",
+      "source_git_state": "tracked",
+      "source_blob": "19b3fde9ca8311be24c88bf89e3169bac93b300f",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/clock_itinerary_probe.rs",
+      "target": "brian2-rust/tests/clock_itinerary_probe.rs",
+      "source_sha256": "4584cf827726d4c1823fcb77569d307535760e0554bbbf5aa768c64f5021b774",
+      "target_sha256": "4584cf827726d4c1823fcb77569d307535760e0554bbbf5aa768c64f5021b774",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/plan_source_audit.py",
+      "target": "brian2-rust/tests/plan_source_audit.py",
+      "source_sha256": "f5288acd4ffd4b91556cb7e43ca414cc64bab20cf8ef42fd9a717189daa785e4",
+      "target_sha256": "f5288acd4ffd4b91556cb7e43ca414cc64bab20cf8ef42fd9a717189daa785e4",
+      "source_git_state": "tracked",
+      "source_blob": "12f8b5d79bab09915498cc9f9e5f8a0acc905983",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/poisson_core_probe.rs",
+      "target": "brian2-rust/tests/poisson_core_probe.rs",
+      "source_sha256": "205c6aad2304fc018fb74fff911f8c190218bac9924bf07be96c78bc6ba7dd02",
+      "target_sha256": "205c6aad2304fc018fb74fff911f8c190218bac9924bf07be96c78bc6ba7dd02",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/poisson_metal_probe.m",
+      "target": "brian2-rust/tests/poisson_metal_probe.m",
+      "source_sha256": "60b61c58efb5ae7eeb0d344459b9213d204ca3afe2925f4f8d175a9556a4b36d",
+      "target_sha256": "60b61c58efb5ae7eeb0d344459b9213d204ca3afe2925f4f8d175a9556a4b36d",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/precise_clock_arithmetic.cpp",
+      "target": "brian2-rust/tests/precise_clock_arithmetic.cpp",
+      "source_sha256": "897857af8945badf7c416a19d1f1a333ed35d0432be0f2ab8dbc81f3248f7586",
+      "target_sha256": "897857af8945badf7c416a19d1f1a333ed35d0432be0f2ab8dbc81f3248f7586",
+      "source_git_state": "untracked",
+      "source_blob": null,
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/test_brunel.py",
+      "target": "brian2-rust/tests/test_brunel.py",
+      "source_sha256": "e770037706fe5be4a9cbbdc24386b17fb9cdfc2286f4d430dc6648de96ca2b20",
+      "target_sha256": "e770037706fe5be4a9cbbdc24386b17fb9cdfc2286f4d430dc6648de96ca2b20",
+      "source_git_state": "tracked",
+      "source_blob": "4957fbea46244528c1c59fce0ec06b1563d9d177",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/test_diehl_cook_example.py",
+      "target": "brian2-rust/tests/test_diehl_cook_example.py",
+      "source_sha256": "da2eb896cfab00e5fb663345f9c373859c322d8656d387bbbd1cd47561bab80a",
+      "target_sha256": "229d8f7a66b8574e321c35033763666ce77ce9ce6648dc4cfc3d2f2b65d2d270",
+      "source_git_state": "tracked",
+      "source_blob": "e601068439562175a53f20467031baa0975cdadf",
+      "adaptation": "Preserve behavior while respecting TMPDIR and existing MPLCONFIGDIR instead of a fixed /tmp output.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/test_flywire_browser.py",
+      "target": "brian2-rust/tests/test_flywire_browser.py",
+      "source_sha256": "e772b4439646da8b4b2332efae8801a8598c3dfe87a3adf1113d941fe2f7a17c",
+      "target_sha256": "e772b4439646da8b4b2332efae8801a8598c3dfe87a3adf1113d941fe2f7a17c",
+      "source_git_state": "tracked",
+      "source_blob": "08ca0bf0ff61339903608df63477d4822b7dbdc9",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/test_multi_area_analysis.py",
+      "target": "brian2-rust/tests/test_multi_area_analysis.py",
+      "source_sha256": "93ea5ce66dde6bb7f427ebc8ae0ff8466dabf1ae613821592d0d81d5842f42b7",
+      "target_sha256": "93ea5ce66dde6bb7f427ebc8ae0ff8466dabf1ae613821592d0d81d5842f42b7",
+      "source_git_state": "tracked",
+      "source_blob": "2f4d8a131f2fdcdf99642743c7f88ed740f0a7f1",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/test_multiprocessing_examples.py",
+      "target": "brian2-rust/tests/test_multiprocessing_examples.py",
+      "source_sha256": "6e28a0f63944088de10d106be0ba0efb63c24b0f931e0ddd242f2353a3f8c831",
+      "target_sha256": "6e28a0f63944088de10d106be0ba0efb63c24b0f931e0ddd242f2353a3f8c831",
+      "source_git_state": "tracked",
+      "source_blob": "c7cae054c9a958070d46559fcd90498eda42a888",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/test_official_example_full_runs.py",
+      "target": "brian2-rust/tests/test_official_example_full_runs.py",
+      "source_sha256": "0712ae0f9bea5b10de35e84adcb62a37cee846ee0ddb12b8187f8459b625a1d0",
+      "target_sha256": "0712ae0f9bea5b10de35e84adcb62a37cee846ee0ddb12b8187f8459b625a1d0",
+      "source_git_state": "tracked",
+      "source_blob": "68cdb4cdc6f0f1fcb3da80e548436a8d1e759088",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tests/test_optional_examples.py",
+      "target": "brian2-rust/tests/test_optional_examples.py",
+      "source_sha256": "7e4ed1c1c106dfaf1577747eb725b34fe9bd5fdb7abda5e537d20cdf247f0d6e",
+      "target_sha256": "7e4ed1c1c106dfaf1577747eb725b34fe9bd5fdb7abda5e537d20cdf247f0d6e",
+      "source_git_state": "tracked",
+      "source_blob": "e98afa2446e70165a7421260d0c72529fe67b94b",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tools/apple-clang-openmp",
+      "target": "brian2-rust/tools/apple-clang-openmp",
+      "source_sha256": "a33f2ae23246746bc5c79cacb9b964df3ae223a81433c2b8ecbcde89fa655361",
+      "target_sha256": "a33f2ae23246746bc5c79cacb9b964df3ae223a81433c2b8ecbcde89fa655361",
+      "source_git_state": "tracked",
+      "source_blob": "292668d34c16ff3caec2c0f392bcef2b95fa5772",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tools/flywire_circuit.py",
+      "target": "brian2-rust/tools/flywire_circuit.py",
+      "source_sha256": "107f6f75cb35ff9fab7b82ab048d6aaeccc03737091d835515faee056f027a9a",
+      "target_sha256": "107f6f75cb35ff9fab7b82ab048d6aaeccc03737091d835515faee056f027a9a",
+      "source_git_state": "tracked",
+      "source_blob": "1eea1656f9d58025abda33dedb19296ae29efa5b",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tools/mpi_cluster_probe.c",
+      "target": "brian2-rust/tools/mpi_cluster_probe.c",
+      "source_sha256": "3f327526bf5c83e5894490a0d7477c8e5d53691018aa58248f157ae592cc1368",
+      "target_sha256": "3f327526bf5c83e5894490a0d7477c8e5d53691018aa58248f157ae592cc1368",
+      "source_git_state": "tracked",
+      "source_blob": "385dce60e16c9a6f29378fc91dd81b58f03d8e25",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tools/mpi_collect_probe.c",
+      "target": "brian2-rust/tools/mpi_collect_probe.c",
+      "source_sha256": "2860bdd61e87b72866211076cb3461e1dfbb04d94534674fe0f5eed57bb9eaf7",
+      "target_sha256": "2860bdd61e87b72866211076cb3461e1dfbb04d94534674fe0f5eed57bb9eaf7",
+      "source_git_state": "tracked",
+      "source_blob": "d40e90c27d1dfdb86a76c84941872c52a22be9b3",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tools/scan_official_examples.py",
+      "target": "brian2-rust/tools/scan_official_examples.py",
+      "source_sha256": "b7884f4a426b0c44fda0b3f069a1f25e2e0bc6601d6fe72e5c97544db91a0549",
+      "target_sha256": "53b19a85d305274b8a6b107f2dcba61738e1b2bb789bee45c353dd49f214c089",
+      "source_git_state": "tracked",
+      "source_blob": "d264bbc82d447686750db0d80d0f0f183f1e4223",
+      "adaptation": "Preserve behavior while respecting TMPDIR and existing MPLCONFIGDIR instead of a fixed /tmp output.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/tools/source_digest.py",
+      "target": "brian2-rust/tools/source_digest.py",
+      "source_sha256": "1f00d8ae0d01f7f20a251d0a751f1920c53c099dbfdf3a347587de36a87ae653",
+      "target_sha256": "1f00d8ae0d01f7f20a251d0a751f1920c53c099dbfdf3a347587de36a87ae653",
+      "source_git_state": "tracked",
+      "source_blob": "76a332ac9b227621cdc2d0fbecdc978283b8139e",
+      "adaptation": "Exact captured source staged; helper closure, installation paths and functional checks remain pending.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/examples/brunel_sweep.py",
+      "target": "brian2-rust/examples/brunel_sweep.py",
+      "source_sha256": "09c5770b893f0b32e5c8485490daf96f9ed247852d73bdf3b12f4692ccaad00c",
+      "target_sha256": "09c5770b893f0b32e5c8485490daf96f9ed247852d73bdf3b12f4692ccaad00c",
+      "adaptation": "Exact captured source. Brunel sweep is a reusable AOT artifact user example and an explicit dynamic-import test dependency; historical research copy remains separately versioned.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/multi_area_analysis.py",
+      "target": "brian2-rust/python/brian2_rust/multi_area_analysis.py",
+      "source_sha256": "32d372a7a44f92da9cd4b262245e0d5f95df133733ef72c4508dbc312ad57e25",
+      "target_sha256": "32d372a7a44f92da9cd4b262245e0d5f95df133733ef72c4508dbc312ad57e25",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/multi_area_semantics.py",
+      "target": "brian2-rust/python/brian2_rust/multi_area_semantics.py",
+      "source_sha256": "8cf87408e686474bf151f31ebadb4cf24dea03ecf15173d9638dc62bec6a9757",
+      "target_sha256": "8cf87408e686474bf151f31ebadb4cf24dea03ecf15173d9638dc62bec6a9757",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": null
+    },
+    {
+      "source": "examples/advanced/opencv_movie.py",
+      "target": "examples/advanced/opencv_movie.py",
+      "source_sha256": "7364fdb93d57b2f0b72d84e55d4f23201ec697fd57b1eee1d2608b3d58420226",
+      "target_sha256": "7364fdb93d57b2f0b72d84e55d4f23201ec697fd57b1eee1d2608b3d58420226",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": "976987bb0b8480f9f1f1ff36b4bb6a9c744d8dcf5418c472f1c173a842c24c65"
+    },
+    {
+      "source": "examples/frompapers/Diehl_Cook_2015.py",
+      "target": "examples/frompapers/Diehl_Cook_2015.py",
+      "source_sha256": "24c1c8dc61fbad6f90ae64d1e5928dfb33e30ed499827d3d5ec981fae1096def",
+      "target_sha256": "24c1c8dc61fbad6f90ae64d1e5928dfb33e30ed499827d3d5ec981fae1096def",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": "6183e5967395680b89e2b16fd7d896484532e737251692726dc230ab0402842c"
+    },
+    {
+      "source": "examples/frompapers/Graupner_Brunel_2012.py",
+      "target": "examples/frompapers/Graupner_Brunel_2012.py",
+      "source_sha256": "b1c4b0668b2e64d41da88af0b564a346f12bea85aeabe00dbdf5aaa607779bb8",
+      "target_sha256": "b1c4b0668b2e64d41da88af0b564a346f12bea85aeabe00dbdf5aaa607779bb8",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": "2a00f0fba29bb013e848caf883c6368cae507a1472493b38cffee06509b6f5a0"
+    },
+    {
+      "source": "examples/frompapers/Maass_Natschlaeger_Markram_2002.py",
+      "target": "examples/frompapers/Maass_Natschlaeger_Markram_2002.py",
+      "source_sha256": "5974572a82dd1de4c11459395e6f5d61fe63068607782fdc49ea5f458eb2bab0",
+      "target_sha256": "5974572a82dd1de4c11459395e6f5d61fe63068607782fdc49ea5f458eb2bab0",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": "8fba6467c38d4ba01e2eae5415cbe7b24815262a5efb84a7fee1fcb19aa5ff03"
+    },
+    {
+      "source": "examples/multiprocessing/02_using_standalone.py",
+      "target": "examples/multiprocessing/02_using_standalone.py",
+      "source_sha256": "b485ba71b6840003ab3effd1df24afd35a6ca05c9fbbef4dabb493e136d1ccba",
+      "target_sha256": "b485ba71b6840003ab3effd1df24afd35a6ca05c9fbbef4dabb493e136d1ccba",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": "a31ef7fe5e06322c19e4ba037e180d8c4fb1ed4ef65fa9b238f99aa62d1071cf"
+    },
+    {
+      "source": "examples/multiprocessing/03_standalone_joblib.py",
+      "target": "examples/multiprocessing/03_standalone_joblib.py",
+      "source_sha256": "327c32d11bf16b4dc1ed0c753e0dad017280228805918e702f449b402fa034d1",
+      "target_sha256": "327c32d11bf16b4dc1ed0c753e0dad017280228805918e702f449b402fa034d1",
+      "adaptation": "Exact captured source; product utility or backend-compatible upstream example.",
+      "previous_target_sha256": "544da3e536b2905c353c43e4c11e6f72b9285a7e909e79b46858c112e1246568"
+    }
+  ],
+  "installer": "Already qualified and committed in packaging phase; original legacy installer intentionally superseded.",
+  "status": "Validated user-example port; separate training increment 2 remains in progress.",
+  "parent": "b606a574f4c7ed6cc46560df0d957218e2d938ab",
+  "validation": {
+    "isolated_core": {
+      "passed": 37,
+      "skipped": 1,
+      "skip_reason": "SBI absent",
+      "metadata_sha256": "92f110fe991271d2aa44fa5c0425e997e9dffe7acdd82d57b5e5fdb67bc9cb7e",
+      "junit_sha256": "7ae77426194a09e46fa1d5229a6d0a48911493620bd2aecb544e0df308f8f250"
+    },
+    "user_cli": {
+      "schema": "atlas-user-cli-validation-v1",
+      "status": "passed",
+      "cases": [
+        {
+          "label": "minimal",
+          "command": [
+            "/atlas-storage/0001/venvs/upstream/bin/python",
+            "/atlas-storage/0001/staging/p6-validation/brian2-rust/examples/minimal.py"
+          ],
+          "source_sha256": "fc2892c8f3161d598bde62064c80f1389115798fdc30f1a3d38ec384cafc040e",
+          "duration_seconds": 56.511559009552,
+          "exit_code": 0
+        },
+        {
+          "label": "native_graph_training",
+          "command": [
+            "/atlas-storage/0001/venvs/upstream/bin/python",
+            "/atlas-storage/0001/staging/p6-validation/brian2-rust/examples/native_graph_training.py",
+            "--steps",
+            "2",
+            "--checkpoint",
+            "/atlas-storage/0001/output/p6-cli/native_graph_training.checkpoint.json"
+          ],
+          "source_sha256": "f60ca5a516e9941e32ef00e76c54abeb5353058f0d848585f9cfe28c0e524b6d",
+          "duration_seconds": 26.09100604057312,
+          "exit_code": 0
+        },
+        {
+          "label": "native_graph_training-resume",
+          "command": [
+            "/atlas-storage/0001/venvs/upstream/bin/python",
+            "/atlas-storage/0001/staging/p6-validation/brian2-rust/examples/native_graph_training.py",
+            "--steps",
+            "1",
+            "--checkpoint",
+            "/atlas-storage/0001/output/p6-cli/native_graph_training.checkpoint.json",
+            "--resume"
+          ],
+          "source_sha256": "f60ca5a516e9941e32ef00e76c54abeb5353058f0d848585f9cfe28c0e524b6d",
+          "duration_seconds": 20.387627840042114,
+          "exit_code": 0
+        },
+        {
+          "label": "native_supervised_training",
+          "command": [
+            "/atlas-storage/0001/venvs/upstream/bin/python",
+            "/atlas-storage/0001/staging/p6-validation/brian2-rust/examples/native_supervised_training.py",
+            "--steps",
+            "2",
+            "--checkpoint",
+            "/atlas-storage/0001/output/p6-cli/native_supervised_training.checkpoint.json"
+          ],
+          "source_sha256": "16c9ae2914532c506a238ab861cdb36a4e1b29b43a21aec17d78a893a4c3f494",
+          "duration_seconds": 40.7672119140625,
+          "exit_code": 0
+        },
+        {
+          "label": "native_supervised_training-resume",
+          "command": [
+            "/atlas-storage/0001/venvs/upstream/bin/python",
+            "/atlas-storage/0001/staging/p6-validation/brian2-rust/examples/native_supervised_training.py",
+            "--steps",
+            "1",
+            "--checkpoint",
+            "/atlas-storage/0001/output/p6-cli/native_supervised_training.checkpoint.json",
+            "--resume"
+          ],
+          "source_sha256": "16c9ae2914532c506a238ab861cdb36a4e1b29b43a21aec17d78a893a4c3f494",
+          "duration_seconds": 19.29016399383545,
+          "exit_code": 0
+        },
+        {
+          "label": "mpi-first",
+          "command": [
+            "/atlas-storage/0001/venvs/upstream/bin/python",
+            "/atlas-storage/0001/staging/p6-validation/brian2-rust/examples/mpi_training.py",
+            "--directory",
+            "/atlas-storage/0001/output/p6-cli/mpi-first",
+            "--checkpoint",
+            "/atlas-storage/0001/output/p6-cli/mpi.checkpoint"
+          ],
+          "source_sha256": "8f53b37a1d099019b93810b2593ee281b3f1caf3a1c8c8a14d52a842e51ac912",
+          "duration_seconds": 50.91657900810242,
+          "exit_code": 0
+        },
+        {
+          "label": "mpi-resume",
+          "command": [
+            "/atlas-storage/0001/venvs/upstream/bin/python",
+            "/atlas-storage/0001/staging/p6-validation/brian2-rust/examples/mpi_training.py",
+            "--directory",
+            "/atlas-storage/0001/output/p6-cli/mpi-resume",
+            "--checkpoint",
+            "/atlas-storage/0001/output/p6-cli/mpi.checkpoint",
+            "--resume"
+          ],
+          "source_sha256": "8f53b37a1d099019b93810b2593ee281b3f1caf3a1c8c8a14d52a842e51ac912",
+          "duration_seconds": 35.96229887008667,
+          "exit_code": 0
+        }
+      ],
+      "scope": "Minimal CPU simulation, graph and supervised native training with fresh-process checkpoint continuation, and actual two-rank MPI STDP fresh-process continuation.",
+      "mpi_result": {
+        "time_seconds": 0.0126953125,
+        "weights": [
+          0.40835468672194236,
+          0.2589457075376832,
+          0.2863634677513608,
+          0.25101028824625404,
+          0.4542070849682664,
+          0.2984248636397523
+        ],
+        "spikes": 9,
+        "pending_events": 4
+      }
+    },
+    "official_examples": {
+      "counts": {
+        "passed": 46,
+        "skipped": 0,
+        "failed": 0
+      },
+      "metadata_sha256": "a8f9b2c2e393df37d6fe4f7020c270a91de18a769b8be3fb5c20bbec662c93da",
+      "junit_sha256": "cdd2422452c5190545eff3007edd88465d7d47fb6396c3cdbacec3c8cadc8821",
+      "scope": "Entire captured official-example regression file, including full-duration lightweight examples and reduced-population Graupner/Maass pool checks."
+    },
+    "canonical_entrypoint": {
+      "counts": {
+        "passed": 30,
+        "skipped": 1,
+        "failed": 0
+      },
+      "metadata_sha256": "a57e4a47020c2aaab7278d263a3e7cbabb076c985658b42db71307f144103ea2",
+      "junit_sha256": "2b7bc60cd8f355fbc095ebe355fdaa9d7e0386252e5752762f51b1e9a3849e71",
+      "scope": "Actual dev/atlas/run_backend.py --suite examples in canonical checkout. SBI was not installed."
+    }
+  },
+  "hosted_ci": "Configured bounded example gate in Linux CPU job; hosted execution not claimed."
+}

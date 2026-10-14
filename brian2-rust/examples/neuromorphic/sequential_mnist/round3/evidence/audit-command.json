@@ -1,0 +1,23 @@
+{
+  "arguments": [
+    "/Users/rock/workspace/bettiai/brian2/.venv/bin/python",
+    "/Users/rock/workspace/bettiai/brian2-atlas/brian2-rust/examples/neuromorphic/sequential_mnist/verify.py",
+    "--dataset",
+    "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "--trained",
+    "/Volumes/T7/atlas-sequential-mnist-round3-20261014/selected",
+    "--runner",
+    "/Volumes/T7/atlas-sequential-mnist-round3-20261014/b2-runner-wide",
+    "--train-runner",
+    "/Volumes/T7/atlas-sequential-mnist-round3-20261014/b2-train-wide",
+    "--portable-train-runner",
+    "/Volumes/T7/atlas-sequential-mnist-round3-20261014/b2-train-portable",
+    "--xylo-python",
+    "/private/tmp/atlas-xylo-env/bin/python",
+    "--spinnaker2-python",
+    "/private/tmp/atlas-spinnaker2-env312/bin/python",
+    "--output",
+    "/Volumes/T7/atlas-sequential-mnist-round3-20261014/audit"
+  ],
+  "selection_sha256": "371260080b3b780b35650c50afc019e2c6c8fa3e1ab3ebb4c6f2a13211e1e3d4"
+}

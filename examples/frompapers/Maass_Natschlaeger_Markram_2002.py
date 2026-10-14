@@ -12,7 +12,9 @@ by Maass W., Natschläger T. and Markram H.
 Sebastian Schmitt, 2022
 """
 from collections import defaultdict
+import importlib
 import multiprocessing
+import os
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,7 +25,9 @@ from brian2 import (
     SpikeGeneratorGroup,
     SpikeMonitor,
     Network,
+    get_device,
     prefs,
+    set_device,
 )
 from brian2 import ms, mV, Mohm, nA, second, Hz
 from brian2 import defaultclock, prefs
@@ -34,11 +38,44 @@ V_RESET = 13.5 * mV
 
 STIMULUS_POISSON_RATE = 20 * Hz
 TARGET_DISTANCES = [0.4, 0.2, 0.1]
-N_PAIRS = 200
+N_PAIRS = int(os.environ.get("BRIAN2_MAASS_PAIRS", "200"))
 
 DT = 0.1 * ms
 DURATION = 500 * ms
 TS = np.arange(0, DURATION / ms, DT / ms)
+
+_worker_net = None
+
+
+def configure_standalone_device():
+    """Select an optional standalone device before constructing the network."""
+    standalone_device = os.environ.get("BRIAN2_STANDALONE_DEVICE")
+    if not standalone_device:
+        return
+    standalone_module = os.environ.get("BRIAN2_STANDALONE_MODULE")
+    if standalone_module:
+        importlib.import_module(standalone_module)
+    options = {}
+    standalone_engine = os.environ.get("BRIAN2_STANDALONE_ENGINE")
+    if standalone_engine:
+        options["engine"] = standalone_engine
+    standalone_threads = os.environ.get("BRIAN2_STANDALONE_THREADS")
+    if standalone_threads:
+        options["threads"] = int(standalone_threads)
+    if standalone_device in {"atlas", "rust_standalone"}:
+        # This example performs 1,600 restore/replay runs.  Keep the last
+        # successful artifact per worker instead of retaining every replay.
+        options["retain_run_artifacts"] = False
+    set_device(standalone_device, **options)
+
+
+def initialize_sim_worker():
+    """Give every forked standalone worker its own artifact directory."""
+    standalone_directory = os.environ.get("BRIAN2_STANDALONE_DIRECTORY")
+    if standalone_directory and os.environ.get("BRIAN2_STANDALONE_DEVICE"):
+        get_device().build_options["directory"] = (
+            f"{standalone_directory}-{os.getpid()}"
+        )
 
 
 def exponential_convolution(t, spikes, tau):
@@ -273,9 +310,10 @@ def sim(net, spike_times):
     """
     net.restore()
 
-    net["neurons"].v = (
-        np.random.uniform(V_RESET / mV, V_THRESH / mV, size=len(neurons)) * mV
-    )
+    network_neurons = net["neurons"]
+    network_neurons.v = np.random.uniform(
+        V_RESET / mV, V_THRESH / mV, size=len(network_neurons)
+    ) * mV
     net["stimulus"].set_spikes([0] * len(spike_times), spike_times * ms)
 
     net.run(DURATION)
@@ -290,7 +328,14 @@ def sim(net, spike_times):
 
     return liquid_states
 
+
+def map_sim(spike_times):
+    """Pool entry point using the frozen network inherited through ``fork``."""
+    return sim(_worker_net, spike_times)
+
+
 if __name__ == '__main__':
+    configure_standalone_device()
     neurons = get_neurons()
 
     N_exc = int(0.8 * len(neurons))
@@ -402,6 +447,8 @@ if __name__ == '__main__':
     )
     net.store()
 
+    _worker_net = net
+
     collected_pairs = collect_stimulus_pairs()
 
     # add only jittered pairs
@@ -410,22 +457,27 @@ if __name__ == '__main__':
         for _ in range(N_PAIRS)
     ]
 
-    def map_sim(spike_times):
-        """Wrapper to sim for multiprocessing
-        """
-        return sim(net, spike_times)
-
     result = defaultdict(list)
-    # loop over all distances and Poisson stimulus pairs
-    for d, pairs in collected_pairs.items():
+    configured_processes = int(os.environ.get("BRIAN2_MAASS_PROCESSES", "0"))
+    processes = configured_processes or None
+    try:
+        context = multiprocessing.get_context("fork")
+    except ValueError as ex:
+        raise RuntimeError(
+            "This example requires multiprocessing 'fork' to share its "
+            "frozen Brian network"
+        ) from ex
+    with context.Pool(
+        processes=processes, initializer=initialize_sim_worker
+    ) as pool:
+        # loop over all distances and Poisson stimulus pairs
+        for d, pairs in collected_pairs.items():
+            states_u = pool.map(map_sim, [pair[0] for pair in pairs])
+            states_v = pool.map(map_sim, [pair[1] for pair in pairs])
 
-        with multiprocessing.Pool() as p:
-            states_u = p.map(map_sim, [p[0] for p in pairs])
-            states_v = p.map(map_sim, [p[1] for p in pairs])
-
-        for liquid_states_u, liquid_states_v in zip(states_u, states_v):
-            ed = euclidian_distance(liquid_states_u, liquid_states_v)
-            result[d].append(ed)
+            for liquid_states_u, liquid_states_v in zip(states_u, states_v):
+                ed = euclidian_distance(liquid_states_u, liquid_states_v)
+                result[d].append(ed)
     # plot
     fig, ax = plt.subplots(figsize=(5, 5))
 

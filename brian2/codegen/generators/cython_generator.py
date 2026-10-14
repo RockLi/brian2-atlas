@@ -1,4 +1,3 @@
-import itertools
 
 from brian2.codegen.cpp_prefs import C99Check
 from brian2.core.functions import DEFAULT_FUNCTIONS, Function
@@ -179,7 +178,7 @@ class CythonCodeGenerator(CodeGenerator):
 
     def translate_to_read_arrays(self, read, indices):
         lines = []
-        for varname in itertools.chain(sorted(indices), sorted(read)):
+        for varname in self.ordered_array_reads(read, indices):
             var = self.variables[varname]
             index = self.variable_indices[varname]
             arrayname = self.get_array_name(var)

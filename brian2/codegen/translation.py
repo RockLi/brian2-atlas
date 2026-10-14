@@ -26,7 +26,11 @@ from brian2.core.preferences import prefs
 from brian2.core.variables import AuxiliaryVariable, Subexpression, Variable
 from brian2.parsing.bast import brian_ast
 from brian2.parsing.statements import parse_statement
-from brian2.parsing.sympytools import str_to_sympy, sympy_to_str
+from brian2.parsing.sympytools import (
+    check_expression_for_multiple_stateful_functions,
+    str_to_sympy,
+    sympy_to_str,
+)
 from brian2.utils.caching import cached
 from brian2.utils.stringtools import deindent, get_identifiers, strip_empty_lines
 from brian2.utils.topsort import topsort
@@ -241,6 +245,10 @@ def make_statements(code, variables, dtype, optimise=True, blockname=""):
                 f" subexpression '{var}'."
             )
         if op == "=":
+            if var in defined and not variables[var].is_boolean:
+                # Keep the stateful-call guard even when the self-reference
+                # fast path below skips symbolic assignment rewriting.
+                check_expression_for_multiple_stateful_functions(expr, variables)
             if var not in defined:
                 op = ":="
                 defined.add(var)
@@ -255,7 +263,10 @@ def make_statements(code, variables, dtype, optimise=True, blockname=""):
                         use_dtype = dtype
                     new_var = AuxiliaryVariable(var, dtype=use_dtype, scalar=is_scalar)
                     variables[var] = new_var
-            elif not variables[var].is_boolean:
+            elif not variables[var].is_boolean and var in get_identifiers(expr):
+                # A self-reference is necessary for rewriting x = ... as
+                # x += ... or x *= .... Avoid expensive symbolic collection
+                # for large feed-forward assignments that cannot use it.
                 sympy_expr = str_to_sympy(expr, variables)
                 if variables[var].is_integer:
                     sympy_var = sympy.Symbol(var, integer=True)

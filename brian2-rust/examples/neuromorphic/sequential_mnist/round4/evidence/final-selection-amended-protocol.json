@@ -1,0 +1,18 @@
+{
+  "created_utc": "2026-10-14T15:26:35Z",
+  "candidates": [
+    "compact-cosine",
+    "compact-rate",
+    "code8-ce",
+    "code8-rate",
+    "wide-rate",
+    "current5",
+    "current8",
+    "compact-clean",
+    "compact-late"
+  ],
+  "early_stop": "wide-rate may be excluded if still below its original validation baseline at update 2000; record its incomplete run separately",
+  "baseline": "/Volumes/T7/atlas-sequential-mnist-round3-20261014/selected",
+  "selection": "maximum validation accuracy among completed runs; baseline first, listed order breaks ties; no further tuning after test",
+  "test": "one selected model, full official 10000 test images; exact neural traces and logits on both targets; independent native build; checkpoint and AtlasIR replay"
+}

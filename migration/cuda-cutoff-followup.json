@@ -1,0 +1,3799 @@
+{
+  "schema": "atlas-cuda-cutoff-followup-v1",
+  "status": "passed after targeted C ABI repair",
+  "accepted_migration_code": "243b9e47b83a48d1f38381b04ad8315df168a4b4",
+  "initial_head": "80d2d84c1d64af37984d7b082b5ab4f6bbe009bc",
+  "validated_repair_commit": "de36f5d6d1f822707d5036e14decefc58667c99f",
+  "repair": {
+    "base": "80d2d84c1d64af37984d7b082b5ab4f6bbe009bc",
+    "branch": "codex/cuda-cutoff-acceptance",
+    "reason": "CUDA scalar_context/bitwise/sequence/boolean_eager capability exports had C++ name mangling",
+    "files": {
+      "brian2-rust/python/brian2_rust/training_cuda.cu": {
+        "before": "033f4078ef8a84cee355fc4606881be1db5e08f6bf4913b1046bfc92483e9260",
+        "after": "e911957423094c3de7704352f4ff55db4c3118c556833259d45711f6fe13f621"
+      },
+      "brian2-rust/tests/test_training_cuda_capabilities.py": {
+        "before": null,
+        "after": "603221e31d5200a07484c398ad0d793b51a0208afa8fd54a92511faa2b92ca8f"
+      }
+    }
+  },
+  "scope": {
+    "gpu": "NVIDIA L4",
+    "cuda_toolkit": "12.8.1",
+    "python": "3.12.1",
+    "single_process": true,
+    "same_host_mpi_ranks": 2,
+    "cross_host_mpi": false,
+    "multiple_gpus": false,
+    "subsequent_development_ported": false
+  },
+  "original_skipped_cases": 708,
+  "passed": 709,
+  "failed": 0,
+  "skipped": 0,
+  "original_modules": 15,
+  "additional_regression_cases": 1,
+  "source_files_verified": 488,
+  "source_manifest_sha256": "85c0745fe9058e28af3a378e1eccb2de61510a55c98b7a9615e0b150262b99d6",
+  "original_failure": {
+    "app_id": "ap-re62GpKSMMFxwr77u4W3F1",
+    "failed_nodes": [
+      "test_training_selected_inplace_columns.py::test_selected_accumulator_callback_argument_all_vjps[cuda-2-False]",
+      "test_training_selected_inplace_columns.py::test_selected_accumulator_callback_argument_all_vjps[cuda-2-True]",
+      "test_training_selected_inplace_columns.py::test_selected_accumulator_callback_argument_all_vjps[cuda-None-False]"
+    ],
+    "reason": "GPU sequence capability missing: four C++ capability exports lacked extern C linkage",
+    "stopped_after_failures": 3,
+    "remaining_cases_not_executed": 705,
+    "evidence_preserved": true
+  },
+  "repaired_app_id": "ap-K0lufRujQTunteEp4FLbvc",
+  "owned_apps": [
+    {
+      "app_id": "ap-K0lufRujQTunteEp4FLbvc",
+      "description": "atlas-cutoff-cuda-followup",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-10-09 01:04:14+08:00",
+      "stopped_at": "2026-10-09 02:13:13+08:00"
+    },
+    {
+      "app_id": "ap-re62GpKSMMFxwr77u4W3F1",
+      "description": "atlas-cutoff-cuda-followup",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-10-09 00:58:29+08:00",
+      "stopped_at": "2026-10-09 01:02:06+08:00"
+    }
+  ],
+  "batches": [
+    {
+      "batch": "cuda_c_linkage_regression",
+      "case_count": 1,
+      "seconds": 55.1244683265686,
+      "json_sha256": "4c23bd388b2b11ae5247a34ae3da7ee36b6e35e8f82bf9979e779f5a3ddf5e85",
+      "xml_sha256": "4e0376b6dc75244ffc9e028d8d4080286ab0f4ab384604413ea2668a2e6723d8"
+    },
+    {
+      "batch": "training_selected_inplace_columns-01",
+      "case_count": 12,
+      "seconds": 104.3426284790039,
+      "json_sha256": "7cbfef24356c2e877b543df07e172b844811cade8f85c9d9fc4cf08afac45257",
+      "xml_sha256": "53b2119078c7f16b831753c3ac78a5e3a0cef6629ed4cb6363e9f3cbb1700b59"
+    },
+    {
+      "batch": "training_batch_capture_noise-01",
+      "case_count": 28,
+      "seconds": 180.96755599975586,
+      "json_sha256": "e51689725aaa867cbb65e964095979d7d0bb452800accfcd89c949ff460ab07b",
+      "xml_sha256": "8d1bfdeb5d7484ee21bd2a0195077d342bf0f16e65ed3c393c4ce86bef747c13"
+    },
+    {
+      "batch": "training_batch_capture_temporaries-01",
+      "case_count": 48,
+      "seconds": 156.05541491508484,
+      "json_sha256": "e6caa9766796ee43ae87a95910df85710824f94053d2a1f811c179fdd7a9563e",
+      "xml_sha256": "3018be4e21ca4fa067aebb50ad5f2a40da504c276ac7c9b83b7ac791faa6070b"
+    },
+    {
+      "batch": "training_batch_capture_temporaries-02",
+      "case_count": 48,
+      "seconds": 107.8851888179779,
+      "json_sha256": "42b39e5e74b422357081ca5a94c879dbaa3c3fe7f3afd5e769ffc33ccb57eabb",
+      "xml_sha256": "f487d8309f96e434bc2c58caf11a724bbe784eb0340ece84ff95da1778e230c8"
+    },
+    {
+      "batch": "training_batch_capture_temporaries-03",
+      "case_count": 48,
+      "seconds": 341.68285846710205,
+      "json_sha256": "fda327a7764824388e790b25ecd8178f7c36ccab1b9481ed2d9a9f4c961b4a8e",
+      "xml_sha256": "795f5775315156a49b6e4ed4e0c5a7ffca8f5d30804368ab157579e4d70e9869"
+    },
+    {
+      "batch": "training_batch_capture_temporaries-04",
+      "case_count": 24,
+      "seconds": 121.6976227760315,
+      "json_sha256": "c0476d11613bbd743bb987a5b7dc99009d00d1c9aa5c7f97af8b3e28d05970ed",
+      "xml_sha256": "9443d1d97898dc79e0b2805894a92282319fb42f0004fd8626a20ab616876a9a"
+    },
+    {
+      "batch": "training_event_returned_constants-01",
+      "case_count": 48,
+      "seconds": 163.79443645477295,
+      "json_sha256": "e75d867a2a078e7202a3c0fba538d08fb06cfde52c56d288aaddb9a0a4e93846",
+      "xml_sha256": "9041c5ead2ad82c25a7de472920d0528a4f48c5050bdb26aa4492e205406f0f9"
+    },
+    {
+      "batch": "training_event_returned_constants-02",
+      "case_count": 12,
+      "seconds": 95.1088056564331,
+      "json_sha256": "84b388cd683e8727ff6fb544408cc10ec43a0a96bc8a337d4716eb7a1ab703f1",
+      "xml_sha256": "a1030eba0acca7b00cbc68ce86f69d23f93d2f59e612ce058d2a21c0113999c0"
+    },
+    {
+      "batch": "training_guarded_scalar_captures-01",
+      "case_count": 42,
+      "seconds": 126.7159538269043,
+      "json_sha256": "302186bd0463460fae27eace524ebad34d3d308a10989a1e100e8e52c3fea8b6",
+      "xml_sha256": "cb7f142be61516a5679acb3081fc49331c2e573a3f61ee0928c90f0249df63a7"
+    },
+    {
+      "batch": "training_masked_batch_captures-01",
+      "case_count": 40,
+      "seconds": 289.28873229026794,
+      "json_sha256": "e8a1a03124e29a2407bbb1dc8a7ee8af4aaf2cbd7a67b0faf85de29515c0c202",
+      "xml_sha256": "cd5a7961798de1373a0edf5d1eb20e2d7799a971e8f3657c56b37aa33a4272d2"
+    },
+    {
+      "batch": "training_masked_multistatement_captures-01",
+      "case_count": 48,
+      "seconds": 375.8406386375427,
+      "json_sha256": "56be676bc3c3dfca48b2ec2a5dba43e7aa3562442881c73c18f6b6add4517cda",
+      "xml_sha256": "a6eee3fab2dd358fea01b19c1e350a1fe09cd09a923286dbf14e9294e0987479"
+    },
+    {
+      "batch": "training_masked_multistatement_captures-02",
+      "case_count": 30,
+      "seconds": 316.022221326828,
+      "json_sha256": "3c46d55cacd4dff1d621df4cb1ac5b1cc00ef5581961eed72447eb1013926322",
+      "xml_sha256": "19c02bce3b2836149912d70ce3b1e8d5f792607bf692d5d42d02a6668394aeea"
+    },
+    {
+      "batch": "training_masked_operand_copies-01",
+      "case_count": 12,
+      "seconds": 110.08247995376587,
+      "json_sha256": "b5b8f0feb012ce2e406e7229848a732daa7b4b1f3a396b0c3fede9280cd4a472",
+      "xml_sha256": "4a652e85e968d584b52e3e08b1225a8670af009d31d1d0e2acfe0fc0d2a76697"
+    },
+    {
+      "batch": "training_selected_capture_mixing-01",
+      "case_count": 16,
+      "seconds": 123.66734147071838,
+      "json_sha256": "c33a07cfe4da71d11981b94dedc9f50b6b462d03ba78340830e9f2122e16bc8d",
+      "xml_sha256": "9d73341b617220ca05befad222533a5268e49410aa59da63aab397e4970ea010"
+    },
+    {
+      "batch": "training_selected_capture_returns-01",
+      "case_count": 48,
+      "seconds": 217.49215602874756,
+      "json_sha256": "c50966fb541877258715684185652c47b876e6b8952cf09b1f2a88263a7977cd",
+      "xml_sha256": "25b60f1dbd4991ede87cb78cb112a0d1c2258916b770fc4dfd9dcf85ba1e7fe8"
+    },
+    {
+      "batch": "training_selected_capture_returns-02",
+      "case_count": 4,
+      "seconds": 75.71157670021057,
+      "json_sha256": "7c17c83a23dc817b8711f71690cb4760555d62402e0c8feb9fff2320efcfb485",
+      "xml_sha256": "a8c6f30f13f8a67c4d4a5eab141aa2088fe3e2e1dc36e0911ca4bd91cfc49dac"
+    },
+    {
+      "batch": "training_selected_multishape_captures-01",
+      "case_count": 16,
+      "seconds": 146.76596212387085,
+      "json_sha256": "2e4979f95f4cf46ad1962702985bf41034ae920413f5eac9e86ba620f18173b7",
+      "xml_sha256": "268ea48903b259a8e5f378fa8ff9aa7847b5dbf6fdad254223ff6114bf4c03ac"
+    },
+    {
+      "batch": "training_whole_caller_carry-01",
+      "case_count": 36,
+      "seconds": 143.59640097618103,
+      "json_sha256": "a39f4bf41a247952c70df30b77656f9962bcee569156c280c8dcdef459bb42d4",
+      "xml_sha256": "74ec15f680d6eda44aa3c70282d6148d30b1baaaaa221a700d93715444595375"
+    },
+    {
+      "batch": "training_whole_caller_derived-01",
+      "case_count": 48,
+      "seconds": 175.96618485450745,
+      "json_sha256": "e7b24d1981e604db68de09687a02ce177bc2f055863ec5d6ef4ff162718f6c21",
+      "xml_sha256": "38f8dd619fcf0e54d52bf0711069ffc795dc4ff19f0753c6f349115bad7f1a89"
+    },
+    {
+      "batch": "training_whole_caller_derived-02",
+      "case_count": 4,
+      "seconds": 70.12461757659912,
+      "json_sha256": "b9ee4f89f3f7dd21852b17a6ebad0a8de0512194f6c34daa66c9af5c4a35357c",
+      "xml_sha256": "54b3c85995d58228b944a18787ebbe2a871184c521ca914c4dc9259ee41867a2"
+    },
+    {
+      "batch": "training_whole_caller_random-01",
+      "case_count": 28,
+      "seconds": 154.4843282699585,
+      "json_sha256": "c7cd4e5e5317e2ad4464090635e2148285da7ff7de69466009d7fa99fd473902",
+      "xml_sha256": "80d3d36b1733eab57af89a2048c02f22439dc1d7ae99b26e4b4d438918d0e444"
+    },
+    {
+      "batch": "training_whole_selected_captures-01",
+      "case_count": 48,
+      "seconds": 188.57000875473022,
+      "json_sha256": "81f34f50baa5c22c2bc8f1f27fa32954204446cc3c1a3580713201292f596cab",
+      "xml_sha256": "5be70ffb16105e3075d030766772ba7816ae137bcea91503fa863c9e34de8285"
+    },
+    {
+      "batch": "training_whole_selected_captures-02",
+      "case_count": 20,
+      "seconds": 122.66168475151062,
+      "json_sha256": "e981286d7d750a14a826d4c3e61a736ae8d33b5dcca1f01d7e669c36a06f5c7e",
+      "xml_sha256": "ed9b3f6898ba72126244d224172090780bd0e8218b054a77ee03377152271fc9"
+    }
+  ],
+  "cases": [
+    {
+      "node": "test_training_cuda_capabilities.py::test_cuda_control_capabilities_have_c_linkage",
+      "outcome": "passed",
+      "batch": "cuda_c_linkage_regression"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_accumulator_callback_argument_all_vjps[cuda-2-False]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_accumulator_callback_argument_all_vjps[cuda-2-True]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_accumulator_callback_argument_all_vjps[cuda-None-False]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_accumulator_callback_argument_all_vjps[cuda-None-True]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-2-False-False]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-2-False-True]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-2-True-False]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-2-True-True]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-None-False-False]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-None-False-True]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-None-True-False]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_selected_inplace_columns.py::test_selected_inplace_repeated_target_all_vjps[cuda-None-True-True]",
+      "outcome": "passed",
+      "batch": "training_selected_inplace_columns-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_empty_random_atomic[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_empty_random_atomic[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_empty_random_atomic[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_empty_random_atomic[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-2-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_all_vjps[cuda-None-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_noise.py::test_batch_capture_random_original_restore[cuda-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_noise-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-False-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-2-True-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-False-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-01"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-2-None-True-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-False-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-2-True-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-02"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-False-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_all_vjps[cuda-None-None-True-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-False-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-2-True-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-03"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-False-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-random_borrow-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-random_borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-random_rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-random_rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-scalar-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-scalar-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-time-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-value-array]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_batch_capture_temporaries.py::test_batch_caller_temporary_original_restore[cuda-None-True-value-vectorised]",
+      "outcome": "passed",
+      "batch": "training_batch_capture_temporaries-04"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-alias-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-alias-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-identity-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-identity-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-written_copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-2-written_copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-alias-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-alias-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-identity-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-identity-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-written_copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-2-None-written_copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-alias-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-alias-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-identity-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-identity-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-written_copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-2-written_copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-alias-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-alias-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-identity-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-identity-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-written_copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_all_bank_initial_vjps[cuda-None-None-written_copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-alias-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-alias-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-identity-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-identity-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-01"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-written_copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-2-written_copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-alias-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-alias-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-identity-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-identity-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-written_copy-array]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_event_returned_constants.py::test_returned_constant_caller_original_restore[cuda-None-written_copy-vectorised]",
+      "outcome": "passed",
+      "batch": "training_event_returned_constants-02"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-False-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-False-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-False-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-False-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-True-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-True-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-True-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-2-True-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-False-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-False-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-False-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-False-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-True-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-True-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-True-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_all_bank_initial_vjps[cuda-None-True-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_domain_atomic[cuda-2]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_domain_atomic[cuda-None]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-2-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-2-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-2-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-2-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-None-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-None-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-None-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_original_restore[cuda-None-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-2-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-2-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-2-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-2-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-None-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-None-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-None-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-2-None-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-2-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-2-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-2-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-2-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-None-False-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-None-False-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-None-True-False]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_guarded_scalar_captures.py::test_guarded_scalar_capture_temporal_all_vjps[cuda-None-None-True-True]",
+      "outcome": "passed",
+      "batch": "training_guarded_scalar_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-2-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_all_bank_initial_vjps[cuda-None-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_capture_original_restore[cuda-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_empty_argument_shape_atomic[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_empty_argument_shape_atomic[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_empty_argument_shape_atomic[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_empty_argument_shape_atomic[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-2-2-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-2-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-2-None-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-2-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-None-2-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-None-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-None-None-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_arguments_all_vjps[cuda-None-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_banks_carry_restore[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_banks_carry_restore[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_banks_carry_restore[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_batch_captures.py::test_masked_batch_parameter_banks_carry_restore[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_batch_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_array_nonlinear_local_lifetime[cuda-2-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_array_nonlinear_local_lifetime[cuda-2-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_array_nonlinear_local_lifetime[cuda-2-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_array_nonlinear_local_lifetime[cuda-None-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_array_nonlinear_local_lifetime[cuda-None-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_array_nonlinear_local_lifetime[cuda-None-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-2-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-2-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-2-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-2-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-2-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-2-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-None-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-None-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-None-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-None-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-None-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-2-None-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-2-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-2-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-2-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-2-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-2-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-2-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-None-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-None-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-None-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-None-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-None-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_array_all_vjps[cuda-None-None-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-False-after-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-False-after-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-False-before-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-False-before-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-False-twice-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-False-twice-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-True-after-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-True-after-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-True-before-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-True-before-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-True-twice-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-2-True-twice-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-False-after-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-False-after-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-False-before-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-False-before-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-False-twice-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-False-twice-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-01"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-True-after-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-True-after-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-True-before-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-True-before-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-True-twice-array]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_original_restore[cuda-None-True-twice-vectorised]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-2-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-2-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-2-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-2-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-2-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-2-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-None-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-None-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-None-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-None-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-None-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-2-None-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-2-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-2-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-2-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-2-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-2-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-2-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-None-False-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-None-False-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-None-False-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-None-True-after]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-None-True-before]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_multistatement_captures.py::test_masked_multistatement_vector_all_vjps[cuda-None-None-True-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_multistatement_captures-02"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-2-2-reread]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-2-2-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-2-None-reread]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-2-None-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-None-2-reread]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-None-2-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-None-None-reread]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_all_vjps[cuda-None-None-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_independent_copies[cuda-2-reread]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_independent_copies[cuda-2-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_independent_copies[cuda-None-reread]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_masked_operand_copies.py::test_masked_rhs_operand_independent_copies[cuda-None-twice]",
+      "outcome": "passed",
+      "batch": "training_masked_operand_copies-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-2-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-2-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-2-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-2-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-None-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-None-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-None-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_all_bank_initial_vjps[cuda-None-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_domain_original_restore[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_domain_original_restore[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_domain_original_restore[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_domain_original_restore[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_shape_failure_atomic[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_shape_failure_atomic[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_shape_failure_atomic[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_mixing.py::test_mixed_selected_shape_failure_atomic[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_mixing-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_returned_bank_view_reads_current_bank_after_restore[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_returned_bank_view_reads_current_bank_after_restore[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_returned_bank_view_reads_current_bank_after_restore[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_returned_bank_view_reads_current_bank_after_restore[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-2-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_all_bank_initial_vjps[cuda-None-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-False-1-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-False-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-False-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-False-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-True-1-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-True-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-True-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-2-True-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-False-1-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-False-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-False-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-False-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-True-1-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-True-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-True-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_original_restore[cuda-None-True-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-2-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-2-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-2-3-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-2-3-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-None-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-None-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-None-3-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_selected_capture_return_shape_failure_atomic[cuda-None-3-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-2-False-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-2-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-2-True-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-2-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-01"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-None-False-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-02"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-None-False-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-02"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-None-True-array]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-02"
+    },
+    {
+      "node": "test_training_selected_capture_returns.py::test_singleton_selected_expression_original_restore[cuda-None-True-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_capture_returns-02"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-2-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-2-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-2-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-2-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-None-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-None-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-None-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_all_bank_initial_vjps[cuda-None-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_original_restore[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_original_restore[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_original_restore[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_original_restore[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_runtime_failure_atomic[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_runtime_failure_atomic[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_runtime_failure_atomic[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_selected_multishape_captures.py::test_selected_multishape_runtime_failure_atomic[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_selected_multishape_captures-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-2-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-2-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-2-carry-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-2-carry-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-2-readonly-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-2-readonly-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-None-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-None-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-None-carry-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-None-carry-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-None-readonly-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-2-None-readonly-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-2-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-2-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-2-carry-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-2-carry-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-2-readonly-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-2-readonly-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-None-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-None-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-None-carry-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-None-carry-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-None-readonly-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_all_vjps[cuda-None-None-readonly-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-2-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-2-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-2-carry-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-2-carry-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-2-readonly-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-2-readonly-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-None-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-None-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-None-carry-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-None-carry-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-None-readonly-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_carry.py::test_whole_caller_carry_original_restore[cuda-None-readonly-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_carry-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-derived-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-derived-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-versions-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-2-versions-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-derived-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-derived-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-versions-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-2-None-versions-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-derived-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-derived-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-versions-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-2-versions-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-derived-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-derived-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-versions-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_all_vjps[cuda-None-None-versions-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-derived-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-derived-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-versions-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-2-versions-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-borrow-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-borrow-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-derived-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-derived-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-rebind-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-rebind-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-versions-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_original_restore[cuda-None-versions-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-01"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_shape_failure_after_restore[cuda-2-derived]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-02"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_shape_failure_after_restore[cuda-2-versions]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-02"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_shape_failure_after_restore[cuda-None-derived]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-02"
+    },
+    {
+      "node": "test_training_whole_caller_derived.py::test_whole_derived_shape_failure_after_restore[cuda-None-versions]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_derived-02"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-2-noise-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-2-noise-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-2-time-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-2-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-None-noise-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-None-noise-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-None-time-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-2-None-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-2-noise-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-2-noise-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-2-time-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-2-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-None-noise-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-None-noise-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-None-time-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_all_vjps[cuda-None-None-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-2-noise-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-2-noise-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-2-time-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-2-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-None-noise-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-None-noise-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-None-time-array]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_original_restore[cuda-None-time-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_shape_failure_after_restore[cuda-2-noise]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_shape_failure_after_restore[cuda-2-time]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_shape_failure_after_restore[cuda-None-noise]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_caller_random.py::test_whole_random_shape_failure_after_restore[cuda-None-time]",
+      "outcome": "passed",
+      "batch": "training_whole_caller_random-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-2-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-2-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-2-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-2-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-None-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-None-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-None-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_all_bank_initial_vjps[cuda-None-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_original_partial_restore[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_original_partial_restore[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_original_partial_restore[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_accumulator_argument_original_partial_restore[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-2-2-False]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-2-2-True]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-2-None-False]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-2-None-True]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-None-2-False]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-None-2-True]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-None-None-False]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_captured_accumulator_all_bank_initial_vjps[cuda-None-None-True]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-2-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-2-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-2-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-2-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-None-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-None-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-None-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_all_vjps[cuda-None-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_original_restore[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_original_restore[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_original_restore[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_single_selected_broadcast_discarded_original_restore[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_singleton_capture_inplace_runtime_shape_atomic[cuda-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_singleton_capture_inplace_runtime_shape_atomic[cuda-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_singleton_capture_inplace_runtime_shape_atomic[cuda-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_singleton_capture_inplace_runtime_shape_atomic[cuda-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-2-0-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-2-0-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-2-1-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-2-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-None-0-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-None-0-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-None-1-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-2-None-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-2-0-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-2-0-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-2-1-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-2-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-01"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-None-0-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-None-0-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-None-1-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_all_bank_initial_vjps[cuda-None-None-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-2-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-2-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-2-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-2-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-None-2-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-None-2-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-None-None-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_coefficient_all_bank_initial_vjps[cuda-None-None-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-2-0-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-2-0-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-2-1-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-2-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-None-0-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-None-0-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-None-1-array]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    },
+    {
+      "node": "test_training_whole_selected_captures.py::test_whole_selected_original_partial_empty_restore[cuda-None-1-vectorised]",
+      "outcome": "passed",
+      "batch": "training_whole_selected_captures-02"
+    }
+  ],
+  "evidence_archive": {
+    "path": "evidence/cuda-followup-20261009.tar.gz",
+    "bytes": 208804,
+    "sha256": "48767adc6e334bd25253d420984330474dc29ae75242a460c2bc669a1189257a"
+  },
+  "limitations": [
+    "Qualification applies to the repaired source commit, not the unmodified migration checkpoint.",
+    "This run covers the union of CUDA skips from the three captured training increments; it does not claim the entire repository CUDA test suite.",
+    "Existing distribution candidates predate this repair and require a later rebuild before release.",
+    "No formal release, package publication, multi-GPU or cross-host MPI qualification."
+  ]
+}

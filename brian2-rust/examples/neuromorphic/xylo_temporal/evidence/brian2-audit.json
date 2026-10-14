@@ -1,0 +1,18 @@
+{
+  "backend": "Brian2 NumPy",
+  "brian2_version": "2.10.1.post241",
+  "cases": [
+    {
+      "case": "recurrent",
+      "state_values": 960,
+      "differences": 0,
+      "result_sha256": "5be0f828d9c61b6630570029a480f8786ed927e3c7015706af100f1f2984b38f"
+    },
+    {
+      "case": "mixed_saturation_order",
+      "state_values": 1920,
+      "differences": 0,
+      "result_sha256": "a44b8e4a67d378bdfbec0963daebe99cb94908b10896a82a4662a0c992be5eac"
+    }
+  ]
+}

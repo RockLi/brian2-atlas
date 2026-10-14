@@ -1,0 +1,57 @@
+{
+  "schema": "atlas.sequential-mnist.validation-views.v1",
+  "samples": 6000,
+  "test_data_read": false,
+  "model_sha256": "3b29c5b7617427fa4422cc8d7764c9ee7a19380ec8a1ff8520e6e4eb69d073bc",
+  "offsets": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      -1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      -1,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      -1,
+      -1
+    ],
+    [
+      -1,
+      1
+    ],
+    [
+      1,
+      -1
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "aggregation": "sum recovered integer class counts; exact score round-trip verified; equal weights; lowest-index ties",
+  "validation_accuracy": {
+    "1": 0.9693333333333334,
+    "3": 0.9718333333333333,
+    "5": 0.9733333333333334,
+    "9": 0.9725
+  },
+  "seconds": 68.30492075002985,
+  "adopted_for_final_audit": false,
+  "decision": "The small validation gain requires 3\u20139 separate neural executions; retain single-view inference for the primary result.",
+  "prediction_script_sha256": "f3eba481738fba05e5f23d92f73b4556e4ede70cd18e2b6697e510628d1d3227",
+  "scoring_script_sha256": "2b4ffc6512262b888e5369815fb8888abdfb2450cda85d1c200e3c2297dc40fe",
+  "predictions_sha256": "d14bc9c7f48f54a0bde4bc6c50d873315bbc3bdddece7d0c91a246479eeab913"
+}

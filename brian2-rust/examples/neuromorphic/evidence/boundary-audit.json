@@ -1,0 +1,20 @@
+{
+  "samples": 14,
+  "states_per_target": 280,
+  "targets": {
+    "akida": {
+      "state_differences": 0,
+      "result_sha256": "5e748bbe1279813aa2dc73781221901e32cb83a17ca4628c15296bfc35a07456"
+    },
+    "lava": {
+      "state_differences": 0,
+      "result_sha256": "ba627feb4c528864693d2806e932f5b05445d8db494cbf476ac1cf990b56f63a"
+    },
+    "specksim": {
+      "state_differences": 0,
+      "result_sha256": "1b5123006a1dfb24719a8218e1a0fa5cf6a467be4d31fcc514a8e79a46275b65"
+    }
+  },
+  "static_final_value_equivalence": true,
+  "temporal_spike_equivalence": false
+}

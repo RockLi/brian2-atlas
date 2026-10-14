@@ -1,0 +1,69 @@
+{
+  "base_commit": "161bf41049e1870ab437f5bdea4628fc9d711115",
+  "date": "2026-10-13",
+  "python_tests_passed": 134,
+  "ir_schema_modified": false,
+  "native_executor_modified": false,
+  "sdk_sources_modified": false,
+  "source_sha256": {
+    "brian2-rust/examples/neuromorphic/coverage/audit.py": "e1da361abe11df005c5643d16025c72ca97e6b6b14d4d75af6ad560624750f45",
+    "brian2-rust/examples/neuromorphic/coverage/cases.py": "6853538ceaa9a606a0d4401769e490c62cda9cbedf1f51971db6986d3ab3cd64",
+    "brian2-rust/examples/neuromorphic/coverage/check_compatibility.py": "367c35b4d7434fa4a97bd6d82bce7804f1071ee08257e288c23fa940cf96106b",
+    "brian2-rust/examples/neuromorphic/coverage/prepare.py": "732960460586c7f3fe9e64684917df7481b624fe23548b669c8d8403197d309a",
+    "brian2-rust/examples/neuromorphic/coverage/sdk_worker.py": "33beb41f51b1c8ef087c29c015dc160ee7bdfcdb3c8ec5087bed69066fb740a9",
+    "brian2-rust/examples/neuromorphic/spinnaker2/compare.py": "ebd6592ff607828cd9fd6612c1025642500b8275f30af75ad4fbb169d38bde22",
+    "brian2-rust/examples/neuromorphic/spinnaker2/coverage_cases.py": "7ffc693e462ac37969c3fff3fd5d3b064ef463fc47987d268bb8aa0af4638965",
+    "brian2-rust/python/brian2_rust/spinnaker2_runtime.py": "76b90b997a3c8f5be4be90cb6adfbefc24034af710d1557c3ae3ec7ecc0ac2bf",
+    "brian2-rust/tests/test_spinnaker2_b2ir.py": "ec1e82cf854eb5d46b2d3554591f8fa3b90cc8989963e2ec1fed71505bc9be77"
+  },
+  "evidence_sha256": {
+    "spinnaker2-audit.json": "4017fc77b1af8070ded35fd476bbf43e83718253d5928c3b50f47ad0e46c7ac6",
+    "compatibility.json": "5bc6fdec43bf2f6cb2f84410053d143904a1919a4334d538e57e1b439f75aed2",
+    "static-audit.json": "e17ad17aa1d90d0f80cd5e17f7389217b9e237b40879a235bbf52838764dbcea"
+  },
+  "static_totals": {
+    "akida": {
+      "cases": 45,
+      "samples": 752,
+      "state_values": 4511,
+      "membrane_values": 0,
+      "differences": 0
+    },
+    "lava": {
+      "cases": 45,
+      "samples": 752,
+      "state_values": 4511,
+      "membrane_values": 0,
+      "differences": 0
+    },
+    "specksim": {
+      "cases": 20,
+      "samples": 388,
+      "state_values": 2242,
+      "membrane_values": 1121,
+      "differences": 0
+    },
+    "spinnaker2": {
+      "cases": 20,
+      "samples": 388,
+      "state_values": 2242,
+      "membrane_values": 0,
+      "differences": 0
+    },
+    "xylosim": {
+      "cases": 20,
+      "samples": 388,
+      "state_values": 2242,
+      "membrane_values": 0,
+      "differences": 0
+    }
+  },
+  "spinnaker2_temporal": {
+    "cases": 48,
+    "state_values": 101940,
+    "spikes": 35093,
+    "max_abs_voltage_error": 1.1368683772161603e-13,
+    "sdk_public_timestamp_differences": 31
+  },
+  "previous_xylo_evidence": "../../xylo_temporal/evidence/expanded/manifest.json"
+}

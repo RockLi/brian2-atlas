@@ -1,0 +1,34 @@
+{
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "original_upstream_base": "cf0b25cce13b620aac740873e88ba91061a70275",
+  "method": "Port the final source delta rather than replay mixed research/product commits; immutable file hashes also cover working-tree and untracked inputs.",
+  "groups": {
+    "p1a-function-semantics": {
+      "files": [
+        "brian2/core/functions.py",
+        "brian2/equations/unitcheck.py",
+        "brian2/input/binomial.py",
+        "brian2/tests/test_functions.py"
+      ],
+      "relevant_legacy_commits": [
+        {
+          "commit": "72cde27f927eb3b10b3aa95deb7f22e12ab60942",
+          "subject": "feat(rust): complete core expression and summed semantics"
+        }
+      ]
+    },
+    "p1b-indirect-indices": {
+      "files": [
+        "brian2/codegen/codeobject.py",
+        "brian2/codegen/generators/base.py",
+        "brian2/codegen/generators/cpp_generator.py",
+        "brian2/codegen/generators/cython_generator.py",
+        "brian2/codegen/generators/numpy_generator.py",
+        "brian2/codegen/indices.py",
+        "brian2/codegen/runtime/cython_rt/templates/synapses.pyx",
+        "brian2-rust/tests/test_training_nested_index_codegen.py"
+      ],
+      "relevant_legacy_commits": []
+    }
+  }
+}
