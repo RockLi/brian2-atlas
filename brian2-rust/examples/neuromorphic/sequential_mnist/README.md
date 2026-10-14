@@ -10,7 +10,32 @@ The task contains all ten MNIST classes. This is a block-sequential image task,
 not the standard 784-step, one-pixel-per-tick sMNIST benchmark, and not an event
 camera dataset. Host preprocessing starts with ordinary MNIST images.
 
-## Measured result
+## Latest refinement
+
+**97.28% on all 10,000 official test images**, up from 94.77% in the first
+round. The 98% target was not reached. The selected validation score was 97.9000% on 6,000
+images, reproduced before opening this round's test arrays.
+
+| Execution | Correct / total | Accuracy | Spike/current/membrane differences |
+|---|---:|---:|---:|
+| Atlas native integer forward | 9,728 / 10,000 | 97.28% | Reference |
+| Stock XyloSim | 9,728 / 10,000 | 97.28% | 0 / 73,440,000 |
+| SpiNNaker2 custom C host kernel | 9,728 / 10,000 | 97.28% | 0 / 73,440,000 |
+
+Each target matches 24,480,000 spike counts, 24,480,000 synaptic currents,
+24,480,000 membrane values, and 100,000 class logits exactly. The latent
+checkpoint, frozen model and independently packaged native executable agree.
+Ten concrete AtlasIR replays also match 73,440 neural values and their spike
+events. Whole-sequence versus 1/7/13-tick chunking agrees on the first 64 images.
+
+The selected model uses deskewed 28-row input, thresholds 64/256 and 36 ticks;
+neuron and weight counts are unchanged. The previous test score was known before
+this round. Selection used validation only; all three executions use the same
+frozen neural model and weights. [Refinement details and reproduction](REFINEMENT.md)
+include every candidate, controls, costs and evidence. Both targets are software
+executions; SpiNNaker2 is the custom C host kernel.
+
+## First-round result (retained)
 
 **94.77% on all 10,000 official test images. The 98% target was not reached.**
 
@@ -38,7 +63,8 @@ Training used 5,000 updates at learning rate 0.001, then 8,000 more at 0.0003
 with preserved Adam moments and a new sampling seed. The best validation
 checkpoint was at total optimizer step 11,000: **95.23%** on 6,000 validation
 images. Later validation tied and then decreased; earliest-tie selection kept
-that checkpoint. No further training or selection followed the test result.
+that checkpoint. No further training or selection occurred within that first round after its test result.
+The separately documented refinement above is a subsequent development round.
 
 | Full-test control | Accuracy |
 |---|---:|
@@ -54,7 +80,7 @@ selected readout window, no counts have accumulated before tick 8.
 There are 195 tied highest-score predictions, resolved to the lowest class index
 without label-dependent handling. The confusion matrix and every sample's logits
 are retained. This experiment establishes exact conversion of a learned model
-on real data; it does not establish a 98% classifier, a chip accuracy ceiling,
+on real data; that first result does not establish a 98% classifier, a chip accuracy ceiling,
 or hardware performance.
 
 Evidence: [full audit](evidence/audit.json), [per-image results](evidence/per_sample.npz),
@@ -73,8 +99,8 @@ The Keras-distributed `mnist.npz` file must have SHA-256
 `731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1`.
 The first 54,000 official training images train the model; the remaining 6,000
 select checkpoints and encoding/training settings. Training does not index the
-`x_test` or `y_test` archive members. The official 10,000-image test split is
-opened only after model selection. Every test image is evaluated, with no class
+`x_test` or `y_test` archive members. In each development round, the official 10,000-image test split is
+opened only after model selection; the second round knew the first-round result. Every test image is evaluated, with no class
 filter, confidence filter or discarded tie. `argmax` resolves ties to the lowest
 class index; reports also count ties.
 
@@ -172,7 +198,8 @@ python brian2-rust/examples/neuromorphic/sequential_mnist/verify.py \
 
 The training report records exact command arguments. `--resume` restores the
 selected optimizer checkpoint, preserves Adam moments and permits only a changed
-learning rate or sampling seed. It does not transfer optimizer state to a chip.
+learning rate or sampling seed in the native plan. Training-only augmentation
+may also change. It does not transfer optimizer state to a chip.
 
 `select_model.py --runs /path/to/run1 /path/to/run2 --output /tmp/selected`
 compares completed validation reports without opening MNIST. The report records

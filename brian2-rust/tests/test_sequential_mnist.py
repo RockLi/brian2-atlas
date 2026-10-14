@@ -49,6 +49,103 @@ def test_codebook_and_encoding():
     with pytest.raises(ValueError):m.encode(images, 'blocks', 3)
 
 
+def test_refined_encodings_and_preprocessing():
+    spec = importlib.util.spec_from_file_location('smnist_refined', ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+    image = np.zeros((1,28,28), dtype=np.uint8); image[0,8,12] = 255
+    cross = m.encode(image, 'rows-columns-counts')
+    assert cross.shape == (1,36,16)
+    assert cross[0,4,6] == 4 and cross[0,14+6,4] == 4
+    assert cross[:,:,:14].sum() == 8
+    full = m.encode(image, 'rows-full-counts')
+    assert full.shape == (1,36,16) and full[0,8,6] == 8
+    assert full[:,:,:14].sum() == 8
+    for encoding in ('rows-counts','rows-columns-counts','rows-full-counts'):
+        x = m.encode(image, encoding, repeats=2)
+        scan = (x.shape[1]-8)//2
+        np.testing.assert_array_equal(x[:,:scan,:14],x[:,scan:2*scan,:14])
+        assert (x[:,:,14]==1).all()
+        assert not x[:,-8:,:14].any() and (x[:,-8:,15]==1).all()
+        assert not x[:,:-8,15].any()
+        with pytest.raises(ValueError):m.encode(image, encoding, repeats=10)
+    position = m.encode(image,'rows-position-counts',repeats=2,query_ticks=16)
+    assert position.shape == (1,44,16)
+    np.testing.assert_array_equal(position[0,:28,15],np.tile(np.arange(1,15),2))
+    assert (position[0,28:,15]==15).all() and not position[0,28:,:14].any()
+    with pytest.raises(ValueError):m.encode(image,'rows-counts',query_ticks=0)
+    blank = np.zeros((2,28,28),dtype=np.uint8)
+    np.testing.assert_array_equal(m.deskew_images(blank),blank)
+    # A slanted line becomes vertical without losing its intensity or centroid.
+    diagonal = blank[:1].copy(); diagonal[0,np.arange(8,20),np.arange(8,20)] = 200
+    corrected = m.deskew_images(diagonal)
+    np.testing.assert_allclose(corrected.sum(),diagonal.sum())
+    assert not corrected[:,:,:13].any() and not corrected[:,:,15:].any()
+    np.testing.assert_allclose(corrected[0,8:20,13:15],100)
+    np.testing.assert_array_equal(m.encode(diagonal,'rows-counts',deskew=True),m.encode(corrected,'rows-counts'))
+    # Translation is zero-filled, never a wrap-around, and leaves its source intact.
+    edge = np.zeros((1,28,28),dtype=np.uint8);edge[0,0,0]=255;edge[0,12,12]=100
+    class FixedOffsets:
+        def integers(self,*args,**kwargs):return np.array([[-2,1]])
+    shifted = m.translate_images(edge,FixedOffsets(),2)
+    assert shifted.sum()==100 and shifted[0,10,13]==100 and edge.sum()==355
+    np.testing.assert_array_equal(m.translate_images(edge,np.random.default_rng(4),0),edge)
+    np.testing.assert_array_equal(m.translate_images(edge,np.random.default_rng(4),2),m.translate_images(edge,np.random.default_rng(4),2))
+    with pytest.raises(ValueError):m.translate_images(edge,np.random.default_rng(4),4)
+    # Bounded-memory preprocessing must not change any quantized input count.
+    samples=np.random.default_rng(8).integers(0,256,(17,28,28),dtype=np.uint8)
+    for encoding in ('rows-counts','rows-position-counts','gradient-counts'):
+        whole=m.encode(samples,encoding,deskew=True)
+        chunks=np.concatenate([m.encode(samples[i:i+3],encoding,deskew=True) for i in range(0,len(samples),3)])
+        np.testing.assert_array_equal(whole,chunks)
+
+
+
+def test_training_affine_augmentation():
+    spec=importlib.util.spec_from_file_location('smnist_affine',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    yy,xx=np.mgrid[:28,:28]
+    ramp=(xx+2*yy)[None].astype(float)
+    original=ramp.copy()
+    class FixedTransform:
+        def uniform(self,low,high,shape):
+            return np.array([10.]) if isinstance(shape,int) else np.array([[1.05,.95]])
+    transformed=m.affine_images(ramp,FixedTransform(),10)
+    angle=np.deg2rad(10.)
+    sx=(np.cos(angle)*(xx-13.5)+np.sin(angle)*(yy-13.5))/1.05+13.5
+    sy=(-np.sin(angle)*(xx-13.5)+np.cos(angle)*(yy-13.5))/.95+13.5
+    interior=(sx>=0)&(sx<27)&(sy>=0)&(sy<27)
+    np.testing.assert_allclose(transformed[0][interior],(sx+2*sy)[interior],atol=1e-12)
+    outside=(sx<=-1)|(sx>=28)|(sy<=-1)|(sy>=28)
+    assert outside.any() and not transformed[0][outside].any()
+    np.testing.assert_array_equal(ramp,original)
+    identity=m.affine_images(ramp,np.random.default_rng(1),0)
+    np.testing.assert_array_equal(identity,ramp)
+    assert not np.shares_memory(identity,ramp)
+    np.testing.assert_array_equal(m.affine_images(ramp,np.random.default_rng(9),8),m.affine_images(ramp,np.random.default_rng(9),8))
+    for degrees in (-1,16,float('nan')):
+        with pytest.raises(ValueError):m.affine_images(ramp,np.random.default_rng(1),degrees)
+
+
+def test_gradient_cell_encoding():
+    spec=importlib.util.spec_from_file_location('smnist_gradient',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    ramp=np.broadcast_to(np.arange(28,dtype=float)*9,(1,28,28)).copy()
+    features=m.gradient_cells(ramp)
+    assert features.shape==(1,16,14)
+    assert (features[:,:,0]==15).all() and not features[:,:,1:8].any()
+    assert (features[:,:,9]==15).all() and not features[:,:,10:12].any()
+    np.testing.assert_array_equal(features[0,:,12],np.repeat([3,6,9,12],4))
+    np.testing.assert_array_equal(features[0,:,13],np.tile([3,6,9,12],4))
+    blank=m.gradient_cells(np.zeros((1,28,28)))
+    assert not blank[:,:,:12].any()
+    vertical=m.gradient_cells(ramp.transpose(0,2,1))
+    assert (vertical[:,:,4]==15).all() and not vertical[:,:,:4].any() and not vertical[:,:,5:8].any()
+    raster=m.encode(ramp,'gradient-counts',query_ticks=12)
+    assert raster.shape==(1,28,16) and raster.max()<=15
+    np.testing.assert_array_equal(raster[:,:16,:14],features)
+    assert not raster[:,16:,:14].any() and (raster[:,16:,15]==1).all()
+
+
 @pytest.fixture(params=[1,15])
 def coded(request):
     if not TRAIN.is_file():pytest.skip('set B2_TRAIN_RUNNER')

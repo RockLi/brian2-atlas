@@ -1,0 +1,28 @@
+{
+  "reason": "Interactive turn interruption stopped the training processes",
+  "completed": [
+    "rows-aug",
+    "deskew-aug"
+  ],
+  "interrupted": [
+    {
+      "run": "cross-scan",
+      "last_logged_update": 4700,
+      "last_validation_update": 4000
+    },
+    {
+      "run": "position",
+      "last_logged_update": 4750,
+      "last_validation_update": 4000
+    }
+  ],
+  "resumed_from_best_checkpoint": {
+    "source": "position",
+    "destination": "position-refine"
+  },
+  "initializations_restarted": [
+    "precision",
+    "gradient"
+  ],
+  "test_data_read": false
+}

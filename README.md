@@ -145,11 +145,14 @@ path does not perform on-chip learning or import arbitrary TensorFlow graphs.
 
 The [ten-class block-sequential MNIST example](brian2-rust/examples/neuromorphic/sequential_mnist/README.md)
 trains a recurrent integer network natively in Atlas. The same model and weights
-reach **94.77% on all 10,000 test images** in Atlas, XyloSim and the custom
-SpiNNaker2 C host kernel. Each target matches **44,880,000 spike/current/membrane
-values** and every class score exactly. A fixed host codebook maps five physical
-outputs to ten classes. The 98% accuracy target was not reached; this is a real-data
-conversion result, separate from the synthetic task below and from chip execution.
+reach **97.28% on all 10,000 test images** in Atlas, XyloSim and the custom
+SpiNNaker2 C host kernel, up from 94.77%. Each target matches **73,440,000
+spike/current/membrane values** and every class score exactly. The model has
+5,292 weights; the refined recipe uses host deskew and a 36-tick row sequence
+in place of the 22-tick baseline. A fixed host codebook maps five physical outputs to ten classes.
+The 98% target was not reached. [Selection, controls and costs](brian2-rust/examples/neuromorphic/sequential_mnist/REFINEMENT.md)
+are documented. This is a software conversion result, separate from the synthetic
+task below and from chip execution.
 
 A [native recurrent Xylo example](brian2-rust/examples/neuromorphic/native_xylo_recurrent/README.md)
 now trains input, readout and recurrent weights on a delayed AB/BA task. Atlas

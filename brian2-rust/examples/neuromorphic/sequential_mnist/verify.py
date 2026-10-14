@@ -11,7 +11,7 @@ from brian2_atlas import NativeXyloTrainer, export_network
 from brian2_atlas.neuromorphic import export_native_xylo
 from brian2_rust.native_xylo_conversion import validate_frozen, build_native_xylo_network
 from brian2_rust.results import load_results
-from train import DATASET_SHA256, encode, sha
+from train import DATASET_SHA256, encode, sha, evaluate
 from sdk_worker import integer_trace
 
 
@@ -33,8 +33,18 @@ def main():
     training=json.loads((a.trained/'training.json').read_text())
     f=json.loads((a.trained/'frozen.json').read_text());sizes=validate_frozen(f)
     assert sha(a.trained/'frozen.json')==training['frozen_file_sha256']
+    # Reproduce selection with the current encoder before opening test arrays.
+    preflight=NativeXyloTrainer(f['plan'],runner=a.train_runner,
+        weights=[np.asarray(w)/f['plan']['weight_scale'] for w in f['target_weights']])
     with np.load(a.dataset,allow_pickle=False) as data:
-        x=encode(data['x_test'],training['encoding'],training['repeats']);y=data['y_test']
+        validation=encode(data['x_train'][54000:],training['encoding'],training['repeats'],
+            deskew=training.get('deskew',False),query_ticks=training.get('query_ticks',8))
+        validation_labels=data['y_train'][54000:]
+    validation_accuracy=evaluate(preflight,validation,validation_labels)
+    assert validation_accuracy==training['selected']['validation_accuracy'], 'encoder/selected-validation mismatch; test arrays remain unopened'
+    del preflight,validation,validation_labels
+    with np.load(a.dataset,allow_pickle=False) as data:
+        x=encode(data['x_test'],training['encoding'],training['repeats'],deskew=training.get('deskew',False),query_ticks=training.get('query_ticks',8));y=data['y_test']
     assert len(y)==10000 and set(y)==set(range(10))
     assert training['test_arrays_read'] is False and training['training_samples']==54000
     assert training['validation_samples']==6000 and x.shape[1]==training['steps']
@@ -105,7 +115,7 @@ def main():
                     assert ref[key].shape==actual[key].shape
                     item['values']+=int(ref[key].size)
                     item['differences']+=int(np.count_nonzero(ref[key]!=actual[key]))
-                    item['max_absolute_error']=max(item['max_absolute_error'],float(np.abs(ref[key]-actual[key]).max()))
+                    item['max_absolute_error']=max(item['max_absolute_error'],float(np.abs(ref[key].astype(np.float64)-actual[key].astype(np.float64)).max()))
                 predictions.extend(actual['logits'])
         comparisons[target]=diffs;executions[target]=execution;target_logits[target]=np.asarray(predictions)
         assert all(v['differences']==0 for v in diffs.values()),diffs
@@ -127,7 +137,10 @@ def main():
         zero_recurrence_logits=ablated,reset_neural_state_logits=reset_logits)
     report=dict(schema='atlas.sequential-mnist.audit.v1',validation_passed=True,full_official_test_set=True,
         dataset_sha256=DATASET_SHA256,samples=10000,classes=list(range(10)),sizes=sizes,steps=x.shape[1],
-        encoding=training['encoding'],readout_start=f['plan']['readout_start'],class_codes=f['plan']['class_codes'],
+        validation_recheck=dict(samples=6000,accuracy=validation_accuracy,matches_selection=True),
+        encoding=training['encoding'],deskew=training.get('deskew',False),query_ticks=training.get('query_ticks',8),
+        evaluation_round=training.get('evaluation_round',1),
+        prior_official_test_accuracy_known=training.get('prior_official_test_accuracy_known'),readout_start=f['plan']['readout_start'],class_codes=f['plan']['class_codes'],
         class_decoder_execution='host-fixed-integer-codebook',same_model=True,same_weight_banks=True,
         same_class_codebook=True,retraining=False,clock_shift=0,numerical_tolerance=0,
         native=accuracy(logits,y),xylosim=accuracy(target_logits['xylosim'],y),spinnaker2_integer=accuracy(target_logits['spinnaker2'],y),

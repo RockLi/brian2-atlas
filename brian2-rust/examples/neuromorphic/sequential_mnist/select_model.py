@@ -24,7 +24,11 @@ def main():
         assert sha(directory/'checkpoint.json')==report['checkpoint_sha256']
         candidates.append(dict(run=directory.name,validation_accuracy=report['selected']['validation_accuracy'],
             selected_step=report['selected']['step'],updates=report['updates_completed'],sizes=report['sizes'],
-            encoding=report['encoding'],readout_start=report['readout_start'],history=report['history'],
+            encoding=report['encoding'],deskew=report.get('deskew',False),repeats=report['repeats'],
+            query_ticks=report.get('query_ticks',8),steps=report['steps'],
+            augmentation_shift=report.get('augmentation_shift',0),
+            augmentation_affine=report.get('augmentation_affine',0.),
+            readout_start=report['readout_start'],history=report['history'],
             report_sha256=sha(directory/'training.json'),frozen_file_sha256=sha(directory/'frozen.json')))
     winner=max(range(len(candidates)),key=lambda i:candidates[i]['validation_accuracy'])
     source=a.runs[winner];a.output.mkdir(parents=True,exist_ok=False)

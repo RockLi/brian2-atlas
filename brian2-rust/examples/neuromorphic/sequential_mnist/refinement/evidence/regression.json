@@ -1,0 +1,15 @@
+{
+  "suite": "brian2-rust/tests/test_sequential_mnist.py",
+  "tests": 10,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 8.876,
+  "sdk_environments": [
+    "XyloSim",
+    "SpiNNaker2 SDK + custom C host kernel"
+  ],
+  "test_source_sha256": "5a1be95984224d44a5de2db4e0bb3fdb1772d4d6fabd88e346858d06ec8c97bf",
+  "native_training_binary_sha256": "8e862759cc2a8d8794d20a7ed42979e182b9e739c284e6e83e51311c987fc9e9",
+  "atlas_runner_sha256": "0f088289645e18c12d600a1a661e7f4d354411f6cc226e09bcf0b11a1ab4c94e"
+}
