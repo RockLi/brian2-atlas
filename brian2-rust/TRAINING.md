@@ -6,6 +6,15 @@ frontend can lower supported networks through `lower_brian_dynamic_training`.
 The native engine performs forward execution, surrogate-gradient BPTT and
 optimizer updates. It does not require Brian2CUDA or Brian2GeNN.
 
+## Xylo integer training
+
+`NativeXyloTrainer` runs a dedicated CPU plan with Xylo Audio 2 integer forward
+dynamics, int8 quantization-aware weights, surrogate BPTT and native Adam/SGD.
+It exports fresh inference through AtlasIR to XyloSim without dynamics
+adaptation. It is separate from `NativeLIFTrainer`'s general plans and does not
+inherit GPU/MPI, state continuation or arbitrary Brian equation support.
+See the [contract, API and held-out evidence](examples/neuromorphic/native_xylo_integer/README.md).
+
 ## Start from a runnable example
 
 From an installed source checkout:

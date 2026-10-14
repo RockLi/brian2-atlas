@@ -53,6 +53,14 @@ It requires opt-in and emits `dynamics_equivalent: false`. Exact validation of
 the adapted AtlasIR against Xylo is separate from the measured disagreement
 between the original native LIF model and Xylo.
 
+A third source path, [native integer Xylo training](../examples/neuromorphic/native_xylo_integer/README.md),
+uses a dedicated CPU plan with Xylo integer forward dynamics and surrogate/STE
+backward. `freeze_native_xylo` constructs an equivalent Brian2/AtlasIR model
+without changing the dynamics or adding quantization. It checks native, AtlasIR
+and stock XyloSim traces separately. This exact path is distinct from the
+approximate float-LIF adaptation; neither establishes cross-SDK equivalence
+for arbitrary temporal networks. GPU/MPI are not admitted by the integer plan.
+
 ### Neuromorphic conversion
 
 `convert_ir` / `export_ir` start with AtlasIR, run native validation and target

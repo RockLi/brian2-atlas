@@ -52,16 +52,19 @@ def run(plan, *, chunk_steps=None):
 
 
 def run_native_batch(plan, bridge, samples):
-    """Execute unchanged integer weights with explicitly adapted dynamics.
+    """Execute frozen integer weights using the declared exact or adapted bridge.
 
     Reset the stock simulator between samples; never replicate the graph past
     its validated hardware dimensions. No labels or reference states enter.
     """
     x=np.asarray(samples)
     sizes=bridge.get('sizes', [])
-    if (bridge.get('schema') != 'atlas.native-lif-frozen.v1'
-            or bridge.get('dynamics_equivalent') is not False
-            or bridge.get('adaptation', {}).get('schema') != 'atlas.native-lif.xylo-adaptation.v1'
+    exact=(bridge.get('schema') == 'atlas.native-xylo-frozen.v1'
+           and bridge.get('dynamics_equivalent') is True)
+    approximate=(bridge.get('schema') == 'atlas.native-lif-frozen.v1'
+                 and bridge.get('dynamics_equivalent') is False
+                 and bridge.get('adaptation', {}).get('schema') == 'atlas.native-lif.xylo-adaptation.v1')
+    if (not (exact or approximate)
             or not bridge.get('fresh_state_per_sample') or not bridge.get('source_is_zero_input_template')
             or len(sizes) != 3 or sizes != [plan['sizes'][k] for k in ('input','hidden','output')]
             or np.any(plan['input_raster'])):
@@ -80,5 +83,5 @@ def run_native_batch(plan, bridge, samples):
     result['counts']=result['output_q'].sum(axis=1,dtype=np.int64)
     result['logits']=result['counts']*bridge['logit_scale']/plan['steps']
     result.update(configuration_json=configuration,configuration_valid=np.array(True),
-                  sdk_binary_sha256=sdk_hash,dynamics_equivalent=False)
+                  sdk_binary_sha256=sdk_hash,dynamics_equivalent=exact)
     return result

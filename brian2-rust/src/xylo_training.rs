@@ -1,0 +1,203 @@
+//! CPU quantization-aware training with the admitted Xylo Audio 2 transition.
+//! Integer forward; declared surrogate/straight-through backward; Adam in f64.
+use serde::{Deserialize, Serialize};
+use crate::training::{Optimizer, State, Surrogate};
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+fn require(ok: bool, message: &str) -> Result<()> { if ok {Ok(())} else {Err(message.into())} }
+const LO: i32 = -32768;
+const HI: i32 = 32767;
+fn clip(x: i32) -> i32 { x.clamp(LO, HI) }
+fn decay(x: i32) -> i32 { (x >> 1) + i32::from(x == 1) }
+fn interior(x: i32) -> f64 { if (LO..=HI).contains(&x) {1.0} else {0.0} }
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Plan {
+    pub schema: String,
+    pub backend: String,
+    pub sizes: Vec<usize>,
+    pub threshold: Vec<i32>,
+    pub weight_scale: f64,
+    pub synaptic_shift: u8,
+    pub membrane_shift: u8,
+    pub detach_reset: bool,
+    pub surrogate: Surrogate,
+    pub optimizer: Optimizer,
+    pub logit_scale: f64,
+    pub max_tape_bytes: usize,
+    pub seed: u64,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Request {
+    pub plan: Plan,
+    pub state: Option<State>,
+    pub operation: String,
+    pub inputs: Vec<Vec<Vec<f64>>>,
+    pub labels: Vec<usize>,
+    pub initial: Option<Vec<Vec<f64>>>,
+}
+#[derive(Serialize)]
+pub struct Output {
+    pub schema: &'static str,
+    pub backend: &'static str,
+    pub numeric_profile: &'static str,
+    pub state: State,
+    pub loss: f64,
+    pub gradients: Vec<Vec<f64>>,
+    pub final_membrane: Vec<Vec<f64>>,
+    pub spikes: Vec<Vec<Vec<f64>>>,
+    pub logits: Vec<Vec<f64>>,
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub currents: Option<Vec<Vec<Vec<f64>>>>,
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub membranes: Option<Vec<Vec<Vec<f64>>>>,
+    pub tape_bytes: usize,
+    pub gradient_scope: &'static str,
+}
+impl Plan {
+    fn validate(&self) -> Result<()> {
+        require(self.schema == "atlas-xylo-training-plan-v1" && self.backend == "cpu",
+                "Xylo training requires its CPU v1 plan")?;
+        require(self.sizes.len()==3 && (1..=16).contains(&self.sizes[0]) &&
+                (1..=64).contains(&self.sizes[1]) && (1..=8).contains(&self.sizes[2]),
+                "Xylo training requires 1..16 inputs, 1..64 hidden, 1..8 outputs")?;
+        require(self.threshold.len()==2 && self.threshold.iter().all(|v| (1..=32767).contains(v)),
+                "Xylo thresholds must be positive int16")?;
+        require(self.synaptic_shift==1 && self.membrane_shift==1 && self.detach_reset,
+                "Xylo training v1 requires shifts=1 and detached reset")?;
+        require(self.weight_scale.is_finite() && self.weight_scale>=1.0 && self.weight_scale<=128.0
+                && self.weight_scale.log2().fract()==0.0,"invalid Xylo weight scale")?;
+        require(self.logit_scale.is_finite() && self.logit_scale>0.0 && self.logit_scale<=100.0,
+                "invalid Xylo logit scale")?;
+        require(self.surrogate.kind=="fast_sigmoid" && self.surrogate.slope.is_finite()
+                && self.surrogate.slope>0.0 && self.surrogate.scale.is_finite() && self.surrogate.scale>0.0,
+                "invalid Xylo surrogate")?;
+        let o=&self.optimizer;
+        require(matches!(o.kind.as_str(),"adam"|"sgd") && o.learning_rate.is_finite() && o.learning_rate>0.0
+                && o.beta1.is_finite() && (0.0..1.0).contains(&o.beta1)
+                && o.beta2.is_finite() && (0.0..1.0).contains(&o.beta2)
+                && o.epsilon.is_finite() && o.epsilon>0.0,"invalid Xylo optimizer")?;
+        Ok(())
+    }
+}
+
+pub fn execute(request: Request) -> Result<Output> {
+    let Request{plan:p,state,operation,inputs:x,labels,initial}=request;
+    p.validate()?;
+    require(matches!(operation.as_str(),"train"|"evaluate"|"gradients"),"unknown Xylo training operation")?;
+    require(initial.is_none(),"Xylo training v1 requires fresh state")?;
+    let [ni,nh,no]=[p.sizes[0],p.sizes[1],p.sizes[2]];
+    let cells=nh+no;let batch=x.len();
+    require((1..=1024).contains(&batch) && labels.len()==batch,"invalid Xylo batch/labels")?;
+    let steps=x[0].len();
+    require((1..=128).contains(&steps) && x.iter().all(|s| s.len()==steps && s.iter().all(|r|
+        r.len()==ni && r.iter().all(|v| *v==0.0 || *v==1.0))) && labels.iter().all(|y| *y<no),
+        "Xylo inputs must be binary batch x 1..128 ticks x input; labels in range")?;
+    let lengths=[ni*nh,nh*no];
+    let mut state=state.ok_or("Xylo training requires explicit initial weights")?;
+    require(state.weights.len()==2 && state.first_moment.len()==2 && state.second_moment.len()==2,
+        "Xylo optimizer bank mismatch")?;
+    for l in 0..2 {
+        require(state.weights[l].len()==lengths[l] && state.first_moment[l].len()==lengths[l]
+            && state.second_moment[l].len()==lengths[l] &&
+            state.weights[l].iter().all(|v| v.is_finite() && (-128.0..=127.0).contains(&(v*p.weight_scale)))
+            && state.first_moment[l].iter().all(|v| v.is_finite())
+            && state.second_moment[l].iter().all(|v| v.is_finite() && *v>=0.0),"invalid Xylo optimizer state")?;
+    }
+    // Bound all persistent forward/backward buffers plus nested result storage.
+    let count=batch.checked_mul(steps).and_then(|v|v.checked_mul(cells)).ok_or("Xylo tape overflow")?;
+    let bytes=count.checked_mul(128).and_then(|v|v.checked_add(lengths.iter().sum::<usize>()*64))
+        .ok_or("Xylo tape overflow")?;
+    require(bytes<=p.max_tape_bytes,"Xylo training tape budget exceeded")?;
+    let weights:Vec<Vec<i32>>=state.weights.iter().map(|bank|bank.iter()
+        .map(|v|(v*p.weight_scale).round_ties_even() as i32).collect()).collect();
+    let mut current=vec![0;count];let mut voltage=vec![0;count];let mut pre=vec![0;count];
+    let mut spike=vec![0;count];
+    let at=|b:usize,t:usize,k:usize| (b*steps+t)*cells+k;
+    for b in 0..batch {for t in 0..steps {for l in 0..2 {
+        let (fan,n,offset,cap)=if l==0 {(ni,nh,0,31)} else {(nh,no,nh,1)};
+        for j in 0..n {
+            let idx=at(b,t,offset+j);
+            let mut i=if t==0 {0} else {current[idx-cells]};
+            for src in 0..fan {
+                let input=if l==0 {x[b][t][src] as i32} else if t==0 {0} else {spike[at(b,t-1,src)]};
+                i=clip(i+weights[l][src*n+j]*input);
+            }
+            i-=decay(i);current[idx]=i;
+            let old=if t==0 {0} else {voltage[idx-cells]};
+            let u=clip(old+clip(-decay(old)+i));pre[idx]=u;
+            let q=(u.div_euclid(p.threshold[l])).clamp(0,cap);spike[idx]=q;
+            voltage[idx]=u-q*p.threshold[l];
+        }
+    }}}
+    let mut logits=vec![vec![0.0;no];batch];let mut dlogits=logits.clone();let mut loss=0.0;
+    for b in 0..batch {
+        for j in 0..no { logits[b][j]=(0..steps).map(|t|spike[at(b,t,nh+j)] as f64).sum::<f64>()*p.logit_scale/steps as f64; }
+        let max=logits[b].iter().copied().fold(f64::NEG_INFINITY,f64::max);
+        let z=logits[b].iter().map(|v|(v-max).exp()).sum::<f64>();
+        loss+=(z.ln()+max-logits[b][labels[b]])/batch as f64;
+        for j in 0..no {dlogits[b][j]=((logits[b][j]-max).exp()/z-f64::from(j==labels[b]))/batch as f64;}
+    }
+    let mut gradient:Vec<Vec<f64>>=lengths.iter().map(|n|vec![0.0;*n]).collect();
+    if operation!="evaluate" {
+        let mut di=vec![0.0;count];let mut dv=di.clone();let mut dq=di.clone();
+        for b in 0..batch { for t in 0..steps { for j in 0..no {
+            dq[at(b,t,nh+j)]=dlogits[b][j]*p.logit_scale/steps as f64;
+        }}}
+        for b in 0..batch {for t in (0..steps).rev() {for l in (0..2).rev() {
+            let (fan,n,offset,cap)=if l==0 {(ni,nh,0,31)} else {(nh,no,nh,1)};
+            let theta=p.threshold[l] as f64;
+            for j in 0..n {
+                let idx=at(b,t,offset+j);let old_v=if t==0 {0} else {voltage[idx-cells]};
+                // Sum the declared unit-spike surrogate at every count boundary.
+                let derivative=(1..=cap).map(|k|p.surrogate.derivative(pre[idx] as f64/theta-k as f64)/theta).sum::<f64>();
+                let du=dv[idx]+dq[idx]*derivative; // reset subtraction is detached
+                let inner=-decay(old_v)+current[idx];
+                let g=du*interior(old_v+clip(inner));
+                let gi=g*interior(inner);
+                if t>0 {dv[idx-cells]+=g-0.5*gi;}
+                // STE through minimum-decay/rounding, with nominal shift derivative.
+                let mut gsum=(di[idx]+gi)*0.5;
+                let mut sum=if t==0 {0} else {current[idx-cells]};
+                let mut before=vec![0;fan];
+                for src in 0..fan {
+                    let input=if l==0 {x[b][t][src] as i32} else if t==0 {0} else {spike[at(b,t-1,src)]};
+                    before[src]=sum;sum=clip(sum+weights[l][src*n+j]*input);
+                }
+                // Reverse each saturating accumulation in its source-major order.
+                for src in (0..fan).rev() {
+                    let input=if l==0 {x[b][t][src] as i32} else if t==0 {0} else {spike[at(b,t-1,src)]};
+                    let w=weights[l][src*n+j];gsum*=interior(before[src]+w*input);
+                    gradient[l][src*n+j]+=gsum*input as f64*p.weight_scale;
+                    if l==1 && t>0 {dq[at(b,t-1,src)]+=gsum*w as f64;}
+                }
+                if t>0 {di[idx-cells]+=gsum;}
+            }
+        }}}
+        require(gradient.iter().flatten().all(|v|v.is_finite()),"nonfinite Xylo gradient")?;
+    }
+    if operation=="train" {
+        state.step=state.step.checked_add(1).ok_or("Xylo optimizer step overflow")?;
+        let o=&p.optimizer;
+        for l in 0..2 {for e in 0..lengths[l] {
+            let g=gradient[l][e];
+            let update=if o.kind=="sgd" {g} else {
+                state.first_moment[l][e]=o.beta1*state.first_moment[l][e]+(1.0-o.beta1)*g;
+                state.second_moment[l][e]=o.beta2*state.second_moment[l][e]+(1.0-o.beta2)*g*g;
+                let m=state.first_moment[l][e]/(1.0-o.beta1.powf(state.step as f64));
+                let v=state.second_moment[l][e]/(1.0-o.beta2.powf(state.step as f64));m/(v.sqrt()+o.epsilon)
+            };
+            require(update.is_finite() && state.second_moment[l][e].is_finite(),"nonfinite Xylo optimizer update")?;
+            state.weights[l][e]=(state.weights[l][e]-o.learning_rate*update).clamp(-128.0/p.weight_scale,127.0/p.weight_scale);
+        }}
+    }
+    let nested=|data:&[i32]|(0..batch).map(|b|(0..steps).map(|t|
+        data[at(b,t,0)..at(b,t,0)+cells].iter().map(|v|*v as f64).collect()).collect()).collect();
+    let final_membrane=(0..batch).map(|b|voltage[at(b,steps-1,0)..at(b,steps-1,0)+cells].iter().map(|v|*v as f64).collect()).collect();
+    Ok(Output{schema:"b2-lif-training-result-v1",backend:"cpu",numeric_profile:"xylo-int16-forward-f64-surrogate",
+        state,loss,gradients:gradient,final_membrane,spikes:nested(&spike),logits,
+        currents:if operation=="evaluate" {Some(nested(&current))} else {None},
+        membranes:if operation=="evaluate" {Some(nested(&voltage))} else {None},
+        tape_bytes:bytes,gradient_scope:"fresh-sequence-surrogate-bptt-quantization-ste"})
+}

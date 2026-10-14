@@ -77,6 +77,23 @@ cross-target equivalence. The adapted AtlasIR matches all 55,296 recorded Xylo
 state values on a 32-image replay; the configuration passes Samna validation.
 The bridge rejects models beyond 16 inputs, 64 hidden neurons and 8 outputs.
 
+### Native Xylo integer training: exact source bridge
+
+[Native integer training](native_xylo_integer/README.md) adds a CPU training plan
+with Xylo current/membrane dynamics in every forward pass, quantization-aware
+weights and surrogate BPTT. `freeze_native_xylo` / `export_native_xylo` join the
+existing temporal profile; the matrix still has six targets and five profiles.
+No dynamics approximation is required. This model does not map to the existing
+SpiNNaker2 LIF profile.
+
+On all 4,157 test digits 0–3, a 16→64→4, 32-tick network reaches **92.18%** in
+native Atlas and XyloSim, with zero differences across 9,045,632 values of each
+of spikes, currents and membranes. A 32-image AtlasIR replay checks 208,896
+values exactly. A binary-input 16→32→4, 16-tick control reaches **77.63%**.
+Both checkpoints are selected on validation only. Encoding, model size and
+training differ from the previous 75.61% adaptation; this is not a same-model
+accuracy improvement or a ten-class MNIST result.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -91,7 +108,7 @@ The bridge rejects models beyond 16 inputs, 64 hidden neurons and 8 outputs.
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
 | Stateful chunked input | Xylo temporal: 7-step chunks match a full run; not verified for the other temporal SDK path |
-| Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2; explicit approximate same-weight adaptation to Xylo, with measured spike/state/accuracy differences; both require fresh inference of at most 16 ticks |
+| Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2 and approximate LIF adaptation to Xylo (1–16 ticks); separate exact integer-trained Xylo bridge (1–128 ticks). All require fresh inference |
 | Atlas live checkpoint/resume through conversion | Not implemented; native bridge exports weights for fresh inference, not optimizer/continuation state |
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
 | Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; native or external training occurs before freezing and conversion |
@@ -131,6 +148,11 @@ CPU/GPU simulation and training surfaces.
   signed 16-bit state/bias; synaptic shifts 0–15, membrane shifts 1–15;
   hidden/output spike caps 31/1. Exact integer trace comparison. The 64-hidden
   limit is this compiler profile's limit, not the silicon maximum.
+- **Native integer Xylo training/export:** the temporal profile restricted to
+  binary inputs, one feedforward hidden layer, zero bias/recurrence, shifts one,
+  1–128 fresh ticks and the same 16/64/8 bounds. Forward uses int8 nearest-even
+  weights and int16 state; backward uses surrogate gradients and rounding STE.
+  CPU only. No general Brian training-plan lowering or neuron-state carry.
 - **Count encodings are not hardware fit claims:** SpiNNaker2 expands counts
   into comparator neurons. The static 784-input MNIST Xylo encoding exceeds
   Xylo Audio 2's 16 hardware input channels. Only its separate temporal profile
@@ -161,6 +183,7 @@ combination of accepted parameters.
 | XyloSim: count | 20 | 2,242 | Exact |
 | SpiNNaker2: temporal LIF | 48 | 101,940 voltage samples | Max float64 error 1.14e-13; 35,093 spike events exactly match |
 | XyloSim: temporal, preceding suite | 50 | 505,455 | Exact, including 7-step chunks |
+| XyloSim: native integer-trained four-class MNIST | 1 | 27,136,896 spike/current/membrane values | Exact; 3,832/4,157 correct; 208,896-value concrete AtlasIR replay also exact |
 | DynapSim: circuit dynamics | 16 | 36,985 | Float32/f64 tolerance checks; 510 spike events exactly match |
 
 Static cases include exhaustive small binary domains, zero/full-scale/one-hot
@@ -208,6 +231,7 @@ See the [original TF results](README.md) and
 - [x] Record discovered limitations instead of shifting outputs or loosening tolerance.
 - [x] Add task-level accuracy evidence for native LIF networks (MNIST and fixed-context character prediction).
 - [x] Measure same frozen weights on a second target, distinguishing approximate adaptation from exact lowering.
+- [x] Train with Xylo integer dynamics and preserve native spike/state traces after export.
 - [ ] Preserve one native temporal transition function across two target SDKs.
 - [ ] Add an event-stream task where temporal input structure is necessary.
 - [ ] Verify physical placement, execution and measured energy/latency.

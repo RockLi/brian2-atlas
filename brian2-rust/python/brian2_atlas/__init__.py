@@ -12,3 +12,6 @@ __all__ = list(_implementation_exports)
 from . import ir
 from .ir import IR_NAME
 __all__ += ["ir", "IR_NAME"]
+
+from brian2_rust.training_xylo import NativeXyloTrainer, xylo_training_plan
+__all__ += ["NativeXyloTrainer", "xylo_training_plan"]

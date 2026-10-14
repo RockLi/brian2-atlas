@@ -1,0 +1,74 @@
+{
+  "schema": "atlas.native-xylo.integer-training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "encoding": "rate",
+  "encoding_description": "7x7 average pool to 4x4; round intensity to 0..16 levels; deterministic pulse-density encoding",
+  "ticks": 32,
+  "sizes": [
+    16,
+    64,
+    4
+  ],
+  "classes": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "training_samples": 22310,
+  "validation_samples": 2444,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "initial_validation_accuracy": 0.24018003273322422,
+  "selected": {
+    "step": 1800,
+    "validation_accuracy": 0.9230769230769231,
+    "changed_latent_weights": [
+      1024,
+      216
+    ]
+  },
+  "history": [
+    {
+      "step": 300,
+      "validation_accuracy": 0.8788870703764321
+    },
+    {
+      "step": 600,
+      "validation_accuracy": 0.9018003273322422
+    },
+    {
+      "step": 900,
+      "validation_accuracy": 0.9058919803600655
+    },
+    {
+      "step": 1200,
+      "validation_accuracy": 0.9120294599018003
+    },
+    {
+      "step": 1500,
+      "validation_accuracy": 0.9189852700490998
+    },
+    {
+      "step": 1800,
+      "validation_accuracy": 0.9230769230769231
+    }
+  ],
+  "updates": 1800,
+  "selection": "highest native integer validation accuracy; earliest tie; no SDK or test selection",
+  "training": "CPU b2-train integer forward, surrogate BPTT, quantization STE, Adam",
+  "seed": 20261014,
+  "external_training_framework": false,
+  "training_seconds": 90.18317741598003,
+  "runner_sha256": "51cf1d6e3dc846a8ae8bb1618a658f0358710cce1a4be093549d3d31cecbbc69",
+  "training_script_sha256": "b34aa988cea2a27209d760253461a98f465cb573462d9673126d1948c21bb65e",
+  "checkpoint_sha256": "46f08878d2f4c27fb8285ea189ef4cfb255aa833bf79ebe77a06753021eaebcc",
+  "frozen_sha256": "81fdca972e8c68c1bbe5503cf5520901432c5086ce25b523cd905f4cbcd0c279"
+}

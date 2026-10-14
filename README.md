@@ -42,7 +42,10 @@ explicit quantization and AtlasIR. Arbitrary TensorFlow graphs and general
 native training plans are not admitted by this bridge. A separate
 [Xylo adaptation](brian2-rust/examples/neuromorphic/native_xylo/README.md) preserves
 a small model's frozen weights but changes its neuron dynamics; it requires
-explicit opt-in and reports cross-target differences.
+explicit opt-in and reports cross-target differences. A new
+[native integer Xylo trainer](brian2-rust/examples/neuromorphic/native_xylo_integer/README.md)
+uses the target dynamics during training and exports without that adaptation.
+This dedicated training plan currently runs on CPU only.
 
 See the [architecture notes](brian2-rust/architecture/README.md) for interfaces and
 validation boundaries. Figures: [PNG](brian2-rust/architecture/atlas-architecture.png),
@@ -140,7 +143,15 @@ model → AtlasIR → target simulator**. Atlas runs the same source model as th
 reference. Training through Atlas is a separate capability; this conversion
 path does not perform on-chip learning or import arbitrary TensorFlow graphs.
 
-A [same-weight native Xylo experiment](brian2-rust/examples/neuromorphic/native_xylo/README.md)
+The [native integer Xylo example](brian2-rust/examples/neuromorphic/native_xylo_integer/README.md)
+trains a 16→64→4 network with Xylo integer dynamics from the start. On all
+4,157 test digits 0–3, Atlas and XyloSim both reach **92.18%**, with zero
+differences across 27,136,896 spike/current/membrane values. A smaller control
+with the previous binary inputs and 16→32→4 dimensions reaches **77.63%**.
+The larger gain also changes encoding, width and duration; these are four-class
+results. The new model is not admitted by the current SpiNNaker2 LIF profile.
+
+The earlier [same-weight native Xylo experiment](brian2-rust/examples/neuromorphic/native_xylo/README.md)
 uses a 16→32→4 network on all 4,157 MNIST test digits 0–3. SpiNNaker2 matches
 quantized native inference at **75.58%**; Xylo reaches **75.61%**, but 234
 predictions differ. This is an explicit dynamics adaptation, not exact native
