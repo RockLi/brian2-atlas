@@ -151,6 +151,10 @@ or resetting state before the query reduces accuracy to 50%. Full, fixed-chunk
 and irregular-chunk inference agree. This is a bounded synthetic memory test;
 v2 supports stateful inference within 128 ticks, while training uses fresh
 full-sequence BPTT. It does not establish unbounded streaming or chip performance.
+A [same-weight SpiNNaker2 transfer diagnostic](brian2-rust/examples/neuromorphic/native_xylo_recurrent/SPINNAKER2.md)
+finds that substituting the stock current-LIF model gives **50%**, with divergent
+spikes and states. The Xylo integer model is therefore not admitted as an exact
+SpiNNaker2 conversion; recurrence support alone does not imply matching dynamics.
 
 The [native integer Xylo example](brian2-rust/examples/neuromorphic/native_xylo_integer/README.md)
 trains a 16→64→4 network with Xylo integer dynamics from the start. On all

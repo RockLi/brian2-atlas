@@ -37,6 +37,14 @@ selected model. They do not prove that no other architecture can solve the task.
 This is a synthetic mechanism/engineering test, not a real-world accuracy or
 energy benchmark. No MNIST comparison or hardware-performance claim is made.
 
+## SpiNNaker2 transfer boundary
+
+The [same-weight stock SDK diagnostic](SPINNAKER2.md) runs this topology and
+all three frozen weight banks with `lif_curr_exp_32bit`. Accuracy drops to 50%,
+and spike/current/membrane traces diverge under both raw and shifted clocks.
+The existing exact SpiNNaker2 converter rejects this integer source. The
+diagnostic does not add an equivalent SpiNNaker2 backend for this model.
+
 ## Training and split discipline
 
 The generator enumerates all pairs of three positions chosen from eight slots

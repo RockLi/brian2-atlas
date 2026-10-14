@@ -19,6 +19,12 @@ general plans and does not inherit GPU/MPI or arbitrary Brian equation support.
 See the [recurrent task, state API and memory controls](examples/neuromorphic/native_xylo_recurrent/README.md).
 See the [contract, API and held-out evidence](examples/neuromorphic/native_xylo_integer/README.md).
 
+The recurrent integer model is not portable through the existing exact
+SpiNNaker2 LIF bridge. A [stock current-LIF substitution](examples/neuromorphic/native_xylo_recurrent/SPINNAKER2.md)
+retains all frozen weights but reaches 50% on the task where native/XyloSim
+reach 100%; spike and state traces differ under both tested clock conventions.
+It is a diagnostic, not an additional supported training/export target.
+
 ## Start from a runnable example
 
 From an installed source checkout:

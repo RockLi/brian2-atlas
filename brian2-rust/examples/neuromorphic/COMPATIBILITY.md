@@ -108,6 +108,13 @@ This is evidence of learned memory in a bounded order task, not a real-world
 benchmark or proof of long-duration generalization. Training remains fresh
 full-sequence BPTT; only inference carries state, for at most 128 total ticks.
 
+A [same-weight SpiNNaker2 diagnostic](native_xylo_recurrent/SPINNAKER2.md) of this
+model executes stock `lif_curr_exp_32bit`, but reaches only 936/1,872 (50%).
+Raw-clock comparison finds 777,187 spike-count, 1,755,891 current and 1,727,071
+membrane differences; applying the SDK clock shift does not restore parity or
+accuracy. The exact converter rejects the source. This is a documented transfer
+failure and does not add an admitted cell to the profile matrix above.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -118,7 +125,7 @@ full-sequence BPTT; only inference carries state, for at most 128 total ticks.
 | Preserve static hidden and output values | Exact for the static profiles in the tested domain |
 | Preserve source spike timing | Verified for all three temporal profiles in their tested domains; static event encoding is not source spike semantics |
 | Signed weights and bias | Akida/Lava/SpiNNaker2 dense profile; SpiNNaker2 and Xylo temporal profiles, with their respective bounds |
-| Stateful recurrence | Temporal SpiNNaker2 and Xylo; not admitted by the static profiles |
+| Stateful recurrence | Temporal SpiNNaker2 and Xylo under their own dynamics; recurrent integer Xylo → stock SpiNNaker2 transfer fails the same-weight diagnostic; not admitted by static profiles |
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
 | Stateful chunked input | Xylo temporal and native recurrent v2: full runs match fixed and irregular chunks; not verified for other temporal SDK paths |
