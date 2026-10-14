@@ -1,4 +1,4 @@
-# Frozen TensorFlow models → AtlasIR → software simulators
+# Neuromorphic model conversion and software inference
 
 This is an experimental **conversion and inference** surface in the Atlas
 product repository. The static examples below use external TensorFlow training.
@@ -9,11 +9,17 @@ bridge for next-character prediction and per-token inference comparisons.
 The [same-weight Xylo comparison](native_xylo/README.md) adds an explicit
 approximate port of a small native-trained model, with measured spike/state
 differences rather than an equivalence claim.
+The [native integer training path](sequential_mnist/ROUND4.md) now preserves
+one recurrent model across stock XyloSim and the custom SpiNNaker2 integer host
+kernel: 97.44% on all 10,000 MNIST test images, with exact spikes and states.
+The [branch acceptance record](ACCEPTANCE.md) fixes this model as the conversion
+regression baseline; higher classification accuracy is outside this branch's
+remaining scope.
 SDKs execute on CPU;
 there is no chip execution, energy measurement, on-chip training, or automatic
 conversion of arbitrary Keras/SavedModel graphs.
 
-The example imports an explicit frozen integer checkpoint into a real Brian2
+The original static example imports an explicit frozen integer checkpoint into a real Brian2
 model, exports AtlasIR, validates it with the current native Atlas runner, and
 compiles three backend-private plans. New exports use the `atlasir-v1` wire schema.
 
@@ -23,7 +29,8 @@ The [compatibility checklist](COMPATIBILITY.md) covers all six targets, their
 numeric and temporal contracts, rejected combinations, SDK limitations and
 hardware-validation gaps. The [expanded suite](coverage/README.md) varies
 network weights and dimensions, tests clipping/rounding and sample resets,
-and includes a 30-cell executable compatibility check. Static comparisons and
+The current routing check covers 36 cells: 12 admitted and 24 rejected. The
+original 30-cell evidence remains historical. Static comparisons and
 temporal pulse comparisons are reported separately.
 
 ## Verified result (2026-10-13)
@@ -62,7 +69,10 @@ bundle = export_ir(
 
 `convert_ir` returns a bundle without writing files. `export_ir` writes the
 canonical source and bundle, refusing to overwrite existing destinations.
-`run_simulator(bundle, inputs)` optionally executes in a compatible SDK Python
+`run_simulator(bundle, inputs)` requires explicit inputs for native-training
+bridges; their exported zero-input raster is a template. Direct temporal
+AtlasIR bundles execute their embedded raster when inputs are omitted.
+Execution uses a compatible SDK Python
 environment. SDKs are not imported during conversion. The standalone worker
 loads the same runtime source in isolated Python 3.10/3.11 environments, because
 those vendor versions do not share Atlas's Python/NumPy requirements.

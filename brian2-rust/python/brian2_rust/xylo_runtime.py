@@ -5,14 +5,14 @@ from pathlib import Path
 import numpy as np
 
 if __package__:
-    from .xylo_readout import decode_readout, validate_readout_contract
+    from .xylo_readout import decode_readout, validate_native_readout
 else:
     import importlib.util
     _spec = importlib.util.spec_from_file_location('atlas_xylo_readout', Path(__file__).with_name('xylo_readout.py'))
     _readout = importlib.util.module_from_spec(_spec)
     _spec.loader.exec_module(_readout)
     decode_readout = _readout.decode_readout
-    validate_readout_contract = _readout.validate_readout_contract
+    validate_native_readout = _readout.validate_native_readout
 
 
 def _model(plan):
@@ -93,7 +93,7 @@ def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
         raise ValueError('invalid recurrent Xylo readout contract')
     if chunk_steps is not None and (not recurrent or type(chunk_steps) is not int or chunk_steps<1):
         raise ValueError('native chunking requires v2 and positive integer chunk_steps')
-    validate_readout_contract(bridge,plan['parameters']['output']['threshold'])
+    validate_native_readout(bridge, plan)
     model,configuration,sdk_hash=_model(plan)
     records=[]
     for raster in x:
@@ -130,10 +130,9 @@ class XyloInferenceSession:
                 or d.get('source_is_zero_input_template') is not True or np.any(p['input_raster'])
                 or d.get('sizes')!=[p['sizes'][k] for k in ('input','hidden','output')]
                 or type(d.get('readout_start')) is not int or not 0<=d['readout_start']<p['steps']
-                or not 1<=p['steps']<=128 or not np.isfinite(d.get('logit_scale',np.nan))
-                or not 0<d['logit_scale']<=100):
+                or not 1<=p['steps']<=128):
             raise ValueError('invalid native recurrent Xylo session contract')
-        validate_readout_contract(d,p['parameters']['output']['threshold'])
+        validate_native_readout(d, p)
         self._model,self.configuration_json,self.sdk_binary_sha256=_model(p)
         self.reset()
 

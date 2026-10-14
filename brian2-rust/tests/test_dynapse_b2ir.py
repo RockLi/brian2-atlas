@@ -52,7 +52,7 @@ def test_rejects_semantic_changes(model,change):
 
 @pytest.mark.parametrize('profile',[p for p in PROFILES if p!='dynapse-dpi-v1'])
 def test_other_profiles_rejected_before_reading_source(profile):
-    with pytest.raises(ValueError,match='requires dynapse-dpi-v1'):
+    with pytest.raises(ValueError,match='requires dynapse-dpi-v1|spinnaker2-xylo-integer-v1 is only supported by spinnaker2'):
         convert_ir('missing',target='dynapse',profile=profile,runner='missing')
 
 

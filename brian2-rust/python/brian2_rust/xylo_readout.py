@@ -66,3 +66,22 @@ def validate_readout_contract(bridge, output_thresholds):
             or type(divisor) is not int or not 1<=divisor<=32767
             or thresholds.size==0 or not np.all(thresholds==divisor)):
         raise ValueError('current readout must match the exact recurrent output threshold')
+
+
+def validate_native_readout(bridge, plan):
+    """Validate native decoder metadata before creating or advancing an SDK model."""
+    sizes = [plan['sizes'][key] for key in ('input', 'hidden', 'output')]
+    if bridge.get('sizes') != sizes:
+        raise ValueError('native readout sizes disagree with the target plan')
+    scale = bridge.get('logit_scale')
+    if type(scale) not in (int, float) or not np.isfinite(scale) or not 0 < scale <= 100:
+        raise ValueError('native readout logit_scale must be finite in (0,100]')
+    start = bridge.get('readout_start', 0)
+    if type(start) is not int or not 0 <= start < plan['steps']:
+        raise ValueError('native readout window outside horizon')
+    upper = bridge.get('input_max', 1)
+    if type(upper) is not int or not 1 <= upper <= 15:
+        raise ValueError('native readout input_max must be an integer in 1..15')
+    if 'class_codes' in bridge:
+        validate_codes(bridge['class_codes'], sizes[-1])
+    validate_readout_contract(bridge, plan['parameters']['output']['threshold'])

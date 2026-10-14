@@ -83,6 +83,32 @@ trainer.step(x,[0,0,1,1]);print(json.dumps(trainer.state))
                          cwd=directory,capture_output=True,text=True,timeout=900)
     assert child.returncode == 0, child.stdout + child.stderr
     assert json.loads(child.stdout)==expected_state
+# Exercise the installed conversion surface and shipped C source without vendor SDKs.
+from brian2_atlas.neuromorphic import freeze_native_xylo, export_native_xylo
+from brian2_rust.spinnaker2_integer_runtime import IntegerKernel
+integer_plan=atlas.xylo_recurrent_training_plan([2,2,2],thresholds=[16,16],
+    readout_start=1,readout_source='synaptic_current')
+integer=atlas.NativeXyloTrainer(integer_plan,weights=[[.5,.25,.25,.5],[.5,.25,.25,.5],[.125,0,0,.125]])
+integer_inputs=np.ones((2,5,2),dtype=np.uint8)
+integer.step(integer_inputs,[0,1])
+frozen=freeze_native_xylo(integer)
+reference_integer=integer.evaluate(integer_inputs,[0,1])
+with tempfile.TemporaryDirectory(prefix='atlas-installed-conversion-') as directory:
+    for target in ('xylosim','spinnaker2'):
+        bundle=export_native_xylo(frozen,pathlib.Path(directory)/target,steps=5,
+                                 runner=executable_path('b2-runner'),target=target)
+        assert bundle['native_training_bridge']['schema']=='atlas.native-xylo-current-bridge.v1'
+        assert bundle['native_training_bridge']['frozen_sha256']==frozen['sha256']
+kernel=IntegerKernel()
+try:
+    trace,_=kernel.run([np.asarray(w).reshape(2,2) for w in frozen['target_weights']],
+        np.full(4,16),integer_inputs,np.zeros((2,3,4),dtype=np.int32))
+    for axis,field in enumerate(('currents','membranes','spikes')):
+        np.testing.assert_array_equal(trace[:,:,axis],reference_integer[field])
+finally:
+    kernel.close()
+assert not set(sys.modules).intersection({'akida','lava','sinabs','samna','rockpool','xylosim','spinnaker2'})
+
 if a.metal:
     gpu=atlas.NativeLIFTrainer(dict(plan,backend='metal'),weights=weights)
     actual=gpu.gradients(inputs,labels)
@@ -95,6 +121,7 @@ report={'schema':'atlas-installed-flow-v1','started_unix':started,'ended_unix':t
         'distribution':importlib.metadata.version('brian2-atlas'),'compatibility_version':b.__version__,
         'native_build':build,'simulations':simulations,'training_checkpoint_fresh_process':'passed',
         'metal_training':'passed' if a.metal else 'not requested',
+        'native_integer_conversion_and_packaged_c_kernel':'passed',
         'installed_package_unchanged':True,'status':'passed'}
 a.report.parent.mkdir(parents=True,exist_ok=True);a.report.write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps({'status':'passed','report':str(a.report)}))

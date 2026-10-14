@@ -147,6 +147,19 @@ this is not the canonical 784-step sequential benchmark. Earlier test scores
 were known before this development round. No physical mapping, power or chip
 execution is established by these software checks.
 
+## Interface acceptance
+
+The [branch acceptance record](ACCEPTANCE.md) distinguishes conversion correctness
+from model quality. The selected 97.44% compact model is fixed; the earlier
+97.47% wider model and the unmet 98% optimization target remain documented.
+No new target, arithmetic contract or accuracy claim is introduced during closeout.
+
+Conversion imports do not load vendor SDKs. Native inference requires an explicit
+input batch, and native readout sizes, finite scale, time window, codebook,
+input range and current normalization are checked before SDK model allocation.
+`XyloInferenceSession` validates its decoder before any state can advance.
+Unsupported target/profile combinations fail before source or runner access.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -155,7 +168,7 @@ execution is established by these software checks.
 | Same frozen model and weights across targets | Verified for the shared binary count profile; no retraining during conversion |
 | Import arbitrary TensorFlow/Keras graphs | Not implemented; examples import an explicit frozen integer checkpoint through Brian2/AtlasIR |
 | Preserve static hidden and output values | Exact for the static profiles in the tested domain |
-| Preserve source spike timing | Verified for all three temporal profiles in their tested domains; static event encoding is not source spike semantics |
+| Preserve source spike timing | Verified for the temporal profiles in their tested domains; static event encoding is not source spike semantics |
 | Signed weights and bias | Akida/Lava/SpiNNaker2 dense profile; SpiNNaker2 and Xylo temporal profiles, with their respective bounds |
 | Stateful recurrence | Temporal SpiNNaker2 and Xylo under their own dynamics; the custom SpiNNaker2 integer host profile also preserves Xylo recurrence; stock current-LIF substitution does not |
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |

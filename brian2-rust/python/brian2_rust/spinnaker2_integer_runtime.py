@@ -14,7 +14,7 @@ import tempfile
 import numpy as np
 
 if __package__:
-    from .xylo_readout import decode_readout, validate_readout_contract
+    from .xylo_readout import decode_readout, validate_readout_contract, validate_native_readout
 else:
     import importlib.util
     _spec = importlib.util.spec_from_file_location('atlas_xylo_readout', Path(__file__).with_name('xylo_readout.py'))
@@ -22,6 +22,7 @@ else:
     _spec.loader.exec_module(_readout)
     decode_readout = _readout.decode_readout
     validate_readout_contract = _readout.validate_readout_contract
+    validate_native_readout = _readout.validate_native_readout
 
 MODEL = 'atlas_xylo_integer_host_v1'
 PROFILE = 'spinnaker2-xylo-integer-v1'
@@ -218,12 +219,16 @@ def run(plan, samples=None, *, bridge=None, batch_size=50, chunk_steps=None):
                 and bridge.get('fresh_state_per_sample') and bridge.get('source_is_zero_input_template')
                 and bridge.get('dynamics_equivalent') is True, 'unknown native bridge')
         require(not np.any(plan['input_raster']), 'native bridge requires zero-input template')
-    validate_readout_contract(bridge or {},plan['parameters']['output']['threshold'])
+    if bridge is not None:
+        validate_native_readout(bridge, plan)
+    else:
+        validate_readout_contract({}, plan['parameters']['output']['threshold'])
     x = np.asarray(samples)
     require(x.ndim == 3 and len(x) > 0 and x.shape[1:] == (plan['steps'], plan['sizes']['input']), 'input shape')
     upper = bridge.get('input_max',1) if bridge else 15
     require(type(upper) is int and 1 <= upper <= 15, 'invalid input_max')
     x = integer_array(x, x.shape, 0, upper, 'input counts', np.uint8)
+    start = bridge.get('readout_start', 0) if bridge else 0
     net = build_network(plan)
     backend = IntegerHostBackend()
     arrays = {key: [] for key in ('currents', 'membranes', 'spikes')}
@@ -245,8 +250,6 @@ def run(plan, samples=None, *, bridge=None, batch_size=50, chunk_steps=None):
             arrays[role+'_'+key] = arrays[field][:, :, sl]
     arrays['spike_raster'] = arrays['spikes']
     arrays['voltage'] = arrays['membranes']
-    start = bridge.get('readout_start', 0) if bridge else 0
-    require(type(start) is int and 0 <= start < plan['steps'], 'readout window outside horizon')
     arrays['counts'] = arrays['output_q'][:, start:].sum(1)
     arrays['current_sums'] = arrays['output_I'][:, start:].sum(1,dtype=np.int64)
     arrays['logits'] = decode_readout(arrays['counts'], arrays['current_sums'], bridge if bridge else {'logit_scale': 1.}, plan['steps'] - start)

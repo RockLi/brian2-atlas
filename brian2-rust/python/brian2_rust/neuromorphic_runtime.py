@@ -30,6 +30,8 @@ def validate_inputs(bundle, samples):
 
 
 def run_simulator(bundle, samples=None, *, batch_size=50, chunk_steps=None):
+    if 'native_training_bridge' in bundle and samples is None:
+        raise ValueError('native training bridge requires an explicit input batch; the exported raster is a template')
     if chunk_steps is not None and bundle.get('profile') not in ('xylo-audio2-temporal-v1','spinnaker2-xylo-integer-v1'):
         raise ValueError('chunk_steps is supported only by Xylo temporal or custom SpiNNaker2 integer execution')
     if bundle.get('profile') == 'spinnaker2-xylo-integer-v1':

@@ -20,6 +20,11 @@ native binary agree with frozen inference. Ten concrete AtlasIR replays match
 73,440 neural values and spike events;
 1/7/13-tick chunks agree on the first 64 images.
 
+The branch now retains this compact model as a fixed conversion regression
+baseline. Further accuracy tuning is deferred. This acceptance decision does
+not change the recorded result or claim that the 98% target was achieved.
+See the [branch acceptance record](../ACCEPTANCE.md).
+
 ## Selected model
 
 The selected graph is **16→63→5**, with **5,292 active trainable weights**,

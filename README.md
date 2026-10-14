@@ -150,7 +150,9 @@ custom SpiNNaker2 C host kernel (previous wider result: 97.47%). The same model
 and weights match **73,440,000 spike/current/membrane values** and all class scores
 exactly per target. The selected 16→63→5 model has 5,292 active trainable
 weights and 36 ticks. Host preprocessing and fixed decoding remain part
-of inference. The 98% test target remains unmet.
+of inference. The 98% test target remains unmet. Further accuracy tuning is
+outside this conversion branch's scope. The compact model is retained as a
+fixed regression baseline; see the [acceptance criteria and API checks](brian2-rust/examples/neuromorphic/ACCEPTANCE.md).
 [Selection, unsuccessful experiments and controls](brian2-rust/examples/neuromorphic/sequential_mnist/ROUND4.md)
 are documented. Optional rate-loss training, eight-output codebook transfer and
 signed-current host readout are available; they are not all selected methods.
