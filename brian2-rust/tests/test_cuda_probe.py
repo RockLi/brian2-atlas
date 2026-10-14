@@ -16,7 +16,7 @@ from brian2_rust.results import load_results
 
 
 def test_cuda_bundle_control_matches_independent_rust(tmp_path):
-    model_path = ROOT/"tests/golden/b2ir-v1/minimal-v1.json"
+    model_path = ROOT/"tests/golden/atlasir-v1/minimal-v1.json"
     runner = ROOT/"target/release/b2-runner"
     manifest, payload = make_bundle(model_path,tmp_path/"bundle",runner=runner)
     reference = tmp_path/"reference"

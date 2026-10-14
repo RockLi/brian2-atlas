@@ -6,9 +6,11 @@ AtlasIR is the intermediate representation of the Atlas execution architecture.
 Brian2 is the currently implemented modeling frontend. This naming does not
 claim another implemented frontend.
 
-The `b2ir-*` schema, canonical-encoding and ABI identifiers below are retained
-wire compatibility identifiers. Model bytes, layer hashes, existing caches and
-supported predecessor migrations are unchanged by the public rename.
+New exports use `atlasir-v1`, protocol name `atlasir` and canonical encoding
+`atlasir-canonical-json-v1`. Legacy envelopes are verified before migration.
+The rename changes the envelope and whole-document hash, while the Definition,
+Instance and Run layer bytes, hashes and execution semantics stay unchanged.
+Native function ABI identifiers remain separate compatibility contracts.
 
 Python callers can use `brian2_atlas.ir` for canonical serialization, integrity
 checks and migration. Native function registration accepts `atlasir-c-abi-v1`,
@@ -16,11 +18,11 @@ checks and migration. Native function registration accepts `atlasir-c-abi-v1`,
 spellings remain accepted and produce identical serialized descriptors.
 Conflicting registrations under both spellings are rejected.
 
-Schema identifier: `b2ir-v1`
+Schema identifier: `atlasir-v1`
 
 Protocol version: `1.0`
 
-Canonical encoding: `b2ir-canonical-json-v1`
+Canonical encoding: `atlasir-canonical-json-v1`
 Normative implementation: the Python writer in `python/brian2_rust/protocol.py`
 and the independent Rust reader/validator in `src/model.rs`.
 
@@ -30,7 +32,7 @@ in their RFC 2119 sense.
 
 ## 1. Freeze contract
 
-`b2ir-v1` is immutable. A producer or consumer MUST NOT change the meaning,
+`atlasir-v1` is immutable. A producer or consumer MUST NOT change the meaning,
 default, ordering, numeric encoding or validation rule of an existing v1 field.
 An incompatible change requires a new schema identifier and an explicit,
 tested migration. Unknown fields are rejected.
@@ -48,7 +50,7 @@ and may evolve independently.
 
 A document is a JSON object with exactly these keys:
 
-- `schema`: exactly `b2ir-v1`;
+- `schema`: exactly `atlasir-v1`;
 - `protocol`: the integrity envelope;
 - `definition`: immutable model structure and executable semantics;
 - `instance`: initial arrays, topology and RNG seed;
@@ -58,9 +60,9 @@ The protocol envelope is:
 
 ```json
 {
-  "name": "b2ir",
+  "name": "atlasir",
   "version": {"major": 1, "minor": 0},
-  "canonical_encoding": "b2ir-canonical-json-v1",
+  "canonical_encoding": "atlasir-canonical-json-v1",
   "hash_algorithm": "sha256",
   "layers": {
     "definition": "<64 lower-case hex digits>",
@@ -76,7 +78,7 @@ validation or execution.
 
 ## 3. Canonical JSON
 
-`b2ir-canonical-json-v1` is UTF-8 JSON with:
+`atlasir-canonical-json-v1` is UTF-8 JSON with:
 
 - object keys sorted by Unicode code point;
 - no whitespace between tokens;
@@ -293,8 +295,14 @@ may be reused with a compatible Instance/Run without accepting semantic drift.
 
 ## 7. Migration and conformance
 
-The v1 readers accept probe v34, v35, v36 and v37 only through explicit
-migration. V35–v37 envelopes are verified before mutation; v34 predates the
+The v1 readers accept the legacy `b2ir-v1` envelope and probe v34, v35, v36
+and v37. `migrate_model` verifies the old envelope before returning an
+`atlasir-v1` document; it does not modify the input. Readers require the schema,
+protocol name and canonical-encoding identifier to belong to the same version.
+Direct verification and target conversion also accept a valid legacy v1 model.
+Rebuild native and WASM readers together with the Python exporter: readers
+from before this rename do not recognize the new envelope identifiers.
+Probe documents require explicit migration. V35–v37 envelopes are verified before mutation; v34 predates the
 envelope and MUST NOT carry one. Migration fills only fields whose old meaning
 has a single v1 representation, then emits a new v1 envelope. All older or
 unknown schemas are rejected.
@@ -302,11 +310,12 @@ unknown schemas are rejected.
 A conforming producer must pass the Python/Rust canonical hash vectors. A
 conforming consumer must pass the frozen golden corpus, tamper tests, migration
 corpus and semantic differential tests. The authoritative fixtures live in
-`tests/golden/b2ir-v1/`.
+`tests/golden/atlasir-v1/`. The unchanged legacy corpus remains in
+`tests/golden/b2ir-v1/`; its document hashes are not relabeled.
 
 ## 8. Deliberately separate versioned protocols
 
-The following are not silently coupled to `b2ir-v1`:
+The following are not silently coupled to `atlasir-v1`:
 
 - native AOT manifest (`b2-native-probe-v0` until separately frozen);
 - binary result dump (`b2-result-dump-v3`);

@@ -1,0 +1,16 @@
+{
+  "versions": {
+    "spinnaker2": "0.8.0",
+    "brian2": "2.10.1",
+    "numpy": "2.3.4",
+    "scipy": "1.18.1"
+  },
+  "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+  "batch_size": 100,
+  "execution_seconds": 486.59369520895416,
+  "bundle_sha256": "f18b99fb56e80fb554a3d48a03f277082688f5f8e640e31ce10866608c29e7be",
+  "inputs_sha256": "205cc422e9817cb507b2b9cc3fb6459bb68f6f100c3a7bc9ab3472758f5ea81c",
+  "results_sha256": "54a722f952a732d95fc26b7977b367b03158da574affd5cf41d6daa8f51196f4",
+  "physical_hardware": false,
+  "reference_or_labels_read": false
+}

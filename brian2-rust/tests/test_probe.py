@@ -423,7 +423,7 @@ class ProbeTest(unittest.TestCase):
         network, _, _, _ = self.make_network()
         original = export_network(
             network, 10 * ms, self.directory / "schedule-valid.json")
-        self.assertEqual(original["schema"], "b2ir-v1")
+        self.assertEqual(original["schema"], "atlasir-v1")
         schedule = original["definition"]["schedule"]
         self.assertEqual(
             schedule["base_slots"],
@@ -511,7 +511,7 @@ class ProbeTest(unittest.TestCase):
             network, 1 * ms, self.directory / "canonical-v1.json")
         self.assertEqual(
             model["protocol"]["canonical_encoding"],
-            "b2ir-canonical-json-v1")
+            "atlasir-canonical-json-v1")
         self.assertEqual(model["protocol"]["layers"], layer_hashes(model))
         self.assertEqual(
             canonical_bytes(model["definition"]),
@@ -537,6 +537,8 @@ class ProbeTest(unittest.TestCase):
         predecessor["schema"] = "b2ir-gate0-probe-v35"
         for population in predecessor["definition"]["populations"]:
             population.pop("linked_variables")
+        predecessor["protocol"]["name"] = "b2ir"
+        predecessor["protocol"]["canonical_encoding"] = "b2ir-canonical-json-v1"
         predecessor["protocol"]["layers"] = layer_hashes(predecessor)
         result, output = self.run_model(predecessor, "canonical-v35")
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -544,6 +546,8 @@ class ProbeTest(unittest.TestCase):
 
         predecessor = copy.deepcopy(model)
         predecessor["schema"] = "b2ir-gate0-probe-v36"
+        predecessor["protocol"]["name"] = "b2ir"
+        predecessor["protocol"]["canonical_encoding"] = "b2ir-canonical-json-v1"
         predecessor["protocol"]["layers"] = layer_hashes(predecessor)
         result, output = self.run_model(predecessor, "canonical-v36")
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -551,6 +555,8 @@ class ProbeTest(unittest.TestCase):
 
         predecessor = copy.deepcopy(model)
         predecessor["schema"] = "b2ir-gate0-probe-v37"
+        predecessor["protocol"]["name"] = "b2ir"
+        predecessor["protocol"]["canonical_encoding"] = "b2ir-canonical-json-v1"
         predecessor["protocol"]["layers"] = layer_hashes(predecessor)
         result, output = self.run_model(predecessor, "canonical-v37")
         self.assertEqual(result.returncode, 0, result.stderr)

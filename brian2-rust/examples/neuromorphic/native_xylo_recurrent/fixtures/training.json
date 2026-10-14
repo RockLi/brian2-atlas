@@ -1,0 +1,98 @@
+{
+  "schema": "atlas.native-xylo.recurrent-training.v1",
+  "task": "Delayed AB/BA discrimination",
+  "sizes": [
+    3,
+    24,
+    2
+  ],
+  "steps": 40,
+  "readout_start": 32,
+  "seed": 20261014,
+  "updates": 1200,
+  "training_samples": 3600,
+  "validation_samples": 800,
+  "training_templates": 1800,
+  "validation_templates": 400,
+  "test_split_read": false,
+  "initial_validation_accuracy": 0.67875,
+  "selected": {
+    "step": 200,
+    "validation_accuracy": 1.0,
+    "loss": 0.009111820640704621,
+    "changed_latent_weights": [
+      69,
+      46,
+      529
+    ]
+  },
+  "history": [
+    {
+      "step": 100,
+      "validation_accuracy": 0.995,
+      "loss": 0.012225477497808113
+    },
+    {
+      "step": 200,
+      "validation_accuracy": 1.0,
+      "loss": 0.009111820640704621
+    },
+    {
+      "step": 300,
+      "validation_accuracy": 1.0,
+      "loss": 0.0012252507851086003
+    },
+    {
+      "step": 400,
+      "validation_accuracy": 1.0,
+      "loss": 0.0005347795640279207
+    },
+    {
+      "step": 500,
+      "validation_accuracy": 1.0,
+      "loss": 0.0010672933690939468
+    },
+    {
+      "step": 600,
+      "validation_accuracy": 1.0,
+      "loss": 0.000734152755159867
+    },
+    {
+      "step": 700,
+      "validation_accuracy": 1.0,
+      "loss": 0.0005707833190828349
+    },
+    {
+      "step": 800,
+      "validation_accuracy": 1.0,
+      "loss": 0.0005347795640279207
+    },
+    {
+      "step": 900,
+      "validation_accuracy": 1.0,
+      "loss": 0.0003354063728959744
+    },
+    {
+      "step": 1000,
+      "validation_accuracy": 1.0,
+      "loss": 0.0009335259462918133
+    },
+    {
+      "step": 1100,
+      "validation_accuracy": 1.0,
+      "loss": 0.0005347795640279207
+    },
+    {
+      "step": 1200,
+      "validation_accuracy": 1.0,
+      "loss": 0.0008679201779620005
+    }
+  ],
+  "selection": "highest native validation accuracy; earliest tie; no test/SDK selection",
+  "training": "native CPU integer forward and full-sequence surrogate BPTT/STE with Adam; all three banks train",
+  "training_seconds": 25.079220040992368,
+  "training_script_sha256": "8c2d1311895ba68da541fee7551d6adab5449ca124c07d538bba900e8612e6ea",
+  "runner_sha256": "8ffe536286c3f61dc12d5f72b47725c892714f740624ea83d42748db9430f425",
+  "checkpoint_sha256": "cb088e45916d32aefb82d703a0e2031f4cb60632371c7c8ae22e3d41b5cfc54b",
+  "frozen_file_sha256": "404a39f2024033f2633bcd0fd8bc1c6efd847ef1ab9afcbadf2f81e07b8e9ffd"
+}

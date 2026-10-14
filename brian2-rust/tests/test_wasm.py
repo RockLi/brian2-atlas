@@ -25,7 +25,7 @@ DT = b.second/1024
 
 
 def test_plan_identity_and_export(tmp_path):
-    model = json.loads((ROOT/'tests/golden/b2ir-v1/minimal-v1.json').read_text())
+    model = json.loads((ROOT/'tests/golden/atlasir-v1/minimal-v1.json').read_text())
     original = copy.deepcopy(model)
     plan = build_execution_plan(model, backend='wasm')
     assert model == original
@@ -53,8 +53,9 @@ def test_plan_identity_and_export(tmp_path):
 def make_model(case, device, directory):
     b.set_device('rust_standalone', engine='reference', directory=directory,
                  runner=ROOT/'target/release/b2-runner')
-    if case in ('golden','large_seed'):
-        model=json.loads((ROOT/'tests/golden/b2ir-v1/minimal-v1.json').read_text())
+    if case in ('golden','large_seed','legacy'):
+        fixture = 'b2ir-v1' if case == 'legacy' else 'atlasir-v1'
+        model=json.loads((ROOT/'tests/golden'/fixture/'minimal-v1.json').read_text())
         if case=='large_seed': model['instance']['rng_seed']=2**64-1
         attach_protocol(model)
         return model
@@ -120,7 +121,7 @@ def compare(actual, expected):
     else: assert actual==expected
 
 
-@pytest.mark.parametrize('case',['golden','large_seed','multiclock','links','procedural','rng','custom','function_timed_array','owner_clocks'])
+@pytest.mark.parametrize('case',['golden','legacy','large_seed','multiclock','links','procedural','rng','custom','function_timed_array','owner_clocks'])
 def test_wasm_matches_native_with_tick_slicing(device,tmp_path,case):
     assert (PKG/'b2_runner_bg.wasm').is_file(), 'run tools/build_wasm.py first'
     (tmp_path/'case.txt').write_text(case)

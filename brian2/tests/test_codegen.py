@@ -681,3 +681,12 @@ def test_feedforward_assignment_skips_augmented_assignment_symbolic_collection(m
     assert not scalar
     assert len(vector) == 1 and vector[0].op == '='
     assert vector[0].expr == '2*a + b'
+
+
+@pytest.mark.codegen_independent
+@pytest.mark.parametrize("optimise", [False, True])
+@pytest.mark.parametrize("expr", ["rand() - rand()", "v + rand() - rand()"])
+def test_assignment_rejects_multiple_stateful_calls(expr, optimise):
+    variables = {"v": Variable(name="v"), "rand": DEFAULT_FUNCTIONS["rand"]}
+    with pytest.raises(NotImplementedError, match="more than one call of rand"):
+        make_statements(f"v = {expr}", variables, np.float64, optimise=optimise)

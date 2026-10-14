@@ -47,6 +47,22 @@ pub fn population_steps() -> Result<usize> {
     environment("B2_MAX_POPULATION_STEPS", 10_000_000, 10_000_000)
 }
 
+pub fn population_states() -> Result<usize> {
+    environment("B2_MAX_POPULATION_STATES", 32, 1024)
+}
+
+pub fn population_parameters() -> Result<usize> {
+    environment("B2_MAX_POPULATION_PARAMETERS", 128, 1024)
+}
+
+pub fn statements() -> Result<usize> {
+    environment("B2_MAX_STATEMENTS", 128, 1024)
+}
+
+pub fn scratch_values() -> Result<usize> {
+    environment("B2_MAX_SCRATCH_VALUES", 4_000_000, 128_000_000)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

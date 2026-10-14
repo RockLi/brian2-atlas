@@ -1,0 +1,12 @@
+{
+  "source_sha256": {
+    "audit.py": "44c5e600ba06c0ea8d09114ddbb1b652debf6a8739f9a6f892761ba2ed5fd12a",
+    "spinnaker_probe.py": "56e5c1f29edb172ccd218f818d8e7feda57baf2ae5cc85a0fe2a8cc0dbdd5c9b",
+    "speck_probe.py": "c9db47e3233822f0d66f612cbfdf6f67b6459dba74a820e94fe68d202b2a8031",
+    "prepare.py": "0740d4f1ca93337747a42bb92ac00514f65cf2d940d51c75a7430b048bfdc86f"
+  },
+  "audit_sha256": "d2d5a85edb2a654f33c8fd3bb43b6288ae953e9412b1ddc87501a83bc3fd204f",
+  "public_converter_modified": false,
+  "full_mnist_tested": false,
+  "physical_hardware": false
+}

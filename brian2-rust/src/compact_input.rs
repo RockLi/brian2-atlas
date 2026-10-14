@@ -374,11 +374,12 @@ fn instance_hash(instance: &Instance) -> Result<String> {
 pub(crate) fn validate(reader: impl Read) -> Result<()> {
     let doc: Document = serde_json::from_reader(reader)?;
     check(
-        doc.schema == "b2ir-v1",
+        matches!(doc.schema.as_str(), CURRENT_SCHEMA | LEGACY_V1_SCHEMA),
         "compact validation requires current schema",
     )?;
-    let expected = serde_json::json!({"name":"b2ir","version":{"major":1,"minor":0},
-        "canonical_encoding":"b2ir-canonical-json-v1","hash_algorithm":"sha256",
+    let (name, encoding) = protocol_identifiers(&doc.schema)?;
+    let expected = serde_json::json!({"name":name,"version":{"major":1,"minor":0},
+        "canonical_encoding":encoding,"hash_algorithm":"sha256",
         "layers":{"definition":canonical_hash(&doc.definition)?,"instance":instance_hash(&doc.instance)?,"run":canonical_hash(&doc.run)?}});
     check(
         expected == doc.protocol,

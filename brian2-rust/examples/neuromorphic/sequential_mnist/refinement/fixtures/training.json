@@ -1,0 +1,193 @@
+{
+  "schema": "atlas.sequential-mnist.training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "task": "Ten-class block-sequential MNIST",
+  "encoding": "rows-full-counts",
+  "repeats": 1,
+  "deskew": true,
+  "query_ticks": 8,
+  "augmentation_shift": 1,
+  "augmentation_affine": 8.0,
+  "evaluation_round": 2,
+  "prior_official_test_accuracy_known": 0.9477,
+  "steps": 36,
+  "readout_start": 16,
+  "sizes": [
+    16,
+    63,
+    5
+  ],
+  "classes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "class_codes": [
+    [
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  ],
+  "class_decoder_execution": "host-fixed-integer-codebook",
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "selected": {
+    "step": 2000,
+    "validation_accuracy": 0.979,
+    "loss": 0.02648569739665596,
+    "changed_latent_weights": [
+      1008,
+      315,
+      3969
+    ]
+  },
+  "history": [
+    {
+      "step": 2000,
+      "validation_accuracy": 0.979,
+      "loss": 0.02648569739665596
+    },
+    {
+      "step": 4000,
+      "validation_accuracy": 0.9771666666666666,
+      "loss": 0.021586530650159363
+    },
+    {
+      "step": 6000,
+      "validation_accuracy": 0.9776666666666667,
+      "loss": 0.11039012001172321
+    },
+    {
+      "step": 8000,
+      "validation_accuracy": 0.9788333333333333,
+      "loss": 0.01630556027659885
+    }
+  ],
+  "resume": {
+    "checkpoint_sha256": "5c7073a8c28a64df1cfed2f224bcfa1b43418f6691a7dbe3b1e1308fafc8080d",
+    "frozen_file_sha256": "7ada3c937beb98e8db87a47a2dd86fb3e8da048f36a45cbeb0af08408e3d2192",
+    "optimizer_step": 18000,
+    "optimizer_moments_preserved": true,
+    "prior_validation_accuracy": 0.9786666666666667
+  },
+  "updates_completed": 8000,
+  "requested_updates": 8000,
+  "selection": "highest native validation accuracy, earliest tie; no test or SDK selection",
+  "training": "native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained",
+  "external_training_framework": false,
+  "seed": 20261030,
+  "arguments": {
+    "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "runner": "/private/tmp/atlas-smnist-count-trainer",
+    "output": "/Volumes/T7/atlas-sequential-mnist-round2-20261014/full-rows-affine",
+    "resume": "/Volumes/T7/atlas-sequential-mnist-round2-20261014/full-rows-clean",
+    "warm_start": null,
+    "warm_weight_scale": 1.0,
+    "deskew": true,
+    "query_ticks": 8,
+    "augmentation_shift": 1,
+    "augmentation_affine": 8.0,
+    "logit_scale": 12.0,
+    "surrogate_slope": 3.0,
+    "updates": 8000,
+    "encoding": "rows-full-counts",
+    "codebook": "pairs5",
+    "repeats": 1,
+    "hidden": 63,
+    "threshold": 64,
+    "output_threshold": 256,
+    "lr": 0.0003,
+    "rec_init": 0.5,
+    "readout_ticks": 20,
+    "batch_size": 32,
+    "validate_every": 2000,
+    "seed": 20261030
+  },
+  "seconds": 578.9827076669899,
+  "script_sha256": "649e2f95f3f7352503757238374f3bcc10ab920f4b093cdfd9d15c2e051a8ecb",
+  "runner_sha256": "8e862759cc2a8d8794d20a7ed42979e182b9e739c284e6e83e51311c987fc9e9",
+  "checkpoint_sha256": "2d410618fac5b70e5e65bd1d51d67f8e60682b8407bb21d50418be7488192679",
+  "frozen_file_sha256": "4761c38252ef20584ab063cef32ff3bffc0a2dc4a879b28059bfa2516e954de8"
+}

@@ -16,7 +16,7 @@ from test_gpu_spike_generator import BACKENDS
 
 
 def minimal():
-    return json.loads((ROOT/'tests/golden/b2ir-v1/minimal-v1.json').read_text())
+    return json.loads((ROOT/'tests/golden/atlasir-v1/minimal-v1.json').read_text())
 
 
 def test_one_semantic_validation_independent_plans_and_models(monkeypatch):

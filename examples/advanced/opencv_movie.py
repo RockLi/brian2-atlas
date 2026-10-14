@@ -17,6 +17,7 @@ bindings. The Rust path only needs the Python bindings. The original C++ path
 was tested on 64 bit Linux in a conda environment with packages from the
 ``conda-forge`` channels (opencv 3.4.4, x264 1!152.20180717, ffmpeg 4.1).
 """
+import builtins
 import importlib
 import json
 import os
@@ -137,7 +138,7 @@ else:
             f"OpenCV decodes {frame_count} of {reported_frame_count} "
             "reported frames")
     if requested_frames is not None:
-        frame_count = min(frame_count, requested_frames)
+        frame_count = builtins.min(frame_count, requested_frames)
     video = cv2.VideoCapture(filename)
     if not video.isOpened():
         raise RuntimeError(f"OpenCV could not reopen the video: {filename}")
@@ -153,7 +154,7 @@ time_between_frames = 1*second/fps
 if standalone_device in {"atlas", "rust_standalone"}:
     # NetworkOperation boundaries have to coincide with the model clock. Use
     # the closest representable interval (42 ms for a 24 fps source at 1 ms).
-    frame_ticks = max(1, int(round(time_between_frames/defaultclock.dt)))
+    frame_ticks = builtins.max(1, int(round(time_between_frames/defaultclock.dt)))
     time_between_frames = frame_ticks*defaultclock.dt
 
 @implementation('cpp', '''

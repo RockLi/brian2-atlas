@@ -68,7 +68,7 @@ def test_actual_timeout_kills_process_group_without_retry_or_state_commit(tmp_pa
 
 @pytest.mark.parametrize('kind',['unicode','malformed','oversize','schema','type','empty','extra','list','success_schema','message_oversize','nested','empty_file'])
 def test_bounded_error_envelope_and_legacy_fallback(kind,tmp_path):
-    message='非有限方程：λ\nquoted "cause"';payload={'schema':'b2-native-training-error-v1','message':message}
+    message='\u975e\u6709\u9650\u65b9\u7a0b：λ\nquoted "cause"';payload={'schema':'b2-native-training-error-v1','message':message}
     raw=json.dumps(payload)
     if kind=='malformed':raw='{broken'
     elif kind=='oversize':raw='x'*65537
@@ -114,7 +114,7 @@ def test_native_cli_default_keeps_failure_output_absent(tmp_path):
 
 
 def test_native_error_utf8_truncation_is_bounded_and_atomic(tmp_path):
-    request=tmp_path/'request.json';output=tmp_path/'result.json';request.write_text(json.dumps({'神经'*4000:1}))
+    request=tmp_path/'request.json';output=tmp_path/'result.json';request.write_text(json.dumps({'\u795e\u7ecf'*4000:1}))
     env={k:v for k,v in os.environ.items() if k!='B2_TRAIN_MPI_LIB'};env['B2_TRAIN_ERROR_RESULT']='1'
     result=subprocess.run([str(RUNNER),str(request),str(output)],capture_output=True,text=True,env=env,timeout=30)
     payload=json.loads(output.read_bytes());assert result.returncode!=0 and payload['schema']=='b2-native-training-error-v1'

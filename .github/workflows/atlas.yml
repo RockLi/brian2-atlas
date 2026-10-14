@@ -67,9 +67,17 @@ jobs:
       - name: Install the pinned Rust compiler
         run: rustup toolchain install 1.98.1 --profile minimal
       - name: Install source and CPU test dependencies
-        run: python -m pip install -e '.[test]' scipy pyarrow joblib progressbar2 opencv-python-headless
+        run: python -m pip install -e '.[test]' scipy matplotlib pyarrow joblib progressbar2 opencv-python-headless
       - name: Build and validate the CPU backend
         run: python dev/atlas/run_backend.py --suite cpu --timeout 1200
+      - name: Validate native training and neuromorphic conversion
+        run: |
+          cargo build --release --locked --manifest-path brian2-rust/Cargo.toml --bin b2-train
+          export B2_TRAIN_RUNNER="$PWD/brian2-rust/target/release/b2-train"
+          export B2_RUNNER="$PWD/brian2-rust/target/release/b2-runner"
+          export PYTHONPATH="$PWD/brian2-rust/python:$PWD"
+          cargo test --locked --manifest-path brian2-rust/Cargo.toml --lib
+          python -m pytest -q brian2-rust/tests/test_neuromorphic_contracts.py brian2-rust/tests/test_neuromorphic.py brian2-rust/tests/test_akida_b2ir.py brian2-rust/tests/test_lava_dense_b2ir.py brian2-rust/tests/test_spinnaker2_dense.py brian2-rust/tests/test_spinnaker2_b2ir.py brian2-rust/tests/test_xylo_b2ir.py brian2-rust/tests/test_dynapse_b2ir.py brian2-rust/tests/test_native_lif_conversion.py brian2-rust/tests/test_native_xylo_conversion.py brian2-rust/tests/test_native_xylo_training.py brian2-rust/tests/test_native_xylo_recurrent.py brian2-rust/tests/test_recurrent_spinnaker2_diagnostic.py brian2-rust/tests/test_spinnaker2_integer.py brian2-rust/tests/test_sequential_mnist.py
       - name: Validate bounded user examples
         run: python dev/atlas/run_backend.py --suite examples --timeout 900
 
@@ -115,4 +123,7 @@ jobs:
           export XDG_CACHE_HOME="$RUNNER_TEMP/atlas-cache"
           mkdir -p "$TMPDIR" "$XDG_CACHE_HOME"
           unset PYTHONPATH B2_RUNNER B2_TRAIN_RUNNER RUSTUP_TOOLCHAIN
-          build/installed/bin/python dev/atlas/check_installed.py --report build/installed-validation.json
+          cd "$RUNNER_TEMP"
+          "$GITHUB_WORKSPACE/build/installed/bin/python" \
+            "$GITHUB_WORKSPACE/dev/atlas/check_installed.py" \
+            --report "$GITHUB_WORKSPACE/build/installed-validation.json"

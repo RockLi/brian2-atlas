@@ -1,0 +1,10 @@
+{
+  "tests": 245,
+  "skipped": 36,
+  "failures": 0,
+  "errors": 0,
+  "junit_sha256": "1bdb767e5c06d55208d69fd696d259a66e489ba39cfb99e51f2d660ecc85a36b",
+  "vendor_sdk_checks_run": true,
+  "physical_hardware": false,
+  "passed": 209
+}

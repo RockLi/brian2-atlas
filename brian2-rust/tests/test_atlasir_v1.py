@@ -16,7 +16,8 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-GOLDEN = ROOT / "tests" / "golden" / "b2ir-v1"
+GOLDEN = ROOT / "tests" / "golden" / "atlasir-v1"
+LEGACY = ROOT / "tests" / "golden" / "b2ir-v1"
 sys.path.insert(0, str(ROOT / "python"))
 
 from brian2_rust.protocol import (  # noqa: E402
@@ -31,13 +32,16 @@ from brian2_rust.native import _schedule_can_contract, _schedule_can_fuse_bundle
 
 
 def load(name: str) -> dict:
-    return json.loads((GOLDEN / name).read_text())
+    if name == "minimal-legacy.json":
+        return json.loads((LEGACY / "minimal-v1.json").read_text())
+    directory = GOLDEN if name in ("minimal-v1.json", "hashes.json") else LEGACY
+    return json.loads((directory / name).read_text())
 
 
 def test_frozen_v1_canonical_bytes_and_python_hashes():
     model = load("minimal-v1.json")
     expected = load("hashes.json")
-    assert model["schema"] == expected["schema"] == "b2ir-v1"
+    assert model["schema"] == expected["schema"] == "atlasir-v1"
     verify_protocol(model)
     assert layer_hashes(model) == expected["layers"]
     assert hashlib.sha256(canonical_bytes(model)).hexdigest() == expected[
@@ -48,6 +52,7 @@ def test_probe_migration_corpus_converges_to_identical_v1():
     expected = load("minimal-v1.json")
     for version in (34, 35, 36, 37):
         assert migrate_model(load(f"minimal-v{version}.json")) == expected
+    assert migrate_model(load("minimal-legacy.json")) == expected
 
 
 def test_rust_agrees_on_hashes_and_executes_every_migration_vector():
@@ -56,9 +61,11 @@ def test_rust_agrees_on_hashes_and_executes_every_migration_vector():
     expected = load("hashes.json")["layers"]
     with tempfile.TemporaryDirectory() as temporary:
         temporary = Path(temporary)
-        for name in ("minimal-v1.json", "minimal-v34.json", "minimal-v35.json",
-                     "minimal-v36.json", "minimal-v37.json"):
-            source = GOLDEN / name
+        sources = [GOLDEN / "minimal-v1.json"] + [
+            LEGACY / name for name in ("minimal-v1.json", "minimal-v34.json",
+                "minimal-v35.json", "minimal-v36.json", "minimal-v37.json")]
+        for ordinal, source in enumerate(sources):
+            name = f"vector-{ordinal}.json"
             checked = subprocess.run(
                 [str(runner), "--canonical-hashes", str(source)],
                 capture_output=True, text=True, check=True)
@@ -70,16 +77,22 @@ def test_rust_agrees_on_hashes_and_executes_every_migration_vector():
             assert executed.returncode == 0, executed.stderr
             assert (output / "results.bin").is_file()
             assert (output / "summary.json").is_file()
+            results = {name: (output / name).read_bytes()
+                       for name in ("results.bin", "events.bin")}
+            if ordinal == 0:
+                expected_results = results
+            else:
+                assert results == expected_results
 
 
 @pytest.mark.parametrize("version,corruption", [
     (version, corruption)
-    for version in (34, 35, 36, 37, 1)
+    for version in (34, 35, 36, 37, 1, "legacy")
     for corruption in ("missing", "extra", "version", "hash")
     if (version, corruption) != (34, "missing")
 ])
 def test_python_and_rust_reject_invalid_envelopes(tmp_path, version, corruption):
-    model = load(f"minimal-v{version}.json")
+    model = load("minimal-legacy.json" if version == "legacy" else f"minimal-v{version}.json")
     if version == 34:
         # V34 is the only schema that must not have an envelope at all.
         model["protocol"] = copy.deepcopy(load("minimal-v1.json")["protocol"])
@@ -168,7 +181,7 @@ def test_streamed_canonical_hashes_match_standard_encoder_at_array_boundaries():
     from io import BytesIO
     from brian2_rust.protocol import _canonical_chunks, write_canonical
 
-    values = ["escaped\\quote\"\n雪", 0, -0.0, 5e-324, True, None, [], {}]
+    values = ["escaped\\quote\"\n\u96ea", 0, -0.0, 5e-324, True, None, [], {}]
     rng = random.Random(20260907)
     for length in (0, 1, 65535, 65536, 65537, 131073):
         value = {"z": [values[rng.randrange(len(values))] for _ in range(length)],
@@ -202,3 +215,18 @@ def test_project_snapshot_preserves_public_model_and_rejects_tampering(tmp_path)
             operation()
     assert not (tmp_path / "bad.bin").exists()
     assert not (tmp_path / "bad-project").exists()
+
+
+@pytest.mark.parametrize("legacy", [False, True])
+@pytest.mark.parametrize("field", ["name", "canonical_encoding"])
+def test_schema_and_protocol_names_cannot_be_mixed(tmp_path, legacy, field):
+    model = load("minimal-legacy.json" if legacy else "minimal-v1.json")
+    other = load("minimal-v1.json" if legacy else "minimal-legacy.json")
+    model["protocol"][field] = other["protocol"][field]
+    with pytest.raises(ValueError, match="protocol envelope"):
+        migrate_model(model)
+    source = tmp_path / "mixed.json"
+    source.write_text(json.dumps(model))
+    result = subprocess.run([str(ROOT / "target/release/b2-runner"),
+                             "--validate", str(source)], capture_output=True, text=True)
+    assert result.returncode != 0

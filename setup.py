@@ -64,6 +64,6 @@ setup(
     package_dir={"brian2_rust": "brian2-rust/python/brian2_rust",
                  "brian2_atlas": "brian2-rust/python/brian2_atlas"},
     package_data={"brian2_rust": ["*.c", "*.cu", "*.h", "*.m", "*.metal", "*.toml", "*.rs", "*.cpp",
-                                "metal_runtime/*", "mpi_runtime/*"]},
+                                "metal_runtime/*", "mpi_runtime/*", "spinnaker2_integer_kernel/*"]},
     cmdclass={"build_py": AtlasBuildPy},
 )

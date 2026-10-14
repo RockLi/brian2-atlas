@@ -2328,7 +2328,7 @@ class SynapsesTest(unittest.TestCase):
             network = b.Network(source, target, synapse)
             model = lower_network(network, 1*b.ms)
             instance = model["instance"]["synapses"][0]
-            self.assertEqual(model["schema"], "b2ir-v1")
+            self.assertEqual(model["schema"], "atlasir-v1")
             self.assertEqual(instance["source"], [])
             self.assertEqual(instance["target"], [])
             self.assertEqual(instance["topology"], {

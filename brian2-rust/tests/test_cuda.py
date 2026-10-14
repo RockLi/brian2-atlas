@@ -22,7 +22,7 @@ real_cuda = pytest.mark.skipif(os.environ.get("B2_TEST_CUDA")!="1",reason="requi
 
 
 def test_cuda_plan_identity_and_explicit_precision(tmp_path):
-    model=json.loads((ROOT/"tests/golden/b2ir-v1/minimal-v1.json").read_text())
+    model=json.loads((ROOT/"tests/golden/atlasir-v1/minimal-v1.json").read_text())
     with pytest.raises(PlanValidationError,match="explicit"):
         build_execution_plan(model,backend="cuda")
     plan=build_execution_plan(model,backend="cuda",numeric_mode="float32")
@@ -46,7 +46,7 @@ def test_cuda_device_requires_explicit_float32(device,tmp_path):
 
 @real_cuda
 def test_cuda_golden_transport_replay_and_close(tmp_path):
-    path=ROOT/"tests/golden/b2ir-v1/minimal-v1.json"
+    path=ROOT/"tests/golden/atlasir-v1/minimal-v1.json"
     model=json.loads(path.read_text())
     subprocess.run([str(ROOT/"target/release/b2-runner"),str(path),str(tmp_path/"reference")],check=True)
     expected=load_results(model,tmp_path/"reference")

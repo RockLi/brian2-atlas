@@ -40,3 +40,15 @@ def neuron_budget():
 
 def population_step_budget():
     return _environment("B2_MAX_POPULATION_STEPS", 10_000_000, 10_000_000)
+
+
+def population_state_budget():
+    return _environment("B2_MAX_POPULATION_STATES", 32, 1024)
+
+
+def population_parameter_budget():
+    return _environment("B2_MAX_POPULATION_PARAMETERS", 128, 1024)
+
+
+def statement_budget():
+    return _environment("B2_MAX_STATEMENTS", 128, 1024)

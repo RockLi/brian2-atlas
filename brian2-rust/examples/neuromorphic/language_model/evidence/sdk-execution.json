@@ -1,0 +1,26 @@
+{
+  "versions": {
+    "spinnaker2": "0.8.0",
+    "brian2": "2.10.1",
+    "numpy": "2.3.4",
+    "scipy": "1.18.1"
+  },
+  "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+  "batch_size": 100,
+  "inference_seconds": 265.03770854196046,
+  "total_seconds": 268.20202087500365,
+  "bundle_sha256": "1b612930feaa6e4443522d749624edd04707ccf00e61d9b47c38a09ca2126058",
+  "inputs_sha256": "e5d873bf6e159418b313ccb894c648e60f9a13843072ce30552c14e589790ef7",
+  "results_sha256": "c541bd3b05f897a7deceaecb324fdd79516efb62a853fa82bfe569966f8f470c",
+  "generation_sha256": "f9170a75bb90168a8351fc7b2950ee4ee6689d9b260552bee8938441555a7653",
+  "worker_sha256": "5c6772cc09c516bd9a1ecb82bc20f644c9e3ffe1bc1ae3256cd962eabf407ddd",
+  "physical_hardware": false,
+  "reference_or_labels_read": false,
+  "host_operations": [
+    "context one-hot encoding",
+    "independent replica batching",
+    "count-to-logit scaling",
+    "argmax",
+    "context window update"
+  ]
+}

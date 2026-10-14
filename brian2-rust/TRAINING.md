@@ -6,6 +6,29 @@ frontend can lower supported networks through `lower_brian_dynamic_training`.
 The native engine performs forward execution, surrogate-gradient BPTT and
 optimizer updates. It does not require Brian2CUDA or Brian2GeNN.
 
+## Xylo integer training
+
+`NativeXyloTrainer` runs a dedicated CPU plan with Xylo Audio 2 integer forward
+dynamics, int8 quantization-aware weights, surrogate BPTT and native Adam/SGD.
+It exports inference through AtlasIR to XyloSim without dynamics adaptation.
+The v1 plan is feedforward; `xylo_recurrent_training_plan` adds a v2 recurrent
+bank, an absolute readout window and explicit evaluation-state continuation.
+Training remains fresh full-sequence BPTT; chunks are inference-only and the
+total sequence is limited to 128 ticks. This is separate from `NativeLIFTrainer`'s
+general plans and does not inherit GPU/MPI or arbitrary Brian equation support.
+See the [recurrent task, state API and memory controls](examples/neuromorphic/native_xylo_recurrent/README.md).
+See the [contract, API and held-out evidence](examples/neuromorphic/native_xylo_integer/README.md).
+
+The recurrent integer model is not portable through the existing exact
+SpiNNaker2 LIF bridge. A [stock current-LIF substitution](examples/neuromorphic/native_xylo_recurrent/SPINNAKER2.md)
+retains all frozen weights but reaches 50% on the task where native/XyloSim
+reach 100%; spike and state traces differ under both tested clock conventions.
+It remains a diagnostic. A separate [custom SpiNNaker2 integer host kernel](examples/neuromorphic/native_xylo_recurrent/SPINNAKER2_INTEGER.md)
+now preserves the recurrent model and all weights, reaching 100% with exact
+spike/current/membrane agreement. Use `export_native_xylo(..., target="spinnaker2")`
+for this explicit profile. It is a C software extension, not stock LIF execution
+or deployed SpiNNaker2 firmware.
+
 ## Start from a runnable example
 
 From an installed source checkout:
@@ -65,3 +88,100 @@ are outside this increment's acceptance scope.
 Historical development documentation and receipts are preserved in the preprint
 repository. They are separate from results measured on this Atlas source tree.
 The `v0.1.0` tag and paper release remain unchanged.
+
+## Export a trained LIF network
+
+The [native MNIST conversion example](examples/neuromorphic/native_training/README.md)
+connects `NativeLIFTrainer` to SpiNNaker2 software inference. Both dense layers
+are trained with the native CPU forward/backward/optimizer, then frozen with
+`freeze_native_lif` and exported through AtlasIR with `export_native_lif`.
+Quantization is explicit and is measured separately from conversion.
+
+This first bridge accepts dense v1 plans, subtract reset, beta=0.5, binary
+inputs, power-of-two target scales and at most 16 inference ticks. It exports
+weights for fresh zero-state inference; it does not export the optimizer or
+resume a live training state on the target. Other native training plans and
+on-chip training remain outside this path.
+
+
+## Integer count inputs and fixed class-code readout
+
+The recurrent integer plan accepts optional `input_max` (1–15; omitted means
+binary input) and `class_codes` (2–32 distinct, nonzero binary rows with equal
+Hamming weight). The codebook width must equal the physical output population,
+which remains limited to eight neurons. Cross entropy uses decoded class logits;
+its gradients propagate through the fixed codebook into all three neural weight
+banks. Count-input gradients use the actual integer input amplitude.
+
+Frozen artifacts and the exact Xylo/custom SpiNNaker2 bridges preserve both
+fields. The host decoder sums integer output counts before logit scaling; it
+adds no trained weights or physical neurons. Continuation state retains physical
+output counts, so chunk boundaries do not change decoded logits. Existing plans
+without these fields retain binary inputs and direct output-count readout.
+
+### Optional objectives and current readout
+
+`xylo_recurrent_training_plan(..., code_rate_weight=0.5)` adds a training-only
+output-rate objective when a class codebook is supplied. For each physical
+output, the target rate is `0.1 + 0.8 * class_codes[label][output]`. The loss is
+cross entropy plus `code_rate_weight` times the mean squared rate error, averaged
+across examples and physical outputs. The native reverse pass differentiates
+both terms through the declared surrogate graph. Omission preserves the original
+loss; zero is mathematically equivalent. The coefficient must be finite in
+`[0, 100]`. Frozen artifacts retain the objective as provenance; exported neural
+transitions and the host spike-count decoder are unchanged.
+
+Alternatively, `readout_source="synaptic_current"` trains with the signed sum of
+recorded output synaptic currents over the readout window. The fixed codebook
+maps those integer sums to class scores; logit scaling then divides by the
+window length and the output threshold. This avoids the output spike counter's
+resolution and saturation limits in the training objective. Input, hidden and
+output neurons still execute the same integer transitions and emit their normal
+spikes. The backward pass seeds output-current derivatives directly, then trains
+all three weight banks. This option is recurrent v2 only and cannot be combined
+with the spike-rate objective.
+
+The current decoder uses the distinct `atlas.native-xylo-current-bridge.v1`
+export contract, so older runtimes reject it instead of silently counting spikes.
+The source frozen artifact remains recurrent v2. The current decoder **runs on
+the host and requires output-state recording**.
+It is not an on-chip classifier or a hardware power optimization. Native
+continuation state carries signed `current_sums` as well as ordinary spike
+counts. Whole-sequence, chunked XyloSim sessions and the custom SpiNNaker2 host
+runtime use the same sum and threshold normalization. Conversion checks that the
+readout divisor matches every exported output-neuron threshold. Independent
+surrogate directional derivatives, signed accumulation and checkpoint replay
+cover this path.
+
+The MNIST example also supports cosine learning-rate schedules and transfer to
+an eight-output fixed codebook. Schedules retain Adam moments and weights while
+changing only the step size. Codebook transfer copies input and recurrence
+weights and fits an initial readout using the two codebooks, without samples or
+labels; it does not claim initial spiking equivalence. Subsequent training stays
+in the native Rust executor. These are optional experiments, not a change to the
+default spike-count inference contract.
+
+The [block-sequential MNIST example](examples/neuromorphic/sequential_mnist/README.md)
+exercises ten classes using native training and both exact software targets.
+It explicitly separates real-data classification accuracy from conversion parity.
+The [fourth training/readout round](examples/neuromorphic/sequential_mnist/ROUND4.md)
+selects `compact-cosine` at 98.1333% validation and reaches **97.44%** on the
+complete official test set. The selected 16→63→5 model has 5,292 active
+trainable weights; both software targets match 73,440,000 neural values and
+all logits exactly. The 98% test target remains unmet. Candidate selection preceded this round's test audit.
+
+The [third training round](examples/neuromorphic/sequential_mnist/ROUND3.md)
+reaches 97.47% on all 10,000 official test images, with exact agreement across
+141,480,000 neural values per target. The selected 16→126→5 model has
+10,584 trainable weights and 36 ticks. Recurrent v2 admits 128 hidden cells;
+the example's grouped recurrence preserves fanout ≤63 by projecting inactive
+weights and optimizer moments to zero after each native update. V1 retains 64.
+The 98% target remains unmet. Earlier test scores were known; selection within this round used
+validation only, followed by one final full-test audit.
+
+The [second training round](examples/neuromorphic/sequential_mnist/REFINEMENT.md)
+reaches 97.28% on all 10,000 official test images, with zero differences across
+73,440,000 spike/current/membrane values per target. The same 16→63→5 model uses
+deskewed rows over 36 ticks, thresholds 64/256, and 5,292 learned weights.
+Validation selects checkpoints before the full-test audit; the earlier 94.77%
+test result was already known. The 98% target was not reached.

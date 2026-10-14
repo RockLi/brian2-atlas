@@ -1,7 +1,11 @@
 # Atlas native backend
 
 The `brian2_atlas` module provides native CPU/AOT simulation, GPU/browser backends,
-distributed MPI simulation and native training. Both native executables and their
+distributed MPI simulation and native training. Experimental neuromorphic
+conversion is exposed through `brian2_atlas.neuromorphic`; see the
+[architecture diagram](architecture/README.md) for how these paths fit
+together and the [compatibility checklist](examples/neuromorphic/COMPATIBILITY.md)
+for target-specific support. Both native executables and their
 runtime resources are included in Atlas platform wheels. This is a development
 version; see the [root installation guide](../README.md) and the stage manifests
 for the verified scope.

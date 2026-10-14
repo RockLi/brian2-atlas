@@ -99,6 +99,11 @@ def test_opencv_example_accepts_bounded_camera_stream_with_rust(tmp_path, device
     example = REPOSITORY / "examples/advanced/opencv_movie.py"
     program = f"""
 import runpy
+import sys
+
+# Headless capture must also work with Brian's NumPy-only import path.
+sys.modules["pylab"] = None
+sys.modules["matplotlib"] = None
 
 import cv2
 import numpy as np

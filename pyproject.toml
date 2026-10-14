@@ -37,6 +37,7 @@ license-files = ["LICENSE", "LICENSES/*", "LICENSE_SCOPE.md", "NOTICE", "AUTHORS
 [project.optional-dependencies]
 cloud = ['modal>=1.5.5']
 examples = [
+    'matplotlib>=3.9',
     'joblib>=1.4',
     'noise>=1.2.2',
     'opencv-python-headless>=4.10',

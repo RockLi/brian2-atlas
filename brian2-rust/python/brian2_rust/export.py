@@ -35,7 +35,8 @@ from .protocol import CURRENT_SCHEMA, attach_protocol
 from .encoded_array import EncodedArray, index_array, should_pack
 from .topology import ClippedNormal, Uniform
 from .resource_limits import (explicit_synapse_budget, initial_value_budget,
-                              neuron_budget, population_step_budget)
+                              neuron_budget, population_step_budget,
+                              population_state_budget, population_parameter_budget)
 
 SCHEMA = CURRENT_SCHEMA
 MAX_SYNAPSE_TICKS = 50_000_000_000_000
@@ -401,8 +402,8 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
     states.extend(gsl_meta_states)
     require(gsl_config is None or not linked_names,
             "GSL integration currently does not support linked variables")
-    require(len(states) <= 32,
-            "at most 32 mutable states per population")
+    require(len(states) <= population_state_budget(),
+            f"at most {population_state_budget()} mutable states per population")
 
     linked_variables = []
     for name in linked_names:
@@ -972,7 +973,8 @@ def _population(group, groups, group_indices, monitors, event_monitors, spike_mo
         mask[target_start:target_stop] = True
         parameters.append(symbol(mask_name, resolved[mask_name], "neuron"))
         parameter_values[mask_name] = _array_bits(mask, "bool")
-    require(len(parameters) <= 128, "at most 128 parameters per population")
+    require(len(parameters) <= population_parameter_budget(),
+            f"at most {population_parameter_budget()} parameters per population")
     total_values = len(states) * len(group) + sum(len(v) for v in parameter_values.values())
     if has_refractory:
         total_values += 2 * len(group)

@@ -23,6 +23,8 @@ For reasonable accuracy, N_TRAIN should be 50,000+ and N_OBSERVE 1,000+.
 
 Written in 2024 by Björn A. Lindqvist <bjourne@gmail.com>
 """
+import builtins
+
 from brian2 import *
 import argparse
 from collections import defaultdict
@@ -322,7 +324,7 @@ def train():
     rows = [stats(net) + [-1]]
     w_hist = [np.array(net['inp_exc'].w)]
 
-    ratio = max(N_TRAIN // N_SAVE_POINTS, 1)
+    ratio = builtins.max(N_TRAIN // N_SAVE_POINTS, 1)
     for i in progressbar(range(N_TRAIN)):
         ix = i % n_samples
         normalize_plastic_weights(net['inp_exc'])
@@ -427,7 +429,7 @@ def main(argv=None):
     REST_DURATION = args.rest_ms * ms
     MIN_SPIKES = args.min_spikes
 
-    if min(N_TRAIN, N_OBSERVE, N_TEST, N_NEURONS, N_SAVE_POINTS) < 1:
+    if builtins.min(N_TRAIN, N_OBSERVE, N_TEST, N_NEURONS, N_SAVE_POINTS) < 1:
         parser.error('sample counts, neurons, and save points must be positive')
     if args.presentation_ms < 0 or args.rest_ms < 0 or MIN_SPIKES < 0:
         parser.error('durations and minimum spike count must be non-negative')

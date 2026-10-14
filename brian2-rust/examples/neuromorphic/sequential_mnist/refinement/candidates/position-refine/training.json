@@ -1,0 +1,201 @@
+{
+  "schema": "atlas.sequential-mnist.training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "task": "Ten-class block-sequential MNIST",
+  "encoding": "rows-position-counts",
+  "repeats": 1,
+  "deskew": true,
+  "query_ticks": 8,
+  "augmentation_shift": 1,
+  "evaluation_round": 2,
+  "prior_official_test_accuracy_known": 0.9477,
+  "steps": 22,
+  "readout_start": 8,
+  "sizes": [
+    16,
+    63,
+    5
+  ],
+  "classes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "class_codes": [
+    [
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  ],
+  "class_decoder_execution": "host-fixed-integer-codebook",
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "selected": {
+    "step": 6000,
+    "validation_accuracy": 0.9635,
+    "loss": 0.31180265103614835,
+    "changed_latent_weights": [
+      1008,
+      315,
+      3969
+    ]
+  },
+  "history": [
+    {
+      "step": 1000,
+      "validation_accuracy": 0.9548333333333333,
+      "loss": 0.6035872962204679
+    },
+    {
+      "step": 2000,
+      "validation_accuracy": 0.9568333333333333,
+      "loss": 0.23433826465135432
+    },
+    {
+      "step": 3000,
+      "validation_accuracy": 0.9591666666666666,
+      "loss": 0.23057946752756553
+    },
+    {
+      "step": 4000,
+      "validation_accuracy": 0.9598333333333333,
+      "loss": 0.012086565908093982
+    },
+    {
+      "step": 5000,
+      "validation_accuracy": 0.9628333333333333,
+      "loss": 0.21792634750142448
+    },
+    {
+      "step": 6000,
+      "validation_accuracy": 0.9635,
+      "loss": 0.31180265103614835
+    }
+  ],
+  "resume": {
+    "checkpoint_sha256": "54c4f61b41b6b0d262cfc49b5fd7d044ca5ef306b0887c9e27881889300f24fb",
+    "frozen_file_sha256": "950d94a664396b3a54fba25d9ac6db565b20faf317d677c3ebb0214409404862",
+    "optimizer_step": 4000,
+    "optimizer_moments_preserved": true,
+    "prior_validation_accuracy": 0.9556666666666667
+  },
+  "updates_completed": 6000,
+  "requested_updates": 6000,
+  "selection": "highest native validation accuracy, earliest tie; no test or SDK selection",
+  "training": "native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained",
+  "external_training_framework": false,
+  "seed": 20261024,
+  "arguments": {
+    "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "runner": "/private/tmp/atlas-smnist-count-trainer",
+    "output": "/Volumes/T7/atlas-sequential-mnist-round2-20261014/position-refine",
+    "resume": "/Volumes/T7/atlas-sequential-mnist-round2-20261014/position",
+    "warm_start": null,
+    "warm_weight_scale": 1.0,
+    "deskew": true,
+    "query_ticks": 8,
+    "augmentation_shift": 1,
+    "logit_scale": 12.0,
+    "surrogate_slope": 3.0,
+    "updates": 6000,
+    "encoding": "rows-position-counts",
+    "codebook": "pairs5",
+    "repeats": 1,
+    "hidden": 63,
+    "threshold": 16,
+    "output_threshold": 64,
+    "lr": 0.00015,
+    "rec_init": 0.2,
+    "readout_ticks": 14,
+    "batch_size": 32,
+    "validate_every": 1000,
+    "seed": 20261024
+  },
+  "seconds": 377.9749232920003,
+  "script_sha256": "9c8fdcdd052611bc44b7f59800bf210eff00aeb86fe39b1067ad5d9441fbd52a",
+  "runner_sha256": "8e862759cc2a8d8794d20a7ed42979e182b9e739c284e6e83e51311c987fc9e9",
+  "checkpoint_sha256": "3ea7c56205f72623c2aa889219613ff042ef3e0e432a14dc30186cf163ccabcd",
+  "frozen_file_sha256": "235c4c5f9745f5030844b91aeaa51e7e3006d75dc22e52b14327668c63fe49aa"
+}

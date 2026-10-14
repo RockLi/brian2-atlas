@@ -51,7 +51,14 @@ fn main() {
             hash.update(std::fs::read(std::env::var("B2_TRAIN_MPI_LIB")?)?);
             context.agree(&hash.finalize().into())?;
         }
-        let request = serde_json::from_slice(&bytes)?;
+        let value: serde_json::Value = serde_json::from_slice(&bytes)?;
+        if value.get("plan").and_then(|p|p.get("schema")).and_then(|v|v.as_str()) .is_some_and(|s|matches!(s,"atlas-xylo-training-plan-v1"|"atlas-xylo-training-plan-v2")) {
+            if mpi.is_some() {return Err("Xylo native training does not support MPI".into());}
+            let result=b2_runner::xylo_training::execute(serde_json::from_value(value)?)?;
+            std::fs::write(&args[2],serde_json::to_vec(&result)?)?;
+            return Ok(());
+        }
+        let request = serde_json::from_value(value)?;
         let result = b2_runner::training::execute_distributed(request, mpi.as_ref())?;
         if mpi.as_ref().is_none_or(|m| m.rank == 0) {
             std::fs::write(&args[2], serde_json::to_vec(&result)?)?;

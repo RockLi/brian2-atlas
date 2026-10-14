@@ -1,0 +1,8 @@
+{
+  "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "numpy": "2.5.2",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "training_framework": "Atlas native Rust; Python transports arrays and preprocesses images",
+  "official_test_use": "selected model only, after validation selection"
+}

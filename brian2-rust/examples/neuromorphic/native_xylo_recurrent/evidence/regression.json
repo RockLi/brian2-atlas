@@ -1,0 +1,15 @@
+{
+  "python_passed": 206,
+  "python_skipped": 36,
+  "skip_reason": "Opt-in GPU/MPI cases; native CPU and both installed SDK checks ran",
+  "native_recurrent_tests_passed": 11,
+  "native_integer_v1_tests_passed": 18,
+  "rust_library_passed": 51,
+  "old_xylo_temporal_cases": 50,
+  "old_xylo_state_values": 505455,
+  "old_xylo_state_differences": 0,
+  "old_xylo_chunk_steps": 7,
+  "junit_sha256": "d1fe19ccf8116cc5a86811af2d51226f474da9978305a009fd240f9945ba0527",
+  "temporal_audit_sha256": "5b53419a6b1b4ac8842aaf8a8af7809c6068612c835a0c102fea68586478865f",
+  "recurrent_test_source_sha256": "4d14f054c4c48f2840585c888fc12d553c3f200c5ca24d93a3cdfcb12b12bd9f"
+}
