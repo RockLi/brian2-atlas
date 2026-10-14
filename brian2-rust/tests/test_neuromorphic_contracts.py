@@ -86,3 +86,14 @@ def test_malformed_decoder_rejected_before_sdk_allocation(monkeypatch,entry,fiel
     # Compare serializable metadata, including the deliberately invalid NaN.
     import json
     assert json.dumps(bridge,sort_keys=True)==json.dumps(original,sort_keys=True)
+
+
+@pytest.mark.parametrize('scale',[0,-1,float('nan'),float('inf'),True,None,'128'])
+def test_lif_readout_rejects_invalid_scale_before_sdk(monkeypatch,scale):
+    plan=dict(sizes=dict(input=1,hidden=1,output=2),steps=4,input_raster=[[0]]*4)
+    bridge=dict(schema='atlas.native-lif-frozen.v1',sizes=[1,1,2],logit_scale=scale,
+        dynamics_equivalent=False,fresh_state_per_sample=True,source_is_zero_input_template=True,
+        adaptation=dict(schema='atlas.native-lif.xylo-adaptation.v1'))
+    monkeypatch.setattr(xylo_runtime,'_model',lambda *a:pytest.fail('SDK allocated for an invalid scale'))
+    with pytest.raises(ValueError,match='logit_scale'):
+        xylo_runtime.run_native_batch(plan,bridge,np.zeros((1,4,1),dtype=np.uint8))

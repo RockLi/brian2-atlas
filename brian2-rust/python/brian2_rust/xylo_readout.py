@@ -74,8 +74,12 @@ def validate_native_readout(bridge, plan):
     if bridge.get('sizes') != sizes:
         raise ValueError('native readout sizes disagree with the target plan')
     scale = bridge.get('logit_scale')
-    if type(scale) not in (int, float) or not np.isfinite(scale) or not 0 < scale <= 100:
-        raise ValueError('native readout logit_scale must be finite in (0,100]')
+    if type(scale) not in (int, float) or not np.isfinite(scale) or scale <= 0:
+        raise ValueError('native readout logit_scale must be finite and positive')
+    # The approximate LIF bridge retains its source trainer's positive scale;
+    # the upper bound belongs only to the native Xylo integer training plans.
+    if bridge.get('schema') != 'atlas.native-lif-frozen.v1' and scale > 100:
+        raise ValueError('native Xylo readout logit_scale must be at most 100')
     start = bridge.get('readout_start', 0)
     if type(start) is not int or not 0 <= start < plan['steps']:
         raise ValueError('native readout window outside horizon')

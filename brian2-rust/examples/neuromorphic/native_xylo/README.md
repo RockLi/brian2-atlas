@@ -98,6 +98,12 @@ bundle = export_native_lif(
 result = run_simulator(bundle, binary_rasters)  # batch × 16 × 16
 ```
 
+The adapted LIF bridge preserves the source trainer's finite, positive
+`logit_scale`, including values above 100. This scale is applied to observed
+output counts on the host. The separate native Xylo integer training plans
+retain their `(0, 100]` bound. Tests cover export admission and stock XyloSim
+state, count and logit comparisons at scales 4 and 128.
+
 The new path accepts exactly one hidden layer, at most 16 inputs, 64 hidden
 neurons and 8 outputs, 1–16 ticks, binary inputs, integer scaled thresholds in
 [1,32767], and the existing frozen weight range [-15,15]. Input and readout

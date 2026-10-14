@@ -17,12 +17,12 @@ TRAIN=Path(os.environ.get('B2_TRAIN_RUNNER','/nonexistent'))
 RUN=Path(os.environ.get('B2_RUNNER','/nonexistent'))
 SDK=os.environ.get('B2_XYLO_PYTHON')
 
-@pytest.fixture
-def frozen():
+@pytest.fixture(params=[4., 128.], ids=["scale-4", "scale-128"])
+def frozen(request):
     if not TRAIN.is_file() or not RUN.is_file():
         pytest.skip('set B2_TRAIN_RUNNER and B2_RUNNER')
     rng=np.random.default_rng(13)
-    plan=lif_training_plan([3,4,2],beta=.5,learning_rate=.01)
+    plan=lif_training_plan([3,4,2],beta=.5,learning_rate=.01,logit_scale=request.param)
     trainer=NativeLIFTrainer(plan,runner=TRAIN,
         weights=[rng.uniform(-.5,1.5,12),rng.uniform(-.5,1.5,8)])
     trainer.step(rng.integers(0,2,(4,16,3)),[0,1,0,1])
@@ -52,6 +52,15 @@ def test_xylo_requires_explicit_semantic_opt_in(frozen,tmp_path):
     for key,bank,shape in zip(('input','readout'),frozen['target_weights'],((3,4),(4,2))):
         np.testing.assert_array_equal(bundle['plan']['weights'][key],np.asarray(bank).reshape(shape))
     assert (tmp_path/'yes/frozen.json').read_bytes()==canonical_bytes(frozen)
+
+
+def test_exported_lif_readout_scale_is_accepted(frozen,tmp_path):
+    from brian2_rust.xylo_readout import validate_native_readout
+    bundle=export_native_lif(frozen,tmp_path/'export',steps=16,runner=RUN,
+                            target='xylosim',allow_dynamics_approximation=True)
+    bridge=bundle['native_training_bridge']
+    assert bridge['logit_scale']==frozen['plan']['logit_scale']
+    validate_native_readout(bridge,bundle['plan'])
 
 
 @pytest.mark.parametrize('sizes,threshold,message',[
@@ -98,6 +107,9 @@ np.savez(sys.argv[4],**{k:v for k,v in r.items() if isinstance(v,np.ndarray)})
         cwd=tmp_path,env={**os.environ,'PYTHONPATH':'','PYTHONNOUSERSITE':'1'},check=True,capture_output=True)
     sdk=np.load(tmp_path/'sdk.npz')
     for key,values in arrays.items():np.testing.assert_array_equal(sdk[key],np.stack(values))
+    expected_counts=np.stack(arrays['output_q']).sum(axis=1,dtype=np.int64)
+    np.testing.assert_array_equal(sdk['counts'],expected_counts)
+    np.testing.assert_array_equal(sdk['logits'],expected_counts*frozen['plan']['logit_scale']/16)
     assert sdk['spike_raster'][0].sum()>0
     assert sdk['spike_raster'][1].sum()==0 and np.all(sdk['voltage'][1]==0)
     np.testing.assert_array_equal(sdk['spike_raster'][0],sdk['spike_raster'][2])
