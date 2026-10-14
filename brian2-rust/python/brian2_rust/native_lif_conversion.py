@@ -1,4 +1,4 @@
-"""A bounded, explicit native-training → AtlasIR bridge for SpiNNaker2 LIF.
+"""Bounded native-training bridges with explicit target semantics.
 
 Only dense v1, subtract-reset, fresh-state inference is admitted. Quantization
 is opt-in and produces a distinct frozen model before any target conversion.
@@ -169,16 +169,28 @@ def build_native_lif_network(frozen, inputs):
     return net
 
 
-def export_native_lif(frozen, directory, *, steps, runner, target='spinnaker2'):
+def export_native_lif(frozen, directory, *, steps, runner, target='spinnaker2',
+                      allow_dynamics_approximation=False):
     """Export a zero-input template via AtlasIR and the existing LIF converter.
 
+    Xylo requires explicit ``allow_dynamics_approximation=True``: its integer
+    current/membrane dynamics are not equivalent to the source float LIF.
+    The same frozen integer weight banks are retained without retraining.
     Call run_simulator(bundle, binary_rasters) for fresh independent samples.
     The saved source is the zero-input template, not a receipt for later inputs.
     """
     import brian2 as b
     from .export import export_network
     from brian2_atlas.neuromorphic import export_ir
-    _require(target == 'spinnaker2', 'only SpiNNaker2 is supported by this bridge')
+    _require(type(allow_dynamics_approximation) is bool, 'approximation opt-in must be boolean')
+    _require(target in ('spinnaker2', 'xylosim'), 'unsupported native LIF target')
+    if target == 'xylosim':
+        _require(allow_dynamics_approximation,
+                 'Xylo changes neuron dynamics; set allow_dynamics_approximation=True explicitly')
+        from .native_lif_xylo import build_network, validate_xylo_frozen
+        validate_xylo_frozen(frozen)
+    else:
+        _require(not allow_dynamics_approximation, 'SpiNNaker2 does not require dynamics approximation')
     sizes=validate_frozen(frozen)
     _require(type(steps) is int and 1 <= steps <= MAX_BRIDGE_STEPS, 'inference duration must be 1..16 ticks')
     directory=Path(directory)
@@ -186,16 +198,26 @@ def export_native_lif(frozen, directory, *, steps, runner, target='spinnaker2'):
     previous=b.prefs.codegen.loop_invariant_optimisations
     try:
         b.prefs.codegen.loop_invariant_optimisations=False
-        net=build_native_lif_network(frozen,np.zeros((1,steps,sizes[0]),dtype=np.uint8))
+        inputs=np.zeros((1,steps,sizes[0]),dtype=np.uint8)
+        net=(build_network(frozen,inputs[0]) if target == 'xylosim'
+             else build_native_lif_network(frozen,inputs))
         directory.mkdir(parents=True)
         source=directory/'template.json'
         export_network(net,steps*b.ms,source)
-        bundle=export_ir(source,directory/'converted',target=target,profile='spinnaker2-lif-v1',runner=runner)
+        bundle=export_ir(source,directory/'converted',target=target,profile=('xylo-audio2-temporal-v1' if target == 'xylosim' else 'spinnaker2-lif-v1'),runner=runner)
     finally:
         b.prefs.codegen.loop_invariant_optimisations=previous
     bundle['native_training_bridge']=dict(schema=SCHEMA,frozen_sha256=frozen['sha256'],
         sizes=sizes,logit_scale=frozen['plan']['logit_scale'],fresh_state_per_sample=True,
         source_is_zero_input_template=True,quantization=frozen['quantization'])
+    bundle['native_training_bridge']['dynamics_equivalent'] = target == 'spinnaker2'
+    if target == 'xylosim':
+        bundle['native_training_bridge']['adaptation'] = dict(
+            schema='atlas.native-lif.xylo-adaptation.v1', same_integer_weight_banks=True,
+            synaptic_shift=1, membrane_shift=1, threshold_rounding='none',
+            threshold_rule='greater-or-equal', hidden_spike_cap=31, output_spike_cap=1,
+            state_arithmetic='signed-int16-saturating-minimum-decay',
+            timing_alignment='none', retrained=False)
     (directory/'frozen.json').write_bytes(canonical_bytes(frozen))
     (directory/'converted/bundle.json').write_bytes(canonical_bytes(bundle))
     return bundle

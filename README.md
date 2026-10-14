@@ -39,7 +39,10 @@ Native training currently uses
 explicit Brian2 model. A bounded [native LIF training bridge](brian2-rust/examples/neuromorphic/native_training/README.md)
 now connects Atlas-trained networks to SpiNNaker2 software inference through
 explicit quantization and AtlasIR. Arbitrary TensorFlow graphs and general
-native training plans are not admitted by this bridge.
+native training plans are not admitted by this bridge. A separate
+[Xylo adaptation](brian2-rust/examples/neuromorphic/native_xylo/README.md) preserves
+a small model's frozen weights but changes its neuron dynamics; it requires
+explicit opt-in and reports cross-target differences.
 
 See the [architecture notes](brian2-rust/architecture/README.md) for interfaces and
 validation boundaries. Figures: [PNG](brian2-rust/architecture/atlas-architecture.png),
@@ -136,6 +139,13 @@ The static inference path is **externally trained, frozen weights → Brian2
 model → AtlasIR → target simulator**. Atlas runs the same source model as the
 reference. Training through Atlas is a separate capability; this conversion
 path does not perform on-chip learning or import arbitrary TensorFlow graphs.
+
+A [same-weight native Xylo experiment](brian2-rust/examples/neuromorphic/native_xylo/README.md)
+uses a 16→32→4 network on all 4,157 MNIST test digits 0–3. SpiNNaker2 matches
+quantized native inference at **75.58%**; Xylo reaches **75.61%**, but 234
+predictions differ. This is an explicit dynamics adaptation, not exact native
+LIF conversion. The adapted AtlasIR itself matches Xylo's state/spike records
+on the documented replay subset.
 
 A separate [native training example](brian2-rust/examples/neuromorphic/native_training/README.md)
 trains both layers of a small MNIST SNN in Atlas, freezes and quantizes its

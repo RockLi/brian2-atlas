@@ -1,6 +1,6 @@
 # Neuromorphic conversion compatibility
 
-Verified 2026-10-13. This document describes the public
+Updated 2026-10-14; individual evidence records retain their run dates. This document describes the public
 `brian2_atlas.neuromorphic` conversion API in this repository, not everything a
 vendor chip or SDK can do. All execution evidence below is from software.
 
@@ -62,6 +62,21 @@ Simulator batching replicates independent admitted networks; it does not claim
 that a batched graph fits physical hardware. Other training schemas, masks,
 live state continuation and on-chip learning are rejected or not implemented.
 
+### Native weights on Xylo: approximate adaptation
+
+The [same-weight comparison](native_xylo/README.md) exports one native-trained
+16→32→4 model to both SpiNNaker2 and XyloSim. Xylo requires explicit
+`allow_dynamics_approximation=True`: topology and integer weight banks are
+preserved, but integer current/membrane dynamics replace the native float LIF
+transition. This is not a newly admitted cell in the exact profile matrix.
+
+On all 4,157 test digits 0–3, native quantized and SpiNNaker2 accuracy is 75.58%,
+while Xylo reaches 75.61%. There are 234 prediction differences and 217,243
+per-tick spike-count differences. Accuracy similarity does not establish
+cross-target equivalence. The adapted AtlasIR matches all 55,296 recorded Xylo
+state values on a 32-image replay; the configuration passes Samna validation.
+The bridge rejects models beyond 16 inputs, 64 hidden neurons and 8 outputs.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -76,7 +91,7 @@ live state continuation and on-chip learning are rejected or not implemented.
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
 | Stateful chunked input | Xylo temporal: 7-step chunks match a full run; not verified for the other temporal SDK path |
-| Native trained weights → inference | Verified for the bounded dense LIF bridge to SpiNNaker2; explicit quantization, beta=0.5, subtract reset, binary input, at most 16 ticks |
+| Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2; explicit approximate same-weight adaptation to Xylo, with measured spike/state/accuracy differences; both require fresh inference of at most 16 ticks |
 | Atlas live checkpoint/resume through conversion | Not implemented; native bridge exports weights for fresh inference, not optimizer/continuation state |
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
 | Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; native or external training occurs before freezing and conversion |
@@ -191,7 +206,10 @@ See the [original TF results](README.md) and
 - [x] Test numerical boundaries, silence, repeated input and seeded random cases.
 - [x] Compare full observable states; compare exact pulse timing where promised.
 - [x] Record discovered limitations instead of shifting outputs or loosening tolerance.
-- [ ] Add task-level accuracy evidence for temporal networks.
+- [x] Add task-level accuracy evidence for native LIF networks (MNIST and fixed-context character prediction).
+- [x] Measure same frozen weights on a second target, distinguishing approximate adaptation from exact lowering.
+- [ ] Preserve one native temporal transition function across two target SDKs.
+- [ ] Add an event-stream task where temporal input structure is necessary.
 - [ ] Verify physical placement, execution and measured energy/latency.
 
 The unchecked items are future work, not prerequisites already satisfied by

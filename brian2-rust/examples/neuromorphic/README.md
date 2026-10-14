@@ -6,6 +6,9 @@ The separate [native training example](native_training/README.md) trains a tempo
 LIF classifier in Atlas and exports it to SpiNNaker2. The
 [character language-model example](language_model/README.md) uses the same
 bridge for next-character prediction and per-token inference comparisons.
+The [same-weight Xylo comparison](native_xylo/README.md) adds an explicit
+approximate port of a small native-trained model, with measured spike/state
+differences rather than an equivalence claim.
 SDKs execute on CPU;
 there is no chip execution, energy measurement, on-chip training, or automatic
 conversion of arbitrary Keras/SavedModel graphs.

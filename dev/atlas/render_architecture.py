@@ -114,8 +114,8 @@ def render(out):
     t(650,1198,"Compare states, outputs and spike ticks; exact equality or an explicit profile tolerance.",size=13,color=MUTED)
     arrow([(320,1115),(320,1150)],PURPLE)
     box(70,1152,500,76,fill="#FFFFFF",edge=LINE,dashed=True)
-    t(91,1166,"Native LIF → AtlasIR → SpiNNaker2",size=13,weight="bold")
-    t(91,1198,"Explicit quantization · bounded fresh-state profile.",size=13,color=MUTED)
+    t(91,1166,"Native weights → AtlasIR → target",size=13,weight="bold")
+    t(91,1198,"SpiNNaker2: exact · Xylo: explicit approximation.",size=13,color=MUTED)
 
     t(70,1260,"Verification boundary",size=14,weight="bold")
     t(70,1292,"Native CPU/GPU and same-host MPI: bounded validation. Cross-host / multi-GPU: not qualified.",size=13,color=MUTED)

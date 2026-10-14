@@ -47,6 +47,12 @@ supported by this bridge. The [character language-model example](../examples/neu
 uses this bridge for fixed-context next-character prediction, with the host
 maintaining a four-character context window between fresh inference calls.
 
+A second [native-weight path to Xylo](../examples/neuromorphic/native_xylo/README.md)
+preserves the frozen integer weights but explicitly adapts the neuron dynamics.
+It requires opt-in and emits `dynamics_equivalent: false`. Exact validation of
+the adapted AtlasIR against Xylo is separate from the measured disagreement
+between the original native LIF model and Xylo.
+
 ### Neuromorphic conversion
 
 `convert_ir` / `export_ir` start with AtlasIR, run native validation and target

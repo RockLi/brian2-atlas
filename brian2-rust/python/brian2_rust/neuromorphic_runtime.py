@@ -36,6 +36,12 @@ def run_simulator(bundle, samples=None, *, batch_size=50):
             raise ValueError('DynapSim requires dynapse and its embedded spike raster')
         return _module('dynapse_runtime').run(bundle['plan'])
     if bundle.get('profile') == 'xylo-audio2-temporal-v1':
+        if 'native_training_bridge' in bundle and samples is not None:
+            if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
+                    or bundle.get('target') != 'xylosim'):
+                raise ValueError('unknown native Xylo bundle')
+            return _module('xylo_runtime').run_native_batch(
+                bundle['plan'], bundle['native_training_bridge'], samples)
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('target') != 'xylosim' or samples is not None):
             raise ValueError('Xylo temporal requires xylosim and its embedded spike-count raster')
