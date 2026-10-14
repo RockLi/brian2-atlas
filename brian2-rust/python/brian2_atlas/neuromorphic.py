@@ -120,3 +120,5 @@ def export_ir(model_path, directory, **kwargs):
 from brian2_rust.native_lif_conversion import freeze_native_lif, export_native_lif
 
 from brian2_rust.native_xylo_conversion import freeze_native_xylo, export_native_xylo
+
+from brian2_rust.xylo_runtime import XyloInferenceSession

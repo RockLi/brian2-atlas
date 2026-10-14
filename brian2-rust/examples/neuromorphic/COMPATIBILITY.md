@@ -94,6 +94,20 @@ Both checkpoints are selected on validation only. Encoding, model size and
 training differ from the previous 75.61% adaptation; this is not a same-model
 accuracy improvement or a ten-class MNIST result.
 
+### Recurrent integer training and chunked Xylo inference
+
+The [v2 recurrent source bridge](native_xylo_recurrent/README.md) trains input,
+readout and recurrent weight banks, with a delayed readout window. Native and
+stock SDK execution both reach 100% on 1,872 held-out synthetic AB/BA sequences;
+zeroing recurrence or resetting state at query gives 50%. All 5,840,640
+spike/current/membrane values match. Both executors preserve full-run results
+with 7- and 13-tick chunks; SDK sessions also match irregular boundaries on every
+test sequence. Concrete AtlasIR replay checks another 99,840 values exactly.
+
+This is evidence of learned memory in a bounded order task, not a real-world
+benchmark or proof of long-duration generalization. Training remains fresh
+full-sequence BPTT; only inference carries state, for at most 128 total ticks.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -107,8 +121,8 @@ accuracy improvement or a ten-class MNIST result.
 | Stateful recurrence | Temporal SpiNNaker2 and Xylo; not admitted by the static profiles |
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
-| Stateful chunked input | Xylo temporal: 7-step chunks match a full run; not verified for the other temporal SDK path |
-| Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2 and approximate LIF adaptation to Xylo (1–16 ticks); separate exact integer-trained Xylo bridge (1–128 ticks). All require fresh inference |
+| Stateful chunked input | Xylo temporal and native recurrent v2: full runs match fixed and irregular chunks; not verified for other temporal SDK paths |
+| Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2 and approximate LIF adaptation to Xylo (1–16 ticks); separate exact integer-trained Xylo bridge (1–128 ticks). All start fresh sequences; recurrent Xylo v2 carries inference state between chunks |
 | Atlas live checkpoint/resume through conversion | Not implemented; native bridge exports weights for fresh inference, not optimizer/continuation state |
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
 | Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; native or external training occurs before freezing and conversion |
@@ -146,13 +160,15 @@ CPU/GPU simulation and training surfaces.
 - **Xylo temporal:** at most 16 inputs, 64 hidden neurons and 8 outputs in the
   current pilot, 1–10,000 steps; input counts 0–15; signed weights -128–127;
   signed 16-bit state/bias; synaptic shifts 0–15, membrane shifts 1–15;
-  hidden/output spike caps 31/1. Exact integer trace comparison. The 64-hidden
+  hidden/output spike caps 31/1; recurrent fanout at most 63 per hidden neuron. Exact integer trace comparison. The 64-hidden
   limit is this compiler profile's limit, not the silicon maximum.
 - **Native integer Xylo training/export:** the temporal profile restricted to
-  binary inputs, one feedforward hidden layer, zero bias/recurrence, shifts one,
-  1–128 fresh ticks and the same 16/64/8 bounds. Forward uses int8 nearest-even
-  weights and int16 state; backward uses surrogate gradients and rounding STE.
-  CPU only. No general Brian training-plan lowering or neuron-state carry.
+  binary inputs, one hidden layer, zero bias, shifts one, and 16/64/8 bounds.
+  V1 is feedforward; v2 adds hidden recurrence (fanout ≤63), a readout window
+  and explicit evaluation-state carry. The entire sequence, including chunks,
+  is 1–128 ticks. Forward uses int8 nearest-even weights and int16 state;
+  backward uses surrogate gradients and rounding STE. CPU only; training is
+  fresh full-sequence BPTT, without TBPTT or general Brian-plan lowering.
 - **Count encodings are not hardware fit claims:** SpiNNaker2 expands counts
   into comparator neurons. The static 784-input MNIST Xylo encoding exceeds
   Xylo Audio 2's 16 hardware input channels. Only its separate temporal profile
@@ -184,6 +200,7 @@ combination of accepted parameters.
 | SpiNNaker2: temporal LIF | 48 | 101,940 voltage samples | Max float64 error 1.14e-13; 35,093 spike events exactly match |
 | XyloSim: temporal, preceding suite | 50 | 505,455 | Exact, including 7-step chunks |
 | XyloSim: native integer-trained four-class MNIST | 1 | 27,136,896 spike/current/membrane values | Exact; 3,832/4,157 correct; 208,896-value concrete AtlasIR replay also exact |
+| XyloSim: recurrent integer order task | 1 | 5,840,640 spike/current/membrane values | Exact, including fixed/irregular chunks; 1,872/1,872 correct; both memory controls 50% |
 | DynapSim: circuit dynamics | 16 | 36,985 | Float32/f64 tolerance checks; 510 spike events exactly match |
 
 Static cases include exhaustive small binary domains, zero/full-scale/one-hot
@@ -233,7 +250,8 @@ See the [original TF results](README.md) and
 - [x] Measure same frozen weights on a second target, distinguishing approximate adaptation from exact lowering.
 - [x] Train with Xylo integer dynamics and preserve native spike/state traces after export.
 - [ ] Preserve one native temporal transition function across two target SDKs.
-- [ ] Add an event-stream task where temporal input structure is necessary.
+- [x] Add a bounded synthetic event-order task with learned recurrence and memory controls.
+- [ ] Add a real event-stream task and test temporal generalization beyond the training generator.
 - [ ] Verify physical placement, execution and measured energy/latency.
 
 The unchecked items are future work, not prerequisites already satisfied by

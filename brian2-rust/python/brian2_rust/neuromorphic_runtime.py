@@ -29,7 +29,9 @@ def validate_inputs(bundle, samples):
     return x.astype(np.uint8)
 
 
-def run_simulator(bundle, samples=None, *, batch_size=50):
+def run_simulator(bundle, samples=None, *, batch_size=50, chunk_steps=None):
+    if chunk_steps is not None and bundle.get('profile')!='xylo-audio2-temporal-v1':
+        raise ValueError('chunk_steps is supported only by Xylo temporal execution')
     if bundle.get('profile') == 'dynapse-dpi-v1':
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('target') != 'dynapse' or samples is not None):
@@ -41,11 +43,11 @@ def run_simulator(bundle, samples=None, *, batch_size=50):
                     or bundle.get('target') != 'xylosim'):
                 raise ValueError('unknown native Xylo bundle')
             return _module('xylo_runtime').run_native_batch(
-                bundle['plan'], bundle['native_training_bridge'], samples)
+                bundle['plan'], bundle['native_training_bridge'], samples, chunk_steps=chunk_steps)
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('target') != 'xylosim' or samples is not None):
             raise ValueError('Xylo temporal requires xylosim and its embedded spike-count raster')
-        return _module('xylo_runtime').run(bundle['plan'])
+        return _module('xylo_runtime').run(bundle['plan'],chunk_steps=chunk_steps)
     if bundle.get('target') == 'spinnaker2' and bundle.get('profile') == 'spinnaker2-lif-v1':
         if 'native_training_bridge' in bundle and samples is not None:
             if bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1':

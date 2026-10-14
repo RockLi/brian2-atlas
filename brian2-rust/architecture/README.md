@@ -61,6 +61,13 @@ and stock XyloSim traces separately. This exact path is distinct from the
 approximate float-LIF adaptation; neither establishes cross-SDK equivalence
 for arbitrary temporal networks. GPU/MPI are not admitted by the integer plan.
 
+The [recurrent integer v2 extension](../examples/neuromorphic/native_xylo_recurrent/README.md)
+trains input, readout and recurrent weights with full-sequence BPTT. Frozen
+inference carries currents, membranes, pending spike counts and readout history
+between chunks. `XyloInferenceSession` retains the stock simulator's state.
+Whole-run/chunk equivalence is checked within a 128-tick horizon; this does not
+add state-carry training or unrestricted streaming.
+
 ### Neuromorphic conversion
 
 `convert_ir` / `export_ir` start with AtlasIR, run native validation and target

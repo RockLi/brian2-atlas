@@ -75,7 +75,7 @@ def render(out):
     t(95,766,"CPU / CUDA / Apple Metal",size=17,weight="bold")
     t(95,811,"MPI training · same-host validation",size=15)
     t(95,856,"BPTT / TBPTT · bounded semantics",size=15)
-    t(95,889,"Xylo integer plan: CPU only",size=13,color=MUTED)
+    t(95,889,"Xylo: CPU integer training / stateful inference",size=13,color=MUTED)
     rule(95,914,450)
     t(95,939,"Result",size=14,color=PURPLE,weight="bold")
     t(95,974,"Weights + optimizer / state checkpoints",size=15)

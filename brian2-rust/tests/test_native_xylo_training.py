@@ -75,14 +75,15 @@ def _linearized_loss(plan, weights, perturbed, x, labels):
     This forward-only oracle independently checks the native reverse pass.
     """
     scale=plan['weight_scale'];sizes=plan['sizes'];cells=sum(sizes[1:]);batch,steps,_=x.shape
-    w0=[np.rint(np.asarray(w)*scale).reshape(a,b) for w,a,b in zip(weights,sizes,sizes[1:])]
+    shapes=list(zip(sizes,sizes[1:]))+([(sizes[1],sizes[1])] if plan.get('recurrent') else [])
+    w0=[np.rint(np.asarray(w)*scale).reshape(a,b) for w,(a,b) in zip(weights,shapes)]
     wp=[w+scale*(np.asarray(new)-old).reshape(w.shape) for w,new,old in zip(w0,perturbed,weights)]
     logits=[]
     def clip(z,zp):return np.clip(z,-32768,32767),np.clip(z,-32768,32767)+((-32768<=z)&(z<=32767))*(zp-z)
     def decay(z):return np.floor(z/2)+(z==1)
     for row in x:
         i0=np.zeros(cells);ip=i0.copy();v0=i0.copy();vp=i0.copy();q0=i0.copy();qp=i0.copy();counts=np.zeros(sizes[-1])
-        for tick in row:
+        for time,tick in enumerate(row):
             new_q0=np.zeros(cells);new_qp=np.zeros(cells)
             for l in range(2):
                 offset=0 if l==0 else sizes[1];n=sizes[l+1];cap=31 if l==0 else 1;theta=plan['threshold'][l]
@@ -90,6 +91,9 @@ def _linearized_loss(plan, weights, perturbed, x, labels):
                 for j in range(n):
                     k=offset+j;s0=i0[k];sp=ip[k]
                     for src in range(sizes[l]):s0,sp=clip(s0+w0[l][src,j]*a0[src],sp+wp[l][src,j]*ap[src])
+                    if l==0 and plan.get('recurrent'):
+                        for src in range(sizes[1]):
+                            s0,sp=clip(s0+w0[2][src,j]*q0[src],sp+wp[2][src,j]*qp[src])
                     ni=s0-decay(s0);nip=ni+.5*(sp-s0)
                     delta=-decay(v0[k])+ni;deltap=delta-.5*(vp[k]-v0[k])+nip-ni
                     delta,deltap=clip(delta,deltap)
@@ -99,8 +103,9 @@ def _linearized_loss(plan, weights, perturbed, x, labels):
                     qpert=q+derivative*(up-u)
                     i0[k]=ni;ip[k]=nip;v0[k]=u-q*theta;vp[k]=up-q*theta
                     new_q0[k]=q;new_qp[k]=qpert
-            q0,qp=new_q0,new_qp;counts+=qp[-sizes[-1]:]
-        logits.append(counts*plan['logit_scale']/steps)
+            q0,qp=new_q0,new_qp
+            if time>=plan.get('readout_start',0):counts+=qp[-sizes[-1]:]
+        logits.append(counts*plan['logit_scale']/(steps-plan.get('readout_start',0)))
     logits=np.asarray(logits);maximum=logits.max(1)
     return np.mean(np.log(np.exp(logits-maximum[:,None]).sum(1))+maximum-logits[np.arange(batch),labels])
 

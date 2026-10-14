@@ -10,6 +10,10 @@ This is a dedicated, bounded training plan, not automatic differentiation of
 arbitrary AtlasIR. It joins the existing `xylo-audio2-temporal-v1` conversion
 profile through an explicit Brian2 model and AtlasIR.
 
+The [v2 recurrent extension](../native_xylo_recurrent/README.md) adds native
+recurrent training and chunked inference for a delayed order task. This page
+and its MNIST evidence describe the original feedforward v1 contract.
+
 ## Held-out accuracy
 
 All results below use **all 4,157 official MNIST test images with labels 0–3**.

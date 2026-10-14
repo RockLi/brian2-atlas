@@ -172,6 +172,8 @@ def _lower_validated(model):
     require(delivery==[r for r in ('input','recurrent','readout') if r in projections],
             'synapse delivery must be input, recurrent, then readout')
     projections.setdefault('recurrent',np.zeros((sizes['hidden'],sizes['hidden']),dtype=int).tolist())
+    require(np.all(np.count_nonzero(np.asarray(projections['recurrent']),axis=1)<=63),
+            'recurrent fanout must be at most 63 per hidden neuron')
     return dict(schema='atlas.xylo-audio2.temporal-plan.v1',roles=roles,sizes=sizes,parameters=params,
                 weights=projections,input_raster=raster.astype(int).tolist(),steps=steps,dt_seconds=.001,
                 source_hashes=model['protocol']['layers'],hardware_dimension_limits_passed=True,

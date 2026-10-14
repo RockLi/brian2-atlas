@@ -43,6 +43,12 @@ def build_xylo_network(sizes, weight_banks, thresholds, raster):
         syn.connect(i=i, j=j)
         syn.w = weights[i, j]
         objects.append(syn)
+    if len(weight_banks)==3:
+        weights=np.asarray(weight_banks[2]).reshape(sizes[1],sizes[1]);i,j=np.nonzero(weights)
+        if len(i):
+            syn=b.Synapses(groups[0],groups[0],'w:1 (constant)',
+                on_pre='I_post=clip(I_post+w*q_pre,-32768,32767)',clock=clock,name='b_xylo_recurrent*')
+            syn.connect(i=i,j=j);syn.w=weights[i,j];objects.append(syn)
     network = b.Network(*objects)
     network.schedule = ['start', 'synapses', 'groups', 'thresholds', 'resets', 'end']
     return network

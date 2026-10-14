@@ -1,4 +1,5 @@
 """Run temporal AtlasIR plans through validated official Xylo Audio 2 configs."""
+import copy
 import hashlib
 from pathlib import Path
 import numpy as np
@@ -51,7 +52,7 @@ def run(plan, *, chunk_steps=None):
     return result
 
 
-def run_native_batch(plan, bridge, samples):
+def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
     """Execute frozen integer weights using the declared exact or adapted bridge.
 
     Reset the stock simulator between samples; never replicate the graph past
@@ -59,7 +60,7 @@ def run_native_batch(plan, bridge, samples):
     """
     x=np.asarray(samples)
     sizes=bridge.get('sizes', [])
-    exact=(bridge.get('schema') == 'atlas.native-xylo-frozen.v1'
+    exact=(bridge.get('schema') in ('atlas.native-xylo-frozen.v1','atlas.native-xylo-frozen.v2')
            and bridge.get('dynamics_equivalent') is True)
     approximate=(bridge.get('schema') == 'atlas.native-lif-frozen.v1'
                  and bridge.get('dynamics_equivalent') is False
@@ -72,16 +73,69 @@ def run_native_batch(plan, bridge, samples):
     if (x.ndim != 3 or len(x) < 1 or x.shape[1:] != (plan['steps'], sizes[0])
             or not np.isfinite(x).all() or not ((x == 0) | (x == 1)).all()):
         raise ValueError('native Xylo inference requires binary batch × time × input')
+    readout_start=bridge.get('readout_start',0)
+    recurrent=bridge.get('schema')=='atlas.native-xylo-frozen.v2'
+    if (type(readout_start) is not int or not 0<=readout_start<plan['steps']
+            or (recurrent and bridge.get('stateful_chunks') is not True)):
+        raise ValueError('invalid recurrent Xylo readout contract')
+    if chunk_steps is not None and (not recurrent or type(chunk_steps) is not int or chunk_steps<1):
+        raise ValueError('native chunking requires v2 and positive integer chunk_steps')
     model,configuration,sdk_hash=_model(plan)
     records=[]
     for raster in x:
         model.reset_state()
-        records.append(_records(model,raster.astype(int)))
+        width=chunk_steps or len(raster)
+        chunks=[_records(model,raster[start:start+width].astype(int)) for start in range(0,len(raster),width)]
+        records.append({k:np.concatenate([r[k] for r in chunks]) for k in chunks[0]})
     result={key:np.stack([r[key] for r in records]) for key in records[0]}
     result['spike_raster']=np.concatenate((result['hidden_q'],result['output_q']),axis=2)
     result['voltage']=np.concatenate((result['hidden_v'],result['output_v']),axis=2)
-    result['counts']=result['output_q'].sum(axis=1,dtype=np.int64)
-    result['logits']=result['counts']*bridge['logit_scale']/plan['steps']
+    result['counts']=result['output_q'][:,readout_start:].sum(axis=1,dtype=np.int64)
+    result['logits']=result['counts']*bridge['logit_scale']/(plan['steps']-readout_start)
     result.update(configuration_json=configuration,configuration_valid=np.array(True),
                   sdk_binary_sha256=sdk_hash,dynamics_equivalent=exact)
     return result
+
+
+class XyloInferenceSession:
+    """One v2 sequence on a persistent stock XyloSim model, bounded by export.
+
+    push() accepts the next binary time x input chunk. Counts/logits accumulate
+    only within the absolute readout window. reset() starts a new independent
+    sequence. No arbitrary SDK-state injection or on-chip learning is provided.
+    """
+    def __init__(self,bundle):
+        if (bundle.get('schema')!='atlas.neuromorphic.simulator-bundle.v1'
+                or bundle.get('target')!='xylosim' or bundle.get('profile')!='xylo-audio2-temporal-v1'):
+            raise ValueError('XyloInferenceSession requires an exported Xylo bundle')
+        self._plan=copy.deepcopy(bundle['plan']);self._bridge=copy.deepcopy(bundle.get('native_training_bridge',{}))
+        p=self._plan;d=self._bridge
+        if (d.get('schema')!='atlas.native-xylo-frozen.v2' or d.get('dynamics_equivalent') is not True
+                or d.get('stateful_chunks') is not True or d.get('fresh_state_per_sample') is not True
+                or d.get('source_is_zero_input_template') is not True or np.any(p['input_raster'])
+                or d.get('sizes')!=[p['sizes'][k] for k in ('input','hidden','output')]
+                or type(d.get('readout_start')) is not int or not 0<=d['readout_start']<p['steps']
+                or not 1<=p['steps']<=128 or not np.isfinite(d.get('logit_scale',np.nan))
+                or not 0<d['logit_scale']<=100):
+            raise ValueError('invalid native recurrent Xylo session contract')
+        self._model,self.configuration_json,self.sdk_binary_sha256=_model(p)
+        self.reset()
+
+    def reset(self):
+        self._model.reset_state();self.elapsed_ticks=0
+        self._counts=np.zeros(self._plan['sizes']['output'],dtype=np.int64)
+
+    def push(self,inputs):
+        x=np.asarray(inputs);p=self._plan;d=self._bridge
+        if (x.ndim!=2 or not 1<=len(x)<=p['steps']-self.elapsed_ticks or x.shape[1]!=p['sizes']['input']
+                or not np.isfinite(x).all() or not ((x==0)|(x==1)).all()):
+            raise ValueError('Xylo chunk requires binary time x input within the remaining horizon')
+        result=_records(self._model,x.astype(int))
+        start=max(0,d['readout_start']-self.elapsed_ticks)
+        self._counts+=result['output_q'][start:].sum(axis=0,dtype=np.int64)
+        self.elapsed_ticks+=len(x);read_ticks=max(0,self.elapsed_ticks-d['readout_start'])
+        result.update(spike_raster=np.concatenate((result['hidden_q'],result['output_q']),axis=1),
+            voltage=np.concatenate((result['hidden_v'],result['output_v']),axis=1),
+            counts=self._counts.copy(),logits=self._counts*d['logit_scale']/max(1,read_ticks),
+            elapsed_ticks=self.elapsed_ticks,readout_ticks=read_ticks)
+        return result

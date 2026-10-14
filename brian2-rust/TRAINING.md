@@ -10,9 +10,13 @@ optimizer updates. It does not require Brian2CUDA or Brian2GeNN.
 
 `NativeXyloTrainer` runs a dedicated CPU plan with Xylo Audio 2 integer forward
 dynamics, int8 quantization-aware weights, surrogate BPTT and native Adam/SGD.
-It exports fresh inference through AtlasIR to XyloSim without dynamics
-adaptation. It is separate from `NativeLIFTrainer`'s general plans and does not
-inherit GPU/MPI, state continuation or arbitrary Brian equation support.
+It exports inference through AtlasIR to XyloSim without dynamics adaptation.
+The v1 plan is feedforward; `xylo_recurrent_training_plan` adds a v2 recurrent
+bank, an absolute readout window and explicit evaluation-state continuation.
+Training remains fresh full-sequence BPTT; chunks are inference-only and the
+total sequence is limited to 128 ticks. This is separate from `NativeLIFTrainer`'s
+general plans and does not inherit GPU/MPI or arbitrary Brian equation support.
+See the [recurrent task, state API and memory controls](examples/neuromorphic/native_xylo_recurrent/README.md).
 See the [contract, API and held-out evidence](examples/neuromorphic/native_xylo_integer/README.md).
 
 ## Start from a runnable example

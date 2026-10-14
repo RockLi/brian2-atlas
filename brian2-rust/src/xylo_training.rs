@@ -1,6 +1,7 @@
 //! CPU quantization-aware training with the admitted Xylo Audio 2 transition.
 //! Integer forward; declared surrogate/straight-through backward; Adam in f64.
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use crate::training::{Optimizer, State, Surrogate};
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 fn require(ok: bool, message: &str) -> Result<()> { if ok {Ok(())} else {Err(message.into())} }
@@ -26,6 +27,10 @@ pub struct Plan {
     pub logit_scale: f64,
     pub max_tape_bytes: usize,
     pub seed: u64,
+    #[serde(default, skip_serializing_if="Option::is_none")]
+    pub recurrent: Option<bool>,
+    #[serde(default, skip_serializing_if="Option::is_none")]
+    pub readout_start: Option<usize>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -35,7 +40,19 @@ pub struct Request {
     pub operation: String,
     pub inputs: Vec<Vec<Vec<f64>>>,
     pub labels: Vec<usize>,
-    pub initial: Option<Vec<Vec<f64>>>,
+    pub initial: Option<Continuation>,
+}
+/// Explicit evaluation state, including pending spikes and readout history.
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Continuation {
+    pub schema: String,
+    pub model_sha256: String,
+    pub elapsed_ticks: usize,
+    pub currents: Vec<Vec<i32>>,
+    pub membranes: Vec<Vec<i32>>,
+    pub spikes: Vec<Vec<i32>>,
+    pub counts: Vec<Vec<i32>>,
 }
 #[derive(Serialize)]
 pub struct Output {
@@ -52,13 +69,19 @@ pub struct Output {
     pub currents: Option<Vec<Vec<Vec<f64>>>>,
     #[serde(skip_serializing_if="Option::is_none")]
     pub membranes: Option<Vec<Vec<Vec<f64>>>>,
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub continuation: Option<Continuation>,
     pub tape_bytes: usize,
     pub gradient_scope: &'static str,
 }
 impl Plan {
     fn validate(&self) -> Result<()> {
-        require(self.schema == "atlas-xylo-training-plan-v1" && self.backend == "cpu",
-                "Xylo training requires its CPU v1 plan")?;
+        let v2=self.schema=="atlas-xylo-training-plan-v2";
+        require((self.schema=="atlas-xylo-training-plan-v1" || v2) && self.backend=="cpu",
+                "Xylo training requires its CPU v1/v2 plan")?;
+        require(if v2 {self.recurrent==Some(true) && self.readout_start.is_some_and(|n|n<128)}
+                else {self.recurrent.is_none() && self.readout_start.is_none()},
+                "Xylo v2 requires recurrence and bounded readout_start; v1 rejects these fields")?;
         require(self.sizes.len()==3 && (1..=16).contains(&self.sizes[0]) &&
                 (1..=64).contains(&self.sizes[1]) && (1..=8).contains(&self.sizes[2]),
                 "Xylo training requires 1..16 inputs, 1..64 hidden, 1..8 outputs")?;
@@ -86,7 +109,10 @@ pub fn execute(request: Request) -> Result<Output> {
     let Request{plan:p,state,operation,inputs:x,labels,initial}=request;
     p.validate()?;
     require(matches!(operation.as_str(),"train"|"evaluate"|"gradients"),"unknown Xylo training operation")?;
-    require(initial.is_none(),"Xylo training v1 requires fresh state")?;
+    let recurrent=p.schema=="atlas-xylo-training-plan-v2";
+    require(initial.is_none() || (recurrent && operation=="evaluate"),
+            "Xylo continuation is evaluation-only in v2; training requires fresh state")?;
+    let readout_start=p.readout_start.unwrap_or(0);
     let [ni,nh,no]=[p.sizes[0],p.sizes[1],p.sizes[2]];
     let cells=nh+no;let batch=x.len();
     require((1..=1024).contains(&batch) && labels.len()==batch,"invalid Xylo batch/labels")?;
@@ -94,11 +120,11 @@ pub fn execute(request: Request) -> Result<Output> {
     require((1..=128).contains(&steps) && x.iter().all(|s| s.len()==steps && s.iter().all(|r|
         r.len()==ni && r.iter().all(|v| *v==0.0 || *v==1.0))) && labels.iter().all(|y| *y<no),
         "Xylo inputs must be binary batch x 1..128 ticks x input; labels in range")?;
-    let lengths=[ni*nh,nh*no];
+    let lengths=if recurrent {vec![ni*nh,nh*no,nh*nh]} else {vec![ni*nh,nh*no]};
     let mut state=state.ok_or("Xylo training requires explicit initial weights")?;
-    require(state.weights.len()==2 && state.first_moment.len()==2 && state.second_moment.len()==2,
+    require(state.weights.len()==lengths.len() && state.first_moment.len()==lengths.len() && state.second_moment.len()==lengths.len(),
         "Xylo optimizer bank mismatch")?;
-    for l in 0..2 {
+    for l in 0..lengths.len() {
         require(state.weights[l].len()==lengths[l] && state.first_moment[l].len()==lengths[l]
             && state.second_moment[l].len()==lengths[l] &&
             state.weights[l].iter().all(|v| v.is_finite() && (-128.0..=127.0).contains(&(v*p.weight_scale)))
@@ -112,6 +138,24 @@ pub fn execute(request: Request) -> Result<Output> {
     require(bytes<=p.max_tape_bytes,"Xylo training tape budget exceeded")?;
     let weights:Vec<Vec<i32>>=state.weights.iter().map(|bank|bank.iter()
         .map(|v|(v*p.weight_scale).round_ties_even() as i32).collect()).collect();
+    let identity=format!("{:x}",Sha256::digest(serde_json::to_vec(&(&p,&weights))?));
+    let initial=initial.unwrap_or_else(||Continuation{schema:"atlas.xylo-evaluation-state.v1".into(),
+        model_sha256:identity.clone(),elapsed_ticks:0,currents:vec![vec![0;cells];batch],
+        membranes:vec![vec![0;cells];batch],spikes:vec![vec![0;cells];batch],counts:vec![vec![0;no];batch]});
+    require(initial.schema=="atlas.xylo-evaluation-state.v1" && initial.model_sha256==identity,
+            "Xylo continuation model identity mismatch")?;
+    require(initial.elapsed_ticks<=128 && steps<=128-initial.elapsed_ticks,
+            "Xylo continuation exceeds 128-tick horizon")?;
+    let elapsed=initial.elapsed_ticks;let read_ticks=(elapsed+steps).saturating_sub(readout_start);
+    let old_read_ticks=elapsed.saturating_sub(readout_start);
+    require(operation=="evaluate" || read_ticks>0,"training requires a nonempty readout window")?;
+    for bank in [&initial.currents,&initial.membranes,&initial.spikes] {
+        require(bank.len()==batch && bank.iter().all(|r|r.len()==cells),"Xylo continuation state shape mismatch")?;
+    }
+    require(initial.currents.iter().flatten().chain(initial.membranes.iter().flatten()).all(|v|(LO..=HI).contains(v))
+        && initial.spikes.iter().all(|r|r.iter().enumerate().all(|(k,q)|*q>=0 && *q<=if k<nh {31}else{1}))
+        && initial.counts.len()==batch && initial.counts.iter().all(|r|r.len()==no && r.iter().all(|v|*v>=0 && *v<=old_read_ticks as i32)),
+        "Xylo continuation state out of range")?;
     let mut current=vec![0;count];let mut voltage=vec![0;count];let mut pre=vec![0;count];
     let mut spike=vec![0;count];
     let at=|b:usize,t:usize,k:usize| (b*steps+t)*cells+k;
@@ -119,21 +163,31 @@ pub fn execute(request: Request) -> Result<Output> {
         let (fan,n,offset,cap)=if l==0 {(ni,nh,0,31)} else {(nh,no,nh,1)};
         for j in 0..n {
             let idx=at(b,t,offset+j);
-            let mut i=if t==0 {0} else {current[idx-cells]};
+            let mut i=if t==0 {initial.currents[b][offset+j]} else {current[idx-cells]};
             for src in 0..fan {
-                let input=if l==0 {x[b][t][src] as i32} else if t==0 {0} else {spike[at(b,t-1,src)]};
+                let input=if l==0 {x[b][t][src] as i32} else if t==0 {initial.spikes[b][src]} else {spike[at(b,t-1,src)]};
                 i=clip(i+weights[l][src*n+j]*input);
             }
+            if recurrent && l==0 {
+                for src in 0..nh {
+                    let input=if t==0 {initial.spikes[b][src]} else {spike[at(b,t-1,src)]};
+                    i=clip(i+weights[2][src*nh+j]*input);
+                }
+            }
             i-=decay(i);current[idx]=i;
-            let old=if t==0 {0} else {voltage[idx-cells]};
+            let old=if t==0 {initial.membranes[b][offset+j]} else {voltage[idx-cells]};
             let u=clip(old+clip(-decay(old)+i));pre[idx]=u;
             let q=(u.div_euclid(p.threshold[l])).clamp(0,cap);spike[idx]=q;
             voltage[idx]=u-q*p.threshold[l];
         }
     }}}
     let mut logits=vec![vec![0.0;no];batch];let mut dlogits=logits.clone();let mut loss=0.0;
+    let mut counts=initial.counts.clone();
     for b in 0..batch {
-        for j in 0..no { logits[b][j]=(0..steps).map(|t|spike[at(b,t,nh+j)] as f64).sum::<f64>()*p.logit_scale/steps as f64; }
+        for j in 0..no {
+            counts[b][j]+=(0..steps).filter(|t|elapsed+t>=readout_start).map(|t|spike[at(b,t,nh+j)]).sum::<i32>();
+            logits[b][j]=counts[b][j] as f64*p.logit_scale/read_ticks.max(1) as f64;
+        }
         let max=logits[b].iter().copied().fold(f64::NEG_INFINITY,f64::max);
         let z=logits[b].iter().map(|v|(v-max).exp()).sum::<f64>();
         loss+=(z.ln()+max-logits[b][labels[b]])/batch as f64;
@@ -143,7 +197,7 @@ pub fn execute(request: Request) -> Result<Output> {
     if operation!="evaluate" {
         let mut di=vec![0.0;count];let mut dv=di.clone();let mut dq=di.clone();
         for b in 0..batch { for t in 0..steps { for j in 0..no {
-            dq[at(b,t,nh+j)]=dlogits[b][j]*p.logit_scale/steps as f64;
+            if t>=readout_start {dq[at(b,t,nh+j)]=dlogits[b][j]*p.logit_scale/read_ticks as f64;}
         }}}
         for b in 0..batch {for t in (0..steps).rev() {for l in (0..2).rev() {
             let (fan,n,offset,cap)=if l==0 {(ni,nh,0,31)} else {(nh,no,nh,1)};
@@ -162,12 +216,26 @@ pub fn execute(request: Request) -> Result<Output> {
                 let mut sum=if t==0 {0} else {current[idx-cells]};
                 let mut before=vec![0;fan];
                 for src in 0..fan {
-                    let input=if l==0 {x[b][t][src] as i32} else if t==0 {0} else {spike[at(b,t-1,src)]};
+                    let input=if l==0 {x[b][t][src] as i32} else if t==0 {initial.spikes[b][src]} else {spike[at(b,t-1,src)]};
                     before[src]=sum;sum=clip(sum+weights[l][src*n+j]*input);
+                }
+                // Recurrent input follows external input; reverse it first.
+                if recurrent && l==0 {
+                    let mut rec_before=vec![0;nh];
+                    for src in 0..nh {
+                        let input=if t==0 {0} else {spike[at(b,t-1,src)]};
+                        rec_before[src]=sum;sum=clip(sum+weights[2][src*nh+j]*input);
+                    }
+                    for src in (0..nh).rev() {
+                        let input=if t==0 {0} else {spike[at(b,t-1,src)]};let w=weights[2][src*nh+j];
+                        gsum*=interior(rec_before[src]+w*input);
+                        gradient[2][src*nh+j]+=gsum*input as f64*p.weight_scale;
+                        if t>0 {dq[at(b,t-1,src)]+=gsum*w as f64;}
+                    }
                 }
                 // Reverse each saturating accumulation in its source-major order.
                 for src in (0..fan).rev() {
-                    let input=if l==0 {x[b][t][src] as i32} else if t==0 {0} else {spike[at(b,t-1,src)]};
+                    let input=if l==0 {x[b][t][src] as i32} else if t==0 {initial.spikes[b][src]} else {spike[at(b,t-1,src)]};
                     let w=weights[l][src*n+j];gsum*=interior(before[src]+w*input);
                     gradient[l][src*n+j]+=gsum*input as f64*p.weight_scale;
                     if l==1 && t>0 {dq[at(b,t-1,src)]+=gsum*w as f64;}
@@ -180,7 +248,7 @@ pub fn execute(request: Request) -> Result<Output> {
     if operation=="train" {
         state.step=state.step.checked_add(1).ok_or("Xylo optimizer step overflow")?;
         let o=&p.optimizer;
-        for l in 0..2 {for e in 0..lengths[l] {
+        for l in 0..lengths.len() {for e in 0..lengths[l] {
             let g=gradient[l][e];
             let update=if o.kind=="sgd" {g} else {
                 state.first_moment[l][e]=o.beta1*state.first_moment[l][e]+(1.0-o.beta1)*g;
@@ -195,9 +263,14 @@ pub fn execute(request: Request) -> Result<Output> {
     let nested=|data:&[i32]|(0..batch).map(|b|(0..steps).map(|t|
         data[at(b,t,0)..at(b,t,0)+cells].iter().map(|v|*v as f64).collect()).collect()).collect();
     let final_membrane=(0..batch).map(|b|voltage[at(b,steps-1,0)..at(b,steps-1,0)+cells].iter().map(|v|*v as f64).collect()).collect();
+    let continuation=if recurrent && operation=="evaluate" {
+        let last=|data:&[i32]|(0..batch).map(|b|data[at(b,steps-1,0)..at(b,steps-1,0)+cells].to_vec()).collect();
+        Some(Continuation{schema:initial.schema,model_sha256:identity,elapsed_ticks:elapsed+steps,
+            currents:last(&current),membranes:last(&voltage),spikes:last(&spike),counts})
+    } else {None};
     Ok(Output{schema:"b2-lif-training-result-v1",backend:"cpu",numeric_profile:"xylo-int16-forward-f64-surrogate",
         state,loss,gradients:gradient,final_membrane,spikes:nested(&spike),logits,
         currents:if operation=="evaluate" {Some(nested(&current))} else {None},
         membranes:if operation=="evaluate" {Some(nested(&voltage))} else {None},
-        tape_bytes:bytes,gradient_scope:"fresh-sequence-surrogate-bptt-quantization-ste"})
+        continuation,tape_bytes:bytes,gradient_scope:"fresh-sequence-surrogate-bptt-quantization-ste"})
 }

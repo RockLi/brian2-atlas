@@ -143,6 +143,15 @@ model → AtlasIR → target simulator**. Atlas runs the same source model as th
 reference. Training through Atlas is a separate capability; this conversion
 path does not perform on-chip learning or import arbitrary TensorFlow graphs.
 
+A [native recurrent Xylo example](brian2-rust/examples/neuromorphic/native_xylo_recurrent/README.md)
+now trains input, readout and recurrent weights on a delayed AB/BA task. Atlas
+and XyloSim both classify all **1,872 held-out sequences correctly**, with exact
+agreement across **5,840,640 spike/current/membrane values**. Removing recurrence
+or resetting state before the query reduces accuracy to 50%. Full, fixed-chunk
+and irregular-chunk inference agree. This is a bounded synthetic memory test;
+v2 supports stateful inference within 128 ticks, while training uses fresh
+full-sequence BPTT. It does not establish unbounded streaming or chip performance.
+
 The [native integer Xylo example](brian2-rust/examples/neuromorphic/native_xylo_integer/README.md)
 trains a 16→64→4 network with Xylo integer dynamics from the start. On all
 4,157 test digits 0–3, Atlas and XyloSim both reach **92.18%**, with zero
