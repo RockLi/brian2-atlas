@@ -7,7 +7,8 @@ vendor chip or SDK can do. All execution evidence below is from software.
 ## Public profile matrix
 
 **Verified** means an admitted subset has executed in the named SDK and has
-been compared with native Atlas. **Rejected** means the API refuses the pairing.
+been compared with native Atlas. **Custom C** names our SDK host extension,
+not a vendor neuron model or firmware implementation. **Rejected** means the API refuses the pairing.
 It does not mean the vendor itself lacks that capability.
 
 | Profile / source semantics | Akida | Lava | Specksim | SpiNNaker2 | XyloSim | DynapSim |
@@ -17,11 +18,13 @@ It does not mean the vendor itself lacks that capability.
 | `spinnaker2-lif-v1`: explicit Euler LIF, recurrence, delayed events | Rejected | Rejected | Rejected | Verified | Rejected | Rejected |
 | `xylo-audio2-temporal-v1`: bounded integer current/membrane dynamics | Rejected | Rejected | Rejected | Rejected | Verified | Rejected |
 | `dynapse-dpi-v1`: bounded analog DPI circuit model | Rejected | Rejected | Rejected | Rejected | Rejected | Verified |
+| `spinnaker2-xylo-integer-v1`: bounded Xylo integer dynamics, custom host implementation | Rejected | Rejected | Rejected | Custom C, exact | Rejected | Rejected |
 
 The executable [compatibility check](coverage/check_compatibility.py) tests all
-30 cells: **11 admitted, 19 explicitly rejected**. It tests conversion routing;
+36 cells: **12 admitted, 24 explicitly rejected**. It tests conversion routing;
 separate SDK comparisons establish execution behavior.
-[Machine-readable result](spinnaker2_dense/evidence/compatibility.json).
+[Machine-readable result](native_xylo_recurrent/evidence/spinnaker2_integer/compatibility.json).
+The preceding [30-cell result](spinnaker2_dense/evidence/compatibility.json) is retained as historical evidence.
 
 ### Rejected does not mean impossible
 
@@ -82,7 +85,7 @@ The bridge rejects models beyond 16 inputs, 64 hidden neurons and 8 outputs.
 [Native integer training](native_xylo_integer/README.md) adds a CPU training plan
 with Xylo current/membrane dynamics in every forward pass, quantization-aware
 weights and surrogate BPTT. `freeze_native_xylo` / `export_native_xylo` join the
-existing temporal profile; the matrix still has six targets and five profiles.
+existing temporal profile; it does not itself add another profile.
 No dynamics approximation is required. This model does not map to the existing
 SpiNNaker2 LIF profile.
 
@@ -115,6 +118,14 @@ membrane differences; applying the SDK clock shift does not restore parity or
 accuracy. The exact converter rejects the source. This is a documented transfer
 failure and does not add an admitted cell to the profile matrix above.
 
+The subsequent [custom SpiNNaker2 C host kernel](native_xylo_recurrent/SPINNAKER2_INTEGER.md)
+is an explicit new profile. It preserves the same recurrent integer model and
+weights: all 1,872 sequences are correct, with zero differences across 5,840,640
+neural-state values and all logits. Full runs and 1/7/13-tick chunks agree.
+A fresh 32-sequence AtlasIR replay matches 99,840 state values and events.
+The SDK graph feeds an independent compiled C kernel; this is neither stock
+`Brian2Backend` execution nor a chip firmware implementation.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -125,11 +136,11 @@ failure and does not add an admitted cell to the profile matrix above.
 | Preserve static hidden and output values | Exact for the static profiles in the tested domain |
 | Preserve source spike timing | Verified for all three temporal profiles in their tested domains; static event encoding is not source spike semantics |
 | Signed weights and bias | Akida/Lava/SpiNNaker2 dense profile; SpiNNaker2 and Xylo temporal profiles, with their respective bounds |
-| Stateful recurrence | Temporal SpiNNaker2 and Xylo under their own dynamics; recurrent integer Xylo → stock SpiNNaker2 transfer fails the same-weight diagnostic; not admitted by static profiles |
+| Stateful recurrence | Temporal SpiNNaker2 and Xylo under their own dynamics; the custom SpiNNaker2 integer host profile also preserves Xylo recurrence; stock current-LIF substitution does not |
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
-| Stateful chunked input | Xylo temporal and native recurrent v2: full runs match fixed and irregular chunks; not verified for other temporal SDK paths |
-| Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2 and approximate LIF adaptation to Xylo (1–16 ticks); separate exact integer-trained Xylo bridge (1–128 ticks). All start fresh sequences; recurrent Xylo v2 carries inference state between chunks |
+| Stateful chunked input | Xylo temporal and native recurrent v2: full runs match fixed and irregular chunks; custom SpiNNaker2 integer host execution matches 1/7/13-tick chunks; other temporal SDK paths are unverified |
+| Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2 and approximate LIF adaptation to Xylo (1–16 ticks); separate exact integer-trained Xylo and custom SpiNNaker2 C host bridges (1–128 ticks). All start fresh sequences; recurrent Xylo v2 carries inference state between chunks |
 | Atlas live checkpoint/resume through conversion | Not implemented; native bridge exports weights for fresh inference, not optimizer/continuation state |
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
 | Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; native or external training occurs before freezing and conversion |
@@ -176,6 +187,9 @@ CPU/GPU simulation and training surfaces.
   is 1–128 ticks. Forward uses int8 nearest-even weights and int16 state;
   backward uses surrogate gradients and rounding STE. CPU only; training is
   fresh full-sequence BPTT, without TBPTT or general Brian-plan lowering.
+- **Custom SpiNNaker2 integer host profile:** 16/64/8 dimensions, 128 ticks,
+  shifts one, bias zero, int8 weights and int16 state; uses SDK graph containers
+  and Atlas C arithmetic. Firmware mapping hooks explicitly reject deployment.
 - **Count encodings are not hardware fit claims:** SpiNNaker2 expands counts
   into comparator neurons. The static 784-input MNIST Xylo encoding exceeds
   Xylo Audio 2's 16 hardware input channels. Only its separate temporal profile
@@ -208,6 +222,7 @@ combination of accepted parameters.
 | XyloSim: temporal, preceding suite | 50 | 505,455 | Exact, including 7-step chunks |
 | XyloSim: native integer-trained four-class MNIST | 1 | 27,136,896 spike/current/membrane values | Exact; 3,832/4,157 correct; 208,896-value concrete AtlasIR replay also exact |
 | XyloSim: recurrent integer order task | 1 | 5,840,640 spike/current/membrane values | Exact, including fixed/irregular chunks; 1,872/1,872 correct; both memory controls 50% |
+| SpiNNaker2 custom C host kernel: same recurrent order task | 1 | 5,840,640 spike/current/membrane values | Exact, including 1/7/13-tick chunks; 1,872/1,872 correct; firmware unimplemented |
 | DynapSim: circuit dynamics | 16 | 36,985 | Float32/f64 tolerance checks; 510 spike events exactly match |
 
 Static cases include exhaustive small binary domains, zero/full-scale/one-hot

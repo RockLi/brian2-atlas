@@ -44,6 +44,11 @@ all three frozen weight banks with `lif_curr_exp_32bit`. Accuracy drops to 50%,
 and spike/current/membrane traces diverge under both raw and shifted clocks.
 The existing exact SpiNNaker2 converter rejects this integer source. The
 diagnostic does not add an equivalent SpiNNaker2 backend for this model.
+A subsequent [custom C host kernel](SPINNAKER2_INTEGER.md) implements the
+integer transition explicitly and now matches the unchanged model exactly:
+100% accuracy and zero spike/current/membrane differences on the full test set.
+This is a separate SDK extension; firmware transport and chip mapping are not
+implemented. The stock-LIF diagnostic remains valid.
 
 ## Training and split discipline
 

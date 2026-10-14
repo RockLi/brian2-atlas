@@ -14,7 +14,7 @@ from brian2_rust.akida_b2ir import lower_b2ir
 from brian2_rust.protocol import canonical_bytes
 
 TARGETS = ('akida', 'lava', 'specksim', 'spinnaker2', 'xylosim', 'dynapse')
-PROFILES = ('dense-int8-v1', 'binary-count-v1', 'spinnaker2-lif-v1', 'xylo-audio2-temporal-v1', 'dynapse-dpi-v1')
+PROFILES = ('dense-int8-v1', 'binary-count-v1', 'spinnaker2-lif-v1', 'xylo-audio2-temporal-v1', 'dynapse-dpi-v1', 'spinnaker2-xylo-integer-v1')
 
 
 def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
@@ -29,12 +29,25 @@ def convert_ir(model_path, *, target, runner, profile='dense-int8-v1'):
     dynamics, recurrent spike counts and hardware-sized Xylo Audio 2 graphs.
     ``dynapse-dpi-v1`` admits a narrow feed-forward DynapSim circuit model
     with adaptation and refractory state; it does not admit static classifiers.
+    ``spinnaker2-xylo-integer-v1`` targets an Atlas custom C host kernel using
+    SpiNNaker2 SDK network containers; it is not a stock SDK or firmware model.
     The runner is a trusted native Atlas executable supplied by the caller.
     """
     if target not in TARGETS:
         raise ValueError(f'unknown simulator target: {target!r}; expected {TARGETS}')
     if profile not in PROFILES:
         raise ValueError(f'unknown conversion profile: {profile!r}')
+    if profile == 'spinnaker2-xylo-integer-v1':
+        if target != 'spinnaker2':
+            raise ValueError('spinnaker2-xylo-integer-v1 is only supported by spinnaker2')
+        from brian2_rust.spinnaker2_integer_b2ir import lower_b2ir as lower_integer
+        plan = lower_integer(model_path, runner=runner)
+        return dict(schema='atlas.neuromorphic.simulator-bundle.v1', target=target, profile=profile,
+                    input_domain='embedded integer spike-count raster', plan=plan,
+                    source_model_sha256=plan['source_model_sha256'], source_hashes=plan['source_hashes'],
+                    atlas_validator_sha256=plan['atlas_validator_sha256'],
+                    execution_kind='custom-c-host-kernel', stock_sdk_neuron_model=False,
+                    firmware_adapter_implemented=False, physical_hardware=False, hardware_mapping_tested=False)
     if profile == 'dynapse-dpi-v1':
         if target != 'dynapse':
             raise ValueError('dynapse-dpi-v1 is only supported by dynapse')

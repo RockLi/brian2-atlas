@@ -98,25 +98,25 @@ def render(out):
     t(1205,597,"convert_ir / export_ir / run_simulator",size=14,color=MUTED)
     box(1205,638,500,114,fill="#E6F4F1",edge="#A9D3CA")
     t(1225,653,"Semantic profile + resource checks",size=16,weight="bold")
-    t(1225,697,"Target lowering → private plan → SDK",size=15)
+    t(1225,697,"Target lowering → plan → SDK / custom C",size=15)
     t(1205,782,"Six software targets",size=16,weight="bold")
     for x,y,label in [(1205,824,"Akida"),(1465,824,"Lava / Loihi"),
                       (1205,875,"Specksim"),(1465,875,"py-spinnaker2"),
                       (1205,926,"XyloSim"),(1465,926,"DynapSim")]:
         box(x,y,240,39,fill="white",edge="#C7DDD8")
         t(x+14,y+9,label,size=14)
-    t(1205,989,"SDK states / outputs / spike times",size=15)
-    t(1205,1035,"Target-specific subsets; unsupported models\nare rejected. Current execution is on CPU.",size=13,color=MUTED)
+    t(1205,989,"Target states / outputs / spike times",size=15)
+    t(1205,1035,"Stock SDK profiles + custom integer C path.\nUnsupported models are rejected; CPU only.",size=13,color=MUTED)
 
     box(625,1152,1105,76,fill="#EAF1F8",edge="#BECEDC")
     arrow([(875,1115),(875,1150)],BLUE)
     arrow([(1457,1115),(1457,1150)],TEAL)
-    t(650,1165,"Conversion validation  ·  Atlas reference ↔ target SDK",size=17,weight="bold")
+    t(650,1165,"Conversion validation  ·  Atlas reference ↔ target execution",size=17,weight="bold")
     t(650,1198,"Compare states, outputs and spike ticks; exact equality or an explicit profile tolerance.",size=13,color=MUTED)
     arrow([(320,1115),(320,1150)],PURPLE)
     box(70,1152,500,76,fill="#FFFFFF",edge=LINE,dashed=True)
     t(91,1166,"Native weights → AtlasIR → target",size=13,weight="bold")
-    t(91,1198,"Exact LIF→SpiNNaker2 / integer→Xylo subsets.",size=13,color=MUTED)
+    t(91,1198,"Integer → Xylo / custom SpiNNaker2 C.",size=13,color=MUTED)
 
     t(70,1260,"Verification boundary",size=14,weight="bold")
     t(70,1292,"Native CPU/GPU and same-host MPI: bounded validation. Cross-host / multi-GPU: not qualified.",size=13,color=MUTED)

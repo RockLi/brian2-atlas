@@ -80,13 +80,16 @@ python brian2-rust/examples/neuromorphic/xylo_temporal/compare.py \
 python "$CODE/check_compatibility.py" --runner "$B2_RUNNER" \
   --static-run "$RUN" --spinnaker-run output/neuromorphic/spinnaker2-coverage \
   --xylo-run output/neuromorphic/xylo-coverage \
-  --dynapse-run output/neuromorphic/dynapse --output "$RUN/compatibility.json"
+  --dynapse-run output/neuromorphic/dynapse \
+  --integer-source /tmp/recurrent-spinnaker2-integer/spinnaker2/template.json \
+  --output "$RUN/compatibility.json"
 ```
 
 Run the [DynapSim example](../dynapse/README.md) to create its source fixture
-before the routing check above.
+before the routing check above. Run the [custom integer example](../native_xylo_recurrent/SPINNAKER2_INTEGER.md)
+to create the integer source fixture.
 
-The routing check verifies all 30 public target/profile combinations. It is
+The routing check verifies all 36 public target/profile combinations, including the custom C host profile. It is
 separate from SDK execution and does not certify arbitrary graphs within a
 profile. Temporal checks start from each profile's required initial state and compare
 the full run.

@@ -30,8 +30,15 @@ def validate_inputs(bundle, samples):
 
 
 def run_simulator(bundle, samples=None, *, batch_size=50, chunk_steps=None):
-    if chunk_steps is not None and bundle.get('profile')!='xylo-audio2-temporal-v1':
-        raise ValueError('chunk_steps is supported only by Xylo temporal execution')
+    if chunk_steps is not None and bundle.get('profile') not in ('xylo-audio2-temporal-v1','spinnaker2-xylo-integer-v1'):
+        raise ValueError('chunk_steps is supported only by Xylo temporal or custom SpiNNaker2 integer execution')
+    if bundle.get('profile') == 'spinnaker2-xylo-integer-v1':
+        if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
+                or bundle.get('target') != 'spinnaker2'
+                or bundle.get('execution_kind') != 'custom-c-host-kernel'):
+            raise ValueError('custom SpiNNaker2 integer bundle required')
+        return _module('spinnaker2_integer_runtime').run(bundle['plan'], samples,
+            bridge=bundle.get('native_training_bridge'), batch_size=batch_size, chunk_steps=chunk_steps)
     if bundle.get('profile') == 'dynapse-dpi-v1':
         if (bundle.get('schema') != 'atlas.neuromorphic.simulator-bundle.v1'
                 or bundle.get('target') != 'dynapse' or samples is not None):

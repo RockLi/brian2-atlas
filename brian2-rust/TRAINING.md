@@ -23,7 +23,11 @@ The recurrent integer model is not portable through the existing exact
 SpiNNaker2 LIF bridge. A [stock current-LIF substitution](examples/neuromorphic/native_xylo_recurrent/SPINNAKER2.md)
 retains all frozen weights but reaches 50% on the task where native/XyloSim
 reach 100%; spike and state traces differ under both tested clock conventions.
-It is a diagnostic, not an additional supported training/export target.
+It remains a diagnostic. A separate [custom SpiNNaker2 integer host kernel](examples/neuromorphic/native_xylo_recurrent/SPINNAKER2_INTEGER.md)
+now preserves the recurrent model and all weights, reaching 100% with exact
+spike/current/membrane agreement. Use `export_native_xylo(..., target="spinnaker2")`
+for this explicit profile. It is a C software extension, not stock LIF execution
+or deployed SpiNNaker2 firmware.
 
 ## Start from a runnable example
 

@@ -134,3 +134,13 @@ MPLCONFIGDIR=/tmp/atlas-mpl python dev/atlas/render_architecture.py
 
 The renderer produces English SVG and PNG files using Matplotlib's bundled
 DejaVu Sans font. It adds no dependency to the Atlas runtime.
+
+## Custom SpiNNaker2 integer execution
+
+The [integer host extension](../examples/neuromorphic/native_xylo_recurrent/SPINNAKER2_INTEGER.md)
+adds `spinnaker2-xylo-integer-v1`: validated AtlasIR → SDK populations/projections
+→ Atlas `IntegerHostBackend` → independent C99 kernel. It preserves the native
+recurrent Xylo model and weights exactly, with 100% on the held-out order task.
+The stock SpiNNaker2 LIF profiles remain separate. This is a software kernel
+registered with the SDK; firmware transport, PE memory layout, mapping and
+physical execution are not implemented. The application rejects hardware hooks.

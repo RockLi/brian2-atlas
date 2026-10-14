@@ -77,11 +77,14 @@ def build_native_xylo_network(f,raster):
     return build_xylo_network(f['plan']['sizes'],f['target_weights'],f['plan']['threshold'],x)
 
 
-def export_native_xylo(f,directory,*,steps,runner):
+def export_native_xylo(f,directory,*,steps,runner,target='xylosim'):
+    """Export to stock XyloSim or the explicit custom SpiNNaker2 C host kernel."""
     import brian2 as b
     from .export import export_network
     from brian2_atlas.neuromorphic import export_ir
     sizes=validate_frozen(f)
+    require(target in ('xylosim','spinnaker2'),'target must be xylosim or spinnaker2')
+    profile='xylo-audio2-temporal-v1' if target=='xylosim' else 'spinnaker2-xylo-integer-v1'
     require(type(steps) is int and f['plan'].get('readout_start',0)<steps<=128,'duration must be 1..128 ticks and include readout')
     directory=Path(directory);require(not directory.exists(),'destination already exists')
     previous=b.prefs.codegen.loop_invariant_optimisations
@@ -90,8 +93,8 @@ def export_native_xylo(f,directory,*,steps,runner):
         network=build_native_xylo_network(f,np.zeros((steps,sizes[0]),dtype=np.uint8))
         directory.mkdir(parents=True)
         export_network(network,steps*b.ms,directory/'template.json')
-        bundle=export_ir(directory/'template.json',directory/'converted',target='xylosim',
-                         profile='xylo-audio2-temporal-v1',runner=runner)
+        bundle=export_ir(directory/'template.json',directory/'converted',target=target,
+                         profile=profile,runner=runner)
     finally:b.prefs.codegen.loop_invariant_optimisations=previous
     bundle['native_training_bridge']=dict(schema=f['schema'],frozen_sha256=f['sha256'],sizes=sizes,
         logit_scale=f['plan']['logit_scale'],fresh_state_per_sample=True,source_is_zero_input_template=True,

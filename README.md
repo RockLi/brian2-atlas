@@ -134,7 +134,7 @@ they are not included in the frozen `v0.1.0` release installed above.
 | BrainChip Akida | Akida SDK simulator | Frozen signed/biased integer MLPs and binary count classifiers |
 | Intel Loihi | Lava CPU simulation | Frozen integer MLPs with a uniform hidden shift, and binary count classifiers |
 | SynSense Speck | Specksim | Restricted binary count classifiers |
-| SpiNNaker2 | py-spinnaker2 Brian2 backend | Frozen integer MLPs, binary count classifiers and a bounded temporal LIF profile |
+| SpiNNaker2 | py-spinnaker2 Brian2 backend; separate custom C host kernel | Frozen integer MLPs, binary count classifiers, bounded temporal LIF and an explicit custom integer profile |
 | SynSense Xylo Audio 2 | XyloSim | Binary count classifiers and bounded integer temporal dynamics |
 | SynSense DYNAP-SE2 | Rockpool DynapSim | A bounded temporal DPI circuit-model profile |
 
@@ -155,6 +155,11 @@ A [same-weight SpiNNaker2 transfer diagnostic](brian2-rust/examples/neuromorphic
 finds that substituting the stock current-LIF model gives **50%**, with divergent
 spikes and states. The Xylo integer model is therefore not admitted as an exact
 SpiNNaker2 conversion; recurrence support alone does not imply matching dynamics.
+The [new custom SpiNNaker2 C host kernel](brian2-rust/examples/neuromorphic/native_xylo_recurrent/SPINNAKER2_INTEGER.md)
+preserves those integer dynamics: the unchanged recurrent model reaches **100%**
+and matches Atlas/XyloSim on all **5,840,640 spike/current/membrane values**.
+It uses SDK network objects and an independent C implementation; stock SDK
+LIF behavior is unchanged, and SpiNNaker2 firmware/placement remain unimplemented.
 
 The [native integer Xylo example](brian2-rust/examples/neuromorphic/native_xylo_integer/README.md)
 trains a 16→64→4 network with Xylo integer dynamics from the start. On all

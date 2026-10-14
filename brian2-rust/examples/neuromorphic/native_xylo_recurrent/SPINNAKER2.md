@@ -1,11 +1,15 @@
 # Recurrent Xylo model: SpiNNaker2 transfer diagnostic
 
-**The existing exact SpiNNaker2 profile cannot preserve this model.** A diagnostic
+**The stock temporal SpiNNaker2 profile cannot preserve this model.** A diagnostic
 substitution with the stock SDK's `lif_curr_exp_32bit` runs with the same topology
 and all three frozen weight banks, but accuracy falls from 100% to 50%. Spikes,
 currents and membrane states differ. This is a failed same-weight transfer,
 not a new supported conversion profile or evidence that SpiNNaker2 hardware
 cannot implement the model with a custom kernel.
+
+The subsequent [custom C host kernel](SPINNAKER2_INTEGER.md) preserves the
+integer transition and reaches exact software parity. It is a separate
+implementation and does not change this stock-model diagnostic.
 
 ## Experiment
 
@@ -100,7 +104,8 @@ Brian2 backend has an explicit neuron-model dispatch. Copying the Xylo equations
 into a custom Brian2 model would test that extension, not validate stock
 SpiNNaker2 dynamics or a hardware deployment. Alternatively, a model can be
 trained under a shared supported contract, but that changes the present
-same-model/same-weight requirement. None of those paths is claimed here.
+same-model/same-weight requirement. This diagnostic does not claim those paths; the later custom host implementation
+is documented separately in the link above.
 
 ## Reproduce
 
