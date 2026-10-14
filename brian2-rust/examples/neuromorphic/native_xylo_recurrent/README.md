@@ -150,7 +150,8 @@ session.reset()
 
 Stateful **inference** is supported; state-carry training and TBPTT are rejected.
 The current v2 horizon is at most 128 ticks total across chunks, with at most
-16 inputs, 64 hidden neurons and 8 outputs, binary input, shifts fixed at one,
+16 inputs, 128 hidden neurons and 8 outputs, explicit input counts up to 15,
+shifts fixed at one,
 zero bias and CPU training only. This does not admit unbounded always-on streams,
 GPU/MPI training, arbitrary Brian training graphs or SDK state restoration from
 an Atlas checkpoint. Native continuation can be serialized and passed to another
@@ -158,8 +159,10 @@ native process with the same plan and quantized weights.
 
 The SDK boundary test exposed a real resource limit: recurrent fanout is at most
 63 nonzero targets per hidden neuron. Both frozen export and direct temporal
-AtlasIR conversion now reject larger fanout before SDK execution. A 64-neuron
-recurrent layer is allowed only when each row satisfies that bound. The mixed
+AtlasIR conversion now reject larger fanout before SDK execution. Larger recurrent layers
+are allowed only when each row satisfies that bound. The sequential MNIST
+example projects weights and Adam moments onto independent groups of at most
+63 neurons. V1 feedforward training retains its 64-hidden bound. The mixed
 saturation case with 63 recurrent targets passes actual SDK comparison.
 
 ## Evidence and reproduction

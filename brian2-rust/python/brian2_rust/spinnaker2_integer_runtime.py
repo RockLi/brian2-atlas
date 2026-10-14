@@ -69,7 +69,7 @@ class IntegerKernel:
         x = np.asarray(inputs)
         require(x.ndim == 3, 'input must be batch x ticks x channels')
         batch, steps, channels = x.shape
-        require(1 <= ni <= 16 and 1 <= nh <= 64 and 1 <= no <= 8
+        require(1 <= ni <= 16 and 1 <= nh <= 128 and 1 <= no <= 8
                 and 1 <= batch <= 128 and 1 <= steps <= 128 and channels == ni, 'dimension bounds')
         shapes = ((ni, nh), (nh, no), (nh, nh))
         require(len(weights) == 3, 'requires three weight banks')
@@ -97,7 +97,7 @@ def register_model():
 
     class AtlasIntegerHostApplication(BaseApplication):
         app_name = MODEL
-        max_atoms_per_core = 64
+        max_atoms_per_core = 128
         splittable = False
         default_params = dict(threshold=8, spike_cap=31)
         sw_spec = SynapseWordSpec(word_size=SynapseWordSize.SIZE_32, weight=20, delay=3, synapse_type=1, target=8)

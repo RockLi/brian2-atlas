@@ -1,0 +1,11 @@
+{
+  "samples": 10000,
+  "previous_correct": 9728,
+  "current_correct": 9747,
+  "corrected_previous_errors": 87,
+  "new_errors": 68,
+  "changed_predictions": 182,
+  "previous_per_sample_sha256": "011aa541af283c7a37046fe3800548b686e9b82a463225c71c35adc2d5d17837",
+  "current_per_sample_sha256": "1a3d4be29f464b744e40591cf130d6aae542141db19e2787e5df49726f05b640",
+  "used_for_model_selection": false
+}

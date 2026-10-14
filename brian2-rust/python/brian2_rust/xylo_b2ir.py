@@ -111,7 +111,7 @@ def _lower_validated(model):
             require(all(np.isfinite(v).all() and (v==np.floor(v)).all() for v in values.values()),'integer parameters required')
             cap=values['spike_cap'];role='hidden' if (cap==31).all() else 'output'
             require((cap==(31 if role=='hidden' else 1)).all(),'hidden/output spike caps must be 31/1')
-            require(1<=p['count']<=(64 if role=='hidden' else 8),'pilot permits 1..64 hidden and 1..8 output neurons')
+            require(1<=p['count']<=(128 if role=='hidden' else 8),'pilot permits 1..128 hidden and 1..8 output neurons')
             require(np.isin(values['syn_div'],2**np.arange(16)).all()
                     and np.isin(values['mem_div'],2**np.arange(1,16)).all(),
                     'decay divisors must be powers of two; membrane shifts 1..15, synaptic shifts 0..15')

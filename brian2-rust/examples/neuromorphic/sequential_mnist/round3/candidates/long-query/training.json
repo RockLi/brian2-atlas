@@ -1,0 +1,210 @@
+{
+  "schema": "atlas.sequential-mnist.training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "task": "Ten-class block-sequential MNIST",
+  "encoding": "rows-full-counts",
+  "repeats": 1,
+  "deskew": true,
+  "query_ticks": 16,
+  "augmentation_shift": 1,
+  "augmentation_affine": 8.0,
+  "augmentation_elastic": 0.3,
+  "elastic_sigma": 4.0,
+  "evaluation_round": 3,
+  "prior_official_test_accuracy_known": 0.9728,
+  "steps": 44,
+  "readout_start": 16,
+  "sizes": [
+    16,
+    63,
+    5
+  ],
+  "classes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "class_codes": [
+    [
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  ],
+  "class_decoder_execution": "host-fixed-integer-codebook",
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "selected": {
+    "step": 4000,
+    "validation_accuracy": 0.9778333333333333,
+    "loss": 0.3670110102390892,
+    "changed_latent_weights": [
+      1008,
+      315,
+      3969
+    ]
+  },
+  "history": [
+    {
+      "step": 2000,
+      "validation_accuracy": 0.9771666666666666,
+      "loss": 0.15308855149145822
+    },
+    {
+      "step": 4000,
+      "validation_accuracy": 0.9778333333333333,
+      "loss": 0.3670110102390892
+    },
+    {
+      "step": 6000,
+      "validation_accuracy": 0.9761666666666666,
+      "loss": 0.20814335438427667
+    },
+    {
+      "step": 8000,
+      "validation_accuracy": 0.9763333333333334,
+      "loss": 0.2238339046184142
+    },
+    {
+      "step": 10000,
+      "validation_accuracy": 0.9756666666666667,
+      "loss": 0.019266280829114135
+    },
+    {
+      "step": 12000,
+      "validation_accuracy": 0.9751666666666666,
+      "loss": 0.4220721257617421
+    }
+  ],
+  "resume": {
+    "kind": "warm-start",
+    "weight_multiplier": 1.0,
+    "checkpoint_sha256": "2d410618fac5b70e5e65bd1d51d67f8e60682b8407bb21d50418be7488192679",
+    "frozen_file_sha256": "4761c38252ef20584ab063cef32ff3bffc0a2dc4a879b28059bfa2516e954de8",
+    "optimizer_moments_preserved": false,
+    "prior_validation_accuracy": 0.979
+  },
+  "updates_completed": 12000,
+  "requested_updates": 12000,
+  "selection": "highest native validation accuracy, earliest tie; no test or SDK selection",
+  "training": "native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained",
+  "external_training_framework": false,
+  "seed": 20261103,
+  "arguments": {
+    "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "runner": "/private/tmp/atlas-smnist-count-trainer",
+    "output": "/Volumes/T7/atlas-sequential-mnist-round3-20261014/long-query",
+    "resume": null,
+    "warm_start": "/Users/rock/workspace/bettiai/brian2-atlas/brian2-rust/examples/neuromorphic/sequential_mnist/refinement/fixtures",
+    "warm_weight_scale": 1.0,
+    "deskew": true,
+    "query_ticks": 16,
+    "augmentation_shift": 1,
+    "augmentation_affine": 8.0,
+    "augmentation_elastic": 0.3,
+    "elastic_sigma": 4.0,
+    "evaluation_round": 3,
+    "prior_test_accuracy": 0.9728,
+    "logit_scale": 12.0,
+    "surrogate_slope": 3.0,
+    "updates": 12000,
+    "encoding": "rows-full-counts",
+    "codebook": "pairs5",
+    "repeats": 1,
+    "hidden": 63,
+    "threshold": 64,
+    "output_threshold": 256,
+    "lr": 0.0003,
+    "rec_init": 0.5,
+    "readout_ticks": 28,
+    "batch_size": 32,
+    "validate_every": 2000,
+    "seed": 20261103
+  },
+  "seconds": 2300.197410334018,
+  "script_sha256": "9c28f4c712465a4c9de892b9949b975cb8a8192234de5a33a4f4a1f56bd2d52c",
+  "runner_sha256": "8e862759cc2a8d8794d20a7ed42979e182b9e739c284e6e83e51311c987fc9e9",
+  "checkpoint_sha256": "734e846b4f3dba1499a9ec1ceca50edbd21c4e4f6eab1be8f13225e7eb5c80ff",
+  "frozen_file_sha256": "bbb2164432cb0473a2f1513c31b74fba420d17370b783d53af4f122ff6648627"
+}

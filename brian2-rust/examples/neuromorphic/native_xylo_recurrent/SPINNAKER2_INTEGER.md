@@ -108,9 +108,10 @@ accuracy result above covers the recurrent fixture. Direct `convert_ir` and
 `export_ir` use the explicit `spinnaker2-xylo-integer-v1` profile. No new IR
 schema is introduced.
 
-- At most 16 inputs, 64 hidden and 8 output neurons, 1–128 ticks, dt=1 ms.
+- At most 16 inputs, 128 hidden and 8 output neurons, 1–128 ticks, dt=1 ms.
 - Signed int8 weights, integer thresholds 1–32767, zero bias, shifts one.
-- Generic embedded raster counts 0–15; native-training input batches remain binary.
+- Embedded raster counts 0–15; native training declares its input count limit
+  explicitly (binary by default). Frozen v1 retains a 64-hidden bound.
 - Input/readout and optional hidden recurrence, no explicit delays or plasticity.
 - Conservative Xylo-source recurrent fanout limit 63 is retained. This is not
   a SpiNNaker2 placement limit or proof of fit on one processing element.

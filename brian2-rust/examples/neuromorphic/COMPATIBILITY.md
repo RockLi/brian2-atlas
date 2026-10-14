@@ -128,23 +128,23 @@ The SDK graph feeds an independent compiled C kernel; this is neither stock
 
 ### Full ten-class block-sequential MNIST
 
-The [native sequential example](sequential_mnist/README.md) trains a 16→63→5
-recurrent integer network and uses the same weights in native Atlas, stock
-XyloSim and the custom SpiNNaker2 C host profile. All three reach **97.28%** on
-the complete official 10,000-image test set, up from 94.77%. Each target matches
-73,440,000 spike/current/membrane values and 100,000 logits exactly.
-The 98% target was not reached. Ten concrete AtlasIR replays and a separately packaged native
-build also match. Recurrence removal gives 10.23%; clearing state before tick
-16 gives 17.90%. [The refinement report](sequential_mnist/REFINEMENT.md) records
-validation selection, unsuccessful candidates, preprocessing and sequence cost.
+The [native sequential example](sequential_mnist/README.md) uses the same
+16→126→5 recurrent integer model and weights in native Atlas, stock XyloSim
+and the custom SpiNNaker2 C host profile. All three reach **97.47%** on the complete
+10,000-image official test set (previous round: 97.28%). Each target matches
+141,480,000 spike/current/membrane values and 100,000 logits exactly. The 98% target remains unmet.
+The selected latent checkpoint, frozen model, independent native build and ten
+concrete AtlasIR replays agree. [The third-round report](sequential_mnist/ROUND3.md)
+records validation selection, unsuccessful candidates, controls and costs.
 
-The source bridge admits explicit input counts up to 15 and a fixed class
-codebook. The admitted profile dimensions remain 16/64/8; the ten-class decoder
-executes on the host. This adds no target or conversion profile to the matrix.
-The refined encoder deskews images and scans all 28 rows over 36 ticks,
-instead of 22 in the baseline; neither is the canonical 784-step pixel sequence.
-The prior test result was known before this development round. No physical
-mapping, power or chip execution is established by these software checks.
+Recurrent v2 training/export admits 16/128/8 dimensions, count inputs up to 15,
+and a fixed host class codebook. Recurrent fanout remains ≤63. The wider example
+uses independent groups and projects cross-group weights and Adam moments to
+zero. V1 feedforward retains 16/64/8. No integer neuron transition changed.
+The selected input is `rows-full-counts` with host deskew and 36 ticks;
+this is not the canonical 784-step sequential benchmark. Earlier test scores
+were known before this development round. No physical mapping, power or chip
+execution is established by these software checks.
 
 ## Functional checklist
 
@@ -166,7 +166,7 @@ mapping, power or chip execution is established by these software checks.
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
 | Plasticity, STDP, on-chip learning, surrogate training through this API | Not implemented; native or external training occurs before freezing and conversion |
 | Native temporal convolutional SNN lowering | Not implemented; Specksim uses a convolution to encode a static classifier |
-| Official hardware configuration validation | Xylo temporal: all 50 tested configurations accepted by Samna |
+| Official hardware configuration validation | Xylo temporal: original 50-configuration suite accepted by Samna; wider boundary and selected MNIST configurations also validated |
 | Physical chip execution / placement | Not verified by these suites |
 | Chip power / latency / energy advantage | Not measured; CPU SDK wall time is not chip latency |
 
@@ -196,19 +196,20 @@ CPU/GPU simulation and training surfaces.
   and schedule are admitted. The SDK uses upstream Brian2; it is not an
   independent chip emulator. Voltage uses an absolute tolerance of 1e-12;
   spike ticks and neuron indices must match exactly.
-- **Xylo temporal:** at most 16 inputs, 64 hidden neurons and 8 outputs in the
+- **Xylo temporal:** at most 16 inputs, 128 hidden neurons and 8 outputs in the
   current pilot, 1–10,000 steps; input counts 0–15; signed weights -128–127;
   signed 16-bit state/bias; synaptic shifts 0–15, membrane shifts 1–15;
-  hidden/output spike caps 31/1; recurrent fanout at most 63 per hidden neuron. Exact integer trace comparison. The 64-hidden
+  hidden/output spike caps 31/1; recurrent fanout at most 63 per hidden neuron. Exact integer trace comparison. The 128-hidden
   limit is this compiler profile's limit, not the silicon maximum.
 - **Native integer Xylo training/export:** the temporal profile restricted to
-  binary inputs, one hidden layer, zero bias, shifts one, and 16/64/8 bounds.
-  V1 is feedforward; v2 adds hidden recurrence (fanout ≤63), a readout window
+  inputs up to an explicit count limit of 15, one hidden layer, zero bias and
+  shifts one. V1 is feedforward with 16/64/8 bounds; v2 admits 16/128/8,
+  hidden recurrence (fanout ≤63), a fixed host class codebook, a readout window
   and explicit evaluation-state carry. The entire sequence, including chunks,
   is 1–128 ticks. Forward uses int8 nearest-even weights and int16 state;
   backward uses surrogate gradients and rounding STE. CPU only; training is
   fresh full-sequence BPTT, without TBPTT or general Brian-plan lowering.
-- **Custom SpiNNaker2 integer host profile:** 16/64/8 dimensions, 128 ticks,
+- **Custom SpiNNaker2 integer host profile:** 16/128/8 dimensions, 128 ticks,
   shifts one, bias zero, int8 weights and int16 state; uses SDK graph containers
   and Atlas C arithmetic. Firmware mapping hooks explicitly reject deployment.
 - **Count encodings are not hardware fit claims:** SpiNNaker2 expands counts
@@ -242,7 +243,7 @@ combination of accepted parameters.
 | SpiNNaker2: temporal LIF | 48 | 101,940 voltage samples | Max float64 error 1.14e-13; 35,093 spike events exactly match |
 | XyloSim: temporal, preceding suite | 50 | 505,455 | Exact, including 7-step chunks |
 | XyloSim: native integer-trained four-class MNIST | 1 | 27,136,896 spike/current/membrane values | Exact; 3,832/4,157 correct; 208,896-value concrete AtlasIR replay also exact |
-| XyloSim + custom SpiNNaker2: block-sequential MNIST | 1 per target | 73,440,000 neural values per target | Exact; 9,728/10,000 correct on all ten classes; 98% target unmet |
+| XyloSim + custom SpiNNaker2: block-sequential MNIST | 1 per target | 141,480,000 neural values per target | Exact; 9,747/10,000 correct on all ten classes; 98% target unmet |
 | XyloSim: recurrent integer order task | 1 | 5,840,640 spike/current/membrane values | Exact, including fixed/irregular chunks; 1,872/1,872 correct; both memory controls 50% |
 | SpiNNaker2 custom C host kernel: same recurrent order task | 1 | 5,840,640 spike/current/membrane values | Exact, including 1/7/13-tick chunks; 1,872/1,872 correct; firmware unimplemented |
 | DynapSim: circuit dynamics | 16 | 36,985 | Float32/f64 tolerance checks; 510 spike events exactly match |

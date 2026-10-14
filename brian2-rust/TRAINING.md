@@ -122,6 +122,15 @@ without these fields retain binary inputs and direct output-count readout.
 The [block-sequential MNIST example](examples/neuromorphic/sequential_mnist/README.md)
 exercises ten classes using native training and both exact software targets.
 It explicitly separates real-data classification accuracy from conversion parity.
+The [third training round](examples/neuromorphic/sequential_mnist/ROUND3.md)
+reaches 97.47% on all 10,000 official test images, with exact agreement across
+141,480,000 neural values per target. The selected 16→126→5 model has
+10,584 trainable weights and 36 ticks. Recurrent v2 admits 128 hidden cells;
+the example's grouped recurrence preserves fanout ≤63 by projecting inactive
+weights and optimizer moments to zero after each native update. V1 retains 64.
+The 98% target remains unmet. Earlier test scores were known; selection within this round used
+validation only, followed by one final full-test audit.
+
 The [second training round](examples/neuromorphic/sequential_mnist/REFINEMENT.md)
 reaches 97.28% on all 10,000 official test images, with zero differences across
 73,440,000 spike/current/membrane values per target. The same 16→63→5 model uses

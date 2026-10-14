@@ -17,7 +17,7 @@ static int weights_valid(const int32_t *w, int n) {
 int atlas_s2_integer_run(int ni, int nh, int no, int batch, int steps,
     const int32_t *wi, const int32_t *wo, const int32_t *wr,
     const int32_t *threshold, const uint8_t *input, int32_t *state, int32_t *trace) {
-    if (ni < 1 || ni > 16 || nh < 1 || nh > 64 || no < 1 || no > 8 ||
+    if (ni < 1 || ni > 16 || nh < 1 || nh > 128 || no < 1 || no > 8 ||
         batch < 1 || batch > 128 || steps < 1 || steps > 128) return 1;
     if (!wi || !wo || !wr || !threshold || !input || !state || !trace) return 2;
     const int cells = nh + no;
@@ -38,7 +38,7 @@ int atlas_s2_integer_run(int ni, int nh, int no, int batch, int steps,
         int32_t *v = s + cells, *q = v + cells;
         for (int t = 0; t < steps; ++t) {
             const uint8_t *x = input + (r * steps + t) * ni;
-            int32_t previous_q[64];
+            int32_t previous_q[128];
             for (int i = 0; i < nh; ++i) previous_q[i] = q[i];
             /* Source order and a clamp after every edge are part of the ABI.
              * Both recurrence and readout consume the previous tick's counts.

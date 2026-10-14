@@ -1,0 +1,220 @@
+{
+  "schema": "atlas.sequential-mnist.training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "task": "Ten-class block-sequential MNIST",
+  "encoding": "rows-full-counts",
+  "repeats": 1,
+  "deskew": true,
+  "query_ticks": 8,
+  "augmentation_shift": 0,
+  "augmentation_affine": 0.0,
+  "augmentation_elastic": 0.0,
+  "elastic_sigma": 4.0,
+  "evaluation_round": 3,
+  "prior_official_test_accuracy_known": 0.9728,
+  "steps": 36,
+  "readout_start": 16,
+  "sizes": [
+    16,
+    126,
+    5
+  ],
+  "recurrent_groups": 2,
+  "active_weight_count": 10584,
+  "masked_recurrent_weights": 7938,
+  "max_recurrent_fanout": 63,
+  "classes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "class_codes": [
+    [
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  ],
+  "class_decoder_execution": "host-fixed-integer-codebook",
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "selected": {
+    "step": 6000,
+    "validation_accuracy": 0.981,
+    "loss": 0.03345633400249953,
+    "changed_latent_weights": [
+      2016,
+      630,
+      7938
+    ]
+  },
+  "history": [
+    {
+      "step": 1000,
+      "validation_accuracy": 0.979,
+      "loss": 0.21320838858104407
+    },
+    {
+      "step": 2000,
+      "validation_accuracy": 0.9786666666666667,
+      "loss": 0.18538803076483906
+    },
+    {
+      "step": 3000,
+      "validation_accuracy": 0.9806666666666667,
+      "loss": 0.017587428255971427
+    },
+    {
+      "step": 4000,
+      "validation_accuracy": 0.9796666666666667,
+      "loss": 0.28570742403707583
+    },
+    {
+      "step": 5000,
+      "validation_accuracy": 0.9793333333333333,
+      "loss": 0.02114565852094541
+    },
+    {
+      "step": 6000,
+      "validation_accuracy": 0.981,
+      "loss": 0.03345633400249953
+    }
+  ],
+  "resume": {
+    "kind": "widen-frozen",
+    "source": "/Users/rock/workspace/bettiai/brian2-atlas/brian2-rust/examples/neuromorphic/sequential_mnist/refinement/fixtures",
+    "frozen_file_sha256": "4761c38252ef20584ab063cef32ff3bffc0a2dc4a879b28059bfa2516e954de8",
+    "groups": 2,
+    "jitter": 0.03,
+    "output_threshold_multiplier": 2.0,
+    "optimizer_moments_preserved": false,
+    "source_weights": "quantized native weights"
+  },
+  "updates_completed": 6000,
+  "requested_updates": 6000,
+  "selection": "highest native validation accuracy, earliest tie; no test or SDK selection",
+  "training": "native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained",
+  "external_training_framework": false,
+  "seed": 20261107,
+  "arguments": {
+    "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "runner": "/Volumes/T7/atlas-sequential-mnist-round3-20261014/b2-train-wide",
+    "output": "/Volumes/T7/atlas-sequential-mnist-round3-20261014/wide-precision",
+    "resume": null,
+    "widen_from": "/Users/rock/workspace/bettiai/brian2-atlas/brian2-rust/examples/neuromorphic/sequential_mnist/refinement/fixtures",
+    "warm_start": null,
+    "warm_average": [],
+    "warm_weight_scale": 1.0,
+    "deskew": true,
+    "query_ticks": 8,
+    "augmentation_shift": 0,
+    "augmentation_affine": 0.0,
+    "augmentation_elastic": 0.0,
+    "elastic_sigma": 4.0,
+    "evaluation_round": 3,
+    "prior_test_accuracy": 0.9728,
+    "logit_scale": 12.0,
+    "surrogate_slope": 3.0,
+    "updates": 6000,
+    "encoding": "rows-full-counts",
+    "codebook": "pairs5",
+    "repeats": 1,
+    "hidden": 126,
+    "recurrent_groups": 2,
+    "widen_jitter": 0.03,
+    "threshold": 64,
+    "output_threshold": 512,
+    "lr": 0.0003,
+    "rec_init": 0.5,
+    "readout_ticks": 20,
+    "batch_size": 32,
+    "validate_every": 1000,
+    "seed": 20261107
+  },
+  "seconds": 1669.7166337500094,
+  "script_sha256": "baef961b440be3ffc2337721cf19de0f3ac372dfe18ed42ab81f3b3ca231ccb5",
+  "runner_sha256": "e9024d9684e082498d296d9ffc1080f2681617b40fba1a1863bf7b8ed31fac9c",
+  "checkpoint_sha256": "232e35aa750fb9152209a2ca881e9c9acbd9092855f823d1e26a1fcc7b9fcfcc",
+  "frozen_file_sha256": "5e6c84cf1ae9cb1109dc3e246dce3a0871edaf0782f4e921ff5590a5eb04c164"
+}

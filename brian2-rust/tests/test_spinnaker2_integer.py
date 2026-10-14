@@ -86,7 +86,7 @@ def test_c_abi_rejection_does_not_mutate_buffers(kernel):
     w = np.array([[2]],np.int32); zero = np.zeros((1,1),np.int32)
     threshold = np.array([1,1],np.int32); x = np.ones((1,1,1),np.uint8)
     state = np.zeros((1,3,2),np.int32); trace = np.full((1,1,3,2),123,np.int32)
-    for invalid in ('dimension','weight','threshold','input','state'):
+    for invalid in ('dimension','hidden_dimension','weight','threshold','input','state'):
         wi=w.copy(); th=threshold.copy(); inp=x.copy(); st=state.copy()
         ni=17 if invalid=='dimension' else 1
         if invalid=='weight': wi[0,0]=128
@@ -94,7 +94,7 @@ def test_c_abi_rejection_does_not_mutate_buffers(kernel):
         if invalid=='input': inp[0,0,0]=16
         if invalid=='state': st[0,2,1]=2
         before=st.copy()
-        assert kernel.function(ni,1,1,1,1,wi,w,zero,th,inp,st,trace) != 0
+        assert kernel.function(ni,129 if invalid=='hidden_dimension' else 1,1,1,1,wi,w,zero,th,inp,st,trace) != 0
         np.testing.assert_array_equal(st,before); np.testing.assert_array_equal(trace,123)
 
 
@@ -106,20 +106,20 @@ def test_c_undefined_behavior_and_bounds_under_sanitizers(tmp_path):
 #include <assert.h>
 #include <stdlib.h>
 int main(void) {
- int32_t wi[16*64],wo[64*8],wr[64*64],th[72],state[2*3*72]={0};
+ int32_t wi[16*128],wo[128*8],wr[128*128],th[136],state[2*3*136]={0};
  uint8_t input[2*128*16];
- int32_t *trace=calloc(2*128*3*72,sizeof(int32_t)); assert(trace);
- for(int i=0;i<16*64;i++)wi[i]=(i%3)?127:-128;
- for(int i=0;i<64*8;i++)wo[i]=(i%2)?127:-128;
- for(int i=0;i<64*64;i++)wr[i]=(i%5)?127:-128;
- for(int i=0;i<72;i++)th[i]=1;
+ int32_t *trace=calloc(2*128*3*136,sizeof(int32_t)); assert(trace);
+ for(int i=0;i<16*128;i++)wi[i]=(i%3)?127:-128;
+ for(int i=0;i<128*8;i++)wo[i]=(i%2)?127:-128;
+ for(int i=0;i<128*128;i++)wr[i]=(i%5)?127:-128;
+ for(int i=0;i<136;i++)th[i]=1;
  for(int i=0;i<2*128*16;i++)input[i]=15;
- state[0]=-32768;state[72]=32767;
- assert(atlas_s2_integer_run(16,64,8,2,128,wi,wo,wr,th,input,state,trace)==0);
- for(int t=0;t<2*128;t++)for(int j=0;j<72;j++) {
-  assert(trace[t*3*72+j]>=-32768 && trace[t*3*72+j]<=32767);
-  assert(trace[t*3*72+72+j]>=-32768 && trace[t*3*72+72+j]<=32767);
-  assert(trace[t*3*72+144+j]>=0 && trace[t*3*72+144+j]<=(j<64?31:1));
+ state[0]=-32768;state[136]=32767;
+ assert(atlas_s2_integer_run(16,128,8,2,128,wi,wo,wr,th,input,state,trace)==0);
+ for(int t=0;t<2*128;t++)for(int j=0;j<136;j++) {
+  assert(trace[t*3*136+j]>=-32768 && trace[t*3*136+j]<=32767);
+  assert(trace[t*3*136+136+j]>=-32768 && trace[t*3*136+136+j]<=32767);
+  assert(trace[t*3*136+2*136+j]>=0 && trace[t*3*136+2*136+j]<=(j<128?31:1));
  }
  free(trace);return 0;
 }''')

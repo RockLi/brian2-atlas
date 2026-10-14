@@ -57,6 +57,15 @@ def test_refined_encodings_and_preprocessing():
     assert cross.shape == (1,36,16)
     assert cross[0,4,6] == 4 and cross[0,14+6,4] == 4
     assert cross[:,:,:14].sum() == 8
+    interleaved=m.encode(image,'rows-interleaved-counts')
+    assert interleaved.shape==(1,64,16) and interleaved[0,16,6]==15
+    assert interleaved[:,:,:14].sum()==15
+    pixels=np.random.default_rng(4).integers(0,256,(3,28,28),dtype=np.uint8)
+    scan=m.encode(pixels,'rows-interleaved-counts')[:,:56,:14]
+    restored=scan.reshape(3,28,2,14).transpose(0,1,3,2).reshape(3,28,28)
+    np.testing.assert_array_equal(restored,np.rint(pixels.astype(float)*15/255).astype(np.uint8))
+    assert m.encode(pixels,'rows-interleaved-counts',repeats=2).shape==(3,120,16)
+    with pytest.raises(ValueError):m.encode(pixels,'rows-interleaved-counts',repeats=3)
     full = m.encode(image, 'rows-full-counts')
     assert full.shape == (1,36,16) and full[0,8,6] == 8
     assert full[:,:,:14].sum() == 8
@@ -93,7 +102,7 @@ def test_refined_encodings_and_preprocessing():
     with pytest.raises(ValueError):m.translate_images(edge,np.random.default_rng(4),4)
     # Bounded-memory preprocessing must not change any quantized input count.
     samples=np.random.default_rng(8).integers(0,256,(17,28,28),dtype=np.uint8)
-    for encoding in ('rows-counts','rows-position-counts','gradient-counts'):
+    for encoding in ('rows-counts','rows-position-counts','rows-interleaved-counts','gradient-counts'):
         whole=m.encode(samples,encoding,deskew=True)
         chunks=np.concatenate([m.encode(samples[i:i+3],encoding,deskew=True) for i in range(0,len(samples),3)])
         np.testing.assert_array_equal(whole,chunks)
@@ -124,6 +133,31 @@ def test_training_affine_augmentation():
     np.testing.assert_array_equal(m.affine_images(ramp,np.random.default_rng(9),8),m.affine_images(ramp,np.random.default_rng(9),8))
     for degrees in (-1,16,float('nan')):
         with pytest.raises(ValueError):m.affine_images(ramp,np.random.default_rng(1),degrees)
+
+
+def test_training_elastic_augmentation():
+    spec=importlib.util.spec_from_file_location('smnist_elastic',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    images=np.random.default_rng(77).integers(0,256,(7,28,28),dtype=np.uint8)
+    original=images.copy()
+    identity=m.elastic_images(images,np.random.default_rng(1),0)
+    np.testing.assert_array_equal(identity,images)
+    assert not np.shares_memory(identity,images)
+    class ConstantField:
+        def standard_normal(self,shape):return np.ones(shape)
+    np.testing.assert_array_equal(m.elastic_images(images,ConstantField(),1),images)
+    whole=m.elastic_images(images,np.random.default_rng(41),.7)
+    rng=np.random.default_rng(41)
+    chunks=np.concatenate([m.elastic_images(images[i:i+2],rng,.7) for i in range(0,len(images),2)])
+    np.testing.assert_array_equal(whole,chunks)
+    np.testing.assert_array_equal(images,original)
+    assert np.isfinite(whole).all() and whole.min()>=0 and whole.max()<=255
+    assert np.count_nonzero(whole!=images)>images.size//2
+    # A constant image exposes zero padding: deformed borders cannot wrap.
+    border=m.elastic_images(np.full((3,28,28),255),np.random.default_rng(8),2.)
+    assert border.min()==0 and np.allclose(border[:,10:18,10:18],255)
+    for amplitude,sigma in [(-1,4),(2.1,4),(float('nan'),4),(1,0),(1,9)]:
+        with pytest.raises(ValueError):m.elastic_images(images,np.random.default_rng(1),amplitude,sigma)
 
 
 def test_gradient_cell_encoding():
@@ -215,3 +249,84 @@ np.savez(sys.argv[4],**{k:v for k,v in full.items() if isinstance(v,np.ndarray)}
     for field,key in [('spikes','spike_raster'),('membranes','voltage'),('logits','logits')]:
         np.testing.assert_array_equal(reference[field],r[key])
     np.testing.assert_array_equal(reference['currents'],np.concatenate([r['hidden_I'],r['output_I']],2))
+
+
+def test_native_warm_weight_averaging(coded,tmp_path):
+    spec=importlib.util.spec_from_file_location('smnist_warm',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    x=np.ones((2,6,3),dtype=int);coded.step(x,[0,1]);paths=[];weights=[]
+    for index in range(2):
+        if index:coded.step(x,[2,3])
+        path=tmp_path/str(index);path.mkdir();coded.store(path/'checkpoint.json')
+        frozen=freeze_native_xylo(coded);(path/'frozen.json').write_text(json.dumps(frozen))
+        report=dict(frozen_file_sha256=m.sha(path/'frozen.json'),checkpoint_sha256=m.sha(path/'checkpoint.json'),selected=dict(validation_accuracy=.5))
+        (path/'training.json').write_text(json.dumps(report));paths.append(path)
+        weights.append(copy.deepcopy(coded.state['weights']))
+    before=copy.deepcopy(coded.state)
+    averaged,receipt=m.warm_weights(paths,coded.plan,TRAIN)
+    for a,w1,w2 in zip(averaged,*weights):np.testing.assert_array_equal(a,(np.asarray(w1)+np.asarray(w2))/2)
+    assert receipt['kind']=='averaged-warm-start' and not receipt['optimizer_moments_preserved']
+    assert coded.state==before
+    different=copy.deepcopy(coded.plan);different['sizes']=[3,5,5]
+    with pytest.raises(ValueError,match='incompatible warm-start sizes'):m.warm_weights(paths,different,TRAIN)
+    with pytest.raises(ValueError,match='int8 range'):m.warm_weights(paths,coded.plan,TRAIN,1000)
+    (paths[0]/'checkpoint.json').write_text('{}')
+    with pytest.raises(AssertionError):m.warm_weights(paths,coded.plan,TRAIN)
+
+
+def test_grouped_widening_and_projected_optimizer(coded):
+    spec=importlib.util.spec_from_file_location('smnist_groups',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    coded.step(np.ones((2,6,3),dtype=int),[0,1]);f=freeze_native_xylo(coded)
+    plan=copy.deepcopy(coded.plan);plan['sizes']=[3,8,5]
+    weights=m.widen_weights(f,plan,2,0.,np.random.default_rng(4))
+    source=[np.asarray(w)/plan['weight_scale'] for w in f['target_weights']]
+    np.testing.assert_array_equal(weights[0].reshape(3,8),np.tile(source[0].reshape(3,4),(1,2)))
+    np.testing.assert_array_equal(weights[1].reshape(8,5),np.tile(source[1].reshape(4,5)/2,(2,1)))
+    scaled=copy.deepcopy(plan);scaled['threshold'][1]*=2
+    precise=m.widen_weights(f,scaled,2,0.,np.random.default_rng(4))
+    np.testing.assert_array_equal(precise[1].reshape(8,5),np.tile(source[1].reshape(4,5),(2,1)))
+    mask=m.recurrent_group_mask(8,2)
+    np.testing.assert_array_equal(weights[2].reshape(8,8)[:4,:4],source[2].reshape(4,4))
+    assert not weights[2].reshape(8,8)[~mask].any()
+    trainer=NativeXyloTrainer(plan,runner=TRAIN,weights=weights)
+    for _ in range(3):
+        trainer.step(np.ones((2,7,3),dtype=int),[2,4]);m.project_recurrence(trainer,mask)
+        for key in ('weights','first_moment','second_moment'):
+            assert not np.asarray(trainer.state[key][2]).reshape(8,8)[~mask].any()
+    frozen=freeze_native_xylo(trainer)
+    assert not np.asarray(frozen['target_weights'][2]).reshape(8,8)[~mask].any()
+    assert m.recurrent_group_mask(126,2).sum(1).max()==63
+    assert m.recurrent_group_mask(128,4).sum(1).max()==32
+    for hidden,groups in ((64,1),(128,2),(129,3),(127,2),(0,1),(8,0)):
+        with pytest.raises(ValueError):m.recurrent_group_mask(hidden,groups)
+
+
+@pytest.mark.parametrize('target,environment',[('xylosim','B2_XYLO_PYTHON'),('spinnaker2','B2_SPINNAKER2_PYTHON')])
+def test_wide_native_sdk_boundary(tmp_path,target,environment):
+    sdk=os.environ.get(environment)
+    if not TRAIN.is_file() or not RUN.is_file() or not sdk:pytest.skip('set native runners and SDK environments')
+    spec=importlib.util.spec_from_file_location('smnist_wide',ROOT/'examples/neuromorphic/sequential_mnist/train.py')
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+    plan=xylo_recurrent_training_plan([2,128,5],thresholds=(4,9),weight_scale=8.,readout_start=3,class_codes=CODES,input_max=15)
+    rng=np.random.default_rng(211);mask=m.recurrent_group_mask(128,4)
+    weights=[rng.integers(-3,5,(2,128)).ravel()/8,rng.integers(-3,5,(128,5)).ravel()/8,(rng.integers(-2,3,(128,128))*mask).ravel()/8]
+    trainer=NativeXyloTrainer(plan,runner=TRAIN,weights=weights)
+    x=rng.integers(0,16,(2,17,2));y=[1,4]
+    trainer.step(x,y);m.project_recurrence(trainer,mask)
+    frozen=freeze_native_xylo(trainer);ref=trainer.evaluate(x,y)
+    export_native_xylo(frozen,tmp_path/'export',steps=17,runner=RUN,target=target)
+    np.savez_compressed(tmp_path/'inputs.npz',spikes=x)
+    subprocess.run([sdk,str(ROOT/'examples/neuromorphic/sequential_mnist/sdk_worker.py'),
+        '--runtime',str(ROOT/'python/brian2_rust/neuromorphic_runtime.py'),
+        '--bundle',str(tmp_path/'export/converted/bundle.json'),
+        '--inputs',str(tmp_path/'inputs.npz'),'--output',str(tmp_path/'sdk')],
+        cwd=tmp_path,env={**os.environ,'PYTHONPATH':'','PYTHONNOUSERSITE':'1'},check=True,capture_output=True)
+    with np.load(tmp_path/'sdk/00000.npz') as actual:
+        for key in ('spikes','currents','membranes','logits'):np.testing.assert_array_equal(ref[key],actual[key])
+    assert all(check['differences']==0 for check in json.loads((tmp_path/'sdk/execution.json').read_text())['chunk_checks'])
+    for schema,hidden in (('atlas-xylo-training-plan-v1',65),('atlas-xylo-training-plan-v2',129)):
+        bad=copy.deepcopy(plan);bad['schema']=schema;bad['sizes']=[2,hidden,5]
+        if schema.endswith('v1'):
+            for key in ('recurrent','readout_start','class_codes'):bad.pop(key)
+        with pytest.raises(ValueError):NativeXyloTrainer(bad,runner=TRAIN).evaluate(np.zeros((1,4,2)),[0])

@@ -10,7 +10,23 @@ The task contains all ten MNIST classes. This is a block-sequential image task,
 not the standard 784-step, one-pixel-per-tick sMNIST benchmark, and not an event
 camera dataset. Host preprocessing starts with ordinary MNIST images.
 
-## Latest refinement
+## Latest result
+
+**97.47% on all 10,000 official test images**, compared with 97.28% in the
+previous round. The 98% target remains unmet. Validation selected `wide-precision` at 98.1000%
+on 6,000 images before this round opened the test arrays.
+
+| Execution | Correct / total | Accuracy | Spike/current/membrane differences |
+|---|---:|---:|---:|
+| Atlas native integer forward | 9,747 / 10,000 | 97.47% | Reference |
+| Stock XyloSim | 9,747 / 10,000 | 97.47% | 0 / 141,480,000 |
+| SpiNNaker2 custom C host kernel | 9,747 / 10,000 | 97.47% | 0 / 141,480,000 |
+
+The selected graph is 16→126→5, with 10,584 trainable weights and 36 ticks.
+[Third-round details and reproduction](ROUND3.md) include validation-only selection,
+all candidates, controls, the expanded recurrent profile and software-only scope.
+
+## Previous refinement (retained)
 
 **97.28% on all 10,000 official test images**, up from 94.77% in the first
 round. The 98% target was not reached. The selected validation score was 97.9000% on 6,000

@@ -88,8 +88,8 @@ impl Plan {
                 else {self.recurrent.is_none() && self.readout_start.is_none()},
                 "Xylo v2 requires recurrence and bounded readout_start; v1 rejects these fields")?;
         require(self.sizes.len()==3 && (1..=16).contains(&self.sizes[0]) &&
-                (1..=64).contains(&self.sizes[1]) && (1..=8).contains(&self.sizes[2]),
-                "Xylo training requires 1..16 inputs, 1..64 hidden, 1..8 outputs")?;
+                (1..=if v2 {128} else {64}).contains(&self.sizes[1]) && (1..=8).contains(&self.sizes[2]),
+                "Xylo training requires 1..16 inputs, 1..64 hidden (v1) or 1..128 (v2), 1..8 outputs")?;
         require(self.input_max.is_none_or(|n| (1..=15).contains(&n)), "input_max must be 1..15")?;
         if let Some(codes)=&self.class_codes {
             require(v2 && (2..=32).contains(&codes.len()) && codes.iter().all(|row|

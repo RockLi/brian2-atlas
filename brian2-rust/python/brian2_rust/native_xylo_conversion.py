@@ -51,8 +51,8 @@ def validate_frozen(f):
     require(set(p)==expected and p['schema']==('atlas-xylo-training-plan-v2' if recurrent else 'atlas-xylo-training-plan-v1')
         and p['backend']=='cpu' and p['synaptic_shift']==p['membrane_shift']==1 and p['detach_reset'] is True,
         'unsupported training dynamics')
-    require(len(sizes)==3 and all(type(n) is int and 1<=n<=limit for n,limit in zip(sizes,(16,64,8))),
-            'sizes must fit 16/64/8')
+    require(len(sizes)==3 and all(type(n) is int and 1<=n<=limit for n,limit in zip(sizes,(16,128 if recurrent else 64,8))),
+            'sizes must fit 16/64/8 (v1) or 16/128/8 (v2)')
     require(f['initial_state']=='zero','sequence must start from zero')
     if recurrent:
         require(p['recurrent'] is True and type(p['readout_start']) is int and 0<=p['readout_start']<128,

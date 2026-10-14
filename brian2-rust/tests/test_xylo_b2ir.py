@@ -43,7 +43,7 @@ def test_recovers_actual_graph_parameters_and_raster(model):
     ('adaptive','adaptive integrators'),('schedule','requires start'),('clock','1 ms'),('continuation','fresh clock'),
     ('initial','initial states'),('counts_overflow','input counts'),('counts_fractional','input counts'),
     ('counts_negative','input counts'),('raster_time','aligned'),('input_channels','1..16'),
-    ('output_count','1..8'),('hidden_count','1..64'),('fractional_parameter','integer parameters'),
+    ('output_count','1..8'),('hidden_count','1..128'),('fractional_parameter','integer parameters'),
     ('mem_zero_shift','decay divisors'),('non_power_decay','decay divisors'),('threshold_zero','16 bits'),
     ('bias_overflow','16 bits'),('spike_cap','spike caps'),('threshold_ast','threshold AST'),
     ('update_ast','run_regularly AST'),('reset_ast','reset AST'),('delay','delays'),
@@ -68,7 +68,7 @@ def test_semantic_admission_failures(model,change,message):
     elif change=='raster_time':raster['upsampling']=4
     elif change=='input_channels':inp['count']=17
     elif change=='output_count':out['count']=9
-    elif change=='hidden_count':h['count']=65
+    elif change=='hidden_count':h['count']=129
     elif change=='fractional_parameter':hp['bias'][0]=bits(.5)
     elif change=='mem_zero_shift':hp['mem_div'][0]=bits(1)
     elif change=='non_power_decay':hp['syn_div'][0]=bits(3)
