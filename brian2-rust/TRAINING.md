@@ -102,3 +102,23 @@ inputs, power-of-two target scales and at most 16 inference ticks. It exports
 weights for fresh zero-state inference; it does not export the optimizer or
 resume a live training state on the target. Other native training plans and
 on-chip training remain outside this path.
+
+
+## Integer count inputs and fixed class-code readout
+
+The recurrent integer plan accepts optional `input_max` (1–15; omitted means
+binary input) and `class_codes` (2–32 distinct, nonzero binary rows with equal
+Hamming weight). The codebook width must equal the physical output population,
+which remains limited to eight neurons. Cross entropy uses decoded class logits;
+its gradients propagate through the fixed codebook into all three neural weight
+banks. Count-input gradients use the actual integer input amplitude.
+
+Frozen artifacts and the exact Xylo/custom SpiNNaker2 bridges preserve both
+fields. The host decoder sums integer output counts before logit scaling; it
+adds no trained weights or physical neurons. Continuation state retains physical
+output counts, so chunk boundaries do not change decoded logits. Existing plans
+without these fields retain binary inputs and direct output-count readout.
+
+The [block-sequential MNIST example](examples/neuromorphic/sequential_mnist/README.md)
+exercises ten classes using native training and both exact software targets.
+It explicitly separates real-data classification accuracy from conversion parity.

@@ -13,6 +13,15 @@ import tempfile
 
 import numpy as np
 
+if __package__:
+    from .xylo_readout import decode_counts
+else:
+    import importlib.util
+    _spec = importlib.util.spec_from_file_location('atlas_xylo_readout', Path(__file__).with_name('xylo_readout.py'))
+    _readout = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_readout)
+    decode_counts = _readout.decode_counts
+
 MODEL = 'atlas_xylo_integer_host_v1'
 PROFILE = 'spinnaker2-xylo-integer-v1'
 SCHEMA = 'atlas.spinnaker2.xylo-integer-plan.v1'
@@ -210,7 +219,9 @@ def run(plan, samples=None, *, bridge=None, batch_size=50, chunk_steps=None):
         require(not np.any(plan['input_raster']), 'native bridge requires zero-input template')
     x = np.asarray(samples)
     require(x.ndim == 3 and len(x) > 0 and x.shape[1:] == (plan['steps'], plan['sizes']['input']), 'input shape')
-    x = integer_array(x, x.shape, 0, 1 if bridge else 15, 'input counts', np.uint8)
+    upper = bridge.get('input_max',1) if bridge else 15
+    require(type(upper) is int and 1 <= upper <= 15, 'invalid input_max')
+    x = integer_array(x, x.shape, 0, upper, 'input counts', np.uint8)
     net = build_network(plan)
     backend = IntegerHostBackend()
     arrays = {key: [] for key in ('currents', 'membranes', 'spikes')}
@@ -235,7 +246,7 @@ def run(plan, samples=None, *, bridge=None, batch_size=50, chunk_steps=None):
     start = bridge.get('readout_start', 0) if bridge else 0
     require(type(start) is int and 0 <= start < plan['steps'], 'readout window outside horizon')
     arrays['counts'] = arrays['output_q'][:, start:].sum(1)
-    arrays['logits'] = arrays['counts'] * (bridge['logit_scale'] if bridge else 1.) / (plan['steps'] - start)
+    arrays['logits'] = decode_counts(arrays['counts'], bridge if bridge else {'logit_scale': 1.}, plan['steps'] - start)
     return dict(**arrays, execution_kind='custom-c-host-kernel', dynamics_equivalent=True,
                 stock_sdk_neuron_model=False, physical_hardware=False, hardware_mapping_tested=False,
                 firmware_adapter_implemented=False, kernel_receipt=receipt)

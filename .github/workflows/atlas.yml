@@ -76,7 +76,7 @@ jobs:
           export B2_TRAIN_RUNNER="$PWD/brian2-rust/target/release/b2-train"
           export B2_RUNNER="$PWD/brian2-rust/target/release/b2-runner"
           export PYTHONPATH="$PWD/brian2-rust/python:$PWD"
-          python -m pytest -q brian2-rust/tests/test_native_xylo_training.py brian2-rust/tests/test_native_xylo_recurrent.py brian2-rust/tests/test_recurrent_spinnaker2_diagnostic.py brian2-rust/tests/test_spinnaker2_integer.py
+          python -m pytest -q brian2-rust/tests/test_native_xylo_training.py brian2-rust/tests/test_native_xylo_recurrent.py brian2-rust/tests/test_recurrent_spinnaker2_diagnostic.py brian2-rust/tests/test_spinnaker2_integer.py brian2-rust/tests/test_sequential_mnist.py
       - name: Validate bounded user examples
         run: python dev/atlas/run_backend.py --suite examples --timeout 900
 

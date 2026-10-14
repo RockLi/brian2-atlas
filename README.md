@@ -143,6 +143,14 @@ model → AtlasIR → target simulator**. Atlas runs the same source model as th
 reference. Training through Atlas is a separate capability; this conversion
 path does not perform on-chip learning or import arbitrary TensorFlow graphs.
 
+The [ten-class block-sequential MNIST example](brian2-rust/examples/neuromorphic/sequential_mnist/README.md)
+trains a recurrent integer network natively in Atlas. The same model and weights
+reach **94.77% on all 10,000 test images** in Atlas, XyloSim and the custom
+SpiNNaker2 C host kernel. Each target matches **44,880,000 spike/current/membrane
+values** and every class score exactly. A fixed host codebook maps five physical
+outputs to ten classes. The 98% accuracy target was not reached; this is a real-data
+conversion result, separate from the synthetic task below and from chip execution.
+
 A [native recurrent Xylo example](brian2-rust/examples/neuromorphic/native_xylo_recurrent/README.md)
 now trains input, readout and recurrent weights on a delayed AB/BA task. Atlas
 and XyloSim both classify all **1,872 held-out sequences correctly**, with exact
@@ -153,8 +161,8 @@ v2 supports stateful inference within 128 ticks, while training uses fresh
 full-sequence BPTT. It does not establish unbounded streaming or chip performance.
 A [same-weight SpiNNaker2 transfer diagnostic](brian2-rust/examples/neuromorphic/native_xylo_recurrent/SPINNAKER2.md)
 finds that substituting the stock current-LIF model gives **50%**, with divergent
-spikes and states. The Xylo integer model is therefore not admitted as an exact
-SpiNNaker2 conversion; recurrence support alone does not imply matching dynamics.
+spikes and states. The Xylo integer model is therefore not admitted by the stock
+SpiNNaker2 LIF profile; recurrence support alone does not imply matching dynamics.
 The [new custom SpiNNaker2 C host kernel](brian2-rust/examples/neuromorphic/native_xylo_recurrent/SPINNAKER2_INTEGER.md)
 preserves those integer dynamics: the unchanged recurrent model reaches **100%**
 and matches Atlas/XyloSim on all **5,840,640 spike/current/membrane values**.

@@ -4,6 +4,15 @@ import hashlib
 from pathlib import Path
 import numpy as np
 
+if __package__:
+    from .xylo_readout import decode_counts
+else:
+    import importlib.util
+    _spec = importlib.util.spec_from_file_location('atlas_xylo_readout', Path(__file__).with_name('xylo_readout.py'))
+    _readout = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_readout)
+    decode_counts = _readout.decode_counts
+
 
 def _model(plan):
     from rockpool.devices.xylo.syns61201 import config_from_specification,XyloSim
@@ -70,9 +79,12 @@ def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
             or len(sizes) != 3 or sizes != [plan['sizes'][k] for k in ('input','hidden','output')]
             or np.any(plan['input_raster'])):
         raise ValueError('unknown native Xylo bridge contract')
+    upper=bridge.get('input_max',1)
+    if type(upper) is not int or not 1<=upper<=15:
+        raise ValueError('invalid native Xylo input_max')
     if (x.ndim != 3 or len(x) < 1 or x.shape[1:] != (plan['steps'], sizes[0])
-            or not np.isfinite(x).all() or not ((x == 0) | (x == 1)).all()):
-        raise ValueError('native Xylo inference requires binary batch × time × input')
+            or not np.isfinite(x).all() or not ((x>=0)&(x<=upper)&(x==np.floor(x))).all()):
+        raise ValueError('native Xylo inference requires '+('binary batch' if upper==1 else 'bounded integer counts, batch')+' × time × input')
     readout_start=bridge.get('readout_start',0)
     recurrent=bridge.get('schema')=='atlas.native-xylo-frozen.v2'
     if (type(readout_start) is not int or not 0<=readout_start<plan['steps']
@@ -91,7 +103,7 @@ def run_native_batch(plan, bridge, samples, *, chunk_steps=None):
     result['spike_raster']=np.concatenate((result['hidden_q'],result['output_q']),axis=2)
     result['voltage']=np.concatenate((result['hidden_v'],result['output_v']),axis=2)
     result['counts']=result['output_q'][:,readout_start:].sum(axis=1,dtype=np.int64)
-    result['logits']=result['counts']*bridge['logit_scale']/(plan['steps']-readout_start)
+    result['logits']=decode_counts(result['counts'],bridge,plan['steps']-readout_start)
     result.update(configuration_json=configuration,configuration_valid=np.array(True),
                   sdk_binary_sha256=sdk_hash,dynamics_equivalent=exact)
     return result
@@ -127,15 +139,17 @@ class XyloInferenceSession:
 
     def push(self,inputs):
         x=np.asarray(inputs);p=self._plan;d=self._bridge
+        upper=d.get('input_max',1)
+        if type(upper) is not int or not 1<=upper<=15:raise ValueError('invalid input_max')
         if (x.ndim!=2 or not 1<=len(x)<=p['steps']-self.elapsed_ticks or x.shape[1]!=p['sizes']['input']
-                or not np.isfinite(x).all() or not ((x==0)|(x==1)).all()):
-            raise ValueError('Xylo chunk requires binary time x input within the remaining horizon')
+                or not np.isfinite(x).all() or not ((x>=0)&(x<=upper)&(x==np.floor(x))).all()):
+            raise ValueError('Xylo chunk requires bounded integer counts, time x input within the remaining horizon')
         result=_records(self._model,x.astype(int))
         start=max(0,d['readout_start']-self.elapsed_ticks)
         self._counts+=result['output_q'][start:].sum(axis=0,dtype=np.int64)
         self.elapsed_ticks+=len(x);read_ticks=max(0,self.elapsed_ticks-d['readout_start'])
         result.update(spike_raster=np.concatenate((result['hidden_q'],result['output_q']),axis=1),
             voltage=np.concatenate((result['hidden_v'],result['output_v']),axis=1),
-            counts=self._counts.copy(),logits=self._counts*d['logit_scale']/max(1,read_ticks),
+            counts=self._counts.copy(),logits=decode_counts(self._counts,d,read_ticks),
             elapsed_ticks=self.elapsed_ticks,readout_ticks=read_ticks)
         return result

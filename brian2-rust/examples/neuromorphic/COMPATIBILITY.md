@@ -126,6 +126,21 @@ A fresh 32-sequence AtlasIR replay matches 99,840 state values and events.
 The SDK graph feeds an independent compiled C kernel; this is neither stock
 `Brian2Backend` execution nor a chip firmware implementation.
 
+### Full ten-class block-sequential MNIST
+
+The [native sequential example](sequential_mnist/README.md) trains a 16→63→5
+recurrent integer network and uses the same weights in native Atlas, stock
+XyloSim and the custom SpiNNaker2 C host profile. All three reach **94.77%** on
+the complete official 10,000-image test set. Each target matches 44,880,000
+spike/current/membrane values and 100,000 logits exactly. The 98% target remains
+unmet. Ten concrete AtlasIR replays and a separately packaged native build also
+match. Recurrence removal gives 10.10%; clearing state before tick 8 gives 18.93%.
+
+The source bridge now admits explicit input counts up to 15 and a fixed class
+codebook. The admitted profile dimensions remain 16/64/8; the ten-class decoder executes on
+the host. This adds no target or conversion profile to the matrix. The task uses
+pooled image rows over 22 ticks, not the canonical 784-step pixel sequence.
+
 ## Functional checklist
 
 | Function | Current status and limits |
@@ -140,6 +155,7 @@ The SDK graph feeds an independent compiled C kernel; this is neither stock
 | Explicit synaptic delays | SpiNNaker2 LIF: integer delays 0–7 ticks; Xylo temporal rejects explicit delays and uses its fixed tick schedule |
 | Independent samples without state leakage | Static probes include repeated zero/one inputs; Specksim additionally matches at batch sizes 2 and 5 |
 | Stateful chunked input | Xylo temporal and native recurrent v2: full runs match fixed and irregular chunks; custom SpiNNaker2 integer host execution matches 1/7/13-tick chunks; other temporal SDK paths are unverified |
+| Fixed class-code readout | Native recurrent integer training and exact Xylo/custom SpiNNaker2 bridges; 2–32 classes decoded on the host from at most 8 physical outputs |
 | Native trained weights → inference | Exact bounded LIF bridge to SpiNNaker2 and approximate LIF adaptation to Xylo (1–16 ticks); separate exact integer-trained Xylo and custom SpiNNaker2 C host bridges (1–128 ticks). All start fresh sequences; recurrent Xylo v2 carries inference state between chunks |
 | Atlas live checkpoint/resume through conversion | Not implemented; native bridge exports weights for fresh inference, not optimizer/continuation state |
 | Analog-model adaptation and refractory dynamics | DynapSim pilot only; bounded circuit equations, no mismatch or physical configuration validation |
@@ -221,6 +237,7 @@ combination of accepted parameters.
 | SpiNNaker2: temporal LIF | 48 | 101,940 voltage samples | Max float64 error 1.14e-13; 35,093 spike events exactly match |
 | XyloSim: temporal, preceding suite | 50 | 505,455 | Exact, including 7-step chunks |
 | XyloSim: native integer-trained four-class MNIST | 1 | 27,136,896 spike/current/membrane values | Exact; 3,832/4,157 correct; 208,896-value concrete AtlasIR replay also exact |
+| XyloSim + custom SpiNNaker2: block-sequential MNIST | 1 per target | 44,880,000 neural values per target | Exact; 9,477/10,000 correct on all ten classes; 98% target unmet |
 | XyloSim: recurrent integer order task | 1 | 5,840,640 spike/current/membrane values | Exact, including fixed/irregular chunks; 1,872/1,872 correct; both memory controls 50% |
 | SpiNNaker2 custom C host kernel: same recurrent order task | 1 | 5,840,640 spike/current/membrane values | Exact, including 1/7/13-tick chunks; 1,872/1,872 correct; firmware unimplemented |
 | DynapSim: circuit dynamics | 16 | 36,985 | Float32/f64 tolerance checks; 510 spike events exactly match |

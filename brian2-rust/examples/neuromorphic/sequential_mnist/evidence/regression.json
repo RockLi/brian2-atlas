@@ -1,0 +1,46 @@
+{
+  "schema": "atlas.sequential-mnist.regression.v1",
+  "python_tests": 124,
+  "python_failures": 0,
+  "rust_library_tests": 51,
+  "rust_failures": 0,
+  "junit_sha256": "0697d40df0b3dc1d8ec617b3df44f3200cb7ca229b440ad59d19e90390dd3fd9",
+  "python_log_sha256": "337d2ddeafa07b23ff10516991a5547c20a986e26f169b8975bc453675a998ae",
+  "rust_log_sha256": "03d68c67e8747def4f98533643694c072b2c901954868c40523911e8c7b0d660",
+  "additional_encoding_and_trace_validation": {
+    "tests": 1,
+    "failures": 0,
+    "log_sha256": "c9bcb144c21494e85f380ae0032b056c0b060b27bbfcfada9bc048d41195af09"
+  },
+  "package_build_passed": true,
+  "package_build_log_sha256": "353402c1afc16ab90715c22cea194a06f2f68ff5520f99fd428484dd13ddc898",
+  "packaged_sdk_execution": [
+    {
+      "target": "xylosim",
+      "samples": 3,
+      "input_max": 15,
+      "differences": 0
+    },
+    {
+      "target": "spinnaker2",
+      "samples": 3,
+      "input_max": 15,
+      "differences": 0
+    }
+  ],
+  "training_compiler": "rustc 1.86.0 (05f9846f8 2025-03-31)",
+  "packaged_compiler": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+  "cross_compiler_frozen_model": {
+    "checked": true,
+    "values": 44980000,
+    "differences": 0,
+    "runner_sha256": "0a4f25295407163cd1f0b839fbee25d86e62b2d4cddf38d0918c76541544537f"
+  },
+  "test_command": "python -m pytest -q brian2-rust/tests/test_sequential_mnist.py brian2-rust/tests/test_native_xylo_training.py brian2-rust/tests/test_native_xylo_recurrent.py brian2-rust/tests/test_native_xylo_conversion.py brian2-rust/tests/test_spinnaker2_integer.py brian2-rust/tests/test_xylo_b2ir.py brian2-rust/tests/test_neuromorphic.py",
+  "environment": {
+    "B2_TRAIN_RUNNER": "/private/tmp/atlas-smnist-count-trainer",
+    "B2_RUNNER": "/Volumes/T7/atlas-neuromorphic-sdk-20261013/cargo-target/release/b2-runner",
+    "B2_XYLO_PYTHON": "/private/tmp/atlas-xylo-env/bin/python",
+    "B2_SPINNAKER2_PYTHON": "/private/tmp/atlas-spinnaker2-env312/bin/python"
+  }
+}

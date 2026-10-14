@@ -13,10 +13,17 @@ def xylo_training_plan(sizes, *, thresholds=(32,32), weight_scale=32., learning_
         logit_scale=logit_scale,max_tape_bytes=max_tape_bytes,seed=seed)
 
 
-def xylo_recurrent_training_plan(sizes, *, readout_start=0, **kwargs):
+def xylo_recurrent_training_plan(sizes, *, readout_start=0, class_codes=None, input_max=None, **kwargs):
     """CPU recurrent v2; fresh BPTT and explicit chunked evaluation state."""
     plan=xylo_training_plan(sizes,**kwargs)
     plan.update(schema='atlas-xylo-training-plan-v2',recurrent=True,readout_start=readout_start)
+    if input_max is not None:
+        if type(input_max) is not int or not 1 <= input_max <= 15:
+            raise ValueError("input_max must be an integer in 1..15")
+        plan["input_max"] = input_max
+    if class_codes is not None:
+        from .xylo_readout import validate_codes
+        plan["class_codes"] = validate_codes(class_codes, sizes[2]).tolist()
     return plan
 
 

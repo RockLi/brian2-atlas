@@ -40,6 +40,14 @@ def validate_frozen(f):
     from .training_xylo import xylo_training_plan
     p=f['plan'];sizes=p['sizes'];recurrent=f['schema']==RECURRENT_SCHEMA
     expected=set(xylo_training_plan([1,1,1]))|({'recurrent','readout_start'} if recurrent else set())
+    if "input_max" in p:
+        require(type(p["input_max"]) is int and 1<=p["input_max"]<=15, "input_max must be 1..15")
+        expected.add("input_max")
+    if "class_codes" in p:
+        require(recurrent, "class codes require recurrent v2")
+        from .xylo_readout import validate_codes
+        validate_codes(p["class_codes"], sizes[2])
+        expected.add("class_codes")
     require(set(p)==expected and p['schema']==('atlas-xylo-training-plan-v2' if recurrent else 'atlas-xylo-training-plan-v1')
         and p['backend']=='cpu' and p['synaptic_shift']==p['membrane_shift']==1 and p['detach_reset'] is True,
         'unsupported training dynamics')
@@ -67,7 +75,9 @@ def validate_frozen(f):
 def validate_inputs(f,inputs):
     sizes=validate_frozen(f);x=np.asarray(inputs)
     require(x.ndim==3 and len(x)>0 and 1<=x.shape[1]<=128 and x.shape[2]==sizes[0]
-            and np.isfinite(x).all() and ((x==0)|(x==1)).all(),'requires binary batch x 1..128 ticks x input')
+            and np.isfinite(x).all() and ((x>=0)&(x<=f['plan'].get('input_max',1))&(x==np.floor(x))).all(),
+            ('requires binary batch x 1..128 ticks x input' if f['plan'].get('input_max',1)==1
+             else 'requires bounded integer counts, batch x 1..128 ticks x input'))
     return x.astype(np.uint8)
 
 
@@ -101,6 +111,11 @@ def export_native_xylo(f,directory,*,steps,runner,target='xylosim'):
         dynamics_equivalent=True,quantization=f['quantization'])
     if f['schema']==RECURRENT_SCHEMA:
         bundle['native_training_bridge'].update(readout_start=f['plan']['readout_start'],stateful_chunks=True)
+    if 'input_max' in f['plan']:
+        bundle['native_training_bridge']['input_max']=f['plan']['input_max']
+    if 'class_codes' in f['plan']:
+        bundle['native_training_bridge']['class_codes']=copy.deepcopy(f['plan']['class_codes'])
+        bundle['native_training_bridge']['class_decoder_execution']='host-fixed-integer-codebook'
     (directory/'frozen.json').write_bytes(canonical_bytes(f))
     (directory/'converted/bundle.json').write_bytes(canonical_bytes(bundle))
     return bundle

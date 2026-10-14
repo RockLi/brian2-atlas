@@ -31,6 +31,11 @@ pub struct Plan {
     pub recurrent: Option<bool>,
     #[serde(default, skip_serializing_if="Option::is_none")]
     pub readout_start: Option<usize>,
+    /// Optional fixed binary class codebook; neural output counts remain unchanged.
+    #[serde(default, skip_serializing_if="Option::is_none")]
+    pub class_codes: Option<Vec<Vec<i32>>>,
+    #[serde(default, skip_serializing_if="Option::is_none")]
+    pub input_max: Option<u8>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -85,6 +90,16 @@ impl Plan {
         require(self.sizes.len()==3 && (1..=16).contains(&self.sizes[0]) &&
                 (1..=64).contains(&self.sizes[1]) && (1..=8).contains(&self.sizes[2]),
                 "Xylo training requires 1..16 inputs, 1..64 hidden, 1..8 outputs")?;
+        require(self.input_max.is_none_or(|n| (1..=15).contains(&n)), "input_max must be 1..15")?;
+        if let Some(codes)=&self.class_codes {
+            require(v2 && (2..=32).contains(&codes.len()) && codes.iter().all(|row|
+                row.len()==self.sizes[2] && row.iter().all(|v| *v==0 || *v==1)
+                && row.iter().any(|v|*v==1)), "class codes require v2 and 2..32 nonzero binary rows")?;
+            let weight=codes[0].iter().sum::<i32>();
+            require(codes.iter().all(|row|row.iter().sum::<i32>()==weight)
+                && (0..codes.len()).all(|i| !codes[..i].contains(&codes[i])),
+                "class codes must be distinct and have equal Hamming weight")?;
+        }
         require(self.threshold.len()==2 && self.threshold.iter().all(|v| (1..=32767).contains(v)),
                 "Xylo thresholds must be positive int16")?;
         require(self.synaptic_shift==1 && self.membrane_shift==1 && self.detach_reset,
@@ -114,12 +129,13 @@ pub fn execute(request: Request) -> Result<Output> {
             "Xylo continuation is evaluation-only in v2; training requires fresh state")?;
     let readout_start=p.readout_start.unwrap_or(0);
     let [ni,nh,no]=[p.sizes[0],p.sizes[1],p.sizes[2]];
+    let classes=p.class_codes.as_ref().map_or(no,|c|c.len());
     let cells=nh+no;let batch=x.len();
     require((1..=1024).contains(&batch) && labels.len()==batch,"invalid Xylo batch/labels")?;
     let steps=x[0].len();
     require((1..=128).contains(&steps) && x.iter().all(|s| s.len()==steps && s.iter().all(|r|
-        r.len()==ni && r.iter().all(|v| *v==0.0 || *v==1.0))) && labels.iter().all(|y| *y<no),
-        "Xylo inputs must be binary batch x 1..128 ticks x input; labels in range")?;
+        r.len()==ni && r.iter().all(|v| v.is_finite() && *v>=0.0 && *v<=p.input_max.unwrap_or(1) as f64 && v.fract()==0.0))) && labels.iter().all(|y| *y<classes),
+        "Xylo inputs must be bounded integer counts, batch x 1..128 ticks x input; labels in range")?;
     let lengths=if recurrent {vec![ni*nh,nh*no,nh*nh]} else {vec![ni*nh,nh*no]};
     let mut state=state.ok_or("Xylo training requires explicit initial weights")?;
     require(state.weights.len()==lengths.len() && state.first_moment.len()==lengths.len() && state.second_moment.len()==lengths.len(),
@@ -181,17 +197,27 @@ pub fn execute(request: Request) -> Result<Output> {
             voltage[idx]=u-q*p.threshold[l];
         }
     }}}
-    let mut logits=vec![vec![0.0;no];batch];let mut dlogits=logits.clone();let mut loss=0.0;
+    let mut logits=vec![vec![0.0;classes];batch];let mut dlogits=vec![vec![0.0;no];batch];let mut loss=0.0;
     let mut counts=initial.counts.clone();
     for b in 0..batch {
         for j in 0..no {
             counts[b][j]+=(0..steps).filter(|t|elapsed+t>=readout_start).map(|t|spike[at(b,t,nh+j)]).sum::<i32>();
-            logits[b][j]=counts[b][j] as f64*p.logit_scale/read_ticks.max(1) as f64;
+        }
+        for c in 0..classes {
+            let score=if let Some(codes)=&p.class_codes {
+                (0..no).map(|j|counts[b][j]*codes[c][j]).sum::<i32>()
+            } else {counts[b][c]};
+            logits[b][c]=score as f64*p.logit_scale/read_ticks.max(1) as f64;
         }
         let max=logits[b].iter().copied().fold(f64::NEG_INFINITY,f64::max);
         let z=logits[b].iter().map(|v|(v-max).exp()).sum::<f64>();
         loss+=(z.ln()+max-logits[b][labels[b]])/batch as f64;
-        for j in 0..no {dlogits[b][j]=((logits[b][j]-max).exp()/z-f64::from(j==labels[b]))/batch as f64;}
+        for c in 0..classes {
+            let grad=((logits[b][c]-max).exp()/z-f64::from(c==labels[b]))/batch as f64;
+            if let Some(codes)=&p.class_codes {
+                for j in 0..no {dlogits[b][j]+=grad*codes[c][j] as f64;}
+            } else {dlogits[b][c]=grad;}
+        }
     }
     let mut gradient:Vec<Vec<f64>>=lengths.iter().map(|n|vec![0.0;*n]).collect();
     if operation!="evaluate" {

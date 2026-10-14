@@ -105,6 +105,8 @@ def _linearized_loss(plan, weights, perturbed, x, labels):
                     new_q0[k]=q;new_qp[k]=qpert
             q0,qp=new_q0,new_qp
             if time>=plan.get('readout_start',0):counts+=qp[-sizes[-1]:]
+        if 'class_codes' in plan:
+            counts = np.asarray(plan['class_codes']) @ counts
         logits.append(counts*plan['logit_scale']/(steps-plan.get('readout_start',0)))
     logits=np.asarray(logits);maximum=logits.max(1)
     return np.mean(np.log(np.exp(logits-maximum[:,None]).sum(1))+maximum-logits[np.arange(batch),labels])
