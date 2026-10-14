@@ -69,7 +69,7 @@ def run_sim(tau):
     if standalone_module:
         importlib.import_module(standalone_module)
     set_device(standalone_device, directory=directory)
-    print(f'RUNNING {pid}')
+    print(f'RUNNING {pid}', flush=True)
 
     G = NeuronGroup(1, 'dv/dt = -v/tau : 1', method='euler')
     G.v = 1
@@ -82,7 +82,7 @@ def run_sim(tau):
 
     device.reinit()
 
-    print(f'FINISHED {pid}')
+    print(f'FINISHED {pid}', flush=True)
     return res
 
 
