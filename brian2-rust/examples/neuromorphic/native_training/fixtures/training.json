@@ -1,0 +1,103 @@
+{
+  "schema": "atlas.native-lif.mnist-training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "seed": 20261014,
+  "training_backend": "native CPU b2-train",
+  "external_training_framework": false,
+  "train_indices": [
+    0,
+    54000
+  ],
+  "validation_indices": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "preprocessing": "2x2 mean pooling to 14x14; pixel >= 80; repeat binary spikes for 16 ticks",
+  "sizes": [
+    196,
+    64,
+    10
+  ],
+  "trainable_layers": [
+    true,
+    true
+  ],
+  "optimizer_steps": 1800,
+  "selection": "highest quantized accuracy on all 6000 validation images; earliest tie",
+  "initial_validation_accuracy": 0.13083333333333333,
+  "selected": {
+    "step": 1800,
+    "float_validation_accuracy": 0.9538333333333333,
+    "quantized_validation_accuracy": 0.9455,
+    "scales": [
+      16.0,
+      16.0
+    ],
+    "weight_changes": [
+      11328,
+      640
+    ]
+  },
+  "history": [
+    {
+      "step": 300,
+      "float_validation_accuracy": 0.9188333333333333,
+      "quantized_validation_accuracy": 0.9113333333333333,
+      "scales": [
+        16.0,
+        32.0
+      ]
+    },
+    {
+      "step": 600,
+      "float_validation_accuracy": 0.9378333333333333,
+      "quantized_validation_accuracy": 0.9285,
+      "scales": [
+        16.0,
+        16.0
+      ]
+    },
+    {
+      "step": 900,
+      "float_validation_accuracy": 0.9465,
+      "quantized_validation_accuracy": 0.9351666666666667,
+      "scales": [
+        16.0,
+        16.0
+      ]
+    },
+    {
+      "step": 1200,
+      "float_validation_accuracy": 0.9456666666666667,
+      "quantized_validation_accuracy": 0.9351666666666667,
+      "scales": [
+        16.0,
+        16.0
+      ]
+    },
+    {
+      "step": 1500,
+      "float_validation_accuracy": 0.95,
+      "quantized_validation_accuracy": 0.94,
+      "scales": [
+        16.0,
+        16.0
+      ]
+    },
+    {
+      "step": 1800,
+      "float_validation_accuracy": 0.9538333333333333,
+      "quantized_validation_accuracy": 0.9455,
+      "scales": [
+        16.0,
+        16.0
+      ]
+    }
+  ],
+  "training_seconds": 489.7238944590208,
+  "runner_sha256": "f213be9b29793298f1ca8a464ae08a550ac7c50f37b2148a0383fda9c61ef76b",
+  "training_script_sha256": "20d1ba851012608a3baf807324d4f27d221d37129e1e51366f802e6550992dd2",
+  "checkpoint_sha256": "6f0c2b5b9cd09580ed02edf87a3c0566b6cbb9e4fde12ecc960685f651af2f0f",
+  "frozen_file_sha256": "870d8919d3af7337c53fd80165a3e5cd26fb7d836395f2e5af4b79a6a7e250bf"
+}

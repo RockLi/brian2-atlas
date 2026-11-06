@@ -1,0 +1,54 @@
+{
+  "schema": "atlas.sequential-mnist.validation-views.v2",
+  "samples": 6000,
+  "test_data_read": false,
+  "model_sha256": "4761c38252ef20584ab063cef32ff3bffc0a2dc4a879b28059bfa2516e954de8",
+  "offsets": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      -1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      -1,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      -1,
+      -1
+    ],
+    [
+      -1,
+      1
+    ],
+    [
+      1,
+      -1
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "aggregation": "sum integer class counts; same weights; independent zero state for every view; lowest-index tie",
+  "validation_accuracy": {
+    "1": 0.979,
+    "3": 0.9785,
+    "5": 0.9786666666666667,
+    "9": 0.9785
+  },
+  "seconds": 85.16218637500424,
+  "source_sha256": "26fb5356c6f46b4f13c0ebce9ca968a9d925d4e7f05fcc1b2d5c51acdd21a8c2",
+  "predictions_sha256": "84275a00e73992cb24a7fa9dda8665907e5d44700dec74468206a803ea2ced9a"
+}

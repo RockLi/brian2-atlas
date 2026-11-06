@@ -1,4 +1,3 @@
-import itertools
 
 import numpy
 
@@ -316,7 +315,7 @@ class CPPCodeGenerator(CodeGenerator):
     def translate_to_read_arrays(self, read, write, indices):
         lines = []
         # index and read arrays (index arrays first)
-        for varname in itertools.chain(sorted(indices), sorted(read)):
+        for varname in self.ordered_array_reads(read, indices):
             index_var = self.variable_indices[varname]
             var = self.variables[varname]
             if varname not in write:

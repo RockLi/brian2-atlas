@@ -1,81 +1,305 @@
-# Brian2
+# Brian2 Atlas
 
-*A clock-driven simulator for spiking neural networks*
+Brian2 Atlas brings simulation, training and model conversion to the Brian2
+modelling interface. It supports native CPU simulation, GPU/browser backends,
+distributed MPI execution, native training, and experimental conversion to
+software targets for neuromorphic chip ecosystems. AtlasIR is the shared
+representation for execution and conversion. This repository contains the
+product implementation and its regression tests.
+[The preprint repository](https://github.com/RockLi/brian2-atlas-preprint) contains
+the manuscript, historical experiments and reproduction materials.
 
-Brian is a free, open source simulator for spiking neural networks. It is written in the Python programming language and is available on almost all platforms. We believe that a simulator should not only save the time of processors, but also the time of scientists. Brian is therefore designed to be easy to learn and use, highly flexible and easily extensible.
+Atlas retains the upstream Brian2 Git history, author attribution and
+[CeCILL 2.1 licence](LICENSES/Brian2-LICENSE). Original Atlas engine code is
+licensed under [Apache-2.0](LICENSE); the combined checkout retains the upstream
+terms described in [license and repository scope](LICENSE_SCOPE.md). The migration baseline is Brian2 commit
+`27b5431168cf9959f0c27894cd4d92cdc6ad5c31`.
 
-Please report issues at the GitHub issue tracker (https://github.com/brian-team/brian2/issues) or in the Brian forum (https://brian.discourse.group).
+## Architecture: simulation, training and conversion
 
-Documentation for Brian 2 can be found at http://brian2.readthedocs.org
+![Atlas architecture: Brian2 frontend, native training plans, AtlasIR simulation and neuromorphic conversion](brian2-rust/architecture/atlas-architecture.svg)
 
-Brian 2 is released under the terms of the [CeCILL 2.1 license](https://opensource.org/licenses/CECILL-2.1).
+Atlas exposes three capabilities through the Brian2 modelling interface:
 
-If you use Brian for your published research, we kindly ask you to cite our article:
+- **Simulation** executes a model on CPU, GPU, browser or MPI backends. The
+  heterogeneous MPI path can offload population state updates to a GPU while
+  retaining event ordering on the host.
+- **Training** lowers supported Brian models into dedicated training plans.
+  `b2-train` runs the forward pass, surrogate-gradient backpropagation and
+  optimizer on native CPU/GPU/MPI backends.
+- **Conversion** checks an AtlasIR model against a neuromorphic target's semantic
+  and resource constraints, then produces a target-specific plan for SDK
+  execution. Atlas reference results provide the conversion check.
 
-> Stimberg, M, Brette, R, Goodman, DFM. “Brian 2, an Intuitive and Efficient Neural Simulator.” eLife 8 (2019): e47314. doi: [10.7554/eLife.47314](https://doi.org/10.7554/eLife.47314).
+Simulation and conversion share **AtlasIR**; new exports use `atlasir-v1`.
+Verified legacy imports remain supported (see [migration](brian2-rust/AtlasIR.md#7-migration-and-conformance)).
+Native training currently uses
+**separately versioned training plans**; it does not run through the frozen
+`atlasir-v1` simulation ABI. The TensorFlow examples import frozen weights into an
+explicit Brian2 model. A bounded [native LIF training bridge](brian2-rust/examples/neuromorphic/native_training/README.md)
+now connects Atlas-trained networks to SpiNNaker2 software inference through
+explicit quantization and AtlasIR. Arbitrary TensorFlow graphs and general
+native training plans are not admitted by this bridge. A separate
+[Xylo adaptation](brian2-rust/examples/neuromorphic/native_xylo/README.md) preserves
+a small model's frozen weights but changes its neuron dynamics; it requires
+explicit opt-in and reports cross-target differences. A new
+[native integer Xylo trainer](brian2-rust/examples/neuromorphic/native_xylo_integer/README.md)
+uses the target dynamics during training and exports without that adaptation.
+This dedicated training plan currently runs on CPU only.
 
+See the [architecture notes](brian2-rust/architecture/README.md) for interfaces and
+validation boundaries. Figures: [PNG](brian2-rust/architecture/atlas-architecture.png),
+[SVG](brian2-rust/architecture/atlas-architecture.svg).
 
-[![PyPI version](https://img.shields.io/pypi/v/Brian2.svg)](https://pypi.python.org/pypi/Brian2)
-[![Conda version](https://img.shields.io/conda/vn/conda-forge/brian2.svg)](https://anaconda.org/conda-forge/brian2)
-[![Debian package](https://img.shields.io/debian/v/python3-brian/testing)](https://packages.debian.org/testing/python3-brian)
-[![Fedora package](https://img.shields.io/fedora/v/python3-brian2/f43)](https://packages.fedoraproject.org/pkgs/python-brian2/python3-brian2/)
-[![Spack](https://img.shields.io/spack/v/py-brian2)](https://packages.spack.io/package.html?name=py-brian2)
-[![AUR version](https://img.shields.io/aur/version/python-brian2)](https://aur.archlinux.org/packages/python-brian2)
-![Docker Image Version](https://img.shields.io/docker/v/briansimulator/brian?label=docker%20image)
+## Install from source
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/briansimulator/brian)](https://hub.docker.com/r/briansimulator/brian)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17833036.svg)](https://zenodo.org/doi/10.5281/zenodo.17833036)
-[![Software Heritage (repository)](https://archive.softwareheritage.org/badge/origin/https://github.com/brian-team/brian2/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/brian-team/brian2)
-[![Software Heritage (release)](https://archive.softwareheritage.org/badge/swh:1:rel:ba3061dfeb4e1a23791c063612f560990a0eea69/)](https://archive.softwareheritage.org/swh:1:rel:ba3061dfeb4e1a23791c063612f560990a0eea69;origin=https://github.com/brian-team/brian2;visit=swh:1:snp:bb8a53ef18202531e042a06297936bb230d4f6af)
+This is research software version **0.1.0**, paired with the
+[bioRxiv v1 evidence archive](https://github.com/RockLi/brian2-atlas-preprint/tree/biorxiv-v1).
+Install the frozen source from tag `v0.1.0`; no PyPI publication is implied.
+`main` holds the release snapshot and `dev` is the development branch. The distribution name is `brian2-atlas`; use `brian2` for modelling
+and `brian2_atlas` for the Atlas backend. `brian2_rust` remains a compatibility
+import. The Brian compatibility version is
+`2.10.1.post241`, independent of the Atlas distribution version.
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
-[![Discourse topics](https://img.shields.io/discourse/topics?server=https%3A%2F%2Fbrian.discourse.group)](https://brian.discourse.group)
-[![Discourse chat](https://img.shields.io/badge/discourse-chat-4EC820?logo=discourse&link=https%3A%2F%2Fbrian.discourse.group%2Fchat)](https://brian.discourse.group/chat)
+Use Python 3.12 or newer, Rust/rustup and a working C/C++ compiler:
 
-[![Neuromorphic Computing](https://img.shields.io/badge/Collaboration_Network-Open_Neuromorphic-blue)](https://open-neuromorphic.org/neuromorphic-computing/)
-[![PySimHub](https://pysimhub.io/badge.svg)](https://pysimhub.io/projects/brian2)
+```sh
+git clone --branch v0.1.0 https://github.com/RockLi/brian2-atlas.git
+cd brian2-atlas
+rustup toolchain install 1.98.1 --profile minimal
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+```
 
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![SPEC 0 — Minimum Supported Dependencies](https://img.shields.io/badge/SPEC-0-green?labelColor=%23004811&color=%235CA038)](https://scientific-python.org/specs/spec-0000/)
+A source install builds both `b2-runner` and `b2-train` with the locked Rust
+sources. Platform wheels contain these executables and all runtime source
+resources; installing a matching wheel does not rebuild them. Specialized AOT
+simulation still needs the pinned Rust compiler. CUDA needs the NVIDIA toolkit
+and CuPy; Metal needs the corresponding Apple compiler/runtime; MPI needs
+`mpicc` and `mpiexec`.
 
-## Quickstart
-Try out Brian on the [mybinder](https://mybinder.org/) service:
+The optional `brian2-rust/tools/install_user.sh` uses `uv` to create a coherent
+user installation and expose `brian2-atlas-python`, `brian2-atlas`, `b2-runner`
+and `b2-train`. Set `BRIAN2_ATLAS_HOME`, `BRIAN2_ATLAS_BIN` and
+`BRIAN2_ATLAS_PYTHON` to choose its locations and interpreter. It records source
+and binary provenance in `install.json` and refuses to overwrite unrelated
+commands. It installs a snapshot; rerun after source changes.
 
-[![mybinder](https://static.mybinder.org/badge.svg)](https://mybinder.org/v2/gh/brian-team/brian2-binder/master?filepath=index.ipynb)
+Builds and caches can live on external storage using `CARGO_TARGET_DIR`,
+`CARGO_HOME`, `UV_CACHE_DIR`, `PIP_CACHE_DIR`, `TMPDIR` and `XDG_CACHE_HOME`.
+Installed runtime output goes to temporary directories; set
+`BRIAN2_ATLAS_OUTPUT_DIR` to choose a persistent output parent. An explicit
+`B2_RUNNER` or `B2_TRAIN_RUNNER` overrides the bundled executable.
 
-## Dependencies
-The following packages need to be installed to use Brian 2 (cf. [`pyproject.toml`](pyproject.toml)):
+## First simulation
 
-* Python >= 3.12
-* NumPy >= 2.0
-* SymPy >= 1.2
-* Cython >= 0.29.21
-* PyParsing >= 3
-* Jinja2 >= 2.7
-* setuptools >= 61
-* py-cpuinfo (only required on Windows)
-* packaging
+```python
+import brian2 as b
+import brian2_atlas
 
-For full functionality, you might also want to install:
+b.set_device("atlas", engine="reference")
+group = b.NeuronGroup(
+    1, "dv/dt = (1.5-v)/(10*ms) : 1",
+    threshold="v>1", reset="v=0", method="euler", dt=0.1*b.ms,
+)
+spikes = b.SpikeMonitor(group)
+b.Network(group, spikes).run(100*b.ms)
+print(spikes.num_spikes)  # 9
+```
 
-* GSL >=1.16
-* SciPy >=0.13.3
-* Matplotlib >= 2.0
+`brian2_atlas.AtlasDevice` is the public Brian2 Device. Select `atlas` once,
+then choose the execution engine: `reference`, `aot`, `cuda`, `metal` or `mpi`.
+For CUDA/Metal, also specify `numeric_mode="float32"`. Browser execution uses
+the separate `export_wasm_bundle` API.
 
-To build the documentation:
+Existing `import brian2_rust`, `RustStandaloneDevice` and
+`set_device("rust_standalone", ...)` remain compatible aliases of the same
+implementation and Device instance. Internal Rust module paths and native
+executable names are unchanged.
 
-* Sphinx >=7,<9
-* ipython >=5
-* sphinx-tabs
+Use `engine="aot"` for model-specialized CPU execution. Backend capabilities
+are checked explicitly; unsupported model constructs raise a capability error.
+See [the backend guide](brian2-rust/README.md) for GPU, browser, MPI and training.
 
-To run the test suite:
+## Neuromorphic chip ecosystems: experimental conversion
 
-* pytest >= 8
-* pytest-xdist (optional)
+`brian2_atlas.neuromorphic` converts validated AtlasIR into plans for six
+neuromorphic software targets. Conversion preserves the admitted source
+semantics and rejects unsupported constructs. These are development additions;
+they are not included in the frozen `v0.1.0` release installed above.
 
-## Testing status for master branch
+| Chip ecosystem | Software target | Verified conversion scope |
+|---|---|---|
+| BrainChip Akida | Akida SDK simulator | Frozen signed/biased integer MLPs and binary count classifiers |
+| Intel Loihi | Lava CPU simulation | Frozen integer MLPs with a uniform hidden shift, and binary count classifiers |
+| SynSense Speck | Specksim | Restricted binary count classifiers |
+| SpiNNaker2 | py-spinnaker2 Brian2 backend; separate custom C host kernel | Frozen integer MLPs, binary count classifiers, bounded temporal LIF and an explicit custom integer profile |
+| SynSense Xylo Audio 2 | XyloSim | Binary count classifiers and bounded integer temporal dynamics |
+| SynSense DYNAP-SE2 | Rockpool DynapSim | A bounded temporal DPI circuit-model profile |
 
-[![Test status on GitHub Actions](https://github.com/brian-team/brian2/actions/workflows/testsuite.yml/badge.svg)](https://github.com/brian-team/brian2/actions/workflows/testsuite.yml)
-[![Publish status on GitHub Actions](https://github.com/brian-team/brian2/actions/workflows/publish.yml/badge.svg)](https://github.com/brian-team/brian2/actions/workflows/publish.yml)
-[![Test coverage](https://img.shields.io/coveralls/brian-team/brian2/master.svg)](https://coveralls.io/r/brian-team/brian2?branch=master)
-[![Documentation Status](https://readthedocs.org/projects/brian2/badge/?version=stable)](https://brian2.readthedocs.io/en/stable/?badge=stable)
+The static inference path is **externally trained, frozen weights → Brian2
+model → AtlasIR → target simulator**. Atlas runs the same source model as the
+reference. Training through Atlas is a separate capability; this conversion
+path does not perform on-chip learning or import arbitrary TensorFlow graphs.
+
+The [ten-class block-sequential MNIST example](brian2-rust/examples/neuromorphic/sequential_mnist/README.md)
+trains a recurrent integer network natively in Atlas. A fourth training/readout
+round reaches **97.44% on all 10,000 test images** in Atlas, XyloSim and the
+custom SpiNNaker2 C host kernel (previous wider result: 97.47%). The same model
+and weights match **73,440,000 spike/current/membrane values** and all class scores
+exactly per target. The selected 16→63→5 model has 5,292 active trainable
+weights and 36 ticks. Host preprocessing and fixed decoding remain part
+of inference. The 98% test target remains unmet. Further accuracy tuning is
+outside this conversion branch's scope. The compact model is retained as a
+fixed regression baseline; see the [acceptance criteria and API checks](brian2-rust/examples/neuromorphic/ACCEPTANCE.md).
+[Selection, unsuccessful experiments and controls](brian2-rust/examples/neuromorphic/sequential_mnist/ROUND4.md)
+are documented. Optional rate-loss training, eight-output codebook transfer and
+signed-current host readout are available; they are not all selected methods.
+Recurrent v2 retains the 128-hidden and 63-target fanout bounds. These are
+software results; SpiNNaker2 firmware, chip power and latency remain unverified.
+
+A [native recurrent Xylo example](brian2-rust/examples/neuromorphic/native_xylo_recurrent/README.md)
+now trains input, readout and recurrent weights on a delayed AB/BA task. Atlas
+and XyloSim both classify all **1,872 held-out sequences correctly**, with exact
+agreement across **5,840,640 spike/current/membrane values**. Removing recurrence
+or resetting state before the query reduces accuracy to 50%. Full, fixed-chunk
+and irregular-chunk inference agree. This is a bounded synthetic memory test;
+v2 supports stateful inference within 128 ticks, while training uses fresh
+full-sequence BPTT. It does not establish unbounded streaming or chip performance.
+A [same-weight SpiNNaker2 transfer diagnostic](brian2-rust/examples/neuromorphic/native_xylo_recurrent/SPINNAKER2.md)
+finds that substituting the stock current-LIF model gives **50%**, with divergent
+spikes and states. The Xylo integer model is therefore not admitted by the stock
+SpiNNaker2 LIF profile; recurrence support alone does not imply matching dynamics.
+The [new custom SpiNNaker2 C host kernel](brian2-rust/examples/neuromorphic/native_xylo_recurrent/SPINNAKER2_INTEGER.md)
+preserves those integer dynamics: the unchanged recurrent model reaches **100%**
+and matches Atlas/XyloSim on all **5,840,640 spike/current/membrane values**.
+It uses SDK network objects and an independent C implementation; stock SDK
+LIF behavior is unchanged, and SpiNNaker2 firmware/placement remain unimplemented.
+
+The [native integer Xylo example](brian2-rust/examples/neuromorphic/native_xylo_integer/README.md)
+trains a 16→64→4 network with Xylo integer dynamics from the start. On all
+4,157 test digits 0–3, Atlas and XyloSim both reach **92.18%**, with zero
+differences across 27,136,896 spike/current/membrane values. A smaller control
+with the previous binary inputs and 16→32→4 dimensions reaches **77.63%**.
+The larger gain also changes encoding, width and duration; these are four-class
+results. The new model is not admitted by the current SpiNNaker2 LIF profile.
+
+The earlier [same-weight native Xylo experiment](brian2-rust/examples/neuromorphic/native_xylo/README.md)
+uses a 16→32→4 network on all 4,157 MNIST test digits 0–3. SpiNNaker2 matches
+quantized native inference at **75.58%**; Xylo reaches **75.61%**, but 234
+predictions differ. This is an explicit dynamics adaptation, not exact native
+LIF conversion. The adapted AtlasIR itself matches Xylo's state/spike records
+on the documented replay subset.
+
+A separate [native training example](brian2-rust/examples/neuromorphic/native_training/README.md)
+trains both layers of a small MNIST SNN in Atlas, freezes and quantizes its
+weights, and exports through AtlasIR to SpiNNaker2. On the full MNIST test split,
+accuracy is **94.53% before quantization and 93.80% afterward**; SDK inference
+also reaches **93.80%**, with all 11,840,000 spike-raster entries matching native
+Atlas. The audit separates quantization loss from conversion loss. This is a new temporal SNN,
+with different preprocessing and architecture from the TensorFlow models below.
+
+The [character language-model example](brian2-rust/examples/neuromorphic/language_model/README.md)
+trains a 129→128→32 LIF model in Atlas to predict the next character from a
+fixed four-character context. On its 9,996 held-out targets, perplexity is
+**8.09 before quantization and 9.92 afterward**, versus **11.43** for a
+training-only bigram baseline. SpiNNaker2 also reaches **9.92** with exact
+per-token logits, probabilities and spikes; 32 autoregressively generated
+characters match too. Each prediction starts from zero neuron state. This
+validates a bounded language-model conversion, not general LLM or persistent
+recurrent-state support.
+
+Two externally trained MNIST test-set results are available:
+
+- The original TensorFlow-trained **784→256→10 MLP reaches 98.74%** on Akida,
+  Lava and SpiNNaker2 with the same frozen model and weights. The latest
+  SpiNNaker2 run matches a fresh native Atlas replay on all **2,660,000 hidden
+  and output states** across 10,000 images. Its optimized encoding reduces
+  first-layer connections by 94.5%.
+  [Full-model result and reproduction](brian2-rust/examples/neuromorphic/spinnaker2_dense/README.md).
+- A separate, smaller binary count model reaches **90.03%** on Akida, Lava,
+  Specksim, SpiNNaker2 and XyloSim, with exact conversion equivalence.
+  [TensorFlow example](brian2-rust/examples/neuromorphic/README.md) and
+  [additional count targets](brian2-rust/examples/neuromorphic/count_targets/README.md).
+
+All of these results use **software execution**. Hardware placement, physical
+chip execution, power and latency remain unverified. Simulator admission also
+does not guarantee hardware fit; for example, the Xylo count MNIST encoding
+exceeds the chip's input-channel limit. The temporal profiles have their own
+state and spike checks; static classifier encodings do not establish general
+SNN portability.
+
+The [compatibility checklist](brian2-rust/examples/neuromorphic/COMPATIBILITY.md)
+records supported features, numeric limits, rejected combinations and execution
+evidence for each target.
+
+## Validation and support scope
+
+The migration has run on macOS arm64/Python 3.14 with actual CPU/AOT, Apple
+Metal and same-host MPI, and on a Modal NVIDIA L4 with CUDA simulation/training.
+Chrome WASM Workers and a non-fallback Apple WebGPU adapter were exercised.
+Source-directory, wheel and isolated-sdist installs passed representative
+simulation, training and fresh-process checkpoint checks on macOS arm64.
+
+The [CUDA follow-up](migration/cuda-cutoff-followup.json) passed all 708 previously
+skipped cases from 15 modules plus one ABI regression on a Modal L4 (709 passed,
+zero failed or skipped), including two MPI ranks sharing that GPU.
+
+These results do not qualify every model, device, CUDA test variant, Windows,
+cross-host MPI or multiple GPUs. The hosted CI configuration covers Linux and
+macOS distribution builds; its results must be checked separately. Exact source
+identities, numerical gates, skipped cases and known validation limits are in
+[the migration records](migration/README.md).
+
+```sh
+python -m pip install -e '.[test]' scipy pyarrow
+python dev/atlas/run_frontend.py
+python dev/atlas/run_backend.py --suite cpu --timeout 1200
+```
+
+Training source tests need a built `b2-train`; hardware suites are opt-in.
+`dev/atlas/check_installed.py --report /path/to/report.json` verifies an installed
+package, and `--metal` adds actual Metal training. Run it with an installed
+interpreter and without `PYTHONPATH`, `B2_RUNNER` or `B2_TRAIN_RUNNER` overrides.
+
+## Upstream and research provenance
+
+The `dev` branch is the Atlas development branch. The upstream project is
+[brian-team/brian2](https://github.com/brian-team/brian2); product ports retain
+source hashes and adaptation notes. Historical paper results remain tied to the
+source versions that produced them. The [PD14 reproduction](https://github.com/RockLi/brian2-atlas-preprint/tree/main/experiments/reproduction/pd14)
+pins Atlas commit `b769c21004a89e2a6f3a14521f23012db654aadd` and has passed its
+documented bounded build-to-simulation checks. The `v0.1.0` release is frozen;
+development changes and their acceptance records do not alter that release or
+the paper's measured implementation identities.
+
+The current `dev` training increment extends stochastic callback and whole-neuron
+lowering, selected Poisson semantics and read-only state handling. See the
+[training guide](brian2-rust/TRAINING.md) and the
+[incremental acceptance records](https://github.com/RockLi/brian2-atlas-preprint/tree/dev/validation/training-port-f73).
+
+## Optional dependencies
+
+The `examples` extra retains the original joblib, noise, OpenCV, progressbar2 and SBI dependencies; the `cloud` extra installs the Modal SDK. From a checkout, install these as needed with `python -m pip install ".[examples]"` or `python -m pip install ".[cloud]"`. Core installation does not install either group. `uv.lock` retains the captured dependency versions with the Atlas distribution identity; use `uv sync --locked` and select extras explicitly when using uv. A resolved optional dependency is not a claim that its integration was exercised on every supported Python/platform combination.
+
+User simulation, training and MPI checkpoint commands are collected in the [source example guide](brian2-rust/examples/README.md). Run their bounded regression suite with `python dev/atlas/run_backend.py --suite examples`.
+
+## AtlasIR
+
+[AtlasIR](brian2-rust/AtlasIR.md) is the shared intermediate representation for Atlas execution. Brian2 is the current modeling frontend. Python integrity/serialization APIs are available through `brian2_atlas.ir`. Frozen `b2ir-*` wire and ABI identifiers remain compatible; public native-function registrations also accept `atlasir-*` names.
+
+## Citation
+
+Use [CITATION.cff](CITATION.cff) to cite Atlas, recording the exact commit used.
+The upstream Brian2 citation is retained in [UPSTREAM_CITATION.cff](UPSTREAM_CITATION.cff).
+
+## Public evidence exports
+
+Host-specific paths have been replaced with synthetic locations in the published
+history. Original evidence is privately preserved with its original checksums.
+The [redaction map](migration/public-path-redaction.json) binds original content
+hashes to the public export hashes; a redacted export is not byte-identical to
+the original measurement artifact. Configure actual input/output locations when
+running historical scripts. The [commit map](migration/public-commit-map.json)
+resolves original commit identities to the public history.

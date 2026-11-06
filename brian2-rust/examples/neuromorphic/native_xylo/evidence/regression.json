@@ -1,0 +1,22 @@
+{
+  "python_regression_tests_passed": 127,
+  "real_sdk_tests_enabled": [
+    "spinnaker2",
+    "xylosim"
+  ],
+  "test_files": [
+    "test_native_xylo_conversion.py",
+    "test_native_lif_conversion.py",
+    "test_xylo_b2ir.py",
+    "test_spinnaker2_b2ir.py",
+    "test_neuromorphic.py",
+    "test_character_language_model.py"
+  ],
+  "existing_xylo_temporal_cases": 50,
+  "compared_state_values": 505455,
+  "state_differences": 0,
+  "chunk_steps": 7,
+  "chunked_state_differences": 0,
+  "regression_audit_sha256": "76461e6e12f213acba0811b0bbbf80735f14beb9153649154a670219f6f0b07a",
+  "xylo_runtime_sha256": "519e1fba5e1bbf959c3e9b15219de8dccd680961d0bc5bda3313bb8154e7d8f4"
+}

@@ -1,0 +1,67 @@
+   Compiling b2-runner v0.0.1 (/Users/rock/workspace/bettiai/brian2-atlas/brian2-rust)
+warning: function `shared_actions` is never used
+   --> src/training/poisson_ir.rs:152:15
+    |
+152 | pub(super) fn shared_actions(spec:&dynamic::Spec)->bool {
+    |               ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `b2-runner` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.40s
+     Running unittests src/lib.rs (target/debug/deps/b2_runner-ea5b96019ff74dfe)
+
+running 51 tests
+test canonical::tests::python_float_notation ... ok
+test resource_limits::tests::explicit_limits_are_finite_positive_decimal_integers ... ok
+test executor::tests::three_distinct_mut_preserves_requested_order_for_every_permutation ... ok
+test large_topology::tests::fixed_indegree_is_distinct_per_target_and_reproducible ... ok
+test large_topology::tests::endpoint_arrays_are_source_major_and_reproducible ... ok
+test tests::explicit_integer_cast_accepts_tick_and_index_domains ... ok
+test training::clock::tests::coalescing_past_a_clock_interval_is_rejected ... ok
+test training::clock::tests::exact_tie_priority_changes_nontransitive_coalescing ... ok
+test tests::complete_refractory_effects_only_after_validating_frozen_wire_graph ... ok
+test large_topology::tests::fixed_total_is_compact_bounded_and_reproducible ... ok
+test training::clock::tests::fast_slow_visits_and_restore ... ok
+test training::clock::tests::invalid_orders_and_clock_precision ... ok
+test training::clock::tests::strict_coalescing_and_inclusive_rounding_differ ... ok
+test training::clock::tests::restart_preserves_counts_when_tolerance_repeats_a_tick ... ok
+test training::clock::tests::work_budget_and_counter_failure_are_atomic ... ok
+test training::clock_state::tests::checkpoint_must_be_at_the_requested_boundary ... ok
+test training::equation::bitwise_tests::exact_signed_edges_and_shift_admission ... ok
+test training::clock_state::tests::cold_warm_restart_preserves_execution_counts ... ok
+test compact_input::tests::compact_document_checks_wire_hash_and_original_semantics ... ok
+test training::clock_state::tests::overrun_interval_does_not_produce_a_checkpoint ... ok
+test training::equation::sequence_tests::boolean_select_keeps_selected_surrogate_vjp_and_legacy_wire_shape ... ok
+test training::equation::sequence_tests::discarded_integer_and_exact_integer_result_are_detached ... ok
+test training::equation::sequence_tests::discarded_primal_is_checked_without_a_singular_vjp ... ok
+test training::equation::sequence_tests::sequencing_is_eager_inside_only_the_selected_branch ... ok
+test training::equation::sequence_tests::eager_boolean_products_use_both_known_gate_values ... ok
+test training::itinerary::tests::async_restart_and_manual_prefix_keep_clock_draw_counts ... ok
+test training::itinerary::tests::event_outputs_keep_leading_visits_and_multiple_emissions ... ok
+test training::itinerary::tests::visit_tape_budget_uses_checked_arithmetic ... ok
+test training::itinerary::tests::visits_include_intermediate_actions_and_ignore_passive_only_clocks ... ok
+test training::math::tests::interior_derivatives ... ok
+test training::math::tests::removable_limit_and_small_values ... ok
+test training::noise::tests::event_identity_follows_emission_or_imported_entry ... ok
+test training::noise::tests::uniform_device_range_keeps_half_open_endpoint ... ok
+test training::poisson::tests::event_addresses_survive_routing_and_replay ... ok
+test training::poisson::tests::tiny_rates_do_not_round_the_probability_to_zero ... ok
+test training::poisson::tests::zero_and_errors_have_explicit_semantics ... ok
+test training::poisson_cache::tests::aliases_skip_rate_but_reverse_origin_checks_it ... ok
+test training::poisson_cache::tests::candidate_draw_never_uses_observation_or_owns_score ... ok
+test training::poisson_cache::tests::delayed_and_pending_identities_do_not_alias_rng_hashes ... ok
+test training::poisson_cache::tests::restored_draw_has_no_current_score_owner ... ok
+test training::poisson_cache::tests::nested_counterfactual_restores_baseline_after_error ... ok
+test training::poisson_gpu_cache::tests::bit_packed_offsets_reject_uint32_overflow ... ok
+test training::poisson_gpu_cache::tests::emission_aliases_use_tail_slots_and_separate_batch_lanes ... ok
+test training::poisson_gpu_cache::tests::pending_slots_recur_without_clock_or_stream_alias ... ok
+test training::static_poisson_gpu::tests::budgets_addresses_and_clock_are_checked_before_dispatch ... ok
+test training::static_poisson_gpu::tests::exported_rate_keeps_ieee_negative_zero ... ok
+test training::static_poisson_gpu::tests::imported_history_is_preserved_and_lane_padding_is_separate ... ok
+test training::static_poisson_gpu::tests::shared_phases_distinct_lanes_and_lossless_integer_payload ... ok
+test training::noise::tests::uniform_is_reproducible_half_open_and_domain_separated ... ok
+test training::poisson::tests::moments_scores_and_large_integer_resolution ... ok
+test compact_input::tests::compressed_arrays_preserve_order_hash_bytes_and_dense_fallback ... ok
+
+test result: ok. 51 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s

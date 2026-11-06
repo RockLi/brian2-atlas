@@ -1,0 +1,493 @@
+{
+  "definition": {
+    "clocks": [
+      {
+        "dt": "3f30624dd2f1a9fc",
+        "name": "golden_clock"
+      }
+    ],
+    "functions": [],
+    "numeric_profile": "reference-f64",
+    "populations": [
+      {
+        "clock": 0,
+        "code_objects": [
+          {
+            "clock": 0,
+            "effects": {
+              "reads": [
+                "drive",
+                "dt",
+                "ms",
+                "not_refractory",
+                "v"
+              ],
+              "writes": [
+                "v"
+              ]
+            },
+            "iteration_domain": "all_neurons",
+            "kind": "state_update",
+            "name": "golden_population_stateupdater",
+            "order": 0,
+            "scalar": [
+              {
+                "condition": null,
+                "dimensions": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "dtype": "f64",
+                "target": "_lio_1",
+                "value": {
+                  "left": {
+                    "left": {
+                      "bits": "3fe0000000000000",
+                      "op": "literal"
+                    },
+                    "op": "mul",
+                    "right": {
+                      "name": "dt",
+                      "op": "load"
+                    }
+                  },
+                  "op": "div",
+                  "right": {
+                    "name": "ms",
+                    "op": "load"
+                  }
+                }
+              }
+            ],
+            "vector": [
+              {
+                "condition": "not_refractory",
+                "dimensions": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "dtype": "f64",
+                "target": "v",
+                "value": {
+                  "left": {
+                    "left": {
+                      "name": "_lio_1",
+                      "op": "load"
+                    },
+                    "op": "mul",
+                    "right": {
+                      "left": {
+                        "left": {
+                          "name": "drive",
+                          "op": "load"
+                        },
+                        "op": "sub",
+                        "right": {
+                          "name": "v",
+                          "op": "load"
+                        }
+                      },
+                      "op": "mul",
+                      "right": {
+                        "arg": {
+                          "arg": {
+                            "name": "not_refractory",
+                            "op": "load"
+                          },
+                          "dtype": "i32",
+                          "op": "cast"
+                        },
+                        "dtype": "f64",
+                        "op": "cast"
+                      }
+                    }
+                  },
+                  "op": "add",
+                  "right": {
+                    "name": "v",
+                    "op": "load"
+                  }
+                }
+              }
+            ],
+            "when": "groups"
+          },
+          {
+            "clock": 0,
+            "effects": {
+              "reads": [
+                "v"
+              ],
+              "writes": []
+            },
+            "event_name": "spike",
+            "iteration_domain": "all_neurons",
+            "kind": "threshold",
+            "name": "golden_population_spike_thresholder",
+            "order": 0,
+            "scalar": [],
+            "vector": [
+              {
+                "condition": null,
+                "dimensions": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "dtype": "bool",
+                "target": "_cond",
+                "value": {
+                  "left": {
+                    "name": "v",
+                    "op": "load"
+                  },
+                  "op": "ge",
+                  "right": {
+                    "arg": {
+                      "dtype": "i64",
+                      "op": "integer",
+                      "value": "1"
+                    },
+                    "dtype": "f64",
+                    "op": "cast"
+                  }
+                }
+              }
+            ],
+            "when": "thresholds"
+          },
+          {
+            "clock": 0,
+            "effects": {
+              "reads": [],
+              "writes": [
+                "v"
+              ]
+            },
+            "event_name": "spike",
+            "iteration_domain": "spiking_neurons",
+            "kind": "reset",
+            "name": "golden_population_spike_resetter",
+            "order": 0,
+            "scalar": [],
+            "vector": [
+              {
+                "condition": null,
+                "dimensions": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "dtype": "f64",
+                "target": "v",
+                "value": {
+                  "arg": {
+                    "dtype": "i64",
+                    "op": "integer",
+                    "value": "0"
+                  },
+                  "dtype": "f64",
+                  "op": "cast"
+                }
+              }
+            ],
+            "when": "resets"
+          }
+        ],
+        "count": 2,
+        "dt": "3f30624dd2f1a9fc",
+        "event_monitors": [],
+        "events": [
+          "spike"
+        ],
+        "monitor": {
+          "record": [
+            1,
+            0
+          ],
+          "variables": [
+            "v"
+          ],
+          "window_steps": 4
+        },
+        "name": "golden_population",
+        "offset": 0,
+        "parameters": [
+          {
+            "dimensions": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "dtype": "f64",
+            "index_domain": "neuron",
+            "name": "drive"
+          },
+          {
+            "dimensions": [
+              0.0,
+              0.0,
+              1.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "dtype": "f64",
+            "index_domain": "scalar",
+            "name": "ms"
+          }
+        ],
+        "refractory": {
+          "frozen_states": [
+            "v"
+          ],
+          "mode": "fixed"
+        },
+        "spike_monitor": "golden_spike_monitor",
+        "state_monitors": [
+          {
+            "clock": 0,
+            "name": "golden_state_monitor",
+            "record": [
+              1,
+              0
+            ],
+            "variables": [
+              "v"
+            ]
+          }
+        ],
+        "states": [
+          {
+            "dimensions": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "dtype": "f64",
+            "index_domain": "neuron",
+            "name": "v"
+          }
+        ],
+        "steps": 4
+      }
+    ],
+    "rng_algorithm": "splitmix64-counter-v1",
+    "schedule": {
+      "base_slots": [
+        "start",
+        "groups",
+        "thresholds",
+        "synapses",
+        "resets",
+        "end"
+      ],
+      "nodes": [
+        {
+          "clock": 0,
+          "dependencies": [],
+          "effects": {
+            "reads": [
+              "population/0/state/v"
+            ],
+            "writes": []
+          },
+          "id": "population/0/state_monitor/0",
+          "item_index": 0,
+          "name": "golden_state_monitor",
+          "operation": "state_monitor",
+          "order": 0,
+          "owner_index": 0,
+          "owner_kind": "population",
+          "when": "start"
+        },
+        {
+          "clock": 0,
+          "dependencies": [
+            "population/0/state_monitor/0"
+          ],
+          "effects": {
+            "reads": [
+              "population/0/parameter/drive",
+              "population/0/parameter/ms",
+              "population/0/refractory/not_refractory",
+              "population/0/state/v"
+            ],
+            "writes": [
+              "population/0/state/v"
+            ]
+          },
+          "id": "population/0/code/0",
+          "item_index": 0,
+          "name": "golden_population_stateupdater",
+          "operation": "code_object",
+          "order": 0,
+          "owner_index": 0,
+          "owner_kind": "population",
+          "when": "groups"
+        },
+        {
+          "clock": 0,
+          "dependencies": [
+            "population/0/code/0"
+          ],
+          "effects": {
+            "reads": [
+              "population/0/state/v"
+            ],
+            "writes": [
+              "population/0/event/spike"
+            ]
+          },
+          "id": "population/0/code/1",
+          "item_index": 1,
+          "name": "golden_population_spike_thresholder",
+          "operation": "code_object",
+          "order": 0,
+          "owner_index": 0,
+          "owner_kind": "population",
+          "when": "thresholds"
+        },
+        {
+          "clock": 0,
+          "dependencies": [
+            "population/0/code/1"
+          ],
+          "effects": {
+            "reads": [
+              "population/0/event/spike"
+            ],
+            "writes": []
+          },
+          "id": "population/0/spike_monitor/0",
+          "item_index": 0,
+          "name": "golden_spike_monitor",
+          "operation": "spike_monitor",
+          "order": 1,
+          "owner_index": 0,
+          "owner_kind": "population",
+          "when": "thresholds"
+        },
+        {
+          "clock": 0,
+          "dependencies": [
+            "population/0/code/0",
+            "population/0/code/1"
+          ],
+          "effects": {
+            "reads": [
+              "population/0/event/spike"
+            ],
+            "writes": [
+              "population/0/state/v"
+            ]
+          },
+          "id": "population/0/code/2",
+          "item_index": 2,
+          "name": "golden_population_spike_resetter",
+          "operation": "code_object",
+          "order": 0,
+          "owner_index": 0,
+          "owner_kind": "population",
+          "when": "resets"
+        }
+      ],
+      "slots": [
+        "before_start",
+        "start",
+        "after_start",
+        "before_groups",
+        "groups",
+        "after_groups",
+        "before_thresholds",
+        "thresholds",
+        "after_thresholds",
+        "before_synapses",
+        "synapses",
+        "after_synapses",
+        "before_resets",
+        "resets",
+        "after_resets",
+        "before_end",
+        "end",
+        "after_end"
+      ]
+    },
+    "synapses": []
+  },
+  "instance": {
+    "neuron_count": 2,
+    "populations": [
+      {
+        "initial_state": {
+          "v": [
+            "3fe0000000000000",
+            "3ff4000000000000"
+          ]
+        },
+        "parameters": {
+          "drive": [
+            "3ff8000000000000",
+            "4000000000000000"
+          ],
+          "ms": [
+            "3f50624dd2f1a9fc"
+          ]
+        },
+        "refractory": {
+          "initial_lastspike": [
+            "c0c3880000000000",
+            "c0c3880000000000"
+          ],
+          "initial_not_refractory": [
+            true,
+            true
+          ],
+          "period": "3f40624dd2f1a9fc",
+          "period_ticks": 2
+        },
+        "spike_generator": null
+      }
+    ],
+    "rng_seed": 81985529216486895,
+    "synapses": []
+  },
+  "run": {
+    "clocks": [
+      {
+        "start_tick": 0,
+        "steps": 4
+      }
+    ],
+    "duration": "3f50624dd2f1a9fc",
+    "start": "0000000000000000"
+  },
+  "schema": "b2ir-gate0-probe-v34"
+}

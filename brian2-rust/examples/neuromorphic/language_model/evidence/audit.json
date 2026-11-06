@@ -1,0 +1,164 @@
+{
+  "schema": "atlas.character-lm.audit.v1",
+  "passed": true,
+  "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+  "scope": "fixed four-character context; fresh LIF state per prediction; no inter-token neural state or Transformer",
+  "vocabulary": " \nabcdefghijklmnopqrstuvwxyz.,'?",
+  "context_characters": 4,
+  "ticks_per_token": 16,
+  "full_declared_test_split": true,
+  "test_positions": [
+    190004,
+    200000
+  ],
+  "float_native": {
+    "tokens": 9996,
+    "cross_entropy_nats": 2.0903822205552522,
+    "perplexity": 8.088005975716527,
+    "bits_per_character": 3.015784063157522,
+    "top1_accuracy": 0.40816326530612246
+  },
+  "quantized_native": {
+    "tokens": 9996,
+    "cross_entropy_nats": 2.2949699477235765,
+    "perplexity": 9.92413776487249,
+    "bits_per_character": 3.3109417625700077,
+    "top1_accuracy": 0.36964785914365744
+  },
+  "sdk": {
+    "tokens": 9996,
+    "cross_entropy_nats": 2.2949699477235765,
+    "perplexity": 9.92413776487249,
+    "bits_per_character": 3.3109417625700077,
+    "top1_accuracy": 0.36964785914365744
+  },
+  "baselines": {
+    "uniform": {
+      "tokens": 9996,
+      "cross_entropy_nats": 3.465735902799726,
+      "perplexity": 31.999999999999986,
+      "bits_per_character": 4.999999999999999,
+      "top1_accuracy": 0.16626650660264106
+    },
+    "unigram": {
+      "tokens": 9996,
+      "cross_entropy_nats": 2.9956947447774906,
+      "perplexity": 19.999249438553907,
+      "bits_per_character": 4.321873952307615,
+      "top1_accuracy": 0.16626650660264106
+    },
+    "bigram": {
+      "tokens": 9996,
+      "cross_entropy_nats": 2.4363511976529066,
+      "perplexity": 11.431254166644148,
+      "bits_per_character": 3.5149117907177354,
+      "top1_accuracy": 0.25240096038415366
+    }
+  },
+  "quantization_perplexity_change": 1.8361317891559636,
+  "conversion_perplexity_change": 0.0,
+  "per_token_logit_values": 319872,
+  "max_logit_error": 0.0,
+  "max_log_probability_error": 0.0,
+  "prediction_differences": 0,
+  "spike_raster_values": 25589760,
+  "spike_raster_differences": 0,
+  "final_native_state_values": 1599360,
+  "max_native_state_error": 0.0,
+  "atlas_ir_replay_tokens": 64,
+  "atlas_ir_voltage_values": 163840,
+  "atlas_sdk_voltage_max_error": 0.0,
+  "atlas_ir_receipts": [
+    {
+      "first_corpus_position": 190004,
+      "tokens": 8,
+      "source_sha256": "7e7cee01c2d8503ccc032547ab621f36077545ed7934e46771419fedff910dae"
+    },
+    {
+      "first_corpus_position": 190012,
+      "tokens": 8,
+      "source_sha256": "9c4e2b2fb6ac2da34d237991576997a30f763b0d65e30d8b5252dcf3b2fb3349"
+    },
+    {
+      "first_corpus_position": 190020,
+      "tokens": 8,
+      "source_sha256": "327acf827d099b878b45357023aae2572998d78a45871f0626e2daeddd1216c7"
+    },
+    {
+      "first_corpus_position": 190028,
+      "tokens": 8,
+      "source_sha256": "ae5a957497c99510cf8dfe5361e5ca76657d119440d023c8e871c4957ed6a5e6"
+    },
+    {
+      "first_corpus_position": 190036,
+      "tokens": 8,
+      "source_sha256": "e7c8231cb045d47600128dbc447d0cbd295b8c84234fea2d3e555bc2a6984469"
+    },
+    {
+      "first_corpus_position": 190044,
+      "tokens": 8,
+      "source_sha256": "969259e5cfa20cb7e5a41ec6c6f68c22cf321212ccbdf5bbf09f254939f543c8"
+    },
+    {
+      "first_corpus_position": 190052,
+      "tokens": 8,
+      "source_sha256": "386808d63374fd308a08dd773a858394a2ff96c89760e96dbd7dba289487bac0"
+    },
+    {
+      "first_corpus_position": 190060,
+      "tokens": 8,
+      "source_sha256": "261700b70356669c1359d1456830248f2fb4e7066a4bb9b16a2e2bff4c77bd7b"
+    }
+  ],
+  "autoregressive": {
+    "prompt": "the ",
+    "tokens": 32,
+    "prediction_differences": 0,
+    "max_logit_error": 0.0,
+    "spike_differences": 0,
+    "text": "the give of me thee hear \nand thee h",
+    "tie_breaking": "lowest vocabulary index; numpy argmax"
+  },
+  "checkpoint_sha256": "87477791a30e8d2bcb325aa4f21338f48ac270f7bcdc18b3eba539c9e683b56e",
+  "frozen_sha256": "b14e0057d0d38079ccc23b275ff458a9c4ab23f21a71bb96ed1f5f95d772dd72",
+  "frozen_file_sha256": "ee65ef7893878299c7d6a42aac9b91196d79ae8e35552f0fb3732acafd379a40",
+  "input_file_sha256": "e5d873bf6e159418b313ccb894c648e60f9a13843072ce30552c14e589790ef7",
+  "native_results_sha256": "009c19b4051b342094d0e78da751a3536f95d5c05b8ab28078689ef5691f1228",
+  "token_audit_sha256": "5bb7b0732737879dacdc88f8feec5cac3c8dabe04c9d788e8efef99679c353e2",
+  "atlas_runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "sdk_execution": {
+    "versions": {
+      "spinnaker2": "0.8.0",
+      "brian2": "2.10.1",
+      "numpy": "2.3.4",
+      "scipy": "1.18.1"
+    },
+    "sdk_simulator_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+    "batch_size": 100,
+    "inference_seconds": 265.03770854196046,
+    "total_seconds": 268.20202087500365,
+    "bundle_sha256": "1b612930feaa6e4443522d749624edd04707ccf00e61d9b47c38a09ca2126058",
+    "inputs_sha256": "e5d873bf6e159418b313ccb894c648e60f9a13843072ce30552c14e589790ef7",
+    "results_sha256": "c541bd3b05f897a7deceaecb324fdd79516efb62a853fa82bfe569966f8f470c",
+    "generation_sha256": "f9170a75bb90168a8351fc7b2950ee4ee6689d9b260552bee8938441555a7653",
+    "worker_sha256": "5c6772cc09c516bd9a1ecb82bc20f644c9e3ffe1bc1ae3256cd962eabf407ddd",
+    "physical_hardware": false,
+    "reference_or_labels_read": false,
+    "host_operations": [
+      "context one-hot encoding",
+      "independent replica batching",
+      "count-to-logit scaling",
+      "argmax",
+      "context window update"
+    ]
+  },
+  "physical_hardware": false,
+  "hardware_mapping_tested": false,
+  "source_sha256": {
+    "verify.py": "5a5bdd0683ad3f28cb5cfb8d46bec270be89bcc0a7e2010c9143de4e9c60e89c",
+    "sdk_worker.py": "5c6772cc09c516bd9a1ecb82bc20f644c9e3ffe1bc1ae3256cd962eabf407ddd",
+    "common.py": "af5224f24968c5ed0e6149bfc2109387a1d74ffebd6163fd5dbaf15fde1dd461",
+    "neuromorphic_runtime.py": "bb4f489ca09cb02434c45ed252305d3cd6970344f686713119cee4de32549111",
+    "spinnaker2_runtime.py": "1c703e3db3fc1d2c08bd5c8fd1634f7527df3ed52acc530866ab1f906c5347c7"
+  }
+}

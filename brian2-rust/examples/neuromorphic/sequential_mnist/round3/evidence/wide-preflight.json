@@ -1,0 +1,15 @@
+{
+  "samples": 4,
+  "source_split": "training",
+  "sizes": [
+    16,
+    126,
+    5
+  ],
+  "groups": 2,
+  "max_recurrent_fanout": 63,
+  "neural_values": 56592,
+  "differences": 0,
+  "trainer_sha256": "e9024d9684e082498d296d9ffc1080f2681617b40fba1a1863bf7b8ed31fac9c",
+  "physical_hardware": false
+}

@@ -1,0 +1,215 @@
+{
+  "results": [
+    {
+      "parent": "compact",
+      "readout_ticks": 8,
+      "method": "counts",
+      "validation_accuracy": 0.9171666666666667,
+      "ties": 306
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 8,
+      "method": "current",
+      "validation_accuracy": 0.9198333333333333,
+      "ties": 2
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 8,
+      "method": "positive_current",
+      "validation_accuracy": 0.918,
+      "ties": 1
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 8,
+      "method": "pre_reset_voltage",
+      "validation_accuracy": 0.9548333333333333,
+      "ties": 0
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 8,
+      "method": "counts_plus_final_residual",
+      "validation_accuracy": 0.9276666666666666,
+      "ties": 3
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 12,
+      "method": "counts",
+      "validation_accuracy": 0.9711666666666666,
+      "ties": 61
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 12,
+      "method": "current",
+      "validation_accuracy": 0.9748333333333333,
+      "ties": 0
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 12,
+      "method": "positive_current",
+      "validation_accuracy": 0.9741666666666666,
+      "ties": 0
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 12,
+      "method": "pre_reset_voltage",
+      "validation_accuracy": 0.9768333333333333,
+      "ties": 0
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 12,
+      "method": "counts_plus_final_residual",
+      "validation_accuracy": 0.97,
+      "ties": 2
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 20,
+      "method": "counts",
+      "validation_accuracy": 0.9805,
+      "ties": 30
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 20,
+      "method": "current",
+      "validation_accuracy": 0.973,
+      "ties": 0
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 20,
+      "method": "positive_current",
+      "validation_accuracy": 0.9666666666666667,
+      "ties": 0
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 20,
+      "method": "pre_reset_voltage",
+      "validation_accuracy": 0.9613333333333334,
+      "ties": 0
+    },
+    {
+      "parent": "compact",
+      "readout_ticks": 20,
+      "method": "counts_plus_final_residual",
+      "validation_accuracy": 0.9811666666666666,
+      "ties": 1
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 8,
+      "method": "counts",
+      "validation_accuracy": 0.9235,
+      "ties": 303
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 8,
+      "method": "current",
+      "validation_accuracy": 0.9095,
+      "ties": 1
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 8,
+      "method": "positive_current",
+      "validation_accuracy": 0.9083333333333333,
+      "ties": 1
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 8,
+      "method": "pre_reset_voltage",
+      "validation_accuracy": 0.9486666666666667,
+      "ties": 0
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 8,
+      "method": "counts_plus_final_residual",
+      "validation_accuracy": 0.9266666666666666,
+      "ties": 3
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 12,
+      "method": "counts",
+      "validation_accuracy": 0.9728333333333333,
+      "ties": 53
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 12,
+      "method": "current",
+      "validation_accuracy": 0.9716666666666667,
+      "ties": 0
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 12,
+      "method": "positive_current",
+      "validation_accuracy": 0.9716666666666667,
+      "ties": 0
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 12,
+      "method": "pre_reset_voltage",
+      "validation_accuracy": 0.975,
+      "ties": 0
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 12,
+      "method": "counts_plus_final_residual",
+      "validation_accuracy": 0.9723333333333334,
+      "ties": 3
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 20,
+      "method": "counts",
+      "validation_accuracy": 0.981,
+      "ties": 31
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 20,
+      "method": "current",
+      "validation_accuracy": 0.9706666666666667,
+      "ties": 0
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 20,
+      "method": "positive_current",
+      "validation_accuracy": 0.9661666666666666,
+      "ties": 0
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 20,
+      "method": "pre_reset_voltage",
+      "validation_accuracy": 0.9606666666666667,
+      "ties": 0
+    },
+    {
+      "parent": "wide",
+      "readout_ticks": 20,
+      "method": "counts_plus_final_residual",
+      "validation_accuracy": 0.981,
+      "ties": 1
+    }
+  ],
+  "test_arrays_read": false
+}

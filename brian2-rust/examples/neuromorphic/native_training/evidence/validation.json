@@ -1,0 +1,29 @@
+{
+  "schema": "atlas.native-lif.validation.v1",
+  "regressions": {
+    "passed": 132,
+    "skipped": 5,
+    "skip_reason": "five actual Metal tests are opt-in; B2_TEST_GPU was not enabled",
+    "modules": [
+      "test_native_lif_conversion.py",
+      "test_native_training.py",
+      "test_neuromorphic.py",
+      "test_spinnaker2_b2ir.py",
+      "test_spinnaker2_dense.py",
+      "test_akida_b2ir.py",
+      "test_lava_dense_b2ir.py"
+    ]
+  },
+  "final_targeted_tests": {
+    "passed": 12,
+    "skipped": 0,
+    "actual_spinnaker2_sdk": true
+  },
+  "source_sha256": {
+    "brian2-rust/python/brian2_rust/native_lif_conversion.py": "b614aa37f5fc1bfe491daa2e2ba3464b7a7dc49818a8cfa2fa8ad53d65dae564",
+    "brian2-rust/python/brian2_rust/spinnaker2_b2ir.py": "853fb0e04ce5b9d8247b1af938814b850cece656ea0f98882dafd2a3402c3cd0",
+    "brian2-rust/python/brian2_rust/spinnaker2_runtime.py": "545d6ae84b42222880aba683984d283aa44c7a5acebd1392c1a66eadd6caf1c6",
+    "brian2-rust/python/brian2_rust/neuromorphic_runtime.py": "bb4f489ca09cb02434c45ed252305d3cd6970344f686713119cee4de32549111",
+    "brian2-rust/python/brian2_atlas/neuromorphic.py": "cfe0fc9d6c2190f48507f514c4540184b142d7fecb2ca4dcea0a2cda9d839c75"
+  }
+}

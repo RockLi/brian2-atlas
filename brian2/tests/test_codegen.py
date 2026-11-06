@@ -667,3 +667,26 @@ if __name__ == "__main__":
     test_automatic_augmented_assignments()
     test_clear_cache()
     test_msvc_flags()
+
+
+@pytest.mark.codegen_independent
+def test_feedforward_assignment_skips_augmented_assignment_symbolic_collection(monkeypatch):
+    import brian2.codegen.translation as translation
+    variables = {name: ArrayVariable(name, owner=None, size=10, device=device)
+                 for name in ['output', 'a', 'b']}
+    def unexpected(*args, **kwargs):
+        raise AssertionError('a non-self-referential assignment cannot become += or *=')
+    monkeypatch.setattr(translation, 'str_to_sympy', unexpected)
+    scalar, vector = translation.make_statements('output = 2*a + b', variables, np.float64, optimise=False)
+    assert not scalar
+    assert len(vector) == 1 and vector[0].op == '='
+    assert vector[0].expr == '2*a + b'
+
+
+@pytest.mark.codegen_independent
+@pytest.mark.parametrize("optimise", [False, True])
+@pytest.mark.parametrize("expr", ["rand() - rand()", "v + rand() - rand()"])
+def test_assignment_rejects_multiple_stateful_calls(expr, optimise):
+    variables = {"v": Variable(name="v"), "rand": DEFAULT_FUNCTIONS["rand"]}
+    with pytest.raises(NotImplementedError, match="more than one call of rand"):
+        make_statements(f"v = {expr}", variables, np.float64, optimise=optimise)

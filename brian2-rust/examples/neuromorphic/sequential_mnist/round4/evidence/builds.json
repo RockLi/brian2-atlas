@@ -1,0 +1,33 @@
+{
+  "base_commit": "ef772a28abe88a3e26abb33199c87485e49b0e94",
+  "builds": [
+    {
+      "binary": "b2-train",
+      "binary_sha256": "b2dd25d07f08bb46b4c09cc7961995882e888042f900921a6e4344f3ba00b46a",
+      "toolchain": "1.98.1",
+      "source": "xylo_training.rate-only.rs",
+      "source_sha256": "7c82e938f18265244e85cf7e6a16fe0da61d66f28923b81c787cfe5d433c9096"
+    },
+    {
+      "binary": "b2-train-portable",
+      "binary_sha256": "37a9652460a9d4bc4554c9192ab7fd068fb11ee4b0ba1dd7aa67dff1cf518923",
+      "toolchain": "1.86.0",
+      "source": "xylo_training.rate-only.rs",
+      "source_sha256": "7c82e938f18265244e85cf7e6a16fe0da61d66f28923b81c787cfe5d433c9096"
+    },
+    {
+      "binary": "b2-train-current",
+      "binary_sha256": "b927f3d631ae971333f131388afaa2d163c68e8f521a86c493413018065c8af5",
+      "toolchain": "1.98.1",
+      "source": "xylo_training.rs",
+      "source_sha256": "9b77adcb9ddec79fdc07344a032582e0c4bd0f066bb6cb6e904529b29cb6afb0"
+    },
+    {
+      "binary": "b2-train-current-portable",
+      "binary_sha256": "ee9827c068cf2cd05c87a5cbcf6f5910628153681071fded581fea1f1b7be0ce",
+      "toolchain": "1.86.0",
+      "source": "xylo_training.rs",
+      "source_sha256": "9b77adcb9ddec79fdc07344a032582e0c4bd0f066bb6cb6e904529b29cb6afb0"
+    }
+  ]
+}

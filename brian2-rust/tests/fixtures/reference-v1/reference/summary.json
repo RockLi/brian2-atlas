@@ -1,0 +1,14 @@
+{
+  "dump_bytes": 96180,
+  "event_dump_bytes": 2528,
+  "final_time_seconds": 0.0256,
+  "neuron_count": 100,
+  "population_count": 2,
+  "schema": "b2-result-dump-v3",
+  "spike_count": 155,
+  "synaptic_events": 1238,
+  "timings": {
+    "dump_write_seconds": 0.000603791,
+    "simulation_and_recording_seconds": 0.001542958
+  }
+}

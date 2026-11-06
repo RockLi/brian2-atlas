@@ -1,0 +1,142 @@
+{
+  "schema": "atlas-public-path-redaction-v1",
+  "repository": "brian2-atlas",
+  "scope": "All reachable refs; upstream baseline objects preserved. Personal home and mounted-volume prefixes replaced with non-identifying synthetic locations. Frozen content hashes remain original identities; the table binds each redacted export to its original bytes.",
+  "changes": [
+    {
+      "original_sha256": "0e7273361d5234d4445d38671a31d5e7c39778f9e22e9c69b9d861a38ff02b36",
+      "public_sha256": "7b17c21836179bc75b750477248734b55689446217baaa3905eeff4a3ab42810",
+      "original_bytes": 4144,
+      "public_bytes": 4132,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "74ea817642a606a29004317695b9a0e8aa66c8e32c1fe549980a40b8d66214c7",
+      "public_sha256": "ecb9cd8f88da0f72d04fb7cecbe18b47e237bfcc873aa1ef619be1015e76c626",
+      "original_bytes": 72177,
+      "public_bytes": 71825,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "68ada991154c70fbde954e74d8732e7ba21a1068ea2298d728906b94a87f6e93",
+      "public_sha256": "0a581b20acb813a3f1d8754689448a2872f7c1b9590ee6b533d787b1524dcf4d",
+      "original_bytes": 14673,
+      "public_bytes": 14883,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "bc99a140013fe43f3b4d44444655cb03fc4a63c95c09e422c51a7d9d3c77b94d",
+      "public_sha256": "d061dddf924c5b952394b349731c234a115a925e3239a53832fe6e8da32b546c",
+      "original_bytes": 9315,
+      "public_bytes": 9255,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "8c65590c9d720ac8c978be937f4ec07c3b58ea0f105876185c4fdea37335088d",
+      "public_sha256": "28783db4b6cc2c4ee084ba55b3535ad6335537a303bc021c2f67472c334eef8d",
+      "original_bytes": 30796,
+      "public_bytes": 30520,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "3c1794877143e71dd5dc362567d4854f4d442a4cb5bdce24d7db1c2ee10d3121",
+      "public_sha256": "d4453c7397eab5a4a595dfd5633975a52eb3c3300970e4068c5f6a76f7b578be",
+      "original_bytes": 9340,
+      "public_bytes": 9336,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "9ff52cbef47f2b01a93f27ca4ee09396d49eb1ba2decb53d384f473848887494",
+      "public_sha256": "0648d9addf7154d44eebd89df9660e1840c332437929159ba8cb4e4455848611",
+      "original_bytes": 5867,
+      "public_bytes": 5851,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "b486f9dfb79cdae2ff2d5ae2c508b8f5cce821e1fbe89dd172f00b5ef14813db",
+      "public_sha256": "bcbf157636852f3d81926feec247e096970d9145213e33e7668d925c3a633423",
+      "original_bytes": 9927,
+      "public_bytes": 9915,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "a131e4b40c9ea6f93b5d75ca3557049bb0da49e1637eaa7530332dfd24ee499e",
+      "public_sha256": "ef904aa89384b9470a470bfd5b3f181ae60154b7cd894ba2d471d0899bd5a8bd",
+      "original_bytes": 5314,
+      "public_bytes": 5322,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "9998789256f4409aad9df2a29cc60ea823bd8a695b6e3b9788ef1ed7e0e18c73",
+      "public_sha256": "d2201882ae281bde73b3d26f40dd1d6b2b447b2a6fcfdf316a4152a22bf45d1d",
+      "original_bytes": 3057,
+      "public_bytes": 3033,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "490d2445fb9ea8e0c3303274aa76a4576bb5a375e12b195629c9dc563d41ef85",
+      "public_sha256": "88ef60c9e47f5915eadec44c99041f204caed8adca0916bcf36504ffb2fab81f",
+      "original_bytes": 5874,
+      "public_bytes": 5882,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "fb27f98641eb1a8eb2e7a2c505dabb5e6fd7e2de43bb9a36e5725861dc7da82b",
+      "public_sha256": "291e34e860bd5d3e87d769b80d6e468a27a311f13f98b3f1666361d0497281c3",
+      "original_bytes": 11591,
+      "public_bytes": 11579,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "d82905befbb3e521005233e5b56f9371dd90e3c89c05d109ba8700ee9b555f9f",
+      "public_sha256": "b3c91539c67d041929082ea7d0cd01d98229a18aaafca7b8718f49912c470df7",
+      "original_bytes": 9676,
+      "public_bytes": 9672,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "c38dbbba649983c3592e8bce8891cc217b93d8d3653d84b12c7e6c41a8b1d8ff",
+      "public_sha256": "f63ad4a98cad19eeb5a51e42048a74f4cb346db05e541bcf82d63352401d3963",
+      "original_bytes": 6203,
+      "public_bytes": 6187,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "b76342b21b00aa6c1e16b018abc4acf507433b4c243f84e9d772c486ae7858d0",
+      "public_sha256": "65142a0c1e402642c793094c135497e05422453ac5367a90aa3ff832e7c2afd4",
+      "original_bytes": 47422,
+      "public_bytes": 47418,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "9b64d66a73a0ae2cd0541411b17b58d8bcf7235fd722b3bd10583fc37d9895a0",
+      "public_sha256": "edd2fc188cf9b00908708ce5cd90ace6968d4998c1369175c53db52fd415837c",
+      "original_bytes": 192302,
+      "public_bytes": 192298,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "276a12fb91025462aad23f285840712e486403f799808522645052408df635c6",
+      "public_sha256": "4cc80f49de9b6f6b5aa8a58b0622c7a4e2a62f149a5813294ea61a0796808fea",
+      "original_bytes": 2723840,
+      "public_bytes": 2723840,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "48767adc6e334bd25253d420984330474dc29ae75242a460c2bc669a1189257a",
+      "public_sha256": "3c9c5f47e7472a1dc96a0bde747d90640cf8268601e719b0cc2f21731f0508be",
+      "original_bytes": 208804,
+      "public_bytes": 208769,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    },
+    {
+      "original_sha256": "c09ab18b76d5c79f21e66825b3002a447c21608051bf7aa8bb7a4860ea2232ee",
+      "public_sha256": "30eb52e73429c32527b13782986dc123eac44b3a214f5ea1f4253186b7e1ed12",
+      "original_bytes": 17984,
+      "public_bytes": 17924,
+      "scope": "Host-path redaction only; archive containers rebuilt when a member changed."
+    }
+  ],
+  "preserved_upstream_blobs": 10,
+  "skipped": []
+}

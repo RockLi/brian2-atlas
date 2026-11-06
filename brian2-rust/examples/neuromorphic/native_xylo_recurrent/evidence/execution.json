@@ -1,0 +1,42 @@
+{
+  "versions": {
+    "rockpool": "3.1.0",
+    "xylosim": "0.1.3",
+    "samna": "0.48.6",
+    "numpy": "2.5.4"
+  },
+  "sdk_binary_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+  "bundle_sha256": "ca2d25a4fd8d706dc9c215613c7784589262b1ea25b51c38db502479cd19dc01",
+  "inputs_sha256": "059ebcb59187a871f3c730db77fa14b5f624542f6d43fd267f88b058aa1beaa2",
+  "results_sha256": "fce8ad3b5eac35ecd0dd114108df8e667e1360f6fbd37c9f0983177b2ddd3928",
+  "configuration_sha256": "cb96b8141d64e473897697b5633170664c06cc481ecd3ee0f63b898801e106fc",
+  "official_configuration_valid": true,
+  "full_vs_chunked": [
+    {
+      "chunk_steps": 7,
+      "samples": 1872,
+      "differences": 0
+    },
+    {
+      "chunk_steps": 13,
+      "samples": 1872,
+      "differences": 0
+    }
+  ],
+  "persistent_session": {
+    "samples": 1872,
+    "boundaries": [
+      1,
+      9,
+      14,
+      22,
+      32,
+      33,
+      40
+    ],
+    "differences": 0
+  },
+  "execution_seconds": 5.362699833000079,
+  "labels_or_native_reference_read": false,
+  "physical_hardware": false
+}

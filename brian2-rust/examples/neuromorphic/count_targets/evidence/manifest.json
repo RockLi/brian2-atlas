@@ -1,0 +1,42 @@
+{
+  "base_commit": "9ef942db88310eedf6d7e43df789cd46d826a228",
+  "date": "2026-10-13",
+  "platform": "macOS arm64",
+  "sdk_python": "3.12",
+  "sdks": {
+    "spinnaker2": {
+      "versions": {
+        "spinnaker2": "0.8.0",
+        "brian2": "2.10.1",
+        "numpy": "2.3.4",
+        "scipy": "1.18.1"
+      },
+      "backend_file": "brian2_sim.py",
+      "backend_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b"
+    },
+    "xylosim": {
+      "versions": {
+        "xylosim": "0.1.3",
+        "numpy": "2.5.4",
+        "pybind11": "3.1.0"
+      },
+      "backend_file": "v2.cpython-312-darwin.so",
+      "backend_sha256": "efef1c1cf7fc296e4ad0ad00a4728764e1f2b88393c975a97cf0fd4be0acdaed",
+      "source_archive_sha256": "423bc72e64c409ea8c4d511e88f5e592c977db7fabd8093d460108d68252a467"
+    }
+  },
+  "sdk_source_modified": false,
+  "atlas_executor_modified": false,
+  "python_tests_passed": 91,
+  "source_sha256": {
+    "brian2-rust/python/brian2_atlas/neuromorphic.py": "21e83adf65e92c105a842e4a026b8e2f58fe6cd20e824b5c437c921737268ca7",
+    "brian2-rust/python/brian2_rust/neuromorphic_runtime.py": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d",
+    "brian2-rust/python/brian2_rust/count_targets.py": "2567a1b4b029d60cb42efdd8a8817d52ccfd25726013f57d2583ba17ca01369f",
+    "brian2-rust/examples/neuromorphic/sdk_worker.py": "35d48ba949c8905b7debaf797789eef377eb5f9cb4602ffa8ec3481fc6715800",
+    "brian2-rust/examples/neuromorphic/count_targets/prepare.py": "26f9e8a9815a9ca2b0ed0b4cbe655d62bef12ea1b7c2e24df6c93cd5c720b167",
+    "brian2-rust/examples/neuromorphic/count_targets/verify.py": "7e151717cd2018097b7f1f205ff719a2cce4131137b2701344abadead9f3334d",
+    "brian2-rust/tests/test_neuromorphic.py": "11d9499e672cd6138343887288fccab4af435b8fe7ddb51e457fb86a5c83a66c",
+    "brian2-rust/tests/test_spinnaker2_b2ir.py": "037e5e4ddb0d7a0e4601f75bdcc7141fb4512f399a784a3847b815cbf5405bd3"
+  },
+  "audit_sha256": "e143d6f9ed5b2d04b71257093c0e2c007bd9b041febed539b66f7cf62de5ad62"
+}

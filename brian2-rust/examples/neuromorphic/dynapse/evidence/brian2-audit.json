@@ -1,0 +1,25 @@
+{
+  "backend": "Brian2 NumPy",
+  "cases": [
+    {
+      "case": "constant",
+      "state_values": 768,
+      "spike_events": 9,
+      "result_sha256": "9e156a20f8dfe598f5d7089e55f766db388cbe4d7691151e7b22ff449072cabc"
+    },
+    {
+      "case": "adaptation",
+      "state_values": 3072,
+      "spike_events": 41,
+      "result_sha256": "e6c3c4dd000340848647012a5cc97d587a63383170c9b093d2596b1a60182e06"
+    },
+    {
+      "case": "eight_neurons",
+      "state_values": 24576,
+      "spike_events": 284,
+      "result_sha256": "ad4c19b1d73541b32d7b58f900cc337fa69d6fe1ff290d66bdcba1b372b5b100"
+    }
+  ],
+  "rtol": 1e-12,
+  "atol": 1e-24
+}

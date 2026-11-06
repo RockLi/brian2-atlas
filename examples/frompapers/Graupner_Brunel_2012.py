@@ -16,17 +16,21 @@ For the original implementations see https://github.com/mgraupe/CalciumBasedPlas
 
 Sebastian Schmitt, 2022
 """
+import importlib
 import multiprocessing
+import os
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 from brian2 import NeuronGroup, Synapses
 from brian2 import ms, second
-from brian2 import run
+from brian2 import run, set_device
 
 # number of time differences in STDP plot
-POINTS = 41
+POINTS = int(os.environ.get("BRIAN2_GRAUPNER_POINTS", "41"))
+if POINTS < 2:
+    raise ValueError("BRIAN2_GRAUPNER_POINTS must be at least 2")
 
 # maximal time difference
 STDP_DT_MAX = 100 * ms
@@ -35,14 +39,44 @@ STDP_DT_MAX = 100 * ms
 STDP_DT_MIN = -STDP_DT_MAX
 
 # number of repetitions
-REPETITIONS = 1000
+REPETITIONS = int(os.environ.get("BRIAN2_GRAUPNER_REPETITIONS", "1000"))
+if REPETITIONS < 1:
+    raise ValueError("BRIAN2_GRAUPNER_REPETITIONS must be positive")
 
 # time difference step size
 STDP_DT_STEP = (STDP_DT_MAX - STDP_DT_MIN) / (POINTS - 1)
 
+_configured_device_pid = None
+
+
+def configure_standalone_device():
+    """Select an optional standalone device once in every pool worker."""
+    global _configured_device_pid
+    standalone_device = os.environ.get("BRIAN2_STANDALONE_DEVICE")
+    process_id = os.getpid()
+    if not standalone_device or _configured_device_pid == process_id:
+        return
+    standalone_module = os.environ.get("BRIAN2_STANDALONE_MODULE")
+    if standalone_module:
+        importlib.import_module(standalone_module)
+    options = {}
+    standalone_directory = os.environ.get("BRIAN2_STANDALONE_DIRECTORY")
+    if standalone_directory:
+        options["directory"] = f"{standalone_directory}-{process_id}"
+    standalone_engine = os.environ.get("BRIAN2_STANDALONE_ENGINE")
+    if standalone_engine:
+        options["engine"] = standalone_engine
+    standalone_threads = os.environ.get("BRIAN2_STANDALONE_THREADS")
+    if standalone_threads:
+        options["threads"] = int(standalone_threads)
+    set_device(standalone_device, **options)
+    _configured_device_pid = process_id
+
 
 def run_sim(point_index):
     """Run simulation for one STDP time difference"""
+
+    configure_standalone_device()
 
     # Cf. https://brian2.readthedocs.io/en/stable/resources/tutorials/2-intro-to-brian-synapses.html#more-complex-synapse-models-stdp
     # set up two groups of neurons, G spikes at fixed times starting from STDP_DT_MAX
@@ -118,7 +152,9 @@ def run_sim(point_index):
 
 if __name__ == "__main__":
 
-    with multiprocessing.Pool() as p:
+    configured_processes = int(os.environ.get("BRIAN2_GRAUPNER_PROCESSES", "0"))
+    processes = configured_processes or None
+    with multiprocessing.Pool(processes=processes) as p:
         results = p.map(run_sim, range(POINTS))
 
     # initial fraction of synapses in DOWN state

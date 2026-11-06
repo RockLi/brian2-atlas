@@ -1,0 +1,207 @@
+{
+  "schema": "atlas.sequential-mnist.training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "task": "Ten-class block-sequential MNIST",
+  "encoding": "rows-counts",
+  "repeats": 3,
+  "deskew": true,
+  "query_ticks": 8,
+  "augmentation_shift": 1,
+  "evaluation_round": 2,
+  "prior_official_test_accuracy_known": 0.9477,
+  "steps": 50,
+  "readout_start": 28,
+  "sizes": [
+    16,
+    63,
+    5
+  ],
+  "classes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "class_codes": [
+    [
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  ],
+  "class_decoder_execution": "host-fixed-integer-codebook",
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "selected": {
+    "step": 6000,
+    "validation_accuracy": 0.9528333333333333,
+    "loss": 0.7191696949269359,
+    "changed_latent_weights": [
+      1008,
+      315,
+      3969
+    ]
+  },
+  "history": [
+    {
+      "step": 1000,
+      "validation_accuracy": 0.9021666666666667,
+      "loss": 0.47149497603114154
+    },
+    {
+      "step": 2000,
+      "validation_accuracy": 0.9331666666666667,
+      "loss": 0.2578366747630727
+    },
+    {
+      "step": 3000,
+      "validation_accuracy": 0.9393333333333334,
+      "loss": 0.2214170654421203
+    },
+    {
+      "step": 4000,
+      "validation_accuracy": 0.9475,
+      "loss": 0.2645492845123796
+    },
+    {
+      "step": 5000,
+      "validation_accuracy": 0.9421666666666667,
+      "loss": 0.17532113631458307
+    },
+    {
+      "step": 6000,
+      "validation_accuracy": 0.9528333333333333,
+      "loss": 0.7191696949269359
+    },
+    {
+      "step": 7000,
+      "validation_accuracy": 0.9528333333333333,
+      "loss": 0.32075902977836407
+    }
+  ],
+  "resume": {
+    "kind": "warm-start",
+    "weight_multiplier": 1.0,
+    "checkpoint_sha256": "04edfe803e8baedbcd5ff02ae80e093f7866aac7511bf1777b04238ec38761ba",
+    "frozen_file_sha256": "3b29c5b7617427fa4422cc8d7764c9ee7a19380ec8a1ff8520e6e4eb69d073bc",
+    "optimizer_moments_preserved": false,
+    "prior_validation_accuracy": 0.9693333333333334
+  },
+  "updates_completed": 7000,
+  "requested_updates": 7000,
+  "selection": "highest native validation accuracy, earliest tie; no test or SDK selection",
+  "training": "native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained",
+  "external_training_framework": false,
+  "seed": 20261026,
+  "arguments": {
+    "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "runner": "/private/tmp/atlas-smnist-count-trainer",
+    "output": "/Volumes/T7/atlas-sequential-mnist-round2-20261014/repeat-precision",
+    "resume": null,
+    "warm_start": "/Volumes/T7/atlas-sequential-mnist-round2-20261014/precision",
+    "warm_weight_scale": 1.0,
+    "deskew": true,
+    "query_ticks": 8,
+    "augmentation_shift": 1,
+    "logit_scale": 12.0,
+    "surrogate_slope": 3.0,
+    "updates": 7000,
+    "encoding": "rows-counts",
+    "codebook": "pairs5",
+    "repeats": 3,
+    "hidden": 63,
+    "threshold": 64,
+    "output_threshold": 256,
+    "lr": 0.0006,
+    "rec_init": 0.5,
+    "readout_ticks": 22,
+    "batch_size": 32,
+    "validate_every": 1000,
+    "seed": 20261026
+  },
+  "seconds": 996.66563808301,
+  "script_sha256": "9c8fdcdd052611bc44b7f59800bf210eff00aeb86fe39b1067ad5d9441fbd52a",
+  "runner_sha256": "8e862759cc2a8d8794d20a7ed42979e182b9e739c284e6e83e51311c987fc9e9",
+  "checkpoint_sha256": "84873febba573e9d738c8142142cfe18840456542852f2f96fc279632e52dad3",
+  "frozen_file_sha256": "bf9397f01195de1ef7563dc0c1a05e8d8fc5d921fd294e1a14cb0575578792a9"
+}
