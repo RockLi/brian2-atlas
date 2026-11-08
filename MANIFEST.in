@@ -1,4 +1,6 @@
 # Include documentation
+include README.md README.pypi.md
+recursive-include documentation *.md
 include docs_sphinx/conf.py
 include docs_sphinx/_static/brian-logo.png
 recursive-include docs_sphinx *.rst
@@ -12,6 +14,9 @@ prune tutorials
 
 # Remove development scripts
 prune dev
+# Release builds from the sdist need these build hooks and installed-flow gates.
+include dev/atlas/check_installed.py dev/atlas/test_wheel.py
+include dev/atlas/install_release_rust.sh dev/atlas/repair_wheel.py
 
 # Include license file in source tarball
 include LICENSE LICENSE_SCOPE.md NOTICE CITATION.cff UPSTREAM_CITATION.cff

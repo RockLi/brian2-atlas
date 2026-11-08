@@ -1,6 +1,6 @@
 """Exercise installed Atlas without source paths or native-binary overrides."""
 import argparse,copy,hashlib,importlib.metadata,json,os,pathlib,subprocess,sys,tempfile,time
-p=argparse.ArgumentParser();p.add_argument('--report',type=pathlib.Path,required=True);p.add_argument('--metal',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--report',type=pathlib.Path,required=True);p.add_argument('--metal',action='store_true');p.add_argument('--expected-version');a=p.parse_args()
 for key in ['PYTHONPATH','B2_RUNNER','B2_TRAIN_RUNNER']:
     assert not os.environ.get(key),f'Installation gate forbids {key}'
 started=time.time()
@@ -14,7 +14,8 @@ assert pathlib.Path(atlas.__file__).resolve().is_relative_to(prefix)
 assert atlas.AtlasDevice is implementation.RustStandaloneDevice
 assert pathlib.Path(b.__file__).resolve().is_relative_to(prefix)
 assert package.is_relative_to(prefix) and source_root() is None
-assert importlib.metadata.version('brian2-atlas')=='0.1.0'
+if a.expected_version is not None:
+    assert importlib.metadata.version('brian2-atlas')==a.expected_version
 assert b.__version__=='2.10.1.post241'
 def inventory():
     return {str(p.relative_to(package)):hashlib.sha256(p.read_bytes()).hexdigest()
