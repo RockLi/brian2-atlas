@@ -5,6 +5,8 @@ Start with [installation](INSTALLATION.md), then run the
 [PyPI release procedure](RELEASING.md) to build and validate distribution files.
 The first Linux release rehearsal uses `0.2.0.dev1`; see the
 [TestPyPI setup and verification guide](TESTPYPI.md).
+Production account settings and stable-tag publishing are described in
+[the PyPI release guide](PYPI.md).
 
 These documents describe this checkout. The frozen `v0.1.0` source release and
 the current development branch have different capabilities; consult the same

@@ -1,6 +1,7 @@
-"""Download the exact TestPyPI release and match it to the built artifacts."""
+"""Download a PyPI/TestPyPI release and verify it against the built artifacts."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -14,7 +15,14 @@ from packaging.utils import parse_wheel_filename
 
 
 def main() -> None:
-    version, expected_directory, download_directory = sys.argv[1:]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("version")
+    parser.add_argument("expected_directory")
+    parser.add_argument("download_directory")
+    parser.add_argument("--index", choices=("testpypi", "pypi"), default="testpypi")
+    args = parser.parse_args()
+    version, expected_directory, download_directory = args.version, args.expected_directory, args.download_directory
+    index_host = "pypi.org" if args.index == "pypi" else "test.pypi.org"
     expected = {
         path.name: hashlib.sha256(path.read_bytes()).hexdigest()
         for path in Path(expected_directory).iterdir()
@@ -22,7 +30,7 @@ def main() -> None:
     }
     if not expected:
         raise ValueError("No expected release artifacts")
-    url = f"https://test.pypi.org/pypi/brian2-atlas/{version}/json"
+    url = f"https://{index_host}/pypi/brian2-atlas/{version}/json"
     # Index propagation can lag the successful upload by a few seconds.
     for attempt in range(12):
         try:
@@ -35,7 +43,7 @@ def main() -> None:
             if error.code != 404:
                 raise
         if attempt == 11:
-            raise RuntimeError("TestPyPI did not expose the exact expected artifact set")
+            raise RuntimeError("Package index did not expose the exact expected artifact set")
         time.sleep(10)
     destination = Path(download_directory)
     destination.mkdir(parents=True, exist_ok=True)

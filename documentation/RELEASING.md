@@ -14,8 +14,9 @@ gate and Linux/macOS distribution CI. CI checks the package description with
 CPython 3.12–3.14 Linux x86_64 wheels from the sdist, repairs them for manylinux
 2.28, and tests each repaired wheel. Versioned `testpypi-v*` tags upload to
 TestPyPI and trigger a fresh download/install gate. Branch pushes and manual
-runs only build. Production PyPI upload remains a separate, deliberate step.
-See [the TestPyPI setup and rehearsal](TESTPYPI.md).
+runs only build. The separate `release-pypi.yml` workflow builds on relevant PRs
+and manual runs, and publishes only matching stable `v*` tags already merged
+into `dev`. See [TestPyPI setup](TESTPYPI.md) and [production setup](PYPI.md).
 
 Before the first public upload:
 
@@ -186,10 +187,10 @@ For CI publishing, PyPI recommends
 [Trusted Publishing](https://docs.pypi.org/trusted-publishers/using-a-publisher/).
 Register the repository owner, repository, exact workflow filename and GitHub
 environment on each index. Give only the publish job `id-token: write`, protect
-the release environment, and have it consume already-tested artifacts. No
-production publishing workflow is enabled by this change. TestPyPI uses the
-explicit `release-testpypi.yml` workflow; its account registration must be
-configured as described in [TESTPYPI.md](TESTPYPI.md).
+the release environment, and have it consume already-tested artifacts.
+Production uses `release-pypi.yml` with environment `pypi`; TestPyPI uses
+`release-testpypi.yml` with environment `testpypi`. Configure the two publishers
+separately as described in [PYPI.md](PYPI.md) and [TESTPYPI.md](TESTPYPI.md).
 
 ## Packaging references
 

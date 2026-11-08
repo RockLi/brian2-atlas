@@ -85,7 +85,7 @@ jobs:
   publish:
     needs: [source, linux]
     # Branch pushes and manual runs only build. Publishing requires a versioned tag.
-    if: startsWith(github.ref, 'refs/tags/testpypi-v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/testpypi-v')
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment:

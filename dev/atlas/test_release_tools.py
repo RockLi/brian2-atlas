@@ -48,7 +48,8 @@ def test_native_repair_rejects_missing_binary(tmp_path):
 
 
 @pytest.mark.parametrize("corrupt", [None, "index", "download"])
-def test_testpypi_checks_index_and_downloaded_bytes(tmp_path, monkeypatch, corrupt):
+@pytest.mark.parametrize("index", ["testpypi", "pypi"])
+def test_testpypi_checks_index_and_downloaded_bytes(tmp_path, monkeypatch, corrupt, index):
     tool = load_tool("verify_testpypi")
     expected = tmp_path / "expected"
     expected.mkdir()
@@ -61,12 +62,14 @@ def test_testpypi_checks_index_and_downloaded_bytes(tmp_path, monkeypatch, corru
 
     def download(url, **kwargs):
         if url.endswith("/json"):
+            host = "pypi.org" if index == "pypi" else "test.pypi.org"
+            assert url == f"https://{host}/pypi/brian2-atlas/0.2.0.dev1/json"
             return io.BytesIO(json.dumps(release).encode())
         return io.BytesIO(b"wrong bytes" if corrupt == "download" else content)
 
     monkeypatch.setattr(tool.urllib.request, "urlopen", download)
     destination = tmp_path / "downloaded"
-    monkeypatch.setattr(tool.sys, "argv", ["verify_testpypi.py", "0.2.0.dev1", str(expected), str(destination)])
+    monkeypatch.setattr(tool.sys, "argv", ["verify_testpypi.py", "0.2.0.dev1", str(expected), str(destination), "--index", index])
     if corrupt:
         with pytest.raises(ValueError, match="mismatch|differ"):
             tool.main()
@@ -74,3 +77,20 @@ def test_testpypi_checks_index_and_downloaded_bytes(tmp_path, monkeypatch, corru
     else:
         tool.main()
         assert (destination / filename).read_bytes() == content
+
+
+@pytest.mark.parametrize("version,ref", [
+    ("0.2.0.dev1", "refs/tags/v0.2.0.dev1"),
+    ("0.2.0rc1", "refs/tags/v0.2.0rc1"),
+    ("0.2.0+local", "refs/tags/v0.2.0+local"),
+    ("0.2.0", "refs/tags/v0.3.0"),
+])
+def test_production_rejects_nonrelease_tags(version, ref):
+    with pytest.raises(ValueError):
+        load_tool("check_release").validate_release(version, ref)
+
+
+def test_production_accepts_stable_tag_and_development_dry_run():
+    tool = load_tool("check_release")
+    tool.validate_release("0.2.0", "refs/tags/v0.2.0")
+    tool.validate_release("0.2.0.dev1", "refs/heads/dev")
