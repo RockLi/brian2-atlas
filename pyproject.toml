@@ -50,7 +50,7 @@ docs = ['sphinx>=7,<9', 'ipython>=5', 'sphinx-tabs']
 
 [project.urls]
 Homepage = 'https://github.com/RockLi/brian2-atlas'
-Documentation = 'https://github.com/RockLi/brian2-atlas/blob/dev/documentation/README.md'
+Documentation = 'https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/documentation/README.md'
 Source = 'https://github.com/RockLi/brian2-atlas'
 Tracker = 'https://github.com/RockLi/brian2-atlas/issues'
 Upstream = 'https://github.com/brian-team/brian2'

@@ -10,6 +10,9 @@ installed toolchains; unsupported constructs raise capability errors.
 
 ## Installation
 
+For the `0.2.0.dev1` TestPyPI rehearsal, follow the
+[TestPyPI download and installation steps](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/documentation/TESTPYPI.md).
+
 Requires Python 3.12 or newer. Use a new virtual environment: this distribution
 includes `brian2` and must not be installed alongside the separate upstream
 `Brian2` distribution, which owns the same import paths.
@@ -27,7 +30,7 @@ A matching platform wheel includes `b2-runner`, `b2-train` and the Python
 extensions. A source installation requires Rust/Cargo 1.98.1 and C/C++ compilers.
 Specialized AOT execution needs Rust even after installing a wheel. CUDA, Metal
 and MPI require additional system software. Windows is not currently qualified.
-See the [installation guide](https://github.com/RockLi/brian2-atlas/blob/dev/documentation/INSTALLATION.md)
+See the [installation guide](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/documentation/INSTALLATION.md)
 for source installation, platform coverage and optional dependencies.
 
 ## First simulation
@@ -52,14 +55,13 @@ version and Brian2 compatibility version are separate values.
 
 ## Documentation
 
-- [Quickstart: simulation and native training](https://github.com/RockLi/brian2-atlas/blob/dev/documentation/QUICKSTART.md)
-- [Backend guide](https://github.com/RockLi/brian2-atlas/blob/dev/brian2-rust/README.md)
-- [Training guide](https://github.com/RockLi/brian2-atlas/blob/dev/brian2-rust/TRAINING.md)
-- [AtlasIR specification](https://github.com/RockLi/brian2-atlas/blob/dev/brian2-rust/AtlasIR.md)
+- [Quickstart: simulation and native training](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/documentation/QUICKSTART.md)
+- [Backend guide](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/brian2-rust/README.md)
+- [Training guide](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/brian2-rust/TRAINING.md)
+- [AtlasIR specification](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/brian2-rust/AtlasIR.md)
 - [Issues](https://github.com/RockLi/brian2-atlas/issues)
 
-These links follow development. For reproducible work, use documentation at the
-tag or commit that produced your installed release. Development includes
+These links identify the `0.2.0.dev1` TestPyPI candidate. Development includes
 experimental neuromorphic software conversion; see the repository's versioned
 guides for the admitted models and evidence. Software conversion results do not
 establish physical chip execution, power or latency.
@@ -69,8 +71,8 @@ establish physical chip execution, power or latency.
 The combined distribution uses **CeCILL-2.1 AND Apache-2.0**. Upstream Brian2 and
 derived code retain their original terms; original Atlas engine work uses
 Apache-2.0. See the
-[license scope](https://github.com/RockLi/brian2-atlas/blob/dev/LICENSE_SCOPE.md).
-Use [CITATION.cff](https://github.com/RockLi/brian2-atlas/blob/dev/CITATION.cff)
+[license scope](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/LICENSE_SCOPE.md).
+Use [CITATION.cff](https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/CITATION.cff)
 for Atlas and retain the upstream Brian2 citation when using its frontend.
 The [preprint repository](https://github.com/RockLi/brian2-atlas-preprint)
 contains the manuscript and historical experiment records.
