@@ -1,8 +1,9 @@
 # 正式 PyPI 发布
 
 正式发布使用 `.github/workflows/release-pypi.yml`。合并 PR 到 `dev` 只更新代码，
-不会上传 PyPI；只有推送与包版本一致的稳定版 `v*` 标签才会发布。当前
-`0.2.0.dev1` 是已完成 TestPyPI 演练的开发版本，正式版本号需要在发布提交中更新。
+不会上传 PyPI；只有推送与包版本一致的稳定版 `v*` 标签才会发布。当前正式版本
+为 `0.2.0`；先通过 `testpypi-v0.2.0` 验证，再合并到 `dev` 并发布 `v0.2.0`。
+`0.2.0.dev1` 是此前的打包演练版本。
 
 ## 正式账号权限
 
@@ -33,13 +34,14 @@ GitHub 发布 job 使用名为 `pypi` 的 environment，只有该 job 具有 `id
    `https://github.com/RockLi/brian2-atlas/blob/v0.2.0/documentation/README.md`，
    把 `README.pypi.md` 中的候选标签链接和 TestPyPI 安装说明改为正式版本内容。
    更新发布说明和适用的引用元数据；保留历史 `v0.1.0` 研究结果的版本边界。
-3. 将发布提交通过 PR 合并到 `dev`，检查 frontend、CPU、分发和发布构建结果。
-4. 建议先以相同稳定版本运行一次 TestPyPI 演练。已通过的 `0.2.0.dev1` 不等于
+3. 先以相同稳定版本运行一次 TestPyPI 演练，并检查 PR 的 frontend、CPU、分发
+   和发布构建结果。已通过的 `0.2.0.dev1` 不等于
    最终版本的产物验证；版本、源代码或依赖变化后需要对最终产物重新验证。
+4. 所有验证通过后，将同一发布内容通过 PR 合并到 `dev`，再打正式标签。
 
-正式流水线沿用 Linux x86_64 / CPython 3.12、3.13、3.14 的 manylinux 2.28
-构建范围，同时提供 sdist。其他平台可能需要源码安装，macOS/Windows 发布 wheel
-尚未加入该矩阵。基础 CPU wheel 使用不需要本地重编译 Rust；AOT 和部分后端另有
+正式流水线覆盖 CPython 3.12、3.13、3.14，发布 Linux x86_64 manylinux 2.28、
+macOS 15+ arm64 和 x86_64 共九个 wheel，同时提供 sdist。两个 macOS 架构分别
+在原生 runner 上构建和验证。Windows 尚未加入发布矩阵。基础 CPU wheel 使用不需要本地重编译 Rust；AOT 和部分后端另有
 工具链要求，见 [安装说明](INSTALLATION.md)。
 
 ## 执行与验证
@@ -53,11 +55,11 @@ git push origin refs/tags/v0.2.0
 ```
 
 用经过验证的提交替换 `RELEASE_COMMIT`。工作流先检查标签/版本一致、版本不是
-dev/rc/local，并验证标签提交是 `origin/dev` 的祖先；随后从 sdist 构建三个 wheel，
-执行 auditwheel 修复与安装运行测试。通过后，发布 job 仅上传同一次运行生成的
+dev/rc/local，并验证标签提交是 `origin/dev` 的祖先；随后从 sdist 构建九个 wheel，
+执行 auditwheel（Linux）或 delocate（macOS）修复与安装运行测试。通过后，发布 job 仅上传同一次运行生成的
 产物，并记录 SHA-256。手动运行 workflow 或 PR 触发只构建，不上传。
 
-上传后，三个验证 job 从正式 PyPI 重新下载文件，核对文件集合、索引哈希和实际
+上传后，九个验证 job 从正式 PyPI 重新下载文件，核对文件集合、索引哈希和实际
 下载字节，再分别安装对应 wheel，执行 CPU/AOT 仿真、训练和 checkpoint 检查。
 通过后才将发布标记为验证完成。保留 `publication-checksums` 和
 `pypi-validation-*` artifacts 及工作流链接。

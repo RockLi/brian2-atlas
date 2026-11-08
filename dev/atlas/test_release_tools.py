@@ -43,7 +43,7 @@ def test_native_repair_rejects_missing_binary(tmp_path):
     (native / "build.json").write_text(json.dumps({
         "schema": "atlas-native-build-v1", "binaries": {"b2-runner": "hash"},
     }))
-    with pytest.raises(ValueError, match="both Linux native executables"):
+    with pytest.raises(ValueError, match="both native executables"):
         tool.refresh_native_hashes(tmp_path)
 
 

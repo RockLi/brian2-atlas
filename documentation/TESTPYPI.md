@@ -1,8 +1,8 @@
 # TestPyPI 发布演练
 
-首个候选版本为 `0.2.0.dev1`。它来自当前开发代码，不代表冻结的 `v0.1.0`
-研究版本，也不是正式 PyPI 发布。本次上传范围为源码包和 Linux x86_64 的
-CPython 3.12、3.13、3.14 wheel，最低 glibc 版本为 2.28。
+当前演练版本为 `0.2.0`，此前已完成 `0.2.0.dev1` 的打包演练。
+TestPyPI 上的版本不等于正式 PyPI 已发布，也不代表冻结的 `v0.1.0` 研究版本。本次上传范围为源码包及 CPython 3.12、3.13、3.14 的九个 wheel：Linux x86_64
+（glibc 2.28+）、macOS 15+ Apple Silicon（arm64）和 Intel（x86_64）。
 
 ## 账号配置
 
@@ -25,25 +25,26 @@ Pending publisher 在首次成功上传时创建项目，本身不预留包名�
 GitHub 工作流使用 `testpypi` environment，发布 job 单独具有 `id-token: write`。
 可以在仓库 Settings → Environments 中预建此 environment，并限制允许部署的标签为
 `testpypi-v*`。如果设置了 required reviewer，发布执行到该处后需要 reviewer 批准。
-生产 PyPI 的权限本次不需要配置。
+正式发布另需配置 `pypi` publisher，见 [正式发布说明](PYPI.md)。
 
 ## 构建和发布触发条件
 
 工作流为 [release-testpypi.yml](../.github/workflows/release-testpypi.yml)：
 
-1. 推送 `codex/testpypi-release` 分支会构建源码包和三个 Linux wheel。
-2. 每个 wheel 都在固定的 manylinux 2.28 容器中构建，经过 auditwheel 修复、
-   包内执行器 SHA-256/RECORD 更新、实际安装与运行检查。
+1. 推送 `codex/testpypi-release` 分支会构建源码包、三个 Linux wheel 和六个 macOS wheel。
+2. Linux wheel 在固定的 manylinux 2.28 容器中构建并经 auditwheel 修复；
+   macOS wheel 在两个架构的原生 runner 上构建并经 delocate 修复。所有 wheel
+   都更新包内执行器 SHA-256/RECORD，并执行实际安装与运行检查。
 3. 仅 `testpypi-v版本号` 标签会触发上传；标签必须与 `pyproject.toml` 的版本完全一致。
 4. 发布 job 只下载同一次运行中通过测试的构建产物，通过 OIDC 上传至 TestPyPI。
-5. 上传后的三个验证 job 下载同一版本的全部文件并核对原始构建哈希，然后分别安装
+5. 上传后的九个验证 job 下载同一版本的全部文件并核对原始构建哈希，然后分别安装
    与当前 Python 匹配的 wheel。运行依赖来自正式 PyPI，Atlas wheel 来自 TestPyPI。
 
-在本地提交、分支 CI 通过、账号配置完成后，发布者在选定提交上执行：
+在本地提交、PR 构建通过、账号配置完成后，发布者在选定提交上执行：
 
 ```sh
-git tag testpypi-v0.2.0.dev1 RELEASE_COMMIT
-git push origin refs/tags/testpypi-v0.2.0.dev1
+git tag testpypi-v0.2.0 RELEASE_COMMIT
+git push origin refs/tags/testpypi-v0.2.0
 ```
 
 `RELEASE_COMMIT` 必须替换为已经验证的提交。不要移动已发布标签。第一次上传若只
@@ -69,12 +70,12 @@ python -m twine check --strict build/testpypi/wheelhouse/*.whl
 
 ## 验证已上传版本
 
-在 Linux x86_64、CPython 3.12–3.14 环境中，可以先从 TestPyPI 下载 Atlas wheel，
+在 Linux x86_64 或 macOS 15+（arm64/x86_64）、CPython 3.12–3.14 环境中，可以先从 TestPyPI 下载 Atlas wheel，
 再让正式 PyPI 提供运行依赖：
 
 ```sh
 python -m pip download --index-url https://test.pypi.org/simple/ \
-  --no-deps --only-binary=:all: --dest downloaded brian2-atlas==0.2.0.dev1
+  --no-deps --only-binary=:all: --dest downloaded brian2-atlas==0.2.0
 python -m venv installed
 installed/bin/python -m pip install --index-url https://pypi.org/simple/ downloaded/*.whl
 installed/bin/python dev/atlas/test_wheel.py --report installed-testpypi.json

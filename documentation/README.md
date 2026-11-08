@@ -3,7 +3,8 @@
 Start with [installation](INSTALLATION.md), then run the
 [simulation and training quickstart](QUICKSTART.md). Maintainers can follow the
 [PyPI release procedure](RELEASING.md) to build and validate distribution files.
-The first Linux release rehearsal uses `0.2.0.dev1`; see the
+This documentation accompanies `0.2.0`; see the [release notes](RELEASE_NOTES_0.2.0.md).
+The same version is rehearsed on TestPyPI before production publication; see the
 [TestPyPI setup and verification guide](TESTPYPI.md).
 Production account settings and stable-tag publishing are described in
 [the PyPI release guide](PYPI.md).

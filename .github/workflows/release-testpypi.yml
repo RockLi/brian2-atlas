@@ -82,8 +82,43 @@ jobs:
           path: wheelhouse/*.whl
           if-no-files-found: error
 
+  macos:
+    needs: source
+    runs-on: ${{ matrix.platform.runner }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['cp312', 'cp313', 'cp314']
+        platform:
+          - { runner: macos-15, arch: arm64 }
+          - { runner: macos-15-intel, arch: x86_64 }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: release-sdist
+          path: source-dist
+      - name: Build, repair and exercise the native macOS wheel
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-macosx_${{ matrix.platform.arch }}
+        run: |
+          python -m pip install cibuildwheel==4.3.5 twine
+          python -m cibuildwheel --platform macos --output-dir wheelhouse source-dist/*.tar.gz
+          python -m twine check --strict wheelhouse/*.whl
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-macos-${{ matrix.platform.arch }}-${{ matrix.python }}
+          path: wheelhouse/*.whl
+          if-no-files-found: error
+
   publish:
-    needs: [source, linux]
+    needs: [source, linux, macos]
     # Branch pushes and manual runs only build. Publishing requires a versioned tag.
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/testpypi-v')
     runs-on: ubuntu-24.04
@@ -115,12 +150,13 @@ jobs:
 
   verify-testpypi:
     needs: [source, publish]
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         python: ['3.12', '3.13', '3.14']
+        os: [ubuntu-24.04, macos-15, macos-15-intel]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -148,6 +184,6 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: testpypi-validation-${{ matrix.python }}
+          name: testpypi-validation-${{ matrix.os }}-${{ matrix.python }}
           path: installed-testpypi.json
           if-no-files-found: warn

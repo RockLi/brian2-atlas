@@ -20,16 +20,16 @@ python -m pip install --upgrade pip
 
 ## Install a published release
 
-After the chosen version is published on PyPI:
+Install version `0.2.0` from PyPI:
 
 ```sh
-python -m pip install brian2-atlas
+python -m pip install brian2-atlas==0.2.0
 ```
 
 To require a prebuilt Atlas wheel and avoid a local Atlas source build:
 
 ```sh
-python -m pip install --only-binary=brian2-atlas brian2-atlas
+python -m pip install --only-binary=brian2-atlas brian2-atlas==0.2.0
 ```
 
 If no matching wheel exists, the second command fails. The ordinary command can
@@ -37,17 +37,20 @@ fall back to a source archive, which requires the build tools below. A macOS
 arm64 wheel cannot be used on Intel macOS or Linux; CPython minor versions also
 need matching wheels because Atlas includes Cython extensions.
 
-The repository currently validates distribution builds on Linux and macOS.
-Check the files attached to the selected release for actual wheel coverage.
+The `0.2.0` release provides CPython 3.12, 3.13 and 3.14 wheels for Linux x86_64
+(glibc 2.28+) and macOS 15+ on Apple Silicon (arm64) and Intel (x86_64), plus an
+sdist. Both macOS architectures build and run the installation gate on native
+runners. Earlier macOS versions require a separately validated source build.
+Windows wheels are not published.
 Windows, free-threaded CPython and every Python/architecture combination are not
 qualified merely by the `Python >=3.12` metadata.
 
 ## Install from source
 
-For the frozen research release:
+For the `0.2.0` release:
 
 ```sh
-git clone --branch v0.1.0 https://github.com/RockLi/brian2-atlas.git
+git clone --branch v0.2.0 https://github.com/RockLi/brian2-atlas.git
 cd brian2-atlas
 rustup toolchain install 1.98.1 --profile minimal
 python -m pip install .
@@ -61,8 +64,9 @@ from `Cargo.lock`; the first build also needs access to the Rust dependency
 registry. `uv.lock` does not constrain dependencies resolved by `pip install`.
 
 For development features, check out an explicit development commit and use the
-same install command. Record that commit with your results. Development
-neuromorphic conversion and training additions are not part of the frozen tag.
+same install command. Record that commit with your results. To reproduce the
+historical research release, use `v0.1.0`; the conversion and training additions
+described in the `0.2.0` guides are not part of that older tag.
 
 To install a wheel supplied by a maintainer, pass its actual path to pip:
 
