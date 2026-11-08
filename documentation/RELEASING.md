@@ -6,33 +6,32 @@ Atlas is packaged for pip as `brian2-atlas`. Publish a source distribution
 extensions, both native Rust executables, build provenance and runtime sources.
 It is not a universal `py3-none-any` package.
 
-## Release scope and remaining publication work
+## Release scope and publication procedure
 
 The checkout has PEP 517 metadata, a locked native build, an installed-package
 gate and Linux/macOS distribution CI. CI checks the package description with
 `twine check --strict`. The separate `release-testpypi.yml` workflow builds
-CPython 3.12–3.14 Linux x86_64 wheels from the sdist, repairs them for manylinux
-2.28, and tests each repaired wheel. Versioned `testpypi-v*` tags upload to
+CPython 3.12–3.14 wheels from the sdist for Linux x86_64 (manylinux 2.28) and
+macOS 15+ (arm64 and x86_64), and tests each repaired wheel on a native runner. Versioned `testpypi-v*` tags upload to
 TestPyPI and trigger a fresh download/install gate. Branch pushes and manual
 runs only build. The separate `release-pypi.yml` workflow builds on relevant PRs
 and manual runs, and publishes only matching stable `v*` tags already merged
 into `dev`. See [TestPyPI setup](TESTPYPI.md) and [production setup](PYPI.md).
 
-Before the first public upload:
+Before each public upload:
 
 1. Choose the exact release commit and version. `v0.1.0` is a frozen source
-   release. The first packaging rehearsal
-   uses `0.2.0.dev1` for later development features. For subsequent candidates,
-   choose a new development version, update `pyproject.toml`,
+   release. The first packaging rehearsal used `0.2.0.dev1`; the current release
+   is `0.2.0`. For subsequent candidates,
+   choose an unused version, update `pyproject.toml`,
    refresh `uv.lock` with `uv lock`, and update release notes/citation metadata
    where applicable. Never present current development as the frozen tag.
 2. Verify control of the `brian2-atlas` project name on PyPI and TestPyPI. Absence
    from search results does not guarantee that a name can be registered.
 3. Choose and test the supported Python/OS/architecture matrix. The TestPyPI matrix
-   covers Linux x86_64 / CPython 3.12–3.14. The general validation workflow also
-   checks a macOS/Python 3.14 distribution. The TestPyPI workflow currently
-   publishes only Linux wheels and the sdist.
-4. Require all manylinux build/install jobs to pass for the exact candidate.
+   covers Linux x86_64 and macOS arm64/x86_64 / CPython 3.12–3.14, publishing
+   nine wheels and the sdist.
+4. Require all platform build/install jobs to pass for the exact candidate.
    Ordinary `linux_x86_64` wheels from a host build are not PyPI release artifacts.
 5. Configure project ownership and upload credentials or Trusted Publishing,
    rehearse on TestPyPI, then publish the exact validated artifacts.
@@ -99,10 +98,11 @@ regenerate the recorded binary SHA-256 values in the repaired wheel and update
 wheel `RECORD` using wheel-aware tooling. Re-run the installed gate on the final
 wheel. Do not disable the integrity check to make repaired artifacts pass.
 
-The TestPyPI release matrix uses a digest-pinned manylinux 2.28 image and
+The release matrix uses a digest-pinned manylinux 2.28 image, native macOS 15 runners and
 `dev/atlas/repair_wheel.py` to repair each wheel, refresh executable hashes when
-needed, and regenerate `RECORD` before installed tests. Linux arm64, musllinux
-and macOS release wheels are not part of this initial matrix.
+needed, and regenerate `RECORD` before installed tests. macOS repair also checks
+both bundled executables against the wheel architecture. Linux arm64 and
+musllinux are not part of this release matrix.
 
 ## Validate an installed candidate
 

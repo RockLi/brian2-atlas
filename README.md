@@ -53,9 +53,9 @@ validation boundaries. Figures: [PNG](brian2-rust/architecture/atlas-architectur
 
 ## Installation and package documentation
 
-Atlas can be built and installed with pip. Publishing the distribution to PyPI
-will enable `python -m pip install brian2-atlas`; the source release below does
-not imply that a PyPI release is available. Use a fresh virtual environment:
+Install Atlas **0.2.0** with `python -m pip install brian2-atlas==0.2.0`.
+The release provides CPython 3.12–3.14 wheels for Linux x86_64 (glibc 2.28+)
+and macOS 15+ on Apple Silicon and Intel, plus a source archive. Use a fresh virtual environment:
 Atlas supplies the `brian2` import package and must not share an environment
 with the separate upstream `Brian2` distribution.
 
@@ -63,13 +63,15 @@ with the separate upstream `Brian2` distribution.
 - [Quickstart: simulation and native training](documentation/QUICKSTART.md)
 - [Maintainer build, validation and PyPI release procedure](documentation/RELEASING.md)
 - [Documentation index and API guides](documentation/README.md)
+- [0.2.0 release notes](documentation/RELEASE_NOTES_0.2.0.md)
 
 ## Install from source
 
-This is research software version **0.1.0**, paired with the
+Atlas **0.2.0** is research software; backend and model support remains bounded
+by the documented capability checks. The earlier **0.1.0** source release is paired with the
 [bioRxiv v1 evidence archive](https://github.com/RockLi/brian2-atlas-preprint/tree/biorxiv-v1).
-Install the frozen source from tag `v0.1.0`; no PyPI publication is implied.
-`main` holds the release snapshot and `dev` is the development branch. The distribution name is `brian2-atlas`; use `brian2` for modelling
+Use tag `v0.1.0` only to reproduce that historical release; the commands below
+install `v0.2.0`. `dev` is the development branch. The distribution name is `brian2-atlas`; use `brian2` for modelling
 and `brian2_atlas` for the Atlas backend. `brian2_rust` remains a compatibility
 import. The Brian compatibility version is
 `2.10.1.post241`, independent of the Atlas distribution version.
@@ -77,7 +79,7 @@ import. The Brian compatibility version is
 Use Python 3.12 or newer, Rust/rustup and a working C/C++ compiler:
 
 ```sh
-git clone --branch v0.1.0 https://github.com/RockLi/brian2-atlas.git
+git clone --branch v0.2.0 https://github.com/RockLi/brian2-atlas.git
 cd brian2-atlas
 rustup toolchain install 1.98.1 --profile minimal
 python -m venv .venv
@@ -139,8 +141,8 @@ See [the backend guide](brian2-rust/README.md) for GPU, browser, MPI and trainin
 
 `brian2_atlas.neuromorphic` converts validated AtlasIR into plans for six
 neuromorphic software targets. Conversion preserves the admitted source
-semantics and rejects unsupported constructs. These are development additions;
-they are not included in the frozen `v0.1.0` release installed above.
+semantics and rejects unsupported constructs. These experimental additions are
+included in `0.2.0`; they are not part of the frozen `v0.1.0` research release.
 
 | Chip ecosystem | Software target | Verified conversion scope |
 |---|---|---|
