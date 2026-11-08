@@ -51,6 +51,19 @@ See the [architecture notes](brian2-rust/architecture/README.md) for interfaces 
 validation boundaries. Figures: [PNG](brian2-rust/architecture/atlas-architecture.png),
 [SVG](brian2-rust/architecture/atlas-architecture.svg).
 
+## Installation and package documentation
+
+Atlas can be built and installed with pip. Publishing the distribution to PyPI
+will enable `python -m pip install brian2-atlas`; the source release below does
+not imply that a PyPI release is available. Use a fresh virtual environment:
+Atlas supplies the `brian2` import package and must not share an environment
+with the separate upstream `Brian2` distribution.
+
+- [Installation and backend requirements](documentation/INSTALLATION.md)
+- [Quickstart: simulation and native training](documentation/QUICKSTART.md)
+- [Maintainer build, validation and PyPI release procedure](documentation/RELEASING.md)
+- [Documentation index and API guides](documentation/README.md)
+
 ## Install from source
 
 This is research software version **0.1.0**, paired with the

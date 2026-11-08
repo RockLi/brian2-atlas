@@ -1,6 +1,6 @@
 [project]
 name = "brian2-atlas"
-version = "0.1.0"
+version = "0.2.0.dev1"
 authors = [
     {name = 'Xinjun Li'},
     {name = 'Marcel Stimberg'},
@@ -19,14 +19,15 @@ dependencies = [
     'setuptools>=61',
     'packaging',
 ]
-dynamic = ["readme"]
+readme = {file = 'README.pypi.md', content-type = 'text/markdown'}
 description = 'Brian2 Atlas: Brian-compatible simulation and native training backends'
 keywords = ['computational neuroscience', 'simulation', 'neural networks', 'spiking neurons', 'biological neural networks', 'research']
 classifiers = [
     'Development Status :: 3 - Alpha',
     'Intended Audience :: Science/Research',
     'Natural Language :: English',
-    'Operating System :: OS Independent',
+    'Operating System :: POSIX :: Linux',
+    'Operating System :: MacOS',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
     'Topic :: Scientific/Engineering :: Bio-Informatics'
@@ -49,6 +50,7 @@ docs = ['sphinx>=7,<9', 'ipython>=5', 'sphinx-tabs']
 
 [project.urls]
 Homepage = 'https://github.com/RockLi/brian2-atlas'
+Documentation = 'https://github.com/RockLi/brian2-atlas/blob/testpypi-v0.2.0.dev1/documentation/README.md'
 Source = 'https://github.com/RockLi/brian2-atlas'
 Tracker = 'https://github.com/RockLi/brian2-atlas/issues'
 Upstream = 'https://github.com/brian-team/brian2'
@@ -62,15 +64,11 @@ b2-train = 'brian2_rust._cli:train'
 zip-safe = false
 include-package-data = true
 
-[tool.setuptools.dynamic]
-readme = {file = 'README.md', content-type = "text/markdown"}
-
 [build-system]
 requires = [
-    "setuptools>=61",
-    # By building against numpy 2.0, we make sure that the wheel is compatible with
-    # both numpy 2.0 and numpy>=1.23
-    "numpy>=2.0.0rc1",
+    # PEP 639 SPDX expressions and project.license-files require modern setuptools.
+    "setuptools>=77.0.3",
+    "numpy>=2.2.0",
     "wheel",
     "Cython",
 ]
@@ -98,3 +96,17 @@ extend-ignore = ["E731", "E501", "UP031", "UP032", "B028", "B018"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.cibuildwheel]
+build = "cp312-manylinux_x86_64 cp313-manylinux_x86_64 cp314-manylinux_x86_64"
+test-command = "python {project}/dev/atlas/test_wheel.py"
+test-requires = ["pip"]
+build-verbosity = 1
+
+[tool.cibuildwheel.linux]
+archs = ["x86_64"]
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64@sha256:9555ba6c479fa69a2aa80ad1dc57154a60d562b19df159361d9379a02beb1e36"
+before-all = "bash {project}/dev/atlas/install_release_rust.sh"
+before-build = "python -m pip install wheel==0.48.0"
+environment = { PATH = "/root/.cargo/bin:$PATH", CARGO_BUILD_JOBS = "2", PYTHONDONTWRITEBYTECODE = "1", OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1" }
+repair-wheel-command = "python {project}/dev/atlas/repair_wheel.py {wheel} {dest_dir}"

@@ -188,7 +188,7 @@ wheels = [
 
 [[package]]
 name = "brian2-atlas"
-version = "0.1.0"
+version = "0.2.0.dev1"
 source = { editable = "." }
 dependencies = [
     { name = "cython" },
@@ -212,6 +212,7 @@ docs = [
 ]
 examples = [
     { name = "joblib" },
+    { name = "matplotlib" },
     { name = "noise" },
     { name = "opencv-python-headless" },
     { name = "progressbar2" },
@@ -230,6 +231,7 @@ requires-dist = [
     { name = "ipython", marker = "extra == 'docs'", specifier = ">=5" },
     { name = "jinja2", specifier = ">=2.7" },
     { name = "joblib", marker = "extra == 'examples'", specifier = ">=1.4" },
+    { name = "matplotlib", marker = "extra == 'examples'", specifier = ">=3.9" },
     { name = "modal", marker = "extra == 'cloud'", specifier = ">=1.5.5" },
     { name = "noise", marker = "extra == 'examples'", specifier = ">=1.2.2" },
     { name = "numpy", specifier = ">=2.2.0" },
