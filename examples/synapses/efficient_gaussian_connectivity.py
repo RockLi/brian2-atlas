@@ -1,4 +1,4 @@
-"""
+r"""
 An example of turning an expensive `Synapses.connect` operation into
 three cheap ones using a mathematical trick.
 
@@ -74,24 +74,30 @@ from brian2 import *
 import time
 
 def naive(N):
-    G = NeuronGroup(N, 'v:1', threshold='v>1', name='G')
+    G = NeuronGroup(N, 'v:1', threshold='v>1', reset='', name='G')
     S = Synapses(G, G, on_pre='v += 1', name='S')
     S.connect(p='exp(-0.1*(i-j)**2)')
+    Network(G, S)
+    return len(S)
 
 def limited(N, q=0.001):
-    G = NeuronGroup(N, 'v:1', threshold='v>1', name='G')
+    G = NeuronGroup(N, 'v:1', threshold='v>1', reset='', name='G')
     S = Synapses(G, G, on_pre='v += 1', name='S')
     w = int(ceil(sqrt(log(q)/-0.1)))
     S.connect(j='k for k in range(i-w, i+w) if rand()<exp(-0.1*(i-j)**2)', skip_if_invalid=True)
+    Network(G, S)
+    return len(S)
 
 def divided(N, q=0.001):
-    G = NeuronGroup(N, 'v:1', threshold='v>1', name='G')
+    G = NeuronGroup(N, 'v:1', threshold='v>1', reset='', name='G')
     S = Synapses(G, G, on_pre='v += 1', name='S')
     w = int(ceil(sqrt(log(q)/-0.1)))
     S.connect(j='k for k in range(i-w, i+w) if rand()<exp(-0.1*(i-j)**2)', skip_if_invalid=True)
     pmax = exp(-0.1*w**2)
     S.connect(j='k for k in sample(0, i-w, p=pmax) if rand()<exp(-0.1*(i-j)**2)/pmax', skip_if_invalid=True)
     S.connect(j='k for k in sample(i+w, N_post, p=pmax) if rand()<exp(-0.1*(i-j)**2)/pmax', skip_if_invalid=True)
+    Network(G, S)
+    return len(S)
 
 def repeated_run(f, N, repeats):
     start_time = time.time()
@@ -100,21 +106,26 @@ def repeated_run(f, N, repeats):
     end_time = time.time()
     return (end_time-start_time)/repeats
 
-N = array([100, 500, 1000, 5000, 10000, 20000])
-repeats = array([100, 10, 10, 1, 1, 1])*3
-naive(10)
-limited(10)
-divided(10)
-print('Starting naive')
-loglog(N, [repeated_run(naive, n, r) for n, r in zip(N, repeats)],
-       label='Naive', lw=2)
-print('Starting limit')
-loglog(N, [repeated_run(limited, n, r) for n, r in zip(N, repeats)],
-       label='Limited', lw=2)
-print('Starting divided')
-loglog(N, [repeated_run(divided, n, r) for n, r in zip(N, repeats)],
-       label='Divided', lw=2)
-xlabel('N')
-ylabel('Time (s)')
-legend(loc='best', frameon=False)
-show()
+def main():
+    N = array([100, 500, 1000, 5000, 10000, 20000])
+    repeats = array([100, 10, 10, 1, 1, 1])*3
+    naive(10)
+    limited(10)
+    divided(10)
+    print('Starting naive')
+    loglog(N, [repeated_run(naive, n, r) for n, r in zip(N, repeats)],
+           label='Naive', lw=2)
+    print('Starting limit')
+    loglog(N, [repeated_run(limited, n, r) for n, r in zip(N, repeats)],
+           label='Limited', lw=2)
+    print('Starting divided')
+    loglog(N, [repeated_run(divided, n, r) for n, r in zip(N, repeats)],
+           label='Divided', lw=2)
+    xlabel('N')
+    ylabel('Time (s)')
+    legend(loc='best', frameon=False)
+    show()
+
+
+if __name__ == '__main__':
+    main()

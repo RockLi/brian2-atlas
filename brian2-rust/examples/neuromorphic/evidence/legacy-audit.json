@@ -1,0 +1,23 @@
+{
+  "samples": 10000,
+  "correct": 9874,
+  "accuracy": 0.9874,
+  "differing_states": 0,
+  "compared_states": 2660000,
+  "reference_kind": "historical Atlas execution, not fresh Atlas replay",
+  "reference_sha256": "abfbb7ea39230e60266f6bb715ab79aed33325895ac16ce18f8992f9023eb8f8",
+  "targets": {
+    "akida": {
+      "correct": 9874,
+      "samples": 10000,
+      "state_differences": 0,
+      "state_values": 2660000
+    },
+    "lava": {
+      "correct": 9874,
+      "samples": 10000,
+      "state_differences": 0,
+      "state_values": 2660000
+    }
+  }
+}

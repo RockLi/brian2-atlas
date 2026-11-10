@@ -1,0 +1,30 @@
+{
+  "schema": "atlas-optional-dependency-port-v1",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "parent": "6677a5bafd3b703ab56b6ed176e9aad70f4638cd",
+  "files": [
+    {
+      "source": "pyproject.toml",
+      "source_sha256": "46874462379bc565faf69830d008272c0e20fc118c65594f60e2d5e12a6d9aae",
+      "target": "pyproject.toml",
+      "target_sha256": "3034e6d9cc61c126a76c31454a798cb77e49860baa9f3d7d419951a62facf2ab",
+      "previous_target_sha256": "2e1602cf34cb89e4b174cde1a0613f22c5a348b65bb78dc44590c9905c86ba3d"
+    },
+    {
+      "source": "uv.lock",
+      "source_sha256": "9f22531433a70b4211414b3b89ad5d579fe3c75f706d78ad694d32e8f2fb93ea",
+      "target": "uv.lock",
+      "target_sha256": "f35d1fd1d4074b00a13f9468d1a6d33d11b04d54afee137aaa1d34674b33c48f",
+      "previous_target_sha256": null
+    }
+  ],
+  "adaptation": "Restore all original cloud/examples optional dependencies omitted in the first distribution port. Regenerate the original uv lock for brian2-atlas 0.1.0.dev0 while preserving every non-root locked package name/version.",
+  "validation": {
+    "all_original_optional_dependency_groups_equal": true,
+    "all_nonroot_locked_package_versions_unchanged": true,
+    "locked_packages": 135,
+    "uv_lock_check_offline": "passed",
+    "log_sha256": "4e7a046ca26904edb6aedb90fc27959bfe6ed4fc29d28ba74f030917e0582f4a",
+    "runtime_scope": "P6 example gate passed 37 cases; SBI is absent in that environment and its one case skipped. Declaring or resolving extras does not imply testing all optional integrations."
+  }
+}

@@ -173,7 +173,7 @@ ax[1].set(xlim=(0., duration/ms), ylim=(-1+V_r/mV, 0.),
 ### Synaptic variables
 # Retrieves indexes of spikes in the synaptic monitor using the fact that we
 # are sampling spikes and synaptic variables by the same dt
-spk_index = np.in1d(synapse_mon.t, exc_mon.t[exc_mon.i == ni])
+spk_index = np.isin(synapse_mon.t, exc_mon.t[exc_mon.i == ni])
 ax[2].plot(synapse_mon.t[spk_index]/ms, synapse_mon.x_S[0][spk_index], '.',
            ms=4, color='C3')
 ax[2].plot(synapse_mon.t[spk_index]/ms, synapse_mon.u_S[0][spk_index], '.',

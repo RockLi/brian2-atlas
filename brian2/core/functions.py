@@ -155,10 +155,6 @@ class Function:
         self._arg_units = arg_units
         self._arg_names = arg_names
         self._return_unit = return_unit
-        if return_unit is bool:
-            self._returns_bool = True
-        else:
-            self._returns_bool = False
         self._arg_types = arg_types
         self._return_type = return_type
         self.stateless = stateless
@@ -207,6 +203,8 @@ class Function:
                 )
             else:
                 self._return_unit = pyfunc._return_unit
+
+        self._returns_bool = self._return_unit is bool
 
         if self._arg_types is None:
             if hasattr(pyfunc, "_arg_types"):
@@ -322,6 +320,9 @@ class FunctionImplementation:
         self.dynamic = dynamic
         self.compiler_kwds = compiler_kwds
         self.availability_check = availability_check
+        # Set only for a default NumPy implementation installed by code
+        # generation, never for an explicit user target implementation.
+        self._automatic_numpy_binding = None
 
     def get_code(self, owner):
         if self.availability_check is not None:
@@ -403,7 +404,8 @@ class FunctionImplementationContainer(Mapping):
         )
 
     def add_numpy_implementation(
-        self, wrapped_func, dependencies=None, discard_units=None, compiler_kwds=None
+        self, wrapped_func, dependencies=None, discard_units=None, compiler_kwds=None,
+        *, _automatic=False,
     ):
         """
         Add a numpy implementation to a `Function`.
@@ -430,16 +432,25 @@ class FunctionImplementationContainer(Mapping):
 
         if discard_units:
             new_globals = dict(orig_func.__globals__)
+            converted_quantities = []
             # strip away units in the function by changing its namespace
             for key, value in new_globals.items():
                 if isinstance(value, Quantity):
                     new_globals[key] = np.asarray(value)
+                    converted_quantities.append((key, new_globals[key]))
             unitless_func = types.FunctionType(
                 orig_func.__code__,
                 new_globals,
                 orig_func.__name__,
                 orig_func.__defaults__,
                 orig_func.__closure__,
+            )
+            # FunctionType copies positional defaults via argdefs, but does
+            # not copy keyword-only defaults. Preserve their loaded values
+            # alongside this implementation's copied global namespace.
+            unitless_func.__kwdefaults__ = (
+                None if orig_func.__kwdefaults__ is None
+                else orig_func.__kwdefaults__.copy()
             )
             self._implementations["numpy"] = FunctionImplementation(
                 name=None,
@@ -473,7 +484,9 @@ class FunctionImplementationContainer(Mapping):
                             Quantity.with_dimensions(arg, get_dimensions(arg_unit))
                         )
                 result = orig_func(*new_args)
-                if isinstance(self._function._return_unit, Callable):
+                if self._function._return_unit is not bool and isinstance(
+                    self._function._return_unit, Callable
+                ):
                     return_unit = self._function._return_unit(
                         *[get_dimensions(a) for a in args]
                     )
@@ -512,6 +525,24 @@ class FunctionImplementationContainer(Mapping):
 
             self._implementations["numpy"] = FunctionImplementation(
                 name=None, code=wrapper_function, dependencies=dependencies
+            )
+
+        if _automatic:
+            impl = self._implementations["numpy"]
+            code = impl._code
+            try:
+                closure_values = tuple(
+                    cell.cell_contents for cell in (code.__closure__ or ())
+                )
+            except ValueError:
+                # An empty closure cell does not prevent normal NumPy code
+                # generation; it simply cannot certify a native snapshot.
+                return
+            impl._automatic_numpy_binding = (
+                wrapped_func, orig_func, code, code.__code__, bool(discard_units),
+                closure_values,
+                tuple((name, value) for name, value in converted_quantities
+                      if type(name) is str) if discard_units else (),
             )
 
     def add_implementation(

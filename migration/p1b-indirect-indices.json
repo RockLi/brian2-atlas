@@ -1,0 +1,101 @@
+{
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "original_upstream_base": "cf0b25cce13b620aac740873e88ba91061a70275",
+  "target_base": "27b5431168cf9959f0c27894cd4d92cdc6ad5c31",
+  "stage": "P1b: indirect index dependencies and runtime binding",
+  "method": "Apply the captured frontend delta against the new upstream. Implementation hashes match the frozen source, including uncommitted and untracked code.",
+  "files": [
+    {
+      "source": "brian2/codegen/codeobject.py",
+      "sha256": "d09c5628babfad107843cc00a6291ceae2402c08d88f1de000fe471de4ddc17c",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/codegen/generators/base.py",
+      "sha256": "92f9ab329bff3c174bd751aeb3eab784d81a9e435b0e68ea979ac215ea4ac8b2",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/codegen/generators/cpp_generator.py",
+      "sha256": "a5b559f0a01a5eef551122568c0edf28de02aff895844edfc40adf2d7c367f0d",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/codegen/generators/cython_generator.py",
+      "sha256": "36f65ae19c4de4324363a4b1c802bfa74c5ab36f2db011bf96687f9d09c49751",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/codegen/generators/numpy_generator.py",
+      "sha256": "9febce96fb168d4c46e3aff779884430c3c9a3d54a81070a213705b1f1cbee9a",
+      "git_state": "tracked"
+    },
+    {
+      "source": "brian2/codegen/indices.py",
+      "sha256": "a224cf806e7d0d40f6a0e6ae16fb60221aa8242f38b6f70878df31bfd534be5f",
+      "git_state": "untracked"
+    },
+    {
+      "source": "brian2/codegen/runtime/cython_rt/templates/synapses.pyx",
+      "sha256": "29b93b1992c0c8b874c6606aa7570b95bf5871146dc9940069e73f2d66987750",
+      "git_state": "tracked"
+    }
+  ],
+  "test_relocation": {
+    "source": "brian2-rust/tests/test_training_nested_index_codegen.py",
+    "target": "brian2/tests/test_atlas_index_codegen.py",
+    "source_sha256": "1c41e53190a7fd065eea9246d2ad1c3a22048787a65d4c727378ed36146dcfd3",
+    "target_sha256": "ea6a27306a70fb62de122c765544c6a6d03e939bde883dce3cf5912beb376cda",
+    "adaptation": "Relocate frontend regression out of backend training tests; add two real NumPy/Cython runtime execution cases and update module documentation/imports."
+  },
+  "validation": [
+    {
+      "label": "p1b-indirect-indices",
+      "target": "numpy",
+      "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "files": [
+        "brian2/tests/test_atlas_index_codegen.py",
+        "brian2/tests/test_codegen.py",
+        "brian2/tests/test_synapses.py",
+        "brian2/tests/test_monitor.py"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "1",
+          "tests": "195",
+          "time": "4295.955",
+          "timestamp": "2026-10-08T16:06:57.158854+08:00",
+          "hostname": "Rocks-MacBook-Air.local"
+        }
+      ],
+      "junit_sha256": "fd628422e2f86658d0fe457f8c8516f1ef7cf75c9282ee28c8b6261eab8c90cb"
+    },
+    {
+      "label": "p1b-runtime-regressions",
+      "target": "numpy",
+      "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "files": [
+        "brian2/tests/test_atlas_index_codegen.py::test_nested_reference_executes_through_runtime"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "2",
+          "time": "23.182",
+          "timestamp": "2026-10-08T17:28:16.776706+08:00",
+          "hostname": "Rocks-MacBook-Air.local"
+        }
+      ],
+      "junit_sha256": "d2599e54770db6f21f1d4b58424fdbb7ef32bf525e78aa98dfb200bd6cd0f836"
+    }
+  ],
+  "scope": "Selected upstream code generation, synapse and monitor suites; index code generation regressions include a compiled C++ fragment, plus two actual NumPy/Cython runtime cases. This is not a full C++ standalone or native backend qualification."
+}

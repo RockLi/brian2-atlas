@@ -1,0 +1,18 @@
+{
+  "base_commit": "ef772a28abe88a3e26abb33199c87485e49b0e94",
+  "test_arrays_read": false,
+  "checks": [
+    {
+      "target": "xylosim",
+      "rejected": true,
+      "error": "unknown native Xylo bridge contract",
+      "old_runtime_sha256": "0f930bf68992e6b945f369874da252b94722fd2e959146687bf288148bddc367"
+    },
+    {
+      "target": "spinnaker2",
+      "rejected": true,
+      "error": "SpiNNaker2 integer kernel: unknown native bridge",
+      "old_runtime_sha256": "4efb3c0760a66b6df33c2e6aeaefbe65175d0744e3053851ca7bff2f0e629ea8"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "python": {
+    "tests": 117,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "rust": {
+    "passed": 51,
+    "failed": 0,
+    "ignored": 0
+  },
+  "sdk_environments": [
+    "/private/tmp/atlas-xylo-env/bin/python",
+    "/private/tmp/atlas-spinnaker2-env312/bin/python"
+  ],
+  "final_bridge_recheck": {
+    "tests": 38,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

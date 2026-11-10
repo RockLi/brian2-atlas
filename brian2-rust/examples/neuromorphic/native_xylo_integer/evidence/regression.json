@@ -1,0 +1,38 @@
+{
+  "python_tests_passed": 195,
+  "python_tests_skipped": 36,
+  "skip_reason": "Opt-in Metal/CUDA/MPI tests; CPU integer training and installed SDK checks executed",
+  "native_xylo_tests_passed": 18,
+  "rust_library_tests_passed": 51,
+  "real_sdk_tests_enabled": [
+    "xylosim",
+    "spinnaker2"
+  ],
+  "test_files": [
+    "test_native_training.py",
+    "test_native_training_equations.py",
+    "test_native_training_multistate.py",
+    "test_native_training_graph.py",
+    "test_native_xylo_training.py",
+    "test_native_xylo_conversion.py",
+    "test_native_lif_conversion.py",
+    "test_xylo_b2ir.py",
+    "test_spinnaker2_b2ir.py",
+    "test_neuromorphic.py",
+    "test_character_language_model.py"
+  ],
+  "junit_sha256": "019e4a77ff7e0a013c64d4c7842ba75d865f302b22b9d1f7d97334b93f2d850e",
+  "test_source_hashes": {
+    "test_native_training.py": "c0ce01ae9879d00acbb3eb415d7e4e25d31d1d725cb8944935efb72752903a5a",
+    "test_native_training_equations.py": "f6800ef460c74d5cade3da12588f49cc531f52af4528f0c1c6c1116f70575a08",
+    "test_native_training_multistate.py": "109c8fa0c4c0c0b715669d156c4f39096e66bc1def93f914855e4e293c2908c9",
+    "test_native_training_graph.py": "78b33ff8cf5448026697ca344fb619afc224232da1a431586ad202c4b68ec851",
+    "test_native_xylo_training.py": "4694aeef3c24178b679ef67033a6c496b2626618d720ad50d6a675ec581ec3e5",
+    "test_native_xylo_conversion.py": "b6ccfa3884ffb73c8845c721f3a04cb7e8371181b1f30599a31632651f44f0d1",
+    "test_native_lif_conversion.py": "0e1992d3efacba373af340cc62e5da5de1e15d40390ef9b3b7d0178bb998dbc8",
+    "test_xylo_b2ir.py": "9d6119a62e6bff73fba5dd0550c864184d304fd931a0c22786dc9c8f97734c8b",
+    "test_spinnaker2_b2ir.py": "5b49ee13840e9a66b7382364e86d9b0e2b2f00e41ac3b9260017597d05929955",
+    "test_neuromorphic.py": "7b9ee588641e9693a39c936d0d52826a10b42f6e0644c493e940001beaf1b9aa",
+    "test_character_language_model.py": "36707473c800c818ed56f432371a8cb77328411329c0934386b3c917e6395261"
+  }
+}

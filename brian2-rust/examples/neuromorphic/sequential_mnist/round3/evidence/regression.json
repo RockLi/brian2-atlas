@@ -1,0 +1,41 @@
+{
+  "python_checks": [
+    {
+      "check": "wide-tests",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "96",
+      "time": "69.019",
+      "timestamp": "2026-10-14T20:39:42.468919+07:00",
+      "hostname": "Rocks-MacBook-Air.local"
+    },
+    {
+      "check": "final-sequential",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "17",
+      "time": "23.981",
+      "timestamp": "2026-10-14T20:56:31.121126+07:00",
+      "hostname": "Rocks-MacBook-Air.local"
+    }
+  ],
+  "python_unique_tests": 96,
+  "final_example_recheck_tests": 17,
+  "rust_tests": 51,
+  "skipped": 0,
+  "test_source_hashes": {
+    "test_native_xylo_training.py": "72e0099fdaff8d12f5db93e2d7baf0ec85881818960f8b8a2ec7255f7224acd6",
+    "test_spinnaker2_integer.py": "ee89cb05dddae30e2e861a25331c8df61788a086214d7f43920b735a265034c0",
+    "test_xylo_b2ir.py": "f08971507a2078a6b3a81ebe4ead2f2a7f47df18bf3b43a8f0f4a102d797c0b7",
+    "test_sequential_mnist.py": "ff759a3b69cbb5b8027f37087187e23a6ee34e3117f4a614aac71f42731c933d",
+    "test_native_xylo_recurrent.py": "4d14f054c4c48f2840585c888fc12d553c3f200c5ca24d93a3cdfcb12b12bd9f"
+  },
+  "sdk_environments": [
+    "stock XyloSim",
+    "SpiNNaker2 SDK graph containers with Atlas custom C host kernel"
+  ]
+}

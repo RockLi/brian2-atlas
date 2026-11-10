@@ -1,0 +1,34 @@
+{
+  "sources": {
+    "brian2-rust/examples/neuromorphic/spinnaker2_dense/prepare_coverage.py": "c6c2090dbaf1118b615350ed68faf1fa63dfa1fdec07194fb11220171da20ebb",
+    "brian2-rust/examples/neuromorphic/spinnaker2_dense/audit.py": "49c1479c26c1a0f7353e25346fc9b75cb8dd2034ba66b08c57f4c19905d8ae97",
+    "brian2-rust/examples/neuromorphic/spinnaker2_dense/run_coverage.py": "b4e27647552f411a1cf42584f780df8c87f50db1e1359df5f35f76132e6dc98e",
+    "brian2-rust/examples/neuromorphic/spinnaker2_dense/prepare.py": "435ae307a6ecc1cc33e180ef556806614fd3893da256429dbd9feb91d152170f",
+    "brian2-rust/python/brian2_rust/spinnaker2_dense.py": "86555616ccc9f0aeccb1b35a6466adfabc13af855544d783921cc36137db5bc8",
+    "brian2-rust/python/brian2_rust/neuromorphic_runtime.py": "2bf60e69a1ae2997a180dfecbb08f0001afed69d86f9f8f4b37881829228036c",
+    "brian2-rust/python/brian2_atlas/neuromorphic.py": "b342a12e5aceac73a08bd9253725d6c8ac93ef4ed329c7efa35d0a3d80fb3352",
+    "brian2-rust/examples/neuromorphic/sdk_worker.py": "41e617bdcff16d55068d7ae2e81f52eeb3b0baac5e375c8542b4b77385bb2be2",
+    "brian2-rust/examples/neuromorphic/coverage/check_compatibility.py": "3212deb85d3ad802695f5edda9b73e72ba853d3d857552fe52b86b6ff2fead29",
+    "brian2-rust/tests/test_spinnaker2_dense.py": "e92d4849acc822fcc27b2adfd2b5b185740746ee103490c1d994abeb8de17948"
+  },
+  "sdk_git_revision": "8a1c4c526aec0f2cab73b8c37c9491fac0118b42",
+  "sdk_brian2_backend_sha256": "8d4d2e6d469bb672dc508e0a2bcee8b33db827c4b7babb293019beb742066f8b",
+  "sdk_lif_model_sha256": "fb78f0a59124ee040b001d44867ab382b7138161d72a986330a3ad151fe017d5",
+  "versions": {
+    "spinnaker2": "0.8.0",
+    "brian2": "2.10.1",
+    "numpy": "2.3.4"
+  },
+  "regression_tests": {
+    "passed": 166,
+    "failed": 0,
+    "log_sha256": "a697949acbfb9e780e69b93e856132c7d559a97b44d5ae3745c30bf84a8339d3"
+  },
+  "evidence": {
+    "audit.json": "15b20379fd392eb263875a9d2ebaa32ce03c95de5d13b771fa2411aae5ed0edc",
+    "compatibility.json": "6cd6893cc930df854a94f313efa4ad9171a1a6e579fc6db30aecb4e235e650dc",
+    "coverage.json": "141e8b4796bef92ee9f57bd067d762c0443d0e839c3e3cca87f0246e37a4d6bc"
+  },
+  "checked_at": "2026-10-13",
+  "physical_hardware": false
+}

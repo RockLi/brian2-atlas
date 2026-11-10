@@ -1,0 +1,141 @@
+{
+  "tensorflow_version": "2.16.2",
+  "architecture": "binary-input bias-free 784-to-10 count classifier",
+  "semantics": "floor(binary_inputs @ integer_weights / threshold)",
+  "selection": {
+    "epoch": 5,
+    "threshold": 64,
+    "validation_correct": 5493,
+    "validation_samples": 6000
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "threshold": 64,
+      "validation_correct": 5481,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 2,
+      "threshold": 64,
+      "validation_correct": 5492,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 3,
+      "threshold": 64,
+      "validation_correct": 5459,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 4,
+      "threshold": 64,
+      "validation_correct": 5453,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 5,
+      "threshold": 64,
+      "validation_correct": 5493,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 6,
+      "threshold": 64,
+      "validation_correct": 5391,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 7,
+      "threshold": 64,
+      "validation_correct": 5441,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 8,
+      "threshold": 64,
+      "validation_correct": 5416,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 9,
+      "threshold": 64,
+      "validation_correct": 5394,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 10,
+      "threshold": 64,
+      "validation_correct": 5285,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 11,
+      "threshold": 64,
+      "validation_correct": 5285,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 12,
+      "threshold": 64,
+      "validation_correct": 5299,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 13,
+      "threshold": 64,
+      "validation_correct": 5274,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 14,
+      "threshold": 64,
+      "validation_correct": 5320,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 15,
+      "threshold": 64,
+      "validation_correct": 5233,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 16,
+      "threshold": 64,
+      "validation_correct": 5252,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 17,
+      "threshold": 64,
+      "validation_correct": 5263,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 18,
+      "threshold": 64,
+      "validation_correct": 5200,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 19,
+      "threshold": 64,
+      "validation_correct": 5224,
+      "validation_samples": 6000
+    },
+    {
+      "epoch": 20,
+      "threshold": 64,
+      "validation_correct": 5181,
+      "validation_samples": 6000
+    }
+  ],
+  "seed": 42,
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "test_read_during_training": false,
+  "preprocessing": "uint8 pixel >= 128",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "weights_sha256": "8a857dcabd0509d99c802119a8bfca9e9338e80ae9a1932647f758aef378f6ec",
+  "note": "Frozen quantized TF model is the conversion source, not the unquantized float model."
+}

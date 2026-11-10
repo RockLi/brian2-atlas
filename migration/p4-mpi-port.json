@@ -1,0 +1,255 @@
+{
+  "schema": "atlas-mpi-port-v1",
+  "source_head": "81eb571d78292a0e24a8e79980ea0d5c26e8a48c",
+  "parent": "f5696f086cf03bec3c931acf910218e349afd2e5",
+  "files": [
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_additive.py",
+      "source_sha256": "a7e675349de16ab3d5e40b095e9d88c081f8108c1ee498fd5eb0c735794bb17e",
+      "target": "brian2-rust/python/brian2_rust/mpi_additive.py",
+      "target_sha256": "a7e675349de16ab3d5e40b095e9d88c081f8108c1ee498fd5eb0c735794bb17e"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_checkpoint.py",
+      "source_sha256": "d4d1ba39e05585b23bf7af7f07ca09633f07a2d1cdaf725076cbcf849f4c5a3a",
+      "target": "brian2-rust/python/brian2_rust/mpi_checkpoint.py",
+      "target_sha256": "d4d1ba39e05585b23bf7af7f07ca09633f07a2d1cdaf725076cbcf849f4c5a3a"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_codegen.py",
+      "source_sha256": "dbcaeeb9e0c8f1bfda6f18de46be1616671374d65e997187ce52d8411aa1c343",
+      "target": "brian2-rust/python/brian2_rust/mpi_codegen.py",
+      "target_sha256": "dbcaeeb9e0c8f1bfda6f18de46be1616671374d65e997187ce52d8411aa1c343"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_compact.py",
+      "source_sha256": "eb5610f29ac5eacad32f68158fd8fd2b47d1f016efb7cbc03ad7c72341ebdae6",
+      "target": "brian2-rust/python/brian2_rust/mpi_compact.py",
+      "target_sha256": "eb5610f29ac5eacad32f68158fd8fd2b47d1f016efb7cbc03ad7c72341ebdae6"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_gpu.py",
+      "source_sha256": "f37d6d4895919d6f0c73dc59148e5cd73ae4d3f4243628b7781d372313f1b08a",
+      "target": "brian2-rust/python/brian2_rust/mpi_gpu.py",
+      "target_sha256": "f37d6d4895919d6f0c73dc59148e5cd73ae4d3f4243628b7781d372313f1b08a"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_partition.py",
+      "source_sha256": "dc9040c897a59469a16d130ab622f26cbf6a4db04665cbbf611e2eae1fc82ab5",
+      "target": "brian2-rust/python/brian2_rust/mpi_partition.py",
+      "target_sha256": "dc9040c897a59469a16d130ab622f26cbf6a4db04665cbbf611e2eae1fc82ab5"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_population_compact.py",
+      "source_sha256": "23efbd83019b352f1edb824b1db86a48a5669a4c73786f3cd93228f7e49441ff",
+      "target": "brian2-rust/python/brian2_rust/mpi_population_compact.py",
+      "target_sha256": "23efbd83019b352f1edb824b1db86a48a5669a4c73786f3cd93228f7e49441ff"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_prebuild.py",
+      "source_sha256": "fec79408a3786f9a0e5f2788caee201fa0cb35d6e7fcc1edad4132b7a2e4e6c6",
+      "target": "brian2-rust/python/brian2_rust/mpi_prebuild.py",
+      "target_sha256": "fec79408a3786f9a0e5f2788caee201fa0cb35d6e7fcc1edad4132b7a2e4e6c6"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_procedural.py",
+      "source_sha256": "69e58a1c77e94aa21a7cd76d8f3834ba7babb2c9eb6bb6b2ce12317f3763b2b2",
+      "target": "brian2-rust/python/brian2_rust/mpi_procedural.py",
+      "target_sha256": "69e58a1c77e94aa21a7cd76d8f3834ba7babb2c9eb6bb6b2ce12317f3763b2b2"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_queue_compact.py",
+      "source_sha256": "98b49d30611d4d9a50a6e55b045595d7bbb20f8fe0796cf453de0beeed5b81a6",
+      "target": "brian2-rust/python/brian2_rust/mpi_queue_compact.py",
+      "target_sha256": "98b49d30611d4d9a50a6e55b045595d7bbb20f8fe0796cf453de0beeed5b81a6"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_report_compact.py",
+      "source_sha256": "2d3ae246d4bac31f5f0c95e479adbbff8ec2457799a000b60494489da95e0da9",
+      "target": "brian2-rust/python/brian2_rust/mpi_report_compact.py",
+      "target_sha256": "2d3ae246d4bac31f5f0c95e479adbbff8ec2457799a000b60494489da95e0da9"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/additive.rs",
+      "source_sha256": "04dcba3f1f9c90cb13a59e8a61e8b5e509b9aa636521f1d24ea236767b076c54",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/additive.rs",
+      "target_sha256": "04dcba3f1f9c90cb13a59e8a61e8b5e509b9aa636521f1d24ea236767b076c54"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/bridge.c",
+      "source_sha256": "c987199534c1fd60fe6f36a89c540a46492e12faa7fb174728cbc203b0c6b569",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/bridge.c",
+      "target_sha256": "c987199534c1fd60fe6f36a89c540a46492e12faa7fb174728cbc203b0c6b569"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/gpu.rs",
+      "source_sha256": "045461eb7e958414450029f5561e8fc8778df80d301e2d05f46e240621020383",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/gpu.rs",
+      "target_sha256": "045461eb7e958414450029f5561e8fc8778df80d301e2d05f46e240621020383"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/gpu_cuda.cpp",
+      "source_sha256": "675fccde5b69e9043f98b7c751db3d9dbd85130e4a94d0f626c81c77eb07e8ba",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/gpu_cuda.cpp",
+      "target_sha256": "675fccde5b69e9043f98b7c751db3d9dbd85130e4a94d0f626c81c77eb07e8ba"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/prebuild.rs",
+      "source_sha256": "9fdabcb086c3d83e2291be724a8ea45d971d15e158e83e3133b4b6b94eebcd0a",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/prebuild.rs",
+      "target_sha256": "9fdabcb086c3d83e2291be724a8ea45d971d15e158e83e3133b4b6b94eebcd0a"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/sha256.rs",
+      "source_sha256": "44e4595b52d158a0b238c72a8f5fec1375b7509967b70b534fe607b3d83403ae",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/sha256.rs",
+      "target_sha256": "44e4595b52d158a0b238c72a8f5fec1375b7509967b70b534fe607b3d83403ae"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/spike_spool.rs",
+      "source_sha256": "19d62ae06bd55d5255ac04eb5fa8ab3b6a40b314062617b4eca75fe3b4ff6dcc",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/spike_spool.rs",
+      "target_sha256": "19d62ae06bd55d5255ac04eb5fa8ab3b6a40b314062617b4eca75fe3b4ff6dcc"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_runtime/topology.rs",
+      "source_sha256": "63680e579e97e296f5763933a86d2c47a6e7203c807f55c7acf479ab457a3849",
+      "target": "brian2-rust/python/brian2_rust/mpi_runtime/topology.rs",
+      "target_sha256": "63680e579e97e296f5763933a86d2c47a6e7203c807f55c7acf479ab457a3849"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_spike_history.py",
+      "source_sha256": "5c67dd3e3fdef67425e4f56b7a2b4de982e814648e257f91cd728464b6d09796",
+      "target": "brian2-rust/python/brian2_rust/mpi_spike_history.py",
+      "target_sha256": "5c67dd3e3fdef67425e4f56b7a2b4de982e814648e257f91cd728464b6d09796"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_spike_output.py",
+      "source_sha256": "9480c1688c6bd2111c47a7d9c79ad2d7df3f1599a29bde46d9933a13712a3dcf",
+      "target": "brian2-rust/python/brian2_rust/mpi_spike_output.py",
+      "target_sha256": "9480c1688c6bd2111c47a7d9c79ad2d7df3f1599a29bde46d9933a13712a3dcf"
+    },
+    {
+      "source": "brian2-rust/python/brian2_rust/mpi_spike_spool.py",
+      "source_sha256": "251c2a2530c10111b7b71d12f0dd9d085accdd6568d5d3287ea21c8acd6eb351",
+      "target": "brian2-rust/python/brian2_rust/mpi_spike_spool.py",
+      "target_sha256": "251c2a2530c10111b7b71d12f0dd9d085accdd6568d5d3287ea21c8acd6eb351"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi.py",
+      "source_sha256": "06a69ea236e27ab9766ad4bc9dcf204505826b38d9248fd2ac60ec7b3b88a848",
+      "target": "brian2-rust/tests/test_mpi.py",
+      "target_sha256": "06a69ea236e27ab9766ad4bc9dcf204505826b38d9248fd2ac60ec7b3b88a848"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_additive_ring.py",
+      "source_sha256": "c82486a62be182b0539c8aa601f122fc24b0da8108b989ed07d9c9b8ccdf0638",
+      "target": "brian2-rust/tests/test_mpi_additive_ring.py",
+      "target_sha256": "c82486a62be182b0539c8aa601f122fc24b0da8108b989ed07d9c9b8ccdf0638"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_compact.py",
+      "source_sha256": "5a754ec24e53aca393fd35fa25c7a1aa58343e5acb4dca4b4c7992410424d525",
+      "target": "brian2-rust/tests/test_mpi_compact.py",
+      "target_sha256": "5a754ec24e53aca393fd35fa25c7a1aa58343e5acb4dca4b4c7992410424d525"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_gpu.py",
+      "source_sha256": "bcae75e041e15031c711ef1611aa6a5efad2a6b3285868778873231fff394af4",
+      "target": "brian2-rust/tests/test_mpi_gpu.py",
+      "target_sha256": "bcae75e041e15031c711ef1611aa6a5efad2a6b3285868778873231fff394af4"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_multi_area_budget.py",
+      "source_sha256": "f409ea4c8b56a9b4ad9cc13fef3f7b8995c5f9719336f35fd31ce8d7799b4f2e",
+      "target": "brian2-rust/tests/test_mpi_multi_area_budget.py",
+      "target_sha256": "f409ea4c8b56a9b4ad9cc13fef3f7b8995c5f9719336f35fd31ce8d7799b4f2e"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_prebuild.py",
+      "source_sha256": "91fcbedcfc71bdca392f27a969023bbfe2a6ffddb29525d716d144458f87d53f",
+      "target": "brian2-rust/tests/test_mpi_prebuild.py",
+      "target_sha256": "91fcbedcfc71bdca392f27a969023bbfe2a6ffddb29525d716d144458f87d53f"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_queue_compact.py",
+      "source_sha256": "9881644307d82c5262803b05ed803d77807b33ae6d9572b5b87d41aa94ee2c31",
+      "target": "brian2-rust/tests/test_mpi_queue_compact.py",
+      "target_sha256": "9881644307d82c5262803b05ed803d77807b33ae6d9572b5b87d41aa94ee2c31"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_report_batches.py",
+      "source_sha256": "8be24e9213370dad53c45475c15b9c08fcfdf4528c13533428e272efb858c423",
+      "target": "brian2-rust/tests/test_mpi_report_batches.py",
+      "target_sha256": "8be24e9213370dad53c45475c15b9c08fcfdf4528c13533428e272efb858c423"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_resource_guard.py",
+      "source_sha256": "9adc839e3ce623904b3a0b03757ea95f967a5957480678ff8f1d40138ef96a4d",
+      "target": "brian2-rust/tests/test_mpi_resource_guard.py",
+      "target_sha256": "9adc839e3ce623904b3a0b03757ea95f967a5957480678ff8f1d40138ef96a4d"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_spike_history.py",
+      "source_sha256": "8ae9734b7b84b5c5dd53c3c655774ba345086593e9effd966d4e727326432e71",
+      "target": "brian2-rust/tests/test_mpi_spike_history.py",
+      "target_sha256": "8ae9734b7b84b5c5dd53c3c655774ba345086593e9effd966d4e727326432e71"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_spike_output.py",
+      "source_sha256": "d3af4df185305af53dda519c994a97220e9b07dc2a05cda5db33e5b47773e0c3",
+      "target": "brian2-rust/tests/test_mpi_spike_output.py",
+      "target_sha256": "d3af4df185305af53dda519c994a97220e9b07dc2a05cda5db33e5b47773e0c3"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_spike_spool.py",
+      "source_sha256": "9981182d93a6df4d4139a67aa4348062581d3bfc5c15003075f908a41edc7e44",
+      "target": "brian2-rust/tests/test_mpi_spike_spool.py",
+      "target_sha256": "9981182d93a6df4d4139a67aa4348062581d3bfc5c15003075f908a41edc7e44"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_teleport_launch.py",
+      "source_sha256": "68ada991154c70fbde954e74d8732e7ba21a1068ea2298d728906b94a87f6e93",
+      "target": "brian2-rust/tests/test_mpi_teleport_launch.py",
+      "target_sha256": "68ada991154c70fbde954e74d8732e7ba21a1068ea2298d728906b94a87f6e93"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_timing.py",
+      "source_sha256": "92dd86953e7266916dd4c592b6dd789eeda1ccb59ea6f9114c2f5b648066de38",
+      "target": "brian2-rust/tests/test_mpi_timing.py",
+      "target_sha256": "92dd86953e7266916dd4c592b6dd789eeda1ccb59ea6f9114c2f5b648066de38"
+    },
+    {
+      "source": "brian2-rust/tests/test_mpi_training.py",
+      "source_sha256": "df42c16a6ce2f3286854be042588302db497acee85eda367768431e3e88646ed",
+      "target": "brian2-rust/tests/test_mpi_training.py",
+      "target_sha256": "df42c16a6ce2f3286854be042588302db497acee85eda367768431e3e88646ed"
+    }
+  ],
+  "shared_exports": {
+    "file": "brian2-rust/python/brian2_rust/__init__.py",
+    "before_sha256": "557a35480a6996b9553367b558d552a8186433f17e83e1df3f6bf5782af678f8",
+    "after_sha256": "bc64d06e8cb33db7e84ee0a5d6df2cbea61f350587afad6f75bbb1f332259084"
+  },
+  "validation": {
+    "local_mpi_passed": 17,
+    "scope": "Actual same-host 1/2/4 ranks: partition ownership/integrity, stochastic recurrent delays, stateful summed values, device continuation and collective error exits",
+    "tests": [
+      "test_mpi.py::test_plan_ownership_and_integrity",
+      "test_mpi.py::test_invalid_rank_count",
+      "test_mpi.py::test_recurrent_delays_match_reference",
+      "test_mpi.py::test_stateful_postsummed_matches_reference",
+      "test_mpi.py::test_device_mpi_results_and_continuation",
+      "test_mpi.py::test_mpi_wrong_world_and_one_rank_input_failure_abort"
+    ],
+    "junit_sha256": "c0e003b0c2565aab439ae263cfae5015953c3ed4cfd4a865a5e73e496e43b7b7",
+    "canonical_integration": {
+      "passed": 7,
+      "scope": "Plan/integrity/rank constraints and actual MPI device continuation in final Atlas checkout",
+      "metadata_sha256": "fe3dc3eef8991cdc846295a2853d02cac00f40ecba14ae4454ca243d964a5604"
+    }
+  },
+  "limits": [
+    "No cross-host or multi-GPU acceptance claim. CUDA training plus same-host MPI was tested separately and belongs to the training port."
+  ]
+}

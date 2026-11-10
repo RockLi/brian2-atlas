@@ -2,6 +2,8 @@
 Benchmark showing the performance of float32 versus float64.
 """
 
+import builtins
+
 from brian2 import *
 from brian2.devices.device import reset_device, reinit_devices
 
@@ -91,7 +93,10 @@ def run_benchmark(name):
 
     run(1 * second, profile=True)
 
-    return sum(t for name, t in magic_network.profiling_info)
+    # ``from brian2 import *`` exposes NumPy's ``sum``. NumPy 2 no longer
+    # accepts generators, whereas Python's built-in sum is exactly what is
+    # intended for the small profiling sequence here.
+    return builtins.sum(t for name, t in magic_network.profiling_info)
 
 def generate_results(num_repeats):
     results = {}

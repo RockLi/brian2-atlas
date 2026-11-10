@@ -1,0 +1,502 @@
+{
+  "schema": "atlas.dynapse.audit.v1",
+  "passed": true,
+  "cases": [
+    {
+      "case": "silent",
+      "steps": 128,
+      "neurons": 1,
+      "trace_values": 640,
+      "spike_events": 0,
+      "spike_count": 0,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 0.0,
+        "isyn": 1.473301778726527e-19,
+        "vmem": 0.0
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "e327ac90e70364d6e7c34b6b0f691f0234d6ebcb253a0dbf4eb5fd8159c46ab7",
+      "atlas_result_sha256": "21b7dfb952486a5f821fe49bb23b015d1484990ec573a9e7e6979cfb1d199e0f",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "6c3be3fe22ed4b99a0724ce2caa67b0dc40b16091fd0166c3a8c456eb0e90348",
+        "result_sha256": "5682fd87d5a99d3fca9dd33eef740198c036855b09795df226763ba9c76f4751",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "constant",
+      "steps": 128,
+      "neurons": 1,
+      "trace_values": 640,
+      "spike_events": 9,
+      "spike_count": 9,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 1.5503134138349742e-12,
+        "isyn": 1.6252011464576918e-13,
+        "vmem": 1.5767583143588837e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "1b6da10bab9fad91d4888f5b38fd20b18d230950b48e8911d414778a6ec9f194",
+      "atlas_result_sha256": "8f382a844697b6ddb98e25558ae583b0efbe5bacfcb9d84cb7d509dd2acc9273",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "23d9ee5168fefb992136bb7161e9311fec2dcc4d0ed431c4a532a615e6e45e9e",
+        "result_sha256": "b71fb02c9ede910d6884729764a442bea576ae64a6a290134d6ccae4469ab409",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "one_tick",
+      "steps": 1,
+      "neurons": 1,
+      "trace_values": 5,
+      "spike_events": 0,
+      "spike_count": 0,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 4.368547295167745e-17,
+        "isyn": 7.210944978331167e-15,
+        "vmem": 5.406313888095537e-07
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "763385ddd92edb217c8e588becf697066bd5e67d6cca3e2cc7691a0feabffcba",
+      "atlas_result_sha256": "2de6b7e4843422b4c5f8ec7b9d9394b0a19d66e93044d182f8eeef03c65c037c",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "7379753b883a69d68eb14d8496a70c4d7612c06ea8c87e2901d9eb0602b5e0d9",
+        "result_sha256": "77437d3ec1d249b0a581ee91357fa70f917dc97db2438b4c557ed747435ab294",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "zero_weight",
+      "steps": 128,
+      "neurons": 1,
+      "trace_values": 640,
+      "spike_events": 0,
+      "spike_count": 0,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 0.0,
+        "isyn": 1.473301778726527e-19,
+        "vmem": 0.0
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "196b9e5e96d25d76e5ed2cc3af7dcaa12320b1b870ef88afcab4ee631b1cb5d4",
+      "atlas_result_sha256": "21b7dfb952486a5f821fe49bb23b015d1484990ec573a9e7e6979cfb1d199e0f",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "ce94f71bebccfe72732efccd660d6398d3932e98ff60f30a4624727c1cd2e024",
+        "result_sha256": "5682fd87d5a99d3fca9dd33eef740198c036855b09795df226763ba9c76f4751",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "adaptation",
+      "steps": 512,
+      "neurons": 1,
+      "trace_values": 2560,
+      "spike_events": 41,
+      "spike_count": 41,
+      "max_absolute_error": {
+        "iahp": 1.338981386915042e-16,
+        "imem": 1.7406942055839396e-12,
+        "isyn": 1.6475298732017403e-13,
+        "vmem": 1.5767583143588837e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "092318a3fcf8f4df18535a254f0088cc3b7bf421fa7157afa46d121603ef85fb",
+      "atlas_result_sha256": "cfbb8410dfeb3afddfe41c0e59de4c4fdf436b28b52701e73974a96c8290783d",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "233182b9e92241f82634c4e7baeccb649d8dd82c7d41b5a31b270e6611656e38",
+        "result_sha256": "1ea2cd4ec77883ed050aa1d6e0cd29490594ac4a676f5b121ef962538f9633bf",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "bias_only",
+      "steps": 128,
+      "neurons": 1,
+      "trace_values": 640,
+      "spike_events": 6,
+      "spike_count": 6,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 4.664545127671754e-14,
+        "isyn": 1.473301778726527e-19,
+        "vmem": 7.976337379478338e-08
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "17301420988d0fe2c3d4464494c5f95187e204467d50fb2d83c4dc55bb49af7e",
+      "atlas_result_sha256": "1bae2b25be22abb3fa5e6adbf1deef11dde68d2e5f892626edfeed30f3e30a5e",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "cbbbf49417cbb335d22cce36587f582dc75f401ef8dc1b88bb0005175cc4ea38",
+        "result_sha256": "124d9ce0628018c34c71bfdf20046b45d31bfc5df93165ee7d291252dfa84095",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "refractory",
+      "steps": 256,
+      "neurons": 1,
+      "trace_values": 1280,
+      "spike_events": 27,
+      "spike_count": 27,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 1.2264135174221227e-12,
+        "isyn": 6.584700705339846e-13,
+        "vmem": 1.2255666872462712e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "164240bf2ae0fefa455af67be4e7538091d47e6d3fcd2a11d32127c9d5617153",
+      "atlas_result_sha256": "0f84fbffb9eb69bd8edd79b8471183e2eaff7e2ca3a2ddb886afe605883f85ea",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "c368dbdf3fca4a664ed47b38037dd0090485a247d8ce64bcc2a8368f7624b2f7",
+        "result_sha256": "3b32b17487a87817a117f26ca983189bdf5a791c3c6a1a6f4b09b55f6311fb15",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "eight_neurons",
+      "steps": 512,
+      "neurons": 8,
+      "trace_values": 20480,
+      "spike_events": 284,
+      "spike_count": 284,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 2.748818040626607e-12,
+        "isyn": 4.151734779392798e-13,
+        "vmem": 2.721786396264747e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "5ea66ce34bb6af7430c8d20419c45ab86f711d7dd4c70b1218bad79f4d46c89c",
+      "atlas_result_sha256": "4f4df566dd2b13563eebde496b2c075890135590290b2b2b68275fbf9a5d5b00",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "d48d8b17c5f2dc69a63fbd826b33e73f6351620c91383e21b4deda4ef4eb23d5",
+        "result_sha256": "5c01262286c0189d56bac443fe6b3925024b8f88b35dfc46f2a21299f71b430e",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_00",
+      "steps": 97,
+      "neurons": 1,
+      "trace_values": 485,
+      "spike_events": 4,
+      "spike_count": 4,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 2.0148529930020566e-12,
+        "isyn": 5.1547589091831074e-14,
+        "vmem": 2.3755480731413314e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "71f765947f3fc12f469fbecafb59242d8e1f857d72614a5a4fa2cfb8db1ddff4",
+      "atlas_result_sha256": "5a74377637d34f01661f52eaf134c49988acae6e71e8828c26687822777f8d71",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "b14ef6d43e87917366a0c6bd366921decffc0d1648b68971b3dcf1afec372c75",
+        "result_sha256": "65f61122ac007dfb3aaf1b093d028e9b7ae89581e15648151912753cade86f94",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_01",
+      "steps": 98,
+      "neurons": 2,
+      "trace_values": 980,
+      "spike_events": 14,
+      "spike_count": 14,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 3.5263232490467795e-13,
+        "isyn": 1.6555648319249285e-13,
+        "vmem": 1.3393873583567029e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "42aecd44ee60fd6aa463aa809097c94b25e6b2934c0f112bb629f356f51f053c",
+      "atlas_result_sha256": "1fa7e0fe7956d50898411e33f3b52452b2170a69569f4903224b1c048ff1ecb1",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "c085c2f68135ac795a35593567a27fe6f073d0b83bb1f390a98019d183293581",
+        "result_sha256": "54fc9bb8d069f26a1acd7764245b7df0d2ed1ed405e08b7652f6e7215ea2185c",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_02",
+      "steps": 99,
+      "neurons": 3,
+      "trace_values": 1485,
+      "spike_events": 21,
+      "spike_count": 21,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 1.9697001593820413e-12,
+        "isyn": 1.9597020365031264e-13,
+        "vmem": 2.0408572690699955e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "db920ac7316311cc1650e03429493a76eeb4451b80ee1e999f5bc8d39237d360",
+      "atlas_result_sha256": "5b8c6e3c0973ee8164bdd0ec1cc137fc4217b71ade70e8bc78bee4ca5dad93fb",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "6453c086cfc8e689eadadd1dbafaf4bb388af8784d2faf10f03c66c4d3490236",
+        "result_sha256": "01afc4ee8460c625f721c6530e7f8e6e779542a8027450213dc9ff903d9ea279",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_03",
+      "steps": 100,
+      "neurons": 4,
+      "trace_values": 2000,
+      "spike_events": 33,
+      "spike_count": 33,
+      "max_absolute_error": {
+        "iahp": 1.821417464356045e-16,
+        "imem": 2.342221756744863e-12,
+        "isyn": 3.658427008871273e-13,
+        "vmem": 2.231152142595505e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "af453d4aca1f4a6282ee0f53cbbe0e7e5bb3f97f856b753effa8e38e1c32777f",
+      "atlas_result_sha256": "95b11ce564df90963372855212f3b8617cb6b7c7ed8cac56052d8f19b990b17d",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "10c09cda50f117790c6c2f40238118aa8b4bd76c4d1d0f93d6148a66e9014ce4",
+        "result_sha256": "c9376b2269e5a9bef2db0ff19b4f320879e5fb1d48744d13a2d308d31e54377f",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_04",
+      "steps": 101,
+      "neurons": 1,
+      "trace_values": 505,
+      "spike_events": 10,
+      "spike_count": 10,
+      "max_absolute_error": {
+        "iahp": 0.0,
+        "imem": 2.6008238351979955e-13,
+        "isyn": 1.9859992453179188e-13,
+        "vmem": 1.1089411164622032e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "7af9ab20b7311c80dcab05ffc8979ba6a3e4c2a920f97997441c475d6843b1d7",
+      "atlas_result_sha256": "9c90cc5cd5387aa98ffe42f962fca7bf51d647de99007122298124a177e91de0",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "ffa4db47b429e93c0d86d2f65614e562e71a6d09cacd8d57f1796ef9ed1fb1eb",
+        "result_sha256": "0490d903c61fa8dff4ee13ecb9f0a130abaad6b9b2f7667a8031f849942f9ff9",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_05",
+      "steps": 102,
+      "neurons": 2,
+      "trace_values": 1020,
+      "spike_events": 8,
+      "spike_count": 8,
+      "max_absolute_error": {
+        "iahp": 7.215341680164272e-17,
+        "imem": 1.2476957985733364e-12,
+        "isyn": 4.76645196571023e-14,
+        "vmem": 2.2944767862354e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "960fbe646f912d5939fd93f05ab3003f44d726610b5b0591b653d0305a8d7035",
+      "atlas_result_sha256": "5292234e9562a06095dc671d84de17894405c23adfd02239462870ae9d317c1f",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "39aaafba01d5873d41a2261035344e2c25686beb53908671590bd3b866ffacc0",
+        "result_sha256": "77e87ad3277edfc0bf6a1befba3b90a17761b0cf7dac73cab0cabccd7c3f8a0d",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_06",
+      "steps": 103,
+      "neurons": 3,
+      "trace_values": 1545,
+      "spike_events": 21,
+      "spike_count": 21,
+      "max_absolute_error": {
+        "iahp": 7.308432794146274e-17,
+        "imem": 1.0701079637792734e-12,
+        "isyn": 2.0794173810443943e-13,
+        "vmem": 2.2183692911514896e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "0abe4bf4d28bf12b12bb23abc2b1f9737a69f9138d83f167d72e583ceb098f22",
+      "atlas_result_sha256": "e50327c22313ee247c481da1074d462017bb6dd9eb108b0914b6c108e865db26",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "b76f033229713b76c1277333678bad1e6dbcf3431c79d038c6e7eff82ed3ca4d",
+        "result_sha256": "dba144922a8ad5419786944a8b8d278acfdb355add6988e773a9e9f46001bf3e",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    },
+    {
+      "case": "random_07",
+      "steps": 104,
+      "neurons": 4,
+      "trace_values": 2080,
+      "spike_events": 32,
+      "spike_count": 32,
+      "max_absolute_error": {
+        "iahp": 8.364927949642652e-17,
+        "imem": 2.148928314370963e-12,
+        "isyn": 4.162787505923413e-13,
+        "vmem": 2.0307500545602153e-06
+      },
+      "spike_differences": 0,
+      "source_model_sha256": "f891f06d64169aef087884bab909db2ddf56ce641816b39b6ebf111bec71e6d7",
+      "atlas_result_sha256": "428610608585b2e8fd7c329b19508e72364defa09742b88bb2edd3f167b23220",
+      "sdk": {
+        "versions": {
+          "rockpool": "3.1.0",
+          "jax": "0.4.35",
+          "jaxlib": "0.4.35",
+          "numpy": "2.2.6"
+        },
+        "sdk_source_sha256": "f96c5d5e15d41d1aedc7b298116c711e9b7b866fe87084119d3e632064656cb8",
+        "bundle_sha256": "4832dcc763fdf9437dabad53d2a0fcfcd3aba1a41298f3cd6b44e5ba82ba7f94",
+        "result_sha256": "fbdbcdb1120efd709f373964189977d55963f515e08c6580b26b202965e54224",
+        "runtime_sha256": "0a3a6a69b8f864506858672638e767cafbc63a1767d65878831e0767b5c03f37",
+        "physical_hardware": false
+      }
+    }
+  ],
+  "rtol": 0.0002,
+  "atol": {
+    "iahp": 1e-17,
+    "imem": 1e-17,
+    "isyn": 1e-17,
+    "vmem": 2e-06
+  },
+  "timer_ref_final_atol": 1e-09,
+  "runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "physical_hardware": false,
+  "hardware_mapping_tested": false,
+  "same_tick_comparison": true,
+  "source_numeric_profile": "reference-f64",
+  "sdk_precision": "float32",
+  "compared": "five traces and final refractory timer; exact count raster and native event presence",
+  "seed": 20261013
+}

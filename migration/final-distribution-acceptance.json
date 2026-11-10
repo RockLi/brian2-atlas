@@ -1,0 +1,55 @@
+{
+  "schema": "atlas-final-distribution-acceptance-v1",
+  "verified_utc": "2026-10-08T16:42:58.766863+00:00",
+  "code_commit": "243b9e47b83a48d1f38381b04ad8315df168a4b4",
+  "status": "passed",
+  "distribution": "brian2-atlas",
+  "version": "0.1.0.dev0",
+  "platform": "macOS26arm64/Python3.14.4",
+  "sdist": {
+    "path": "/atlas-storage/0001/build/dist-candidate-v5/brian2_atlas-0.1.0.dev0.tar.gz",
+    "sha256": "28a5d7f179da3e7375a38ede496bdaac713746ab1f7dd30c6f870b8bf0b4f48e",
+    "files": 1137
+  },
+  "wheel": {
+    "path": "/atlas-storage/0001/build/dist-candidate-v5/brian2_atlas-0.1.0.dev0-cp314-cp314-macosx_26_0_arm64.whl",
+    "sha256": "eae2c8554665aceb004c10270c7c8f74b772c4dca9055b3612fc2f55ef4afeeb"
+  },
+  "source_reconciliation": {
+    "candidate_base": "8cbe565540151d95c62fb0affbb47cbeb3541335",
+    "third_increment": "303ad3be28c92fefe9acc2ea20de91abc778ecd955de20e5630ea6e074a30763",
+    "required_sdist_inputs_match_canonical": 170,
+    "wheel_backend_files_match_canonical": 117,
+    "frontend_build_metadata_and_readme_unchanged": true
+  },
+  "validation": {
+    "wheel": "ActualCPUreference/AOT,Numpyparity,Metaltraining,fresh-processcheckpoint,installedfilesunchanged",
+    "installed_latest_training": {
+      "passed": 12,
+      "skipped": 0,
+      "scope": "Whole-caller carry,derivedstorage,random/time;CPU/MetaloriginalBrian+checkpoint andindependent-gradient references"
+    },
+    "user_source_install": "Freshrelativepathswithspaces,generatedwrappercommands,actualCPU/AOT,Metal,fresh-processcheckpoint,installedfilesunchanged",
+    "earlier_installation_routes": "Directsource,wheelandisolatedsdistpassedv3;canonicalsourceinstallerandwheelpassedv4. Finalv5wheelbuiltfromauditedsdist andfinalcommittedsourceinstallerbothpassed."
+  },
+  "retained_attempts": [
+    {
+      "evidence": "p7-v5-installed-training.json",
+      "outcome": "Pytestcollectionexit4 becauseexternaloraclehelperrequiredSciPy;noenginecaseexecuted. SciPytestdependencyadded;separater2passed12."
+    }
+  ],
+  "evidence_sha256": {
+    "p7-v5-candidate-source.json": "dfa40eb0144ad716d156ae0b68ea960f75393c2a40c42e0edad3c5e515861b14",
+    "p7-v5-sdist-audit.json": "c2c0d328a2778df410e7a7bef80ba65d93e3e4e3b74bba18fd410d2943019ae8",
+    "p7-v5-wheel-build.json": "dc634ae71f72b5400833aa910b3acafc3f38c1721f2c50dca14add4376302eb3",
+    "p7-v5-installed-wheel.json": "4e7e599314e30a11a98bbc684531e42fb9d41ff79e3085c02e2b0e5e4240e6eb",
+    "p7-v5-installed-training.json": "8bc14e20be1629cd4b0f4dc5e0d88c48585fe010ef94351dc779823abafdd737",
+    "p7-v5-installed-training-r2.json": "a6957636e6b94edbe8684c9db80875c52a432cf22cd39d3a347aaf3a31cb5bbf",
+    "p7-v5-user-installed-runtime.json": "f33adbdaeb3e4300351c769b26456e07d46874b5a6700522006bef2e359bde53"
+  },
+  "limits": [
+    "DevelopmentartifactsretainedlocallyonT7;notpublishedtoPyPIorGitHubReleases.",
+    "HostedLinux/macOSCIresultsunverified;noWindows,multiGPUorcrosshostqualification.",
+    "All runtime and payload statements refer to this exact cutoff code commit."
+  ]
+}

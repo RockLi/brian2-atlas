@@ -1,0 +1,7 @@
+{
+  "split": "training only",
+  "samples": 6000,
+  "seed": 20261105,
+  "accuracy": 0.9718333333333333,
+  "test_data_read": false
+}

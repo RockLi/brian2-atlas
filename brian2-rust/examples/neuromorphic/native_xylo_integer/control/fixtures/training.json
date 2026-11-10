@@ -1,0 +1,74 @@
+{
+  "schema": "atlas.native-xylo.integer-training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "encoding": "binary",
+  "encoding_description": "7x7 average pool to 4x4; threshold 50",
+  "ticks": 16,
+  "sizes": [
+    16,
+    32,
+    4
+  ],
+  "classes": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "training_samples": 22310,
+  "validation_samples": 2444,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "initial_validation_accuracy": 0.2193126022913257,
+  "selected": {
+    "step": 1800,
+    "validation_accuracy": 0.7880523731587561,
+    "changed_latent_weights": [
+      512,
+      128
+    ]
+  },
+  "history": [
+    {
+      "step": 300,
+      "validation_accuracy": 0.7647299509001637
+    },
+    {
+      "step": 600,
+      "validation_accuracy": 0.7761865793780688
+    },
+    {
+      "step": 900,
+      "validation_accuracy": 0.7761865793780688
+    },
+    {
+      "step": 1200,
+      "validation_accuracy": 0.7851882160392799
+    },
+    {
+      "step": 1500,
+      "validation_accuracy": 0.777823240589198
+    },
+    {
+      "step": 1800,
+      "validation_accuracy": 0.7880523731587561
+    }
+  ],
+  "updates": 1800,
+  "selection": "highest native integer validation accuracy; earliest tie; no SDK or test selection",
+  "training": "CPU b2-train integer forward, surrogate BPTT, quantization STE, Adam",
+  "seed": 20261014,
+  "external_training_framework": false,
+  "training_seconds": 32.325847333006095,
+  "runner_sha256": "51cf1d6e3dc846a8ae8bb1618a658f0358710cce1a4be093549d3d31cecbbc69",
+  "training_script_sha256": "b34aa988cea2a27209d760253461a98f465cb573462d9673126d1948c21bb65e",
+  "checkpoint_sha256": "f73af3ec7f02b1414e9fee05ffa1180065b9aa06613ac6aa088624215cc121ca",
+  "frozen_sha256": "33ced658b9d6d43d0498011cfbe080dd9b43803967441690d39c0e5e8753dc4a"
+}

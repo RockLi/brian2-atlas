@@ -1,0 +1,54 @@
+{
+  "backend": "Brian2 NumPy",
+  "brian2_version": "2.10.1.post241",
+  "cases": [
+    {
+      "case": "recurrent",
+      "state_values": 960,
+      "differences": 0,
+      "result_sha256": "5be0f828d9c61b6630570029a480f8786ed927e3c7015706af100f1f2984b38f"
+    },
+    {
+      "case": "mixed_saturation_order",
+      "state_values": 1920,
+      "differences": 0,
+      "result_sha256": "a44b8e4a67d378bdfbec0963daebe99cb94908b10896a82a4662a0c992be5eac"
+    },
+    {
+      "case": "random_00",
+      "state_values": 4947,
+      "differences": 0,
+      "result_sha256": "2a57a3a4a2bd7edbb2040204b078219911509432baa12c71019d23930a5cad85"
+    },
+    {
+      "case": "random_31",
+      "state_values": 6528,
+      "differences": 0,
+      "result_sha256": "f172891d3a0bac4da5f3723c1951453ee1c2df3363c64e5391aca73d795ad49a"
+    },
+    {
+      "case": "one_tick",
+      "state_values": 6,
+      "differences": 0,
+      "result_sha256": "da4eb66143c2ec6440e0928f0d8c55cdb8c7c5d53c6cdaab3ef22e12af3cb713"
+    },
+    {
+      "case": "one_neuron",
+      "state_values": 582,
+      "differences": 0,
+      "result_sha256": "f1a0409f0268b553d09bfb90a05c1f68e6dfaa37a4aace118d383a8fc1b4c2b9"
+    },
+    {
+      "case": "maximum_profile_dimensions",
+      "state_values": 55512,
+      "differences": 0,
+      "result_sha256": "6064070ed6f70cd0a241c4c51d2ff851db9d5b1a374890cd9e8000f69450a664"
+    },
+    {
+      "case": "chunk_boundary_impulse",
+      "state_values": 186,
+      "differences": 0,
+      "result_sha256": "833a11df1235faff4329bc59fd11e59f43c31bec6c63a1a8107e1a2c969a9c3b"
+    }
+  ]
+}

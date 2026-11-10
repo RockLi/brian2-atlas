@@ -1,0 +1,496 @@
+{
+  "schema": "atlas.count-targets.audit.v1",
+  "passed": true,
+  "targets": [
+    {
+      "target": "spinnaker2",
+      "samples": 10000,
+      "correct": 9003,
+      "accuracy": 0.9003,
+      "differing_states": 0,
+      "state_values_compared": 200000,
+      "boundary_samples": 14,
+      "boundary_differing_states": 0,
+      "resources": {
+        "input_neurons": 784,
+        "comparator_neurons": 1061
+      },
+      "hardware_input_limit_exceeded": null,
+      "confusion_matrix": [
+        [
+          963,
+          0,
+          0,
+          3,
+          1,
+          4,
+          6,
+          2,
+          1,
+          0
+        ],
+        [
+          0,
+          1117,
+          5,
+          1,
+          0,
+          3,
+          2,
+          0,
+          7,
+          0
+        ],
+        [
+          15,
+          17,
+          935,
+          11,
+          10,
+          2,
+          9,
+          9,
+          22,
+          2
+        ],
+        [
+          5,
+          2,
+          39,
+          918,
+          3,
+          23,
+          0,
+          9,
+          8,
+          3
+        ],
+        [
+          4,
+          7,
+          9,
+          3,
+          917,
+          0,
+          10,
+          3,
+          7,
+          22
+        ],
+        [
+          15,
+          6,
+          11,
+          65,
+          15,
+          743,
+          8,
+          6,
+          22,
+          1
+        ],
+        [
+          12,
+          3,
+          18,
+          3,
+          14,
+          21,
+          885,
+          0,
+          2,
+          0
+        ],
+        [
+          2,
+          22,
+          29,
+          6,
+          10,
+          2,
+          0,
+          944,
+          3,
+          10
+        ],
+        [
+          12,
+          15,
+          20,
+          53,
+          13,
+          70,
+          13,
+          18,
+          755,
+          5
+        ],
+        [
+          10,
+          9,
+          2,
+          16,
+          63,
+          14,
+          0,
+          63,
+          6,
+          826
+        ]
+      ],
+      "executions": {
+        "full": {
+          "target": "spinnaker2",
+          "samples": 10000,
+          "states": 200000,
+          "versions": {
+            "spinnaker2": "0.8.0",
+            "brian2": "2.10.1",
+            "numpy": "2.3.4"
+          },
+          "bundle_sha256": "f9d34aebecf62b3d7f9db8896131c344f264db1597cd4940f88bf39efd056048",
+          "inputs_sha256": "397006b9c39833b06710fd6ab6643f7c9792a00b88120aebe564732d0c1525d6",
+          "source_model_sha256": "a397a939f9fc2b8da805ccec21705c8b5cadc8903bc611e6b0ec19854caa3415",
+          "runtime_sha256": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d",
+          "results_sha256": "1e939c63d67a0e2ced51c11e8038f90a07de54f5435b0bed43a7af49aa7e92ac",
+          "elapsed_seconds": 62.96942700003274,
+          "physical_hardware": false,
+          "hardware_mapping_tested": false,
+          "implementation_sha256": {
+            "count_targets.py": "2567a1b4b029d60cb42efdd8a8817d52ccfd25726013f57d2583ba17ca01369f",
+            "neuromorphic_runtime.py": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d"
+          },
+          "note": "CPU simulator wall time is not chip latency or energy."
+        },
+        "smoke": {
+          "target": "spinnaker2",
+          "samples": 34,
+          "states": 680,
+          "versions": {
+            "spinnaker2": "0.8.0",
+            "brian2": "2.10.1",
+            "numpy": "2.3.4"
+          },
+          "bundle_sha256": "f9d34aebecf62b3d7f9db8896131c344f264db1597cd4940f88bf39efd056048",
+          "inputs_sha256": "122894367f2a5d121750b251da9f93302d2d9674cc434403541c3c6a166bcc5a",
+          "source_model_sha256": "a397a939f9fc2b8da805ccec21705c8b5cadc8903bc611e6b0ec19854caa3415",
+          "runtime_sha256": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d",
+          "results_sha256": "15650bc0614a523792e0826bac6d73c54072ccbff3be6550b50a4135a37789b5",
+          "elapsed_seconds": 4.439328874985222,
+          "physical_hardware": false,
+          "hardware_mapping_tested": false,
+          "implementation_sha256": {
+            "count_targets.py": "2567a1b4b029d60cb42efdd8a8817d52ccfd25726013f57d2583ba17ca01369f",
+            "neuromorphic_runtime.py": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d"
+          },
+          "note": "CPU simulator wall time is not chip latency or energy."
+        }
+      }
+    },
+    {
+      "target": "xylosim",
+      "samples": 10000,
+      "correct": 9003,
+      "accuracy": 0.9003,
+      "differing_states": 0,
+      "state_values_compared": 200000,
+      "boundary_samples": 14,
+      "boundary_differing_states": 0,
+      "resources": {
+        "input_channels": 784,
+        "hidden_neurons": 38,
+        "output_neurons": 1
+      },
+      "hardware_input_limit_exceeded": true,
+      "confusion_matrix": [
+        [
+          963,
+          0,
+          0,
+          3,
+          1,
+          4,
+          6,
+          2,
+          1,
+          0
+        ],
+        [
+          0,
+          1117,
+          5,
+          1,
+          0,
+          3,
+          2,
+          0,
+          7,
+          0
+        ],
+        [
+          15,
+          17,
+          935,
+          11,
+          10,
+          2,
+          9,
+          9,
+          22,
+          2
+        ],
+        [
+          5,
+          2,
+          39,
+          918,
+          3,
+          23,
+          0,
+          9,
+          8,
+          3
+        ],
+        [
+          4,
+          7,
+          9,
+          3,
+          917,
+          0,
+          10,
+          3,
+          7,
+          22
+        ],
+        [
+          15,
+          6,
+          11,
+          65,
+          15,
+          743,
+          8,
+          6,
+          22,
+          1
+        ],
+        [
+          12,
+          3,
+          18,
+          3,
+          14,
+          21,
+          885,
+          0,
+          2,
+          0
+        ],
+        [
+          2,
+          22,
+          29,
+          6,
+          10,
+          2,
+          0,
+          944,
+          3,
+          10
+        ],
+        [
+          12,
+          15,
+          20,
+          53,
+          13,
+          70,
+          13,
+          18,
+          755,
+          5
+        ],
+        [
+          10,
+          9,
+          2,
+          16,
+          63,
+          14,
+          0,
+          63,
+          6,
+          826
+        ]
+      ],
+      "executions": {
+        "full": {
+          "target": "xylosim",
+          "samples": 10000,
+          "states": 200000,
+          "versions": {
+            "xylosim": "0.1.3",
+            "numpy": "2.5.4"
+          },
+          "bundle_sha256": "0562420fbb575a30e326b57870bf2c2bebd55eb3e69388d9539c0b8ec7e3fda1",
+          "inputs_sha256": "397006b9c39833b06710fd6ab6643f7c9792a00b88120aebe564732d0c1525d6",
+          "source_model_sha256": "a397a939f9fc2b8da805ccec21705c8b5cadc8903bc611e6b0ec19854caa3415",
+          "runtime_sha256": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d",
+          "results_sha256": "473b7a600a7c29458305e46b42e68bccd36076d6d5ab28bfa3c9e2b063890d43",
+          "elapsed_seconds": 3.1004707500105724,
+          "physical_hardware": false,
+          "hardware_mapping_tested": false,
+          "implementation_sha256": {
+            "count_targets.py": "2567a1b4b029d60cb42efdd8a8817d52ccfd25726013f57d2583ba17ca01369f",
+            "neuromorphic_runtime.py": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d"
+          },
+          "note": "CPU simulator wall time is not chip latency or energy."
+        },
+        "smoke": {
+          "target": "xylosim",
+          "samples": 34,
+          "states": 680,
+          "versions": {
+            "xylosim": "0.1.3",
+            "numpy": "2.5.4"
+          },
+          "bundle_sha256": "0562420fbb575a30e326b57870bf2c2bebd55eb3e69388d9539c0b8ec7e3fda1",
+          "inputs_sha256": "122894367f2a5d121750b251da9f93302d2d9674cc434403541c3c6a166bcc5a",
+          "source_model_sha256": "a397a939f9fc2b8da805ccec21705c8b5cadc8903bc611e6b0ec19854caa3415",
+          "runtime_sha256": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d",
+          "results_sha256": "91fc188716f8b82209fd42bc9aee10ca93117b6932996aabbc60fc6cc0dd9b64",
+          "elapsed_seconds": 0.032950834021903574,
+          "physical_hardware": false,
+          "hardware_mapping_tested": false,
+          "implementation_sha256": {
+            "count_targets.py": "2567a1b4b029d60cb42efdd8a8817d52ccfd25726013f57d2583ba17ca01369f",
+            "neuromorphic_runtime.py": "44fcb2c98928967ba3d1982713492d0e9715cbae967c98e2208f780900c29f5d"
+          },
+          "note": "CPU simulator wall time is not chip latency or energy."
+        }
+      }
+    }
+  ],
+  "source_model_sha256": "a397a939f9fc2b8da805ccec21705c8b5cadc8903bc611e6b0ec19854caa3415",
+  "weights_sha256": "8a857dcabd0509d99c802119a8bfca9e9338e80ae9a1932647f758aef378f6ec",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "runner_sha256": "24782a154d9a28ba3c2f8a3ecd25c140a62bcf9207d4e8deeaba36232356b4ab",
+  "fresh_atlas_results_sha256": "2683295262cf6eb097951e7d8abcaa81debf87a8b30f96459a64643efa4d912c",
+  "batches": [
+    {
+      "start": 0,
+      "count": 500,
+      "source_sha256": "a397a939f9fc2b8da805ccec21705c8b5cadc8903bc611e6b0ec19854caa3415"
+    },
+    {
+      "start": 500,
+      "count": 500,
+      "source_sha256": "1838d6f313282350bebcbe617fb165b0bcd608b7697db92e897b08fbdf286585"
+    },
+    {
+      "start": 1000,
+      "count": 500,
+      "source_sha256": "dc1f15fda7e5c05306c04f98ba3761e7e5a8fa5e46e32b363d2c60a72557260d"
+    },
+    {
+      "start": 1500,
+      "count": 500,
+      "source_sha256": "024bfdba7264f10b776b409c77b7c8462d897adcadfc0ac74ec2cc2f853610e3"
+    },
+    {
+      "start": 2000,
+      "count": 500,
+      "source_sha256": "a5608f25e7a88e315aeb0feb22ad74b425bcfc6540b323a1d1eddf0392c2c0ce"
+    },
+    {
+      "start": 2500,
+      "count": 500,
+      "source_sha256": "fdf04051d5e5bbc096c019d0b6c878fd9ed6dc8b414664b56c4d98959fef6231"
+    },
+    {
+      "start": 3000,
+      "count": 500,
+      "source_sha256": "9c19603633874ec2078313ecb72eb40745e710d60744a64a5da1b1bb27aa9473"
+    },
+    {
+      "start": 3500,
+      "count": 500,
+      "source_sha256": "65c7607addf98c22f2cfb293a117c687a7572ebaa0e73411d7f161530f12ceac"
+    },
+    {
+      "start": 4000,
+      "count": 500,
+      "source_sha256": "3948adc35accf66e7cb1051989565524193fd735a2dc4cf1a4dd64b80cf11675"
+    },
+    {
+      "start": 4500,
+      "count": 500,
+      "source_sha256": "12fd03d4ce42efd353d00f3a6307c9c86f824f0f6113604b1014f446a4c512df"
+    },
+    {
+      "start": 5000,
+      "count": 500,
+      "source_sha256": "701fac07cdc77d390e0d8f585c87ed7c956ff8265d78f82447be9f7866c9e789"
+    },
+    {
+      "start": 5500,
+      "count": 500,
+      "source_sha256": "d2ebb3a7c4bb55e2de3612f86e869935272c6e4f7b2563e28a3be898a3de4fc6"
+    },
+    {
+      "start": 6000,
+      "count": 500,
+      "source_sha256": "d5d827c5f351d0aa7b02ee3b31e8ba322f8954449c9b16d0b0b7960a9bf574d3"
+    },
+    {
+      "start": 6500,
+      "count": 500,
+      "source_sha256": "32aef2e18b7744518b693e4ebef87c22f9c8fe947f178bb689f0ba99546e5c22"
+    },
+    {
+      "start": 7000,
+      "count": 500,
+      "source_sha256": "836284e9814a8a55f97d95918ff4d2fdbdcf8c1796a10b37208dd190a7f9f4ca"
+    },
+    {
+      "start": 7500,
+      "count": 500,
+      "source_sha256": "144738f8c687abee8dc451454900100a83dfb4954e088c3821659e12afdc52ec"
+    },
+    {
+      "start": 8000,
+      "count": 500,
+      "source_sha256": "b8361975c37021b8cfb71c36b202be3ccebe4d1dc4ada61cacf41a2062ae4f5a"
+    },
+    {
+      "start": 8500,
+      "count": 500,
+      "source_sha256": "6b1e4a65a53c367eff40d81fa92d35b9ea7bd134b83ef56f98e0239209a04a75"
+    },
+    {
+      "start": 9000,
+      "count": 500,
+      "source_sha256": "45d610c76523dd8dc67601f5e1c16e478faac3fc4d041d7c4ed18d02afd4ce6e"
+    },
+    {
+      "start": 9500,
+      "count": 500,
+      "source_sha256": "3c0bec173d8be694f1d9773a23be93db90ea69cf0cbc32c0ee17c137a7949590"
+    },
+    {
+      "start": 10000,
+      "count": 14,
+      "source_sha256": "82acc1668398582b3a4c2416629e09baf74950c02ef565a526133adc24bb9945"
+    }
+  ],
+  "same_frozen_tf_model": true,
+  "same_weights": true,
+  "same_source_ir": true,
+  "tensorflow_reference": "Previously executed TF SavedModel; artifacts and model identities rechecked",
+  "fresh_atlas_execution": true,
+  "physical_hardware": false,
+  "hardware_mapping_tested": false,
+  "temporal_spike_equivalence_claimed": false,
+  "note": "90.03% shared count classifier; not the 98.74% signed biased MLP."
+}

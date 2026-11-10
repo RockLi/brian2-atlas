@@ -1,0 +1,17 @@
+{
+  "base_commit": "fe117c9bf00bc699c8919dbecb428acbae5e1062",
+  "branch": "codex/spinnaker2-lif-simulator",
+  "sdk_commit": "8a1c4c526aec0f2cab73b8c37c9491fac0118b42",
+  "sdk_source_modified": false,
+  "atlas_executor_modified": false,
+  "python_tests_passed": 83,
+  "source_sha256": {
+    "brian2-rust/python/brian2_atlas/neuromorphic.py": "e5ad20c6e2def78ef4bf98e2e994ba61d41d1d500963254a44053844e3dacea0",
+    "brian2-rust/python/brian2_rust/neuromorphic_runtime.py": "1c2c38271563b9e9a8a94aa4ee78aac0c8229d063a12fbe53ef531dd01ab20b9",
+    "brian2-rust/python/brian2_rust/spinnaker2_b2ir.py": "385a553a22593f173726f2e592d6e27eb8bd56b8f83c4d456ba09db0eda7588f",
+    "brian2-rust/python/brian2_rust/spinnaker2_runtime.py": "74d2dbaed1c909acb8975af060cac7054f4e9072d51714ef983e43a24e78ad3b",
+    "brian2-rust/tests/test_spinnaker2_b2ir.py": "6bd548e68d8c0ac42248bbc6e108e0da0616424b2750e148e92661b955a179d4",
+    "brian2-rust/examples/neuromorphic/spinnaker2/compare.py": "4a2e13c4b71e91ad51c00421cee24c8c94df5a3725744fbd8be0b55f80cc5d05",
+    "brian2-rust/examples/neuromorphic/spinnaker2/sdk_worker.py": "d3d77e69c594eab6f47a55dc336b76fc5c2a2f985a3673066d4630050bc5a869"
+  }
+}

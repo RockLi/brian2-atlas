@@ -1,0 +1,116 @@
+{
+  "schema": "atlasir-public-name-v1",
+  "previous_commit": "f90d2b63952092a6c5531f5989ba58b240922b6e",
+  "public_name": "AtlasIR",
+  "public_api": "brian2_atlas.ir",
+  "function_registration_aliases": [
+    "atlasir-c-abi-v1",
+    "atlasir-cuda-device-v1",
+    "atlasir-metal-v1",
+    "atlasir-wgsl-v1"
+  ],
+  "wire_compatibility": "Existing b2ir-v1 schema, protocol name, canonical encoding, function ABI IDs and supported v34-v37 migrations preserved. Public aliases produce byte-identical descriptors; conflicting duplicate registrations are rejected.",
+  "golden_files_unchanged": [
+    {
+      "path": "brian2-rust/tests/golden/b2ir-v1/generate.py",
+      "sha256": "4ceb4e1c220fbef3548c0b7f61be1c87b348863b7285ac86663e78e6be0c9341"
+    },
+    {
+      "path": "brian2-rust/tests/golden/b2ir-v1/hashes.json",
+      "sha256": "8bf13fc97b0d643c4d19d79e0162729c572d0b75e1b447afcd3099643ca61ded"
+    },
+    {
+      "path": "brian2-rust/tests/golden/b2ir-v1/minimal-v1.json",
+      "sha256": "1a2fe882237e477ddf942f3ade576096d13736a01ebef78aa7a18c3e0bc84b44"
+    },
+    {
+      "path": "brian2-rust/tests/golden/b2ir-v1/minimal-v34.json",
+      "sha256": "a9419f4bf4b45a6354622f59a811407adf21e71caf6595f5fd2cec532d56be62"
+    },
+    {
+      "path": "brian2-rust/tests/golden/b2ir-v1/minimal-v35.json",
+      "sha256": "c915a4ebb831ef473fb056a5a6dfe24f8270cf30aa0eb3daf76a9aa9d75b5d8d"
+    },
+    {
+      "path": "brian2-rust/tests/golden/b2ir-v1/minimal-v36.json",
+      "sha256": "6c536e86c0e46db4b704d48a0253d6a9a4f9905ab39d1bb169b6a6f3842d12f3"
+    },
+    {
+      "path": "brian2-rust/tests/golden/b2ir-v1/minimal-v37.json",
+      "sha256": "56cd246bc475aa2a7b91302afd945dafde10769b0d3978e6a13f8290c93cc198"
+    }
+  ],
+  "validation": {
+    "source": "One complete final test invocation after all build and fixture prerequisites were ready. Counts come directly from its JUnit report, with no merging or replacement of earlier outcomes.",
+    "passed": 140,
+    "failed": 0,
+    "skipped": 10,
+    "subtests_passed": 47,
+    "junit_sha256": "0e0553ab1f4cebd4dca9c6f5fa29bc9cd8b925c11a0ea45a745d3a986e6e0fa6",
+    "metadata_sha256": null,
+    "modules": [
+      "test_atlasir_api.py",
+      "test_atlasir_v1.py",
+      "test_atlas_api.py",
+      "test_artifact.py",
+      "test_wasm.py",
+      "test_compact_validation.py",
+      "test_population.py",
+      "test_gpu_native_functions.py"
+    ],
+    "resolved_preparation_failures": [
+      "Initial WASM invocation lacked a built package. Rebuilt the current Rust WASM binary and JS assets.",
+      "A referenced equation-monitor regression script was missing from the migrated repository. Restored its exact staged source."
+    ],
+    "earlier_attempt_reports": [
+      {
+        "run": "atlasir-core",
+        "junit_sha256": "65d420c61347a53c9c92bfa08036c3e56eb49305f2d6f77ad10f648eef7b5c82"
+      },
+      {
+        "run": "atlasir-native-functions",
+        "junit_sha256": "11d56286d65c47fe5bc5cfcd75f836c3c23e9d11bb09b37bd33669edaf4273c3"
+      },
+      {
+        "run": "atlasir-wasm-compact",
+        "junit_sha256": "03ea106ddf694dd3f68d2a8697e093cb88dbcdbe0248472cfacb8bfdaaa73dba"
+      },
+      {
+        "run": "atlasir-wasm-monitor",
+        "junit_sha256": "0a93a786d2386b8567a94287655302aed73ba792f39282e4d4f081167b4ae346"
+      }
+    ],
+    "browser_worker": {
+      "status": "passed",
+      "cases": [
+        "golden",
+        "large_seed",
+        "multiclock",
+        "links",
+        "procedural",
+        "rng",
+        "custom",
+        "function_timed_array",
+        "owner_clocks"
+      ],
+      "checks": [
+        "byte parity with native-validated WASM corpus",
+        "plan drift",
+        "bundle drift",
+        "worker cancellation",
+        "pre-abort",
+        "concurrent isolation"
+      ]
+    },
+    "browser_ui": "Verified AtlasIR import heading and supported-import text in the in-app browser.",
+    "native_runner_sha256": "991464b3bcf64cf93d41937e2458cedf7033e015f75346754bc75b4601c608df",
+    "wasm_sha256": "1b8b857897c4cd62f0f7a0e2e4397145a54b7d752f1361deb8daafb14c9a77d7",
+    "restored_monitor_test_sha256": "bbcf02f271433548bfde753f096f63ca76eb17f97dcbcbef99d3723d7b0d87e6"
+  },
+  "scope_limits": [
+    "Brian2 remains the implemented frontend; this name change does not add another frontend.",
+    "The 10 skipped cases require CUDA hardware. Four-backend registration aliases were tested for identical serialized contracts; no new CUDA hardware qualification is claimed.",
+    "No historical performance measurements rerun or relabeled.",
+    "Frozen golden fixtures and migration evidence retain original names and bytes."
+  ]
+}

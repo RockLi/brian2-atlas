@@ -1,0 +1,29 @@
+{
+  "upstream_commit": "27b5431168cf9959f0c27894cd4d92cdc6ad5c31",
+  "target": "numpy",
+  "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "files": [
+    "brian2/tests/test_functions.py",
+    "brian2/tests/test_codegen.py",
+    "brian2/tests/test_statements.py",
+    "brian2/tests/test_codestrings.py",
+    "brian2/tests/test_units.py",
+    "brian2/tests/test_synapses.py",
+    "brian2/tests/test_monitor.py"
+  ],
+  "exit_code": 0,
+  "suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "7",
+      "tests": "284",
+      "time": "5247.946",
+      "timestamp": "2026-10-08T15:39:07.793360+08:00",
+      "hostname": "Rocks-MacBook-Air.local"
+    }
+  ],
+  "junit_sha256": "cb3cf4c57fffd0d752feb8572d32d058206b8e57b049260bac10d1a2613183dd",
+  "scope": "Selected upstream NumPy frontend regression suites; 277 passed, 7 skipped, 7 deselected. Native Atlas backends are qualified in later stages."
+}

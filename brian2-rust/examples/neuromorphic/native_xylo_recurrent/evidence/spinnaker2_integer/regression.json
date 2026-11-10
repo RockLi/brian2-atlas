@@ -1,0 +1,14 @@
+{
+  "tests": 256,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 36,
+  "passed": 220,
+  "junit_sha256": "d10d9a63df5a3725fb7a143839789aa84380e0ccd8f5ba7fed244b752f103b4a",
+  "custom_kernel_tests": 11,
+  "address_and_undefined_sanitizers_passed": true,
+  "vendor_sdk_checks_run": true,
+  "standalone_host_cmake_build_passed": true,
+  "python_build_py_packaging_and_outside_checkout_execution_passed": true,
+  "physical_hardware": false
+}

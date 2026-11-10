@@ -1,0 +1,9 @@
+{
+  "canonical_document_sha256": "7db61a27d465b01f081c546c27a0a0c146db83f37925740034272346f25e6339",
+  "layers": {
+    "definition": "a818829ea68aec60fad448f62ff965a30453edca53e4bbc62bdf2dc3c1ee3379",
+    "instance": "b2901426ce96e94af0f5c48ff344dfb5c9442fd790c4f5cd74418c6ec1bacd1b",
+    "run": "c2410514af2bd6aa3a66e8e7d2d395248c1e7e2e8ae359c883a4a490d3fcee5d"
+  },
+  "schema": "b2ir-v1"
+}

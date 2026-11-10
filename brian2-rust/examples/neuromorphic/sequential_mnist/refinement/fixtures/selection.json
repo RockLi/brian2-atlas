@@ -1,0 +1,681 @@
+{
+  "schema": "atlas.sequential-mnist.selection.v1",
+  "selection": "maximum validation accuracy; first candidate wins ties",
+  "test_data_read": false,
+  "selected": {
+    "run": "full-rows-affine",
+    "validation_accuracy": 0.979,
+    "selected_step": 2000,
+    "updates": 8000,
+    "sizes": [
+      16,
+      63,
+      5
+    ],
+    "encoding": "rows-full-counts",
+    "deskew": true,
+    "repeats": 1,
+    "query_ticks": 8,
+    "steps": 36,
+    "augmentation_shift": 1,
+    "augmentation_affine": 8.0,
+    "readout_start": 16,
+    "history": [
+      {
+        "step": 2000,
+        "validation_accuracy": 0.979,
+        "loss": 0.02648569739665596
+      },
+      {
+        "step": 4000,
+        "validation_accuracy": 0.9771666666666666,
+        "loss": 0.021586530650159363
+      },
+      {
+        "step": 6000,
+        "validation_accuracy": 0.9776666666666667,
+        "loss": 0.11039012001172321
+      },
+      {
+        "step": 8000,
+        "validation_accuracy": 0.9788333333333333,
+        "loss": 0.01630556027659885
+      }
+    ],
+    "report_sha256": "72193f568f0a5385b83c88fd96fd71196008601db39896deea9d2ed7dd5a64b1",
+    "frozen_file_sha256": "4761c38252ef20584ab063cef32ff3bffc0a2dc4a879b28059bfa2516e954de8"
+  },
+  "candidates": [
+    {
+      "run": "fixtures",
+      "validation_accuracy": 0.9523333333333334,
+      "selected_step": 6000,
+      "updates": 8000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "deskew": false,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 22,
+      "augmentation_shift": 0,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9333333333333333,
+          "loss": 0.6094252454600965
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9381666666666667,
+          "loss": 0.13620486511851748
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.9465,
+          "loss": 0.1892725717569061
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.949,
+          "loss": 0.15557993077222015
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9426666666666667,
+          "loss": 0.10429045873914233
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9523333333333334,
+          "loss": 0.15964571758804508
+        },
+        {
+          "step": 7000,
+          "validation_accuracy": 0.9523333333333334,
+          "loss": 0.1534176117377945
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9503333333333334,
+          "loss": 0.44078113790645634
+        }
+      ],
+      "report_sha256": "49c6023113479ca81d667c2efd6428f01e07bc9592d3d481c71e2f7319eadb1a",
+      "frozen_file_sha256": "5fce0d798e8496a055a133a8525e89b5b4c751ee6595975e825b485768746f22"
+    },
+    {
+      "run": "rows-aug",
+      "validation_accuracy": 0.9503333333333334,
+      "selected_step": 4000,
+      "updates": 6000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "deskew": false,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 22,
+      "augmentation_shift": 2,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9351666666666667,
+          "loss": 0.3953984257797888
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9465,
+          "loss": 0.2036322129828425
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.9463333333333334,
+          "loss": 0.21305850435424506
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9503333333333334,
+          "loss": 0.21636412694422708
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.946,
+          "loss": 0.18914743993472777
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9498333333333333,
+          "loss": 0.14571174423001404
+        }
+      ],
+      "report_sha256": "410840e4bee0116e56302381e078bec56cde8b34a742b2e790b97beda150a062",
+      "frozen_file_sha256": "f1ea06bdca157b0c9d19248f4833151955c056cb8d85e7928a052f88ec8b9818"
+    },
+    {
+      "run": "deskew-aug",
+      "validation_accuracy": 0.9561666666666667,
+      "selected_step": 6000,
+      "updates": 6000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 22,
+      "augmentation_shift": 2,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9486666666666667,
+          "loss": 0.21128059502248642
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9508333333333333,
+          "loss": 0.31237587749980117
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.9535,
+          "loss": 0.32308809194318855
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9533333333333334,
+          "loss": 0.17457089908403944
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.953,
+          "loss": 0.0958967624808646
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9561666666666667,
+          "loss": 0.3387215537396818
+        }
+      ],
+      "report_sha256": "41687b2068652d75fd7ec13eebf4692cf29a58ffb1e4c6e5b84be23b36473918",
+      "frozen_file_sha256": "ceb1b519f4b8fb4a7d09d75fd69521cac8cefccc567261295aab4c80f27dcdf8"
+    },
+    {
+      "run": "position-refine",
+      "validation_accuracy": 0.9635,
+      "selected_step": 6000,
+      "updates": 6000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-position-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 22,
+      "augmentation_shift": 1,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9548333333333333,
+          "loss": 0.6035872962204679
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9568333333333333,
+          "loss": 0.23433826465135432
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.9591666666666666,
+          "loss": 0.23057946752756553
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9598333333333333,
+          "loss": 0.012086565908093982
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9628333333333333,
+          "loss": 0.21792634750142448
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9635,
+          "loss": 0.31180265103614835
+        }
+      ],
+      "report_sha256": "7db39a662009473118d4acb1d94739fa5b0e73065953d91882570d46248306e9",
+      "frozen_file_sha256": "235c4c5f9745f5030844b91aeaa51e7e3006d75dc22e52b14327668c63fe49aa"
+    },
+    {
+      "run": "precision",
+      "validation_accuracy": 0.9693333333333334,
+      "selected_step": 7000,
+      "updates": 8000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 22,
+      "augmentation_shift": 1,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9596666666666667,
+          "loss": 0.16809705057426022
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9635,
+          "loss": 0.2565414172677742
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.965,
+          "loss": 0.06442867144953246
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9638333333333333,
+          "loss": 0.08260084856356731
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9655,
+          "loss": 0.21614372017235922
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9668333333333333,
+          "loss": 0.0832329474622005
+        },
+        {
+          "step": 7000,
+          "validation_accuracy": 0.9693333333333334,
+          "loss": 0.43430585499934127
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.969,
+          "loss": 0.21514443021446755
+        }
+      ],
+      "report_sha256": "23342c3f1d5710ae242e206321f6cbb78d227f004dc1d82cb4ed1cc5e13328db",
+      "frozen_file_sha256": "3b29c5b7617427fa4422cc8d7764c9ee7a19380ec8a1ff8520e6e4eb69d073bc"
+    },
+    {
+      "run": "gradient",
+      "validation_accuracy": 0.9018333333333334,
+      "selected_step": 8000,
+      "updates": 10000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "gradient-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 24,
+      "augmentation_shift": 1,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 2000,
+          "validation_accuracy": 0.6421666666666667,
+          "loss": 1.1775557293616012
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.8468333333333333,
+          "loss": 1.5648435721812355
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.8491666666666666,
+          "loss": 0.4292066478200647
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9018333333333334,
+          "loss": 0.3707800576338063
+        },
+        {
+          "step": 10000,
+          "validation_accuracy": 0.8953333333333333,
+          "loss": 0.4439455933153021
+        }
+      ],
+      "report_sha256": "217919b1a7094ca18598824ba485592035e2e9be3ceeee18676e365c68770ec1",
+      "frozen_file_sha256": "dcc3ae26e8d289ed0237122e23463dde8414915e1c9c1de3f2394bfce68f86e1"
+    },
+    {
+      "run": "precision-eight",
+      "validation_accuracy": 0.9673333333333334,
+      "selected_step": 8000,
+      "updates": 8000,
+      "sizes": [
+        16,
+        63,
+        8
+      ],
+      "encoding": "rows-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 22,
+      "augmentation_shift": 1,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 2000,
+          "validation_accuracy": 0.958,
+          "loss": 0.3257086201806214
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.96,
+          "loss": 0.03737792624792813
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9625,
+          "loss": 0.4202580097860329
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9673333333333334,
+          "loss": 0.04579336232071651
+        }
+      ],
+      "report_sha256": "3e9c93cef8dbe31b038c8df35ad75186bd7fb040c2265a50bcf6a03ea7a64e23",
+      "frozen_file_sha256": "0cb4443aefe04afb92140d392c7c034712ab971a10ac7b8452437d99dfce3db3"
+    },
+    {
+      "run": "repeat-precision",
+      "validation_accuracy": 0.9528333333333333,
+      "selected_step": 6000,
+      "updates": 7000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "deskew": true,
+      "repeats": 3,
+      "query_ticks": 8,
+      "steps": 50,
+      "augmentation_shift": 1,
+      "augmentation_affine": 0.0,
+      "readout_start": 28,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9021666666666667,
+          "loss": 0.47149497603114154
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9331666666666667,
+          "loss": 0.2578366747630727
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.9393333333333334,
+          "loss": 0.2214170654421203
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9475,
+          "loss": 0.2645492845123796
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9421666666666667,
+          "loss": 0.17532113631458307
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9528333333333333,
+          "loss": 0.7191696949269359
+        },
+        {
+          "step": 7000,
+          "validation_accuracy": 0.9528333333333333,
+          "loss": 0.32075902977836407
+        }
+      ],
+      "report_sha256": "f5364d3327f52ce30990ba81bddc33ab2c1aecbd0876ca32dad5e85810debf95",
+      "frozen_file_sha256": "bf9397f01195de1ef7563dc0c1a05e8d8fc5d921fd294e1a14cb0575578792a9"
+    },
+    {
+      "run": "precision-clean",
+      "validation_accuracy": 0.9741666666666666,
+      "selected_step": 16000,
+      "updates": 16000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 22,
+      "augmentation_shift": 0,
+      "augmentation_affine": 0.0,
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9688333333333333,
+          "loss": 0.04131296545454921
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9703333333333334,
+          "loss": 0.03416903649632297
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.97,
+          "loss": 0.20841291060881284
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9716666666666667,
+          "loss": 0.025608989568640994
+        },
+        {
+          "step": 10000,
+          "validation_accuracy": 0.9695,
+          "loss": 0.06491101771987307
+        },
+        {
+          "step": 12000,
+          "validation_accuracy": 0.973,
+          "loss": 0.21159164536514324
+        },
+        {
+          "step": 14000,
+          "validation_accuracy": 0.9723333333333334,
+          "loss": 0.008095023854478911
+        },
+        {
+          "step": 16000,
+          "validation_accuracy": 0.9741666666666666,
+          "loss": 0.1652228651552924
+        }
+      ],
+      "report_sha256": "62fcb5deb7fefb39ef679fe0bd03917e73e859a9451a9aca74c6215bfe3f6187",
+      "frozen_file_sha256": "2001fff1171a72feea2b73384831fb5050a13e7262770cade4a3dca8444f393e"
+    },
+    {
+      "run": "full-rows-precision",
+      "validation_accuracy": 0.9743333333333334,
+      "selected_step": 8000,
+      "updates": 8000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-full-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 36,
+      "augmentation_shift": 1,
+      "augmentation_affine": 0.0,
+      "readout_start": 16,
+      "history": [
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9633333333333334,
+          "loss": 0.02280076217597271
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9713333333333334,
+          "loss": 0.3481135348346322
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9655,
+          "loss": 0.02618911094340909
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9743333333333334,
+          "loss": 0.2381749893745121
+        }
+      ],
+      "report_sha256": "1ad693fac6a7d07886e166b254f4f648ac9c6600ee86cdd5f071e69f6a94acbd",
+      "frozen_file_sha256": "e386f1722e9417783dfb66332f3ec6b9e6f7c9192977cb86cc93e56377177f75"
+    },
+    {
+      "run": "full-rows-clean",
+      "validation_accuracy": 0.9786666666666667,
+      "selected_step": 10000,
+      "updates": 10000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-full-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 36,
+      "augmentation_shift": 0,
+      "augmentation_affine": 0.0,
+      "readout_start": 16,
+      "history": [
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9778333333333333,
+          "loss": 0.014217424138977974
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9753333333333334,
+          "loss": 0.055201023957704376
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9765,
+          "loss": 0.4552305753643157
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9768333333333333,
+          "loss": 0.019372492050810264
+        },
+        {
+          "step": 10000,
+          "validation_accuracy": 0.9786666666666667,
+          "loss": 0.014095783155767094
+        }
+      ],
+      "report_sha256": "825beca75891fc83c58a29ae9a0b1bedcf2e35106d087701a4258689990ce816",
+      "frozen_file_sha256": "7ada3c937beb98e8db87a47a2dd86fb3e8da048f36a45cbeb0af08408e3d2192"
+    },
+    {
+      "run": "full-rows-affine",
+      "validation_accuracy": 0.979,
+      "selected_step": 2000,
+      "updates": 8000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-full-counts",
+      "deskew": true,
+      "repeats": 1,
+      "query_ticks": 8,
+      "steps": 36,
+      "augmentation_shift": 1,
+      "augmentation_affine": 8.0,
+      "readout_start": 16,
+      "history": [
+        {
+          "step": 2000,
+          "validation_accuracy": 0.979,
+          "loss": 0.02648569739665596
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9771666666666666,
+          "loss": 0.021586530650159363
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9776666666666667,
+          "loss": 0.11039012001172321
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9788333333333333,
+          "loss": 0.01630556027659885
+        }
+      ],
+      "report_sha256": "72193f568f0a5385b83c88fd96fd71196008601db39896deea9d2ed7dd5a64b1",
+      "frozen_file_sha256": "4761c38252ef20584ab063cef32ff3bffc0a2dc4a879b28059bfa2516e954de8"
+    }
+  ]
+}

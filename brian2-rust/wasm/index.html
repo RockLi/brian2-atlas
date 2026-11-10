@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,"><title>Neural Lab · Browser neuroscience playground</title><link rel="stylesheet" href="lab.css"></head>
+<body>
+<header class="topbar"><a class="brand" href="./"><span class="brand-icon">n<span>·</span></span>NEURAL LAB <small>by Brian2</small></a><div class="top-right"><a class="quiet" href="import.html">Load WASM model ↑</a><span class="local-badge"><i></i> All computation stays in your browser</span><button id="download" class="quiet" disabled>Export experiment ↗</button></div></header>
+<main>
+<section class="hero"><div><div class="eyebrow">COMPUTATIONAL NEUROSCIENCE / PLAYGROUND</div><h1>Change a parameter. Watch neurons fire.</h1><p>Tune the model and explore how neurons move from silence to synchrony.</p></div><div class="engine"><span class="engine-dot"></span><div><strong>WASM + WebGPU</strong><small>Local execution · Explicit precision · Dedicated worker</small></div><span class="chip">LOCAL</span></div></section>
+<nav class="model-picker" aria-label="Model to configure">
+<button data-model="adaptive_lif" aria-pressed="true"><strong>Adaptive LIF</strong><span>Integration &amp; adaptation</span></button>
+<button data-model="izhikevich" aria-pressed="false"><strong>Izhikevich</strong><span>Spiking &amp; bursting</span></button>
+<button data-model="hodgkin_huxley" aria-pressed="false"><strong>Hodgkin–Huxley</strong><span>Ion-channel dynamics</span></button>
+<button data-model="flywire" aria-pressed="false"><strong>FlyWire · DM1</strong><span>Real olfactory circuit</span></button>
+<button data-model="adex" aria-pressed="false"><strong>AdEx</strong><span>Exponential onset &amp; adaptation</span></button>
+<button data-model="quadratic_if" aria-pressed="false"><strong>Quadratic IF</strong><span>Nonlinear integration</span></button>
+<button data-model="custom" aria-pressed="false"><strong>Equation Lab</strong><span>Write your own dynamics</span></button>
+</nav>
+<section class="workspace">
+<aside class="panel editor-panel">
+<div class="panel-heading"><span class="section-index">01</span><h2>Design an experiment</h2><span class="tag" id="model-tag">Adaptive LIF</span></div>
+<div class="run-area"><div id="error" role="alert" hidden></div><button id="run" class="primary">▶ <span>Run experiment</span><kbd>⌘ ↵</kbd></button><button id="cancel" hidden>Stop</button><div class="run-caption"><span id="dirty">Ready</span><button id="reset" class="text-button">Reset defaults</button></div><div class="progress-track"><div id="progress"></div></div></div>
+<label class="select-label population-scale">Compute backend<select id="backend" aria-label="Compute backend"><option value="wasm">WASM · f64 reference</option><option value="webgpu">WebGPU · f32 experimental</option></select></label><p id="backend-note" class="code-note">WASM reference execution. WebGPU supports independent built-in and custom models.</p>
+<label class="select-label population-scale">Population scale<select id="scale" aria-label="Population scale"></select></label><p id="scale-note" class="code-note"></p>
+<p class="model-description" id="model-description"></p>
+<div class="preset-grid" role="group" aria-label="Experiment presets"></div>
+<div class="equations"><span>MODEL EQUATIONS</span><code id="model-equations"></code><small id="model-reset"></small></div>
+<div class="tabs" role="tablist"><button id="tab-controls" role="tab" aria-selected="true">Parameters</button><button id="tab-equations" role="tab" aria-selected="false" hidden>Equations</button><button id="tab-code" role="tab" aria-selected="false">JSON <span>{ }</span></button></div>
+<div id="controls"><div id="model-fields"></div><div class="input-grid">
+<label>Neuron count<input id="neurons" data-key="neurons" type="number" min="8" max="16384" value="160"></label>
+<label>Duration / ms<input id="duration" data-key="duration_ms" type="number" min="50" max="2000" step="50" value="600"></label>
+<label>Timestep / ms<input id="dt" data-key="dt_ms" type="number" step="0.005" value="0.1"></label>
+<label>Random seed<input id="seed" data-key="seed" type="number" min="0" max="4294967295" value="42"></label></div>
+<label class="toggle"><input id="synchronize" data-key="synchronize" type="checkbox"> Identical initial state and input</label></div>
+<div id="code-panel" hidden><label class="code-label" for="config">Experiment configuration · Editable JSON</label><textarea id="config" spellcheck="false" aria-label="Model configuration JSON"></textarea><p class="code-note">Edit the parameters for the selected model. Switch model with the selector above or supply its complete JSON configuration.</p></div>
+
+<section id="equation-editor" hidden>
+<div class="equation-heading"><h3>Model equations</h3><span class="tag">EDITABLE</span></div>
+<p class="code-note">Brian2-style equations compiled locally. Press Run to apply edits.</p>
+<label class="code-label" for="equation-source">Differential equations</label><textarea id="equation-source" spellcheck="false" aria-label="Differential equations"></textarea>
+<label class="code-label" for="equation-parameters">Parameters · numeric JSON · time constants in ms</label><textarea id="equation-parameters" spellcheck="false" aria-label="Equation parameters"></textarea>
+<label class="code-label" for="equation-initial">Initial state · numeric JSON</label><textarea id="equation-initial" spellcheck="false" aria-label="Initial state"></textarea>
+<label class="code-label" for="equation-threshold">Spike threshold</label><input id="equation-threshold" aria-label="Spike threshold" spellcheck="false">
+<label class="code-label" for="equation-reset">Reset · one assignment per line</label><textarea id="equation-reset" spellcheck="false" aria-label="Reset statements"></textarea>
+<label class="code-label" for="equation-refractory">Fixed refractory period / ms</label><input id="equation-refractory" type="number" min="0" max="20" step="0.01" aria-label="Custom refractory period">
+<details><summary>Supported syntax and scope</summary><p>1–4 dimensionless states, including v. Use dvariable/dt = expression : 1. Add (unless refractory) to freeze a state. Use ms or second for time units. t and dt are in seconds. Input drive comes from the slider, with seeded heterogeneity.</p><p>Arithmetic: + − * / **; powers 0–8; exp(), exprel(); comparisons and and/or/not. Up to 24 numeric parameters. Resets: =, +=, -=. Explicit Euler updates all derivatives from the old state. Thresholds are tested every step outside the refractory period.</p><p>This editor supports independent cells. Python, imports, functions, random calls inside equations, synapses and arbitrary units are not supported. WebGPU uses f32 and can differ from WASM/f64. Syntax and units are validated on Run.</p></details>
+</section>
+<div class="design-actions"><button id="save-design" class="quiet">Save design ↓</button><button id="load-design" class="quiet">Load design ↑</button><input id="design-file" type="file" accept=".json,application/json" hidden></div>
+<div class="model-reference"><p id="model-note"></p><a id="model-source" target="_blank" rel="noreferrer"></a></div>
+</aside>
+<div class="results-column">
+<div class="results-heading"><div><span class="section-index">02</span><h2>Explore neural dynamics</h2></div><span id="status" role="status"><i></i> Loading the experiment</span></div>
+<section id="result-context" class="result-context" aria-live="polite"><div><strong id="result-title">No completed run</strong><p id="result-message">Press Run to generate results for the selected model.</p></div><button id="restore-result" class="quiet" hidden>Restore last run</button></section>
+<div id="results-content" hidden>
+<div class="metrics"><article><span>Mean firing rate</span><div><strong id="mean-rate">—</strong><small>Hz / neuron</small></div><p id="rate-delta">Computed from actual spikes</p></article><article><span>Total spikes</span><div><strong id="spike-count">—</strong><small>spikes</small></div><p id="population-info">160 independent neurons</p></article><article><span>Active neurons</span><div><strong id="active-count">—</strong><small>%</small></div><p>At least one spike</p></article><article><span>Execution time</span><div><strong id="elapsed">—</strong><small>ms</small></div><p>Includes loading, compilation and transfer</p></article></div>
+<div class="panel network-panel" id="network-panel" hidden>
+<div class="chart-heading"><div><h3>FlyWire olfactory circuit <span id="network-size">REAL NEURONS</span></h3><p id="network-facts"></p></div><span class="tag">v783 · Subgraph</span></div>
+<div class="network-legend"><span><i style="background:#7971d5"></i> Excitatory</span><span><i style="background:#c36587"></i> Inhibitory</span><span><i style="background:#9ca4b5"></i> Unmodelled fast action</span><span><i style="background:#f4b54c"></i> Spiked in the last 10 ms</span></div>
+<div class="network-scroll"><canvas id="network" aria-label="Schematic FlyWire DM1 circuit with real directed connections and simulated spike activity"></canvas></div>
+<div id="network-timeline"></div>
+<p class="network-selection" id="network-selection">Click a cell to inspect its root ID and select a recorded probe from its group.</p>
+<div class="group-rates-heading">Group firing rates <span>Full run · Hz / neuron</span></div><div class="group-rates" id="group-rates"></div>
+<p class="chart-foot" id="network-scope"></p>
+</div>
+<div class="panel raster-panel"><div class="chart-heading"><div><h3>Spike raster <span>SPIKE RASTER</span></h3><p id="raster-note">Every dot is a spike. Click to select the nearest recorded probe.</p></div><div class="legend"><i></i>Neuron spike</div></div><div class="canvas-wrap"><canvas id="raster" aria-label="Spike raster: time in milliseconds versus neuron index"></canvas><div class="chart-tooltip" id="tooltip" hidden></div></div><div class="timeline"><button id="replay" disabled>▷ Replay</button><label for="scrub">Time</label><input id="scrub" type="range" min="0" max="600" step="1" value="600" disabled><output id="time-value">600 ms</output><button id="show-all" class="text-button">Show all</button></div></div>
+<div class="chart-grid"><div class="panel"><div class="chart-heading compact"><h3>Population firing rate <span>Hz / neuron</span></h3><label class="select-label">Bin width<select id="bin"><option value="5">5 ms</option><option value="10" selected>10 ms</option><option value="20">20 ms</option><option value="50">50 ms</option></select></label></div><canvas id="rate" aria-label="Mean population firing rate over time"></canvas><p class="chart-foot">spikes ÷ neurons ÷ bin duration</p></div><div class="panel"><div class="chart-heading compact"><h3>Firing-rate distribution <span>NEURONS</span></h3><span class="small-note">Full simulation interval</span></div><canvas id="distribution" aria-label="Distribution of per-neuron mean firing rates"></canvas><p class="chart-foot">Per-neuron Hz = total spikes ÷ simulated seconds</p></div></div>
+<div class="panel trace-panel"><div class="chart-heading compact"><h3>State traces <span id="trace-model">Adaptive LIF</span></h3><div class="trace-controls"><span class="legend" id="trace-legend"><i></i> v</span><label class="select-label">Probe<select id="probe" aria-label="Recorded state probe"></select></label></div></div><canvas id="trace" aria-label="Membrane voltage for the selected neuron"></canvas><canvas id="aux-trace" aria-label="Recovery or channel-gate variables for the selected neuron"></canvas><p class="chart-foot" id="trace-note"></p></div>
+<div class="run-footer"><span id="identity">Load → Edit → Compile → Run → Explore</span><button id="save-chart" class="text-button" disabled>Save raster PNG ↗</button></div>
+</div></div></section>
+<footer>BRIAN2 × RUST × WEBASSEMBLY <span id="scope-footer">Neurons are independent; shared initial states and inputs drive synchrony. All charts show locally computed simulation results.</span></footer>
+</main><script type="module" src="lab.js"></script></body></html>

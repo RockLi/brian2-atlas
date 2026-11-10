@@ -1,0 +1,30 @@
+{
+  "schema": "atlas.neuromorphic.branch-acceptance.v1",
+  "experiment_base_commit": "a2d2690aeb619d93f2eb57bd211df161bff6adfa",
+  "distinct_python_tests": 340,
+  "failed": 0,
+  "skipped": 0,
+  "broad_suite": {
+    "tests": 334,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "final_contract_suite": {
+    "tests": 67,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "overlap_tests": 61,
+  "note": "The final contract run includes six additional malformed-scale cases after centralizing session validation. The suites are not additive.",
+  "optional_sdk_tests": "XyloSim and SpiNNaker2 enabled locally",
+  "full_mnist_audit": "Retained without retraining; 88 manifest entries verified unchanged.",
+  "compatibility": {
+    "cells": 36,
+    "admitted": 12,
+    "rejected": 24
+  },
+  "installed_wheel": "passed outside checkout; native integer training, two exports and packaged C arithmetic",
+  "hosted_ci": "See the exact PR head checks; local receipts do not imply hosted completion."
+}

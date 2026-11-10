@@ -1,6 +1,8 @@
 [project]
-name = "Brian2"
+name = "brian2-atlas"
+version = "0.2.0"
 authors = [
+    {name = 'Xinjun Li'},
     {name = 'Marcel Stimberg'},
     {name = 'Dan Goodman'},
     {name = 'Benjamin Evans'},
@@ -17,61 +19,58 @@ dependencies = [
     'setuptools>=61',
     'packaging',
 ]
-dynamic = ["version", "readme"]
-description = 'A clock-driven simulator for spiking neural networks'
+readme = {file = 'README.pypi.md', content-type = 'text/markdown'}
+description = 'Brian2 Atlas: Brian-compatible simulation and native training backends'
 keywords = ['computational neuroscience', 'simulation', 'neural networks', 'spiking neurons', 'biological neural networks', 'research']
 classifiers = [
-    'Development Status :: 5 - Production/Stable',
+    'Development Status :: 3 - Alpha',
     'Intended Audience :: Science/Research',
     'Natural Language :: English',
-    'Operating System :: OS Independent',
+    'Operating System :: POSIX :: Linux',
+    'Operating System :: MacOS',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
     'Topic :: Scientific/Engineering :: Bio-Informatics'
 ]
-license = 'CECILL-2.1'
-license-files = ["LICENSE", "AUTHORS", "CONTRIBUTORS"]
+license = 'CECILL-2.1 AND Apache-2.0'
+license-files = ["LICENSE", "LICENSES/*", "LICENSE_SCOPE.md", "NOTICE", "AUTHORS", "CONTRIBUTORS"]
 
 [project.optional-dependencies]
+cloud = ['modal>=1.5.5']
+examples = [
+    'matplotlib>=3.9',
+    'joblib>=1.4',
+    'noise>=1.2.2',
+    'opencv-python-headless>=4.10',
+    'progressbar2>=4.5',
+    'sbi>=0.25',
+]
 test = ['pytest>=8', 'pytest-xdist>=1.22.3', 'pytest-cov>=2.0', 'pytest-timeout']
 docs = ['sphinx>=7,<9', 'ipython>=5', 'sphinx-tabs']
 
 [project.urls]
-Homepage = 'https://briansimulator.org'
-Documentation ='https://brian2.readthedocs.io/'
-Source = 'https://github.com/brian-team/brian2'
-Tracker = 'https://github.com/brian-team/brian2/issues'
-Coverage = 'https://coveralls.io/github/brian-team/brian2'
-Changelog = 'https://brian2.readthedocs.io/en/stable/introduction/release_notes.html'
-Mastodon = 'https://neuromatch.social/@briansimulator'
-Bluesky = 'https://bsky.app/profile/briansimulator.org'
+Homepage = 'https://github.com/RockLi/brian2-atlas'
+Documentation = 'https://github.com/RockLi/brian2-atlas/blob/v0.2.0/documentation/README.md'
+Source = 'https://github.com/RockLi/brian2-atlas'
+Tracker = 'https://github.com/RockLi/brian2-atlas/issues'
+Upstream = 'https://github.com/brian-team/brian2'
+Preprint = 'https://github.com/RockLi/brian2-atlas-preprint'
+
+[project.scripts]
+b2-runner = 'brian2_rust._cli:runner'
+b2-train = 'brian2_rust._cli:train'
 
 [tool.setuptools]
 zip-safe = false
 include-package-data = true
 
-[tool.setuptools.packages.find]
-include = ["brian2*"]
-
-[tool.setuptools.dynamic]
-readme = {file = 'README.md', content-type = "text/markdown"}
-
-[tool.setuptools_scm]
-version_scheme = 'post-release'
-local_scheme = 'no-local-version'
-write_to = 'brian2/_version.py'
-tag_regex = '^(?P<version>\d+(?:\.\d+){0,2}[^\+]*(?:\+.*)?)$'
-fallback_version = 'unknown'
-
 [build-system]
 requires = [
-    "setuptools>=61",
-    # By building against numpy 2.0, we make sure that the wheel is compatible with
-    # both numpy 2.0 and numpy>=1.23
-    "numpy>=2.0.0rc1",
+    # PEP 639 SPDX expressions and project.license-files require modern setuptools.
+    "setuptools>=77.0.3",
+    "numpy>=2.2.0",
     "wheel",
     "Cython",
-    "setuptools_scm[toml]>=6.2"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -97,3 +96,25 @@ extend-ignore = ["E731", "E501", "UP031", "UP032", "B028", "B018"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.cibuildwheel]
+build = "cp312-manylinux_x86_64 cp313-manylinux_x86_64 cp314-manylinux_x86_64 cp312-macosx_* cp313-macosx_* cp314-macosx_*"
+test-command = "python {project}/dev/atlas/test_wheel.py"
+test-requires = ["pip"]
+build-verbosity = 1
+
+[tool.cibuildwheel.linux]
+archs = ["x86_64"]
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64@sha256:9555ba6c479fa69a2aa80ad1dc57154a60d562b19df159361d9379a02beb1e36"
+before-all = "bash {project}/dev/atlas/install_release_rust.sh"
+before-build = "python -m pip install wheel==0.48.0"
+environment = { PATH = "/root/.cargo/bin:$PATH", CARGO_BUILD_JOBS = "2", PYTHONDONTWRITEBYTECODE = "1", OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1" }
+repair-wheel-command = "python {project}/dev/atlas/repair_wheel.py {wheel} {dest_dir}"
+
+[tool.cibuildwheel.macos]
+# Build and test on a native runner for each architecture, with an explicit OS floor.
+archs = ["native"]
+before-all = "rustup toolchain install 1.98.1 --profile minimal"
+before-build = "python -m pip install wheel==0.48.0"
+environment = { MACOSX_DEPLOYMENT_TARGET = "15.0", CARGO_BUILD_JOBS = "2", PYTHONDONTWRITEBYTECODE = "1", OPENBLAS_NUM_THREADS = "1", OMP_NUM_THREADS = "1" }
+repair-wheel-command = "python {project}/dev/atlas/repair_wheel.py {wheel} {dest_dir} --platform macos --arch {delocate_archs}"

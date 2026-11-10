@@ -1,0 +1,300 @@
+{
+  "schema": "atlas.sequential-mnist.training.v1",
+  "dataset_sha256": "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1",
+  "task": "Ten-class block-sequential MNIST",
+  "encoding": "rows-full-counts",
+  "repeats": 1,
+  "deskew": true,
+  "query_ticks": 8,
+  "augmentation_shift": 1,
+  "augmentation_affine": 4.0,
+  "augmentation_elastic": 0.0,
+  "elastic_sigma": 4.0,
+  "evaluation_round": 4,
+  "prior_official_test_accuracy_known": 0.9747,
+  "steps": 36,
+  "readout_start": 16,
+  "sizes": [
+    16,
+    63,
+    8
+  ],
+  "recurrent_groups": 1,
+  "active_weight_count": 5481,
+  "masked_recurrent_weights": 0,
+  "max_recurrent_fanout": 63,
+  "classes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "class_codes": [
+    [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0
+    ]
+  ],
+  "class_decoder_execution": "host-fixed-integer-codebook",
+  "training_samples": 54000,
+  "validation_samples": 6000,
+  "train_original_index_range": [
+    0,
+    54000
+  ],
+  "validation_original_index_range": [
+    54000,
+    60000
+  ],
+  "test_arrays_read": false,
+  "selected": {
+    "step": 10000,
+    "validation_accuracy": 0.9808333333333333,
+    "loss": 0.041871759100310955,
+    "learning_rate": 9.617903217796368e-05,
+    "changed_latent_weights": [
+      1008,
+      504,
+      3969
+    ]
+  },
+  "history": [
+    {
+      "step": 1000,
+      "validation_accuracy": 0.9755,
+      "loss": 0.05987258272499254,
+      "learning_rate": 0.0005908167372545343
+    },
+    {
+      "step": 2000,
+      "validation_accuracy": 0.9766666666666667,
+      "loss": 0.191505819671944,
+      "learning_rate": 0.0005638563083416716
+    },
+    {
+      "step": 3000,
+      "validation_accuracy": 0.976,
+      "loss": 0.054017510887722046,
+      "learning_rate": 0.0005209563171882061
+    },
+    {
+      "step": 4000,
+      "validation_accuracy": 0.977,
+      "loss": 0.18265945325375102,
+      "learning_rate": 0.00046504081183013486
+    },
+    {
+      "step": 5000,
+      "validation_accuracy": 0.9783333333333334,
+      "loss": 0.05822920421944862,
+      "learning_rate": 0.00039992097309122924
+    },
+    {
+      "step": 6000,
+      "validation_accuracy": 0.9785,
+      "loss": 0.18910782235987053,
+      "learning_rate": 0.00033003534586274047
+    },
+    {
+      "step": 7000,
+      "validation_accuracy": 0.978,
+      "loss": 0.3756034891532696,
+      "learning_rate": 0.00026014730947290343
+    },
+    {
+      "step": 8000,
+      "validation_accuracy": 0.9798333333333333,
+      "loss": 0.11706885597484844,
+      "learning_rate": 0.00019502040745752794
+    },
+    {
+      "step": 9000,
+      "validation_accuracy": 0.9791666666666666,
+      "loss": 0.04260745735470277,
+      "learning_rate": 0.00013909366613826032
+    },
+    {
+      "step": 10000,
+      "validation_accuracy": 0.9808333333333333,
+      "loss": 0.041871759100310955,
+      "learning_rate": 9.617903217796368e-05
+    },
+    {
+      "step": 11000,
+      "validation_accuracy": 0.98,
+      "loss": 0.2643074835498135,
+      "learning_rate": 6.920155166110573e-05
+    },
+    {
+      "step": 12000,
+      "validation_accuracy": 0.9805,
+      "loss": 0.35224024949975447,
+      "learning_rate": 5.9999999999999995e-05
+    }
+  ],
+  "resume": {
+    "kind": "recode-frozen",
+    "source": "/Volumes/T7/atlas-sequential-mnist-round3-20261014/averaged-refine",
+    "frozen_file_sha256": "0f5ddfbaf738abd024a2db80b86a26313c368ef0788058a572bae4494403a4af",
+    "optimizer_moments_preserved": false,
+    "initialization": "unchanged integer input/recurrence; codebook-only linear least-squares readout",
+    "prediction_equivalence_claimed": false
+  },
+  "updates_completed": 12000,
+  "requested_updates": 12000,
+  "selection": "highest native validation accuracy, earliest tie; no test or SDK selection",
+  "readout_source": "spikes",
+  "code_rate_weight": 1.0,
+  "lr_schedule": "cosine",
+  "training": "native Rust integer forward, full-sequence surrogate BPTT/STE, Adam; all three banks trained",
+  "external_training_framework": false,
+  "seed": 20261122,
+  "arguments": {
+    "dataset": "/Users/rock/workspace/bettiai/brian2/brian2-rust/experiments/akida-mnist/output/cache/datasets/mnist.npz",
+    "runner": "/Volumes/T7/atlas-sequential-mnist-round4-20261014/b2-train",
+    "output": "/Volumes/T7/atlas-sequential-mnist-round4-20261014/code8-rate",
+    "resume": null,
+    "recode_from": "/Volumes/T7/atlas-sequential-mnist-round3-20261014/averaged-refine",
+    "source_runner": null,
+    "widen_from": null,
+    "warm_start": null,
+    "warm_average": [],
+    "warm_weight_scale": 1.0,
+    "deskew": true,
+    "query_ticks": 8,
+    "augmentation_shift": 1,
+    "augmentation_affine": 4.0,
+    "augmentation_elastic": 0.0,
+    "elastic_sigma": 4.0,
+    "evaluation_round": 4,
+    "prior_test_accuracy": 0.9747,
+    "readout_source": "spikes",
+    "code_rate_weight": 1.0,
+    "lr_schedule": "cosine",
+    "lr_min_ratio": 0.1,
+    "logit_scale": 12.0,
+    "surrogate_slope": 3.0,
+    "updates": 12000,
+    "encoding": "rows-full-counts",
+    "codebook": "hadamard8",
+    "repeats": 1,
+    "hidden": 63,
+    "recurrent_groups": 1,
+    "widen_jitter": 0.03,
+    "threshold": 64,
+    "output_threshold": 256,
+    "lr": 0.0006,
+    "rec_init": 0.5,
+    "readout_ticks": 20,
+    "batch_size": 32,
+    "validate_every": 1000,
+    "seed": 20261122
+  },
+  "seconds": 1747.1440650000004,
+  "script_sha256": "64a24ecd15786814b7d27d4c87612a33fba89f25371f789b1de48c331efa2567",
+  "runner_sha256": "b2dd25d07f08bb46b4c09cc7961995882e888042f900921a6e4344f3ba00b46a",
+  "checkpoint_sha256": "e9dd24f13d0cb929fe4847ab07397a3016a34665abf81dfbc9822aa152947553",
+  "frozen_file_sha256": "4f275903976c6daac8ffbf3aadd29f5a31da18533ffbb970782fd804cbf7423e"
+}

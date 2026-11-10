@@ -1,0 +1,304 @@
+{
+  "schema": "atlas.sequential-mnist.selection.v1",
+  "selection": "maximum validation accuracy; first candidate wins ties",
+  "test_data_read": false,
+  "selected": {
+    "run": "atlas-smnist-counts-refine5000",
+    "validation_accuracy": 0.9523333333333334,
+    "selected_step": 6000,
+    "updates": 8000,
+    "sizes": [
+      16,
+      63,
+      5
+    ],
+    "encoding": "rows-counts",
+    "readout_start": 8,
+    "history": [
+      {
+        "step": 1000,
+        "validation_accuracy": 0.9333333333333333,
+        "loss": 0.6094252454600965
+      },
+      {
+        "step": 2000,
+        "validation_accuracy": 0.9381666666666667,
+        "loss": 0.13620486511851748
+      },
+      {
+        "step": 3000,
+        "validation_accuracy": 0.9465,
+        "loss": 0.1892725717569061
+      },
+      {
+        "step": 4000,
+        "validation_accuracy": 0.949,
+        "loss": 0.15557993077222015
+      },
+      {
+        "step": 5000,
+        "validation_accuracy": 0.9426666666666667,
+        "loss": 0.10429045873914233
+      },
+      {
+        "step": 6000,
+        "validation_accuracy": 0.9523333333333334,
+        "loss": 0.15964571758804508
+      },
+      {
+        "step": 7000,
+        "validation_accuracy": 0.9523333333333334,
+        "loss": 0.1534176117377945
+      },
+      {
+        "step": 8000,
+        "validation_accuracy": 0.9503333333333334,
+        "loss": 0.44078113790645634
+      }
+    ],
+    "report_sha256": "49c6023113479ca81d667c2efd6428f01e07bc9592d3d481c71e2f7319eadb1a",
+    "frozen_file_sha256": "5fce0d798e8496a055a133a8525e89b5b4c751ee6595975e825b485768746f22"
+  },
+  "candidates": [
+    {
+      "run": "atlas-smnist-counts-v1",
+      "validation_accuracy": 0.9158333333333334,
+      "selected_step": 5000,
+      "updates": 5000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.7918333333333333,
+          "loss": 1.041758167847758
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.8678333333333333,
+          "loss": 0.30836426386956967
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.8528333333333333,
+          "loss": 0.5795034315843597
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9068333333333334,
+          "loss": 0.32155157574478443
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9158333333333334,
+          "loss": 0.4705971709714725
+        }
+      ],
+      "report_sha256": "cefc8652b340be862142ba9db39a954963b1c2620dd1bcd6d120e1384597a09c",
+      "frozen_file_sha256": "15e12ca3595fbb82d178f391af05d6f0f73cbd3aa8c0d92d23d823023519ecc2"
+    },
+    {
+      "run": "atlas-smnist-counts-delayed",
+      "validation_accuracy": 0.8995,
+      "selected_step": 5000,
+      "updates": 5000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "readout_start": 14,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.7096666666666667,
+          "loss": 0.9514983000143385
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.8416666666666667,
+          "loss": 0.24548588318502212
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.8543333333333333,
+          "loss": 0.44320127754539085
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.8955,
+          "loss": 0.2000552189481094
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.8995,
+          "loss": 0.659569662721986
+        }
+      ],
+      "report_sha256": "b22e56cb5d26978eca1c162f2f1c893897014231b2ac8bcb38b6765914967ac9",
+      "frozen_file_sha256": "01ada0e42d5b936011acb3a33aea1a8b2ddf59674143d5a0ac9eb5370783c8f8"
+    },
+    {
+      "run": "atlas-smnist-counts-hadamard",
+      "validation_accuracy": 0.9345,
+      "selected_step": 7000,
+      "updates": 7000,
+      "sizes": [
+        16,
+        63,
+        8
+      ],
+      "encoding": "rows-counts",
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.7306666666666667,
+          "loss": 0.754478770817977
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.8433333333333334,
+          "loss": 0.3329036361084683
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.897,
+          "loss": 0.5346723223105472
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9108333333333334,
+          "loss": 0.09821214470167483
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9243333333333333,
+          "loss": 0.27486733284552645
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9223333333333333,
+          "loss": 0.06662189959639164
+        },
+        {
+          "step": 7000,
+          "validation_accuracy": 0.9345,
+          "loss": 0.17190176950801472
+        }
+      ],
+      "report_sha256": "134b56ff172317aede9ee5668e022429d65694bd815220d773196bb32d08e0e2",
+      "frozen_file_sha256": "369d456a27b392a28f87e2ea8cb1109c1b71e4dcc3c44a82de1162f6a7d801dc"
+    },
+    {
+      "run": "atlas-smnist-counts-finetune",
+      "validation_accuracy": 0.9215,
+      "selected_step": 5000,
+      "updates": 6000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9053333333333333,
+          "loss": 0.13785759396790287
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.8853333333333333,
+          "loss": 0.42660431465072857
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.9098333333333334,
+          "loss": 0.30765568226982387
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.9098333333333334,
+          "loss": 0.2593996661869959
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9215,
+          "loss": 0.15714320305012286
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.919,
+          "loss": 0.1777537850305076
+        }
+      ],
+      "report_sha256": "c8abe966d07796110a65157d3463e86cc1579b874ec0cc53ba4096b5d9ab4742",
+      "frozen_file_sha256": "2d851acbadd8aa7597277484225c98142b1ed667deb0f387295d22658ac8179b"
+    },
+    {
+      "run": "atlas-smnist-counts-refine5000",
+      "validation_accuracy": 0.9523333333333334,
+      "selected_step": 6000,
+      "updates": 8000,
+      "sizes": [
+        16,
+        63,
+        5
+      ],
+      "encoding": "rows-counts",
+      "readout_start": 8,
+      "history": [
+        {
+          "step": 1000,
+          "validation_accuracy": 0.9333333333333333,
+          "loss": 0.6094252454600965
+        },
+        {
+          "step": 2000,
+          "validation_accuracy": 0.9381666666666667,
+          "loss": 0.13620486511851748
+        },
+        {
+          "step": 3000,
+          "validation_accuracy": 0.9465,
+          "loss": 0.1892725717569061
+        },
+        {
+          "step": 4000,
+          "validation_accuracy": 0.949,
+          "loss": 0.15557993077222015
+        },
+        {
+          "step": 5000,
+          "validation_accuracy": 0.9426666666666667,
+          "loss": 0.10429045873914233
+        },
+        {
+          "step": 6000,
+          "validation_accuracy": 0.9523333333333334,
+          "loss": 0.15964571758804508
+        },
+        {
+          "step": 7000,
+          "validation_accuracy": 0.9523333333333334,
+          "loss": 0.1534176117377945
+        },
+        {
+          "step": 8000,
+          "validation_accuracy": 0.9503333333333334,
+          "loss": 0.44078113790645634
+        }
+      ],
+      "report_sha256": "49c6023113479ca81d667c2efd6428f01e07bc9592d3d481c71e2f7319eadb1a",
+      "frozen_file_sha256": "5fce0d798e8496a055a133a8525e89b5b4c751ee6595975e825b485768746f22"
+    }
+  ]
+}

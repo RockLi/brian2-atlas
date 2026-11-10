@@ -1,0 +1,229 @@
+{
+  "schema": "atlas.character-lm.training.v1",
+  "dataset_sha256": "86c4e6aa9db7c042ec79f339dcb96d42b0075e16b8fc2e86bf0ca57e2dc565ed",
+  "normalization": "lowercase; characters outside fixed vocabulary replaced with space; first 200000 characters",
+  "vocabulary": " \nabcdefghijklmnopqrstuvwxyz.,'?",
+  "context_characters": 4,
+  "inference_ticks": 16,
+  "splits": {
+    "train": [
+      0,
+      180000
+    ],
+    "validation": [
+      180000,
+      190000
+    ],
+    "test": [
+      190000,
+      200000
+    ]
+  },
+  "sizes": [
+    129,
+    128,
+    32
+  ],
+  "seed": 20261013,
+  "training_backend": "native CPU b2-train",
+  "external_training_framework": false,
+  "trainable_layers": [
+    true,
+    true
+  ],
+  "optimizer_steps": 3000,
+  "batch_size": 128,
+  "test_evaluated": false,
+  "selection": "minimum perplexity on all 9996 validation targets after explicit quantization; earliest tie",
+  "validation_baselines": {
+    "uniform": {
+      "tokens": 9996,
+      "cross_entropy_nats": 3.465735902799726,
+      "perplexity": 31.999999999999986,
+      "bits_per_character": 4.999999999999999,
+      "top1_accuracy": 0.17026810724289715
+    },
+    "unigram": {
+      "tokens": 9996,
+      "cross_entropy_nats": 3.003536550638773,
+      "perplexity": 20.156696196643594,
+      "bits_per_character": 4.333187286735301,
+      "top1_accuracy": 0.17026810724289715
+    },
+    "bigram": {
+      "tokens": 9996,
+      "cross_entropy_nats": 2.419473716355657,
+      "perplexity": 11.23994236019265,
+      "bits_per_character": 3.490562732147497,
+      "top1_accuracy": 0.26790716286514604
+    }
+  },
+  "untrained_validation": {
+    "tokens": 9996,
+    "cross_entropy_nats": 4.505900501746664,
+    "perplexity": 90.54984764225942,
+    "bits_per_character": 6.500640308609005,
+    "top1_accuracy": 0.03841536614645858
+  },
+  "selected": {
+    "step": 1500,
+    "scales": [
+      8.0,
+      16.0
+    ],
+    "float_validation": {
+      "tokens": 9996,
+      "cross_entropy_nats": 2.030364895395941,
+      "perplexity": 7.616865210800912,
+      "bits_per_character": 2.929197365782763,
+      "top1_accuracy": 0.42366946778711484
+    },
+    "quantized_validation": {
+      "tokens": 9996,
+      "cross_entropy_nats": 2.2198232159955285,
+      "perplexity": 9.20570330092925,
+      "bits_per_character": 3.2025279453669393,
+      "top1_accuracy": 0.38865546218487396
+    },
+    "weight_changes": [
+      16512,
+      4096
+    ]
+  },
+  "history": [
+    {
+      "step": 500,
+      "scales": [
+        16.0,
+        32.0
+      ],
+      "float_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.2290997085134427,
+        "perplexity": 9.291497256981192,
+        "bits_per_character": 3.215911095119378,
+        "top1_accuracy": 0.37294917967186875
+      },
+      "quantized_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.3060201858594636,
+        "perplexity": 10.034409995583246,
+        "bits_per_character": 3.326883886329294,
+        "top1_accuracy": 0.3634453781512605
+      }
+    },
+    {
+      "step": 1000,
+      "scales": [
+        16.0,
+        16.0
+      ],
+      "float_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.088000125419455,
+        "perplexity": 8.06876250501201,
+        "bits_per_character": 3.0123474263181813,
+        "top1_accuracy": 0.4035614245698279
+      },
+      "quantized_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.2355735034211124,
+        "perplexity": 9.351843628865904,
+        "bits_per_character": 3.225250806928405,
+        "top1_accuracy": 0.3784513805522209
+      }
+    },
+    {
+      "step": 1500,
+      "scales": [
+        8.0,
+        16.0
+      ],
+      "float_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.030364895395941,
+        "perplexity": 7.616865210800912,
+        "bits_per_character": 2.929197365782763,
+        "top1_accuracy": 0.42366946778711484
+      },
+      "quantized_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.2198232159955285,
+        "perplexity": 9.20570330092925,
+        "bits_per_character": 3.2025279453669393,
+        "top1_accuracy": 0.38865546218487396
+      }
+    },
+    {
+      "step": 2000,
+      "scales": [
+        8.0,
+        8.0
+      ],
+      "float_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.01339484434414,
+        "perplexity": 7.488697203960483,
+        "bits_per_character": 2.904714757286697,
+        "top1_accuracy": 0.42366946778711484
+      },
+      "quantized_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.361219836055175,
+        "perplexity": 10.603878559746901,
+        "bits_per_character": 3.4065201479254523,
+        "top1_accuracy": 0.36084433773509406
+      }
+    },
+    {
+      "step": 2500,
+      "scales": [
+        8.0,
+        8.0
+      ],
+      "float_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 1.9807533434257671,
+        "perplexity": 7.248201313713224,
+        "bits_per_character": 2.857623025784588,
+        "top1_accuracy": 0.4421768707482993
+      },
+      "quantized_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.3091993889788713,
+        "perplexity": 10.066362187484089,
+        "bits_per_character": 3.331470506903642,
+        "top1_accuracy": 0.3780512204881953
+      }
+    },
+    {
+      "step": 3000,
+      "scales": [
+        8.0,
+        8.0
+      ],
+      "float_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 1.9834269232479873,
+        "perplexity": 7.267605886771749,
+        "bits_per_character": 2.861480186135526,
+        "top1_accuracy": 0.4411764705882353
+      },
+      "quantized_validation": {
+        "tokens": 9996,
+        "cross_entropy_nats": 2.340273927423343,
+        "perplexity": 10.384080657634597,
+        "bits_per_character": 3.3763015894153945,
+        "top1_accuracy": 0.3632452981192477
+      }
+    }
+  ],
+  "training_seconds": 1054.9913513329811,
+  "runner_sha256": "f213be9b29793298f1ca8a464ae08a550ac7c50f37b2148a0383fda9c61ef76b",
+  "source_sha256": {
+    "train.py": "facd8b8a74b0761241ca0ff3ee4c6bc6b82672c677cab429acd8ef15f4e3a1c3",
+    "common.py": "af5224f24968c5ed0e6149bfc2109387a1d74ffebd6163fd5dbaf15fde1dd461"
+  },
+  "checkpoint_sha256": "87477791a30e8d2bcb325aa4f21338f48ac270f7bcdc18b3eba539c9e683b56e",
+  "frozen_file_sha256": "ee65ef7893878299c7d6a42aac9b91196d79ae8e35552f0fb3732acafd379a40"
+}

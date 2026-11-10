@@ -1,0 +1,8 @@
+{
+  "reason": "Bound preprocessing memory; identical per-image encoder, no hyperparameter selection",
+  "aborted": [
+    "gradient-memory-restart",
+    "precision-memory-restart"
+  ],
+  "official_test_read": false
+}
