@@ -6,6 +6,7 @@ abstract: "AtlasIR and independent execution backends integrated with the Brian2
 authors:
   - family-names: Li
     given-names: Xinjun
+    orcid: "https://orcid.org/0009-0005-8381-0416"
   - name: Brian contributors
 version: 0.2.0
 date-released: 2026-11-08
